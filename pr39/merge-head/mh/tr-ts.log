@@ -1,0 +1,43 @@
+ts on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 06:01:16 PST
+UP_EXIT=0
+2026-11-09T06:01:39.756-08:00 daq_sim: preflight rc=0: 06:01:39 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T06:01:42.030-08:00 daq_sim: config DB seeded: tst/BEAM/ts_0 key=2 written
+2026-11-09T06:01:50.022-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1972
+  TEB_WrtCt              1972
+  DRP_Damage             0
+  psana2 events          1972
+  psana2 with data       1972
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T06:02:05.953-08:00 evidence 20261109T060205-cycle-ffaddcbde-3004373: det:drp:ts prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T06:02:06.008-08:00 cycle PASS
+-- ts DRP log: its config code
+tst-drp[3004066]: <I> MemPoolSim: ts data is its TDet firmware's 153 B message
+tst-drp[3004066]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[3004066]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[3004066]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+*** rxready ['DAQ:SIM:XPM:0:LinkRxReady0'] : [1]
+RxLink locked after 1 tries
+*** setting xpm link enables ['DAQ:SIM:XPM:0:LinkGroupMask0'] [32]
+tst-drp[3004066]: <I> Sim payload seed 4660 (0x00001234) from kwarg sim_seed
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 1972; with ts data 1972; events matching the pattern of seed 0x1234: 1972
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 1972; with ts data 1972; events matching the pattern of seed 0x1234: 0
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  problem: event 1: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [4]... != [0]...
+  problem: event 2: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [3]... != [7]...
+  problem: event 3: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [2]... != [6]...
+  problem: event 4: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [1]... != [5]...
+rc=1
+DOWN_EXIT=0
+2026-11-09T06:02:24.805-08:00 daq_sim: down: clean
+TYPERUN_DONE ts 06:02:24

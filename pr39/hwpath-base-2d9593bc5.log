@@ -1,0 +1,210 @@
+== wt-cov head=2d9593bc5 dirty=0
+-- opal python: psdaq.configdb.opal_config.opal_init('opal', '/dev/datadev_0', 1, None, '186M', 0)
+opal_init (i2c setup:186M))
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- opal drp -D opal -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- piranha4 python: psdaq.configdb.piranha4_config.piranha4_init('piranha4', '/dev/datadev_0', 1, None, '186M', 0)
+piranha4_init (i2c_setup:186M)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- piranha4 drp -D piranha4 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- tb python: psdaq.configdb.tb_config.tb_init('tb', '/dev/datadev_0', 1, None, '186M', 0)
+    import lcls2_pgp_pcie_apps
+ModuleNotFoundError: No module named 'lcls2_pgp_pcie_apps'
+Traceback (most recent call last):
+Traceback (most recent call last):
+rc=1
+-- tb drp -D tb -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad python: psdaq.configdb.epixquad_config.epixquad_init('epixquad', '/dev/datadev_0', 1, None, '186M', 0)
+INFO:pyrogue.Root.DevRoot.DevRoot:Making device DevRoot
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixquad drp -D epixquad -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- fakecam python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- fakecam drp -D fakecam -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- cspad python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- cspad drp -D cspad -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixhremu python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixhremu drp -D epixhremu -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- jungfrauemu python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- jungfrauemu drp -D jungfrauemu -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- ts python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- ts drp -D ts -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- hrencoder python: psdaq.configdb.hrencoder_config.hrencoder_init('hrencoder', '/dev/datadev_0', 1, None, '186M', 0)
+hrencoder_init
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- hrencoder drp -D hrencoder -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixm320 python: psdaq.configdb.epixm320_config.epixm320_init('epixm320', '/dev/datadev_0', 1, None, '186M', 0)
+WARNING:root:epixm320_init
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixm320 drp -D epixm320 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epix100 python: psdaq.configdb.epix100_config.epix100_init('epix100', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epix100 drp -D epix100 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8 python: psdaq.configdb.wave8_config.wave8_init('wave8', '/dev/datadev_0', 1, None, '186M', 0)
+--- lanemask 1  lane 0  timebase 186M ---
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- wave8 drp -D wave8 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8he python: psdaq.configdb.wave8he_config.wave8he_init('wave8he', '/dev/datadev_0', 1, None, '186M', 0)
+--- lanemask 1  lane 0  timebase 186M ---
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- wave8he drp -D wave8he -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixhr2x2 python: psdaq.configdb.epixhr2x2_config.epixhr2x2_init('epixhr2x2', '/dev/datadev_0', 1, None, '186M', 0)
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "<wt>/install/lib/python3.9/site-packages/psdaq/configdb/epixhr2x2_config.py", line 9, in <module>
+    import lcls2_epix_hr_pcie
+ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'
+rc=1
+-- epixhr2x2 drp -D epixhr2x2 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad1kfps python: psdaq.configdb.epixquad1kfps_config.epixquad1kfps_init('epixquad1kfps', '/dev/datadev_0', 1, None, '186M', 0)
+
+Available platform plugins are: eglfs, minimal, minimalegl, offscreen, vnc, webgl, xcb.
+
+timeout: the monitored command dumped core
+rc=134
+-- epixquad1kfps drp -D epixquad1kfps -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- tt python: psdaq.configdb.tt_config.tt_init('tt', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- tt drp -D tt -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixuhr3x2 python: psdaq.configdb.epixuhr3x2_config.epixuhr3x2_init('epixuhr3x2', '/dev/datadev_0', 1, None, '186M', 0)
+Instantiating Readout system ROS[PID]
+raised GeneralError AxiStreamDma::openShared: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixuhr3x2 drp -D epixuhr3x2 -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134

@@ -1,0 +1,40 @@
+epix100 on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 06:09:17 PST
+UP_EXIT=0
+2026-11-09T06:09:41.168-08:00 daq_sim: preflight rc=0: 06:09:41 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T06:09:46.535-08:00 daq_sim: config DB seeded: tst/BEAM/epix100_0 key=2 written
+2026-11-09T06:09:54.475-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2046
+  TEB_WrtCt              2046
+  DRP_Damage             0
+  psana2 events          2046
+  psana2 with data       2046
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T06:10:14.331-08:00 evidence 20261109T061014-cycle-ffaddcbde-3024234: det:drp:epix100 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T06:10:14.397-08:00 cycle PASS
+-- epix100 DRP log: its config code
+tst-drp[3024177]: <I> BEBDetector: epix100 config runs against simulated device sim://127.0.0.1:31052
+KCU FpgaVersion 0x3040000
+CAM FpgaVersion 0xea020009
+check clock rate: 185.714286
+tst-drp[3024177]: <I> BEBDetector: sim payload seed 0x1234
+*** Loading camera configuration from /tmp/epix100_cfg.yaml
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2046; with epix100 data 2046; events matching the pattern of seed 0x1234: 2046
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 2046; with epix100 data 2046; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T06:10:34.844-08:00 daq_sim: down: clean
+TYPERUN_DONE epix100 06:10:34

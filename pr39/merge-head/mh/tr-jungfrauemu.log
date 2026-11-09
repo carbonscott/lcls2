@@ -1,0 +1,40 @@
+jungfrauemu on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:57:17 PST
+UP_EXIT=0
+2026-11-09T05:57:41.258-08:00 daq_sim: preflight rc=0: 05:57:41 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:57:42.561-08:00 daq_sim: config DB seeded: tst/BEAM/jungfrauemu_0 key=2 written
+2026-11-09T05:57:50.133-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2003
+  TEB_WrtCt              2003
+  DRP_Damage             0
+  psana2 events          2003
+  psana2 with data       2003
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:58:42.693-08:00 evidence 20261109T055842-cycle-ffaddcbde-2995858: det:drp:jungfrauemu prog:control prog:drp prog:pyxpm prog:
+2026-11-09T05:58:42.750-08:00 cycle PASS
+-- jungfrauemu DRP log: its config code
+tst-drp[2995712]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2995712]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2995712]: <I> MemPoolSim: readout group 5, 262144 payload words per lane
+tst-drp[2995712]: <I> JungfrauEmulator configure
+tst-drp[2995712]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/jungfrauemu_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 2003; with jungfrauemu data 2003; events matching the pattern of seed 0x1234: 2003
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 2003; with jungfrauemu data 2003; events matching the pattern of seed 0x1234: 0
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  problem: event 1: 262140 of 262140 payload words differ
+  problem: event 2: 262140 of 262140 payload words differ
+  problem: event 3: 262140 of 262140 payload words differ
+  problem: event 4: 262140 of 262140 payload words differ
+rc=1
+DOWN_EXIT=0
+2026-11-09T06:00:14.826-08:00 daq_sim: down: clean
+TYPERUN_DONE jungfrauemu 06:00:14

@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/daq_sim.cnf": {
+   "bytes": 1120,
+   "sha256": "88335322a2b7a5c85e31dcbc0ed9a381eac4af8d070c8744e46d98c78eff25e0"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 860184,
+   "sha256": "41bcdccb6bbb629439ea100bb50bb4e95195aa4eae5ad4615318af78fbe731c2"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/configdb.log": {
+   "bytes": 507,
+   "sha256": "966742e82ccfaa6f2fa6ec726194bd50f86180b4b9fe7987c842a66c6231c01a"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/cycle.jsonl": {
+   "bytes": 2334,
+   "sha256": "4e7eefd03037d71d0fa7cdf7113d1b2b1e754917e1c1fc6bcb8028675609b8af"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/lgbk.log": {
+   "bytes": 1206,
+   "sha256": "8cb723e882d680503c2de95a1b47957e2e3ba3513ef3ebb6e26c864ec1c2074b"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/simxpm.log": {
+   "bytes": 2745,
+   "sha256": "dd94ebbe556fc6c7ca9d695e385fbb7743c8fe143f61d833a10d933d3f2e4d2a"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:control.log": {
+   "bytes": 66712,
+   "sha256": "cbc8c67bbd946a670ab5e30c697ff819f3f1a7cac83c3d0559d27e83a2daa508"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:fakecam_0.log": {
+   "bytes": 13674,
+   "sha256": "fa4d3856a2da4f842bf12dc502b0b3fe83b3c4e0e2e9fffd01527a477ae67844"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:teb0.log": {
+   "bytes": 8842,
+   "sha256": "c6cca5b24ed4799fa0acf16bf5ecc5c3edab92ddf6097d28ab43b5f6bbcd28e6"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 860136,
+  "TEB_EvtCt": 2058,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2058,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2058,
+  "psana2 seeds": {
+   "0x1234": 2058
+  },
+  "psana2 seq": "1..2058",
+  "psana2 with data": 2058,
+  "simxpm NumL0Acc": 2058,
+  "simxpm NumL0Inp": 2058,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (860184 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T01:47:36-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-fakecam/pmlogs/2026/11/09_01:47:16_sdfmilan048:fakecam_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:fakecam",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "6b226e5d729f061172ac25090e163291817630c9",
+ "started": "2026-11-09T01:47:22.828-08:00"
+}

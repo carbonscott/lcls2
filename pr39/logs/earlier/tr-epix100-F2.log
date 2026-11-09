@@ -1,0 +1,989 @@
+host=sdfmilan048 head=913dcd195 dirty=0 date=2026-11-08T23:31:09-08:00 job=43839059 step=349
+== up --det epix100 
+2026-11-08T23:31:09.911-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 349), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2
+2026-11-08T23:31:09.911-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T23:31:32.426-08:00 daq_sim: preflight rc=0: 23:31:32 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ForceWrite, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.InitAfterConfig, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.PollEn, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RunTriggerEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RunTriggerDelay, 50000, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay, 50010, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AcqCountReset, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DacData, 40000, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DigitalPowerEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AnalogPowerEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.FpgaOutputEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.IDelayCtrlRdy, 1, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.SeqCountReset, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunEnable, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunPeriod, 833333, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunPeriodMs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoDaqEnable, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AcqToAsicR0Delay, 3000, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AcqToAsicR0DelayUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0ToAsicAcq, 50000, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0ToAsicAcqUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqWidth, 50000, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqWidthUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqLToPPmatL, 200, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqLToPPmatLUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRoClkT, 10, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcClkHalfT, 1, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.TotalPixelsToRead, 33984, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicGR, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcq, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRO, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPpmat, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPpbe, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRoClk, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinGRControl, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinAcqControl, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinROControl, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinPpmatControl, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinPpbeControl, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinROClkControl, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPatternEnable, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0Width, 30, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0WidthUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPPmatToReadout, 11200, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicPPmatToReadoutUs: Linked Variable
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.PgpTrigEn, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RequestStartup, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA0, 28, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA1, 29, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA2, 29, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA3, 27, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.enable, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.GhostCorrEn, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.OversampleEn, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.OversampleSize, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.DebugOut, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjStartDly, 0, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjStopDly, 0, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjSkip, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjSyncEn, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly00, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly01, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly02, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly03, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly04, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly05, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly06, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly07, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly08, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly09, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly10, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly11, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly12, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly13, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly14, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly15, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.ArmReg, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TrigReg, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.ScopeEnable, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerEdge, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerChannel, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerMode, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerAdcThresh, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerHoldoff, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerOffset, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TraceLength, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.SkipSamples, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.InputChannelA, 10, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.InputChannelB, 10, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerDelay, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.MonostPulser, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserSync, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PixelDummy, 0, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Pulser, 0, UINT16
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.pbit, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.atest, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.test, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.sba_test, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.hrtest, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserR, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DigMon1, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DigMon2, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserDac, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsGr, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Dm1En, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Dm2En, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.SLVDSbit, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.VRef, 35, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.VRefLow, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_tcomp, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_MUX, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_Monost, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0Gr, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1Gr, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PpOcbS2d, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Ocb, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Monost, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.FastppEnable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Preamp, 4, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PixelCb, 4, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Vld1_b, 1, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2dTComp, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.FilterDac, 49, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TC, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2dDacBias, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsTcDac, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsDac, 22, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0TcDac, 1, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0Dac, 22, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TestBe, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.IsEn, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DelExec, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DelCckRef, 0, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.ro_rst_exten, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2Gr, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3Gr, 3, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1TcDac, 1, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1Dac, 22, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2TcDac, 1, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2Dac, 22, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3TcDac, 1, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3Dac, 22, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.enable, 1, boolEnum
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.MonostPulser, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserSync, 0, UINT8
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PixelDummy, 0, UINT32
+2026-11-08T23:31:37.596-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Pulser, 0, UINT16
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.pbit, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.atest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.sba_test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.hrtest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserR, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DigMon1, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DigMon2, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserDac, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsGr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Dm1En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Dm2En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.SLVDSbit, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.VRef, 35, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.VRefLow, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_tcomp, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_MUX, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PpOcbS2d, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Ocb, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.FastppEnable, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Preamp, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PixelCb, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Vld1_b, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2dTComp, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.FilterDac, 49, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TC, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2dDacBias, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsTcDac, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsDac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TestBe, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.IsEn, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DelExec, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DelCckRef, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.ro_rst_exten, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.enable, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.MonostPulser, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserSync, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PixelDummy, 0, UINT32
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Pulser, 0, UINT16
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.pbit, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.atest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.sba_test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.hrtest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserR, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DigMon1, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DigMon2, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserDac, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsGr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Dm1En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Dm2En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.SLVDSbit, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.VRef, 35, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.VRefLow, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_tcomp, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_MUX, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PpOcbS2d, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Ocb, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.FastppEnable, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Preamp, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PixelCb, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Vld1_b, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2dTComp, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.FilterDac, 49, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TC, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2dDacBias, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsTcDac, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsDac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TestBe, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.IsEn, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DelExec, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DelCckRef, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.ro_rst_exten, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.enable, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.MonostPulser, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserSync, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PixelDummy, 0, UINT32
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Pulser, 0, UINT16
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.pbit, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.atest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.sba_test, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.hrtest, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserR, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DigMon1, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DigMon2, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserDac, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsGr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Dm1En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Dm2En, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.SLVDSbit, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.VRef, 35, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.VRefLow, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_tcomp, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_MUX, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PpOcbS2d, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Ocb, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Monost, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.FastppEnable, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Preamp, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PixelCb, 4, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Vld1_b, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2dTComp, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.FilterDac, 49, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TC, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2dDacBias, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsTcDac, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsDac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TestBe, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.IsEn, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DelExec, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DelCckRef, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.ro_rst_exten, 1, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3Gr, 3, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3TcDac, 1, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3Dac, 22, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Pgp4Axi.enable, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.enable, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.StreamEn, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.StreamPeriod, 0, UINT32
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.enable, 0, boolEnum
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_0, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_1, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_2, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_3, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_4, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_5, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_6, 0, UINT8
+2026-11-08T23:31:37.597-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_7, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.FrameDelay, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.Invert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.enable, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_0, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_1, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_2, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_3, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_4, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_5, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_6, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_7, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.FrameDelay, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.Invert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.enable, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_0, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_1, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_2, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_3, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.FrameDelay, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.Invert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.enable, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.InternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ClockDivide, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ChopMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserTestModeCfg, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputTestMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OffsetAdjust, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputInvert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputFormat, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt1Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt2Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.enable, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.InternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ClockDivide, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ChopMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserTestModeCfg, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputTestMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OffsetAdjust, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputInvert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputFormat, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt1Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt2Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.enable, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.InternalPdwnMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ClockDivide, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ChopMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserTestModeCfg, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputTestMode, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OffsetAdjust, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputInvert, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputFormat, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt1Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt2Msb, 0, UINT8
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.enable, 1, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.PasswordLock, 0, UINT32
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.ModeReg, 0, UINT32
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.AddrReg, 0, UINT32
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.CmdReg, 0, UINT32
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.DataReg, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], UINT32
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicroblazeLog.enable, 1, boolEnum
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T23:31:37.598-08:00 daq_sim: config DB seeded: tst/BEAM/epix100_0 key=2 written
+2026-11-08T23:31:39.426-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T23:31:44.978-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epix100_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/daq_sim.cnf  pids {'control': 1943357, 'teb0': 1943358, 'epix100_0': 1943359}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2 --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2
+UP_EXIT=0
+== cycle
+2026-11-08T23:31:46.225-08:00 start state: reset
+2026-11-08T23:31:46.227-08:00 setRecord(True) -> OK
+2026-11-08T23:31:47.229-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T23:31:47.230-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T23:31:47.362-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T23:31:47.365-08:00 setState allocated    -> allocated    OK
+2026-11-08T23:31:49.132-08:00 setState connected    -> connected    OK
+2026-11-08T23:31:50.310-08:00 setState configured   -> configured   OK
+2026-11-08T23:31:51.382-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-08T23:31:51.392-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-08T23:31:51.398-08:00 setState starting     -> starting     OK
+2026-11-08T23:31:51.401-08:00 setState paused       -> paused       OK
+2026-11-08T23:31:51.405-08:00 setState running      -> running      OK
+2026-11-08T23:31:51.406-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-08T23:31:53.489-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1434 (wanted >= 1000)
+2026-11-08T23:31:59.498-08:00 [error] teb0 did not respond to disable
+2026-11-08T23:31:59.498-08:00 [error] epix100_0 did not respond to disable
+2026-11-08T23:31:59.498-08:00 [error] 2 client did not respond to disable
+2026-11-08T23:31:59.498-08:00 [error] disable failed to change state
+2026-11-08T23:31:59.499-08:00 setState paused       -> running      FAIL
+2026-11-08T23:32:05.854-08:00 final state running (start reset)
+transitions (request -> read back):
+  2026-11-08T23:31:46.227-08:00 -> 2026-11-08T23:31:47.229-08:00  unallocated  unallocated  
+  2026-11-08T23:31:47.230-08:00 -> 2026-11-08T23:31:47.365-08:00  allocated    allocated    
+  2026-11-08T23:31:47.366-08:00 -> 2026-11-08T23:31:49.132-08:00  connected    connected    
+  2026-11-08T23:31:49.132-08:00 -> 2026-11-08T23:31:50.310-08:00  configured   configured   
+  2026-11-08T23:31:50.310-08:00 -> 2026-11-08T23:31:51.398-08:00  starting     starting     
+  2026-11-08T23:31:51.398-08:00 -> 2026-11-08T23:31:51.401-08:00  paused       paused       
+  2026-11-08T23:31:51.401-08:00 -> 2026-11-08T23:31:51.405-08:00  running      running      
+  2026-11-08T23:31:53.490-08:00 -> 2026-11-08T23:31:59.499-08:00  paused       running      
+counts:
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (536608314 B)
+  psana2 events          496
+  psana2 with data       496
+  psana2 checks          PASS
+  psana2 seq             1..496
+  psana2 seeds           {'0x1234': 496}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: False
+2026-11-08T23:32:05.860-08:00 4 error message(s) on the status stream
+2026-11-08T23:32:05.860-08:00 cycle FAIL
+CYCLE_EXIT=1
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 496; with epix100 data 496; events matching the pattern of seed 0x1234: 496
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 --self-test-offset 1
+Problem reading dgram header.
+xtc2_check: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 496; with epix100 data 496; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0): 0xb10 != 0x2c8e
+  problem: event 5: 540640 of 540672 pixels differ, first at (0, 0): 0x2947 != 0xac5
+  FAIL
+rc=1
+== down
+2026-11-08T23:32:18.532-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T23:32:23.907-08:00 daq_sim: stopping simxpm pid 1943171: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T23:32:24.007-08:00 daq_sim: stopping lgbk pid 1943169: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T23:32:24.508-08:00 daq_sim: stopping configdb pid 1943143: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T23:32:25.225-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T23:32:25.232-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== FAULT up --det epix100 PSDAQ_SIM_ROGUE_FAULT=ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay
+2026-11-08T23:32:26.007-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 349), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault
+2026-11-08T23:32:26.007-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-08T23:32:48.769-08:00 daq_sim: preflight rc=0: 23:32:48 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.enable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ForceWrite, 0, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.InitAfterConfig, 0, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.PollEn, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.enable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.enable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RunTriggerEnable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RunTriggerDelay, 50000, UINT32
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerEnable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay, 50010, UINT32
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AcqCountReset, 0, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DacData, 40000, UINT16
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.DigitalPowerEnable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AnalogPowerEnable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.FpgaOutputEnable, 1, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.IDelayCtrlRdy, 1, UINT32
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.SeqCountReset, 0, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunEnable, 0, boolEnum
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunPeriod, 833333, UINT32
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AutoRunPeriodMs: Linked Variable
+2026-11-08T23:32:54.045-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AutoDaqEnable, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AcqToAsicR0Delay, 3000, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AcqToAsicR0DelayUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0ToAsicAcq, 50000, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0ToAsicAcqUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqWidth, 50000, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqWidthUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqLToPPmatL, 200, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcqLToPPmatLUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRoClkT, 10, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcClkHalfT, 1, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.TotalPixelsToRead, 33984, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicGR, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicAcq, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRO, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPpmat, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPpbe, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicRoClk, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinGRControl, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinAcqControl, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinROControl, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinPpmatControl, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinPpbeControl, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPinROClkControl, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPatternEnable, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0Width, 30, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicR0WidthUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AsicPPmatToReadout, 11200, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Skipping expert.ePix100aFPGA.EpixFpgaRegisters.AsicPPmatToReadoutUs: Linked Variable
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.PgpTrigEn, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.RequestStartup, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA0, 28, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA1, 29, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA2, 29, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaRegisters.AdcPipelineDelayA3, 27, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.enable, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.GhostCorrEn, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.OversampleEn, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.OversampleSize, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.DebugOut, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjStartDly, 0, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjStopDly, 0, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjSkip, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.InjSyncEn, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly00, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly01, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly02, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly03, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly04, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly05, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly06, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly07, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly08, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly09, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly10, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly11, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly12, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly13, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly14, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.EpixFpgaExtRegisters.BankPipelineDly15, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.enable, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.ArmReg, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TrigReg, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.ScopeEnable, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerEdge, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerChannel, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerMode, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerAdcThresh, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerHoldoff, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerOffset, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TraceLength, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.SkipSamples, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.InputChannelA, 10, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.InputChannelB, 10, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Oscilloscope.TriggerDelay, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.enable, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.MonostPulser, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserSync, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PixelDummy, 0, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Pulser, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.pbit, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.atest, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.test, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.sba_test, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.hrtest, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserR, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DigMon1, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DigMon2, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PulserDac, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsGr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Dm1En, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Dm2En, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.SLVDSbit, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.VRef, 35, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.VRefLow, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_tcomp, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_MUX, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TPS_Monost, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PpOcbS2d, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Ocb, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Monost, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.FastppEnable, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Preamp, 4, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.PixelCb, 4, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.Vld1_b, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2dTComp, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.FilterDac, 49, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TC, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2dDacBias, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsTcDac, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TpsDac, 22, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0TcDac, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d0Dac, 22, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.TestBe, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.IsEn, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DelExec, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.DelCckRef, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.ro_rst_exten, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1TcDac, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d1Dac, 22, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2TcDac, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d2Dac, 22, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3TcDac, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_0.S2d3Dac, 22, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.enable, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.MonostPulser, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserSync, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PixelDummy, 0, UINT32
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Pulser, 0, UINT16
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.pbit, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.atest, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.test, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.sba_test, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.hrtest, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserR, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DigMon1, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DigMon2, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PulserDac, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsGr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Dm1En, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Dm2En, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.SLVDSbit, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.VRef, 35, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.VRefLow, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_tcomp, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_MUX, 0, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TPS_Monost, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1Gr, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PpOcbS2d, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Ocb, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Monost, 3, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.FastppEnable, 1, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Preamp, 4, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.PixelCb, 4, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.Vld1_b, 1, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2dTComp, 0, boolEnum
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.FilterDac, 49, UINT8
+2026-11-08T23:32:54.046-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TC, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2dDacBias, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsTcDac, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TpsDac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d0Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.TestBe, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.IsEn, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DelExec, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.DelCckRef, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.ro_rst_exten, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d1Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d2Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_1.S2d3Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.enable, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.MonostPulser, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserSync, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PixelDummy, 0, UINT32
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Pulser, 0, UINT16
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.pbit, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.atest, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.test, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.sba_test, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.hrtest, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserR, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DigMon1, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DigMon2, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PulserDac, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsGr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Dm1En, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Dm2En, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.SLVDSbit, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.VRef, 35, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.VRefLow, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_tcomp, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_MUX, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TPS_Monost, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PpOcbS2d, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Ocb, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Monost, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.FastppEnable, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Preamp, 4, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.PixelCb, 4, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.Vld1_b, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2dTComp, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.FilterDac, 49, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TC, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2dDacBias, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsTcDac, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TpsDac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d0Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.TestBe, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.IsEn, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DelExec, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.DelCckRef, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.ro_rst_exten, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d1Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d2Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_2.S2d3Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.enable, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.MonostPulser, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserSync, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PixelDummy, 0, UINT32
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Pulser, 0, UINT16
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.pbit, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.atest, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.test, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.sba_test, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.hrtest, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserR, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DigMon1, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DigMon2, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PulserDac, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsGr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Dm1En, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Dm2En, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.SLVDSbit, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.VRef, 35, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.VRefLow, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_tcomp, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_MUX, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TPS_Monost, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PpOcbS2d, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Ocb, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Monost, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.FastppEnable, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Preamp, 4, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.PixelCb, 4, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.Vld1_b, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2dTComp, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.FilterDac, 49, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TC, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2dDacBias, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsTcDac, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TpsDac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d0Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.TestBe, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.IsEn, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DelExec, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.DelCckRef, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.ro_rst_exten, 1, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3Gr, 3, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d1Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d2Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3TcDac, 1, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Epix100aAsic_3.S2d3Dac, 22, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Pgp4Axi.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.StreamEn, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.SlowAdcRegisters.StreamPeriod, 0, UINT32
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_0, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_1, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_2, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_3, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_4, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_5, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_6, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.ChannelDelay_7, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.FrameDelay, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_0.Invert, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_0, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_1, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_2, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_3, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_4, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_5, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_6, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.ChannelDelay_7, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.FrameDelay, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_1.Invert, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_0, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_1, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_2, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.ChannelDelay_3, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.FrameDelay, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249RdoutAdc_2.Invert, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.enable, 0, boolEnum
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.047-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.InternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ClockDivide, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.ChopMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserTestModeCfg, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputTestMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OffsetAdjust, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputInvert, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.OutputFormat, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt1Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.UserPatt2Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_0.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.enable, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.InternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ClockDivide, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.ChopMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserTestModeCfg, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputTestMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OffsetAdjust, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputInvert, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.OutputFormat, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt1Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.UserPatt2Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_1.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.enable, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ExternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.InternalPdwnMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DutyCycleStabilizer, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ClockDivide, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.ChopMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DataCh_0, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DataCh_1, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_FCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.DevIndexMask_DCO, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserTestModeCfg, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputTestMode, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OffsetAdjust, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputInvert, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.OutputFormat, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt1Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt1Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt2Lsb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.UserPatt2Msb, 0, UINT8
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.Ad9249ConfigAdc_2.LvdsLsbFirst, 0, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.enable, 1, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.PasswordLock, 0, UINT32
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.ModeReg, 0, UINT32
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.AddrReg, 0, UINT32
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.CmdReg, 0, UINT32
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicronN25Q.DataReg, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], UINT32
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: Writing into database: expert.ePix100aFPGA.MicroblazeLog.enable, 1, boolEnum
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-08T23:32:54.048-08:00 daq_sim: config DB seeded: tst/BEAM/epix100_0 key=2 written
+2026-11-08T23:32:55.881-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-08T23:33:01.584-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epix100_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/daq_sim.cnf  pids {'control': 1945963, 'teb0': 1945964, 'epix100_0': 1945965}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault
+UP_EXIT=0
+== FAULT cycle
+2026-11-08T23:33:02.866-08:00 start state: reset
+2026-11-08T23:33:02.867-08:00 setRecord(True) -> OK
+2026-11-08T23:33:03.870-08:00 setState unallocated  -> unallocated  OK
+2026-11-08T23:33:03.871-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-08T23:33:04.006-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-08T23:33:04.010-08:00 setState allocated    -> allocated    OK
+2026-11-08T23:33:05.651-08:00 setState connected    -> connected    OK
+ERROR:root:getState(tcp://localhost:30005) timeout (60.0 sec)
+2026-11-08T23:34:05.711-08:00 setState configured   -> error        FAIL
+2026-11-08T23:34:05.728-08:00 [error] epix100_0 did not respond to configure
+2026-11-08T23:34:05.729-08:00 [error] 1 client did not respond to configure
+2026-11-08T23:34:05.729-08:00 [error] configure failed to change state
+2026-11-08T23:34:05.729-08:00 status: transition connect state connected recording True experiment tstx00001 run 0
+2026-11-08T23:34:35.764-08:00 [error] epix100_0 did not respond to disconnect
+2026-11-08T23:34:35.765-08:00 [error] teb0 did not respond to disconnect
+2026-11-08T23:34:35.765-08:00 [error] 2 client did not respond to disconnect
+2026-11-08T23:34:35.765-08:00 [error] disconnect failed to change state
+2026-11-08T23:34:35.765-08:00 setState allocated    -> connected    FAIL
+2026-11-08T23:34:36.266-08:00 final state connected (start reset)
+transitions (request -> read back):
+  2026-11-08T23:33:02.867-08:00 -> 2026-11-08T23:33:03.870-08:00  unallocated  unallocated  
+  2026-11-08T23:33:03.871-08:00 -> 2026-11-08T23:33:04.010-08:00  allocated    allocated    
+  2026-11-08T23:33:04.010-08:00 -> 2026-11-08T23:33:05.651-08:00  connected    connected    
+  2026-11-08T23:33:05.651-08:00 -> 2026-11-08T23:34:05.711-08:00  configured   error        
+  2026-11-08T23:34:05.730-08:00 -> 2026-11-08T23:34:35.765-08:00  allocated    connected    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-08T23:34:36.273-08:00 7 error message(s) on the status stream
+2026-11-08T23:34:36.273-08:00 cycle FAIL
+CYCLE_EXIT=1
+== FAULT drp log lines naming the fault
+# CMDLINE: drp -P tst -C localhost -D epix100 -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x110000,sim_dma_count=256,sim_seed=0x1234 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/prom -u epix100_0 -p 5
+WARNING:psdaq.sim.rogue_dev:FAULT ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x1000010 reads back 0x7fffffff
+rogue_dev: FAULT ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x1000010 reads back 0x7fffffff
+tst-drp[1945965]: <I> Output dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/types2/wd-epix100-F2-fault/data/tst
+ERROR:pyrogue.Command.BaseCommand.ePixBoard.LoadConfig:Block::checkTransaction: General Error: Verify error for block ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay with address 0x01000010. Byte: 0. Got: 0xff, Exp: 0x5a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay with address 0x01000010. Byte: 0. Got: 0xff, Exp: 0x5a, Mask: 0xff
+Traceback (most recent call last):
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay with address 0x01000010. Byte: 0. Got: 0xff, Exp: 0x5a, Mask: 0xff
+tst-drp[1945965]: <C> **** python error
+epix100 received signal: Aborted
+@@@ Received a sigChild for process 1945965. The process was killed by signal 6
+== FAULT down
+2026-11-08T23:34:36.969-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-08T23:34:42.294-08:00 daq_sim: stopping simxpm pid 1945557: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-08T23:34:42.394-08:00 daq_sim: stopping lgbk pid 1945553: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-08T23:34:42.494-08:00 daq_sim: stopping configdb pid 1945374: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-08T23:34:43.312-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-08T23:34:43.319-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+TYPERUN_DONE

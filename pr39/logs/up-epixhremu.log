@@ -1,0 +1,19 @@
+2026-11-09T01:49:08.691-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 435), platform 5, workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu
+2026-11-09T01:49:08.691-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T01:49:31.605-08:00 daq_sim: preflight rc=0: 01:49:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:49:32.860-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T01:49:32.860-08:00 daq_sim: config DB seeded: tst/BEAM/epixhremu_0 key=2 written
+2026-11-09T01:49:37.821-08:00 daq_sim: epixhremu frame (288, 384) from seed 0x1234 written to /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu/epixhremu-frame.xtc2
+2026-11-09T01:49:37.824-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T01:49:43.540-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixhremu_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu/daq_sim.cnf  pids {'control': 2288139, 'teb0': 2288140, 'epixhremu_0': 2288141}  logs /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu/pmlogs
+  data         /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu/data  (xtc2 written when recording)
+  prometheus   /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu --events 1000   or   daq_sim e2e -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixhremu

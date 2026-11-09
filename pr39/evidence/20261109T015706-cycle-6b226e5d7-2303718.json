@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/daq_sim.cnf": {
+   "bytes": 1168,
+   "sha256": "1819ded049c39e61dcea81df3350430150b89953dbe69e3691330c29b4e1aad6"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1152706209,
+   "sha256": "27dec197406a77bdaddaa0aedcd620f1ce87f1b29bd0ad991013dd1f685e1f5f"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/configdb.log": {
+   "bytes": 509,
+   "sha256": "555b318e93a13d26deb84afe2ca3c69073e2031f36a981147e8f92886bcce7ba"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/cycle.jsonl": {
+   "bytes": 2343,
+   "sha256": "efc3b01245af26396e21bc4715a1162f2055cc4f8b57694ed15eb106501bbb5c"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/lgbk.log": {
+   "bytes": 1208,
+   "sha256": "500c735f76ce04e9d5b8984326144ab238726b55fa7bbbe3cd9c2cae38e86def"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/simxpm.log": {
+   "bytes": 2750,
+   "sha256": "b45eb1aae7f2e26290f8a17eac6f52f5a169c591ef3b82f2cb4b9c1bd9d77091"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:control.log": {
+   "bytes": 70999,
+   "sha256": "c38c9645e2ae9430f79e8612b9e99172cd2eb4d19b50678304ab5d04248a2eb0"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:epixm320_0.log": {
+   "bytes": 18931,
+   "sha256": "a4b7736a2a853f696bc6e137b7ad9490c10f0dbf63636ef213f68bebd62b8d4b"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:teb0.log": {
+   "bytes": 9213,
+   "sha256": "e1d8e90ae16df3df1d590c2139e273f74f93c1307f1cec0bd8c43231b2f1f8a0"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1152706161,
+  "TEB_EvtCt": 1952,
+  "TEB_TrCt": 6,
+  "TEB_WrtCt": 1952,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1952,
+  "psana2 seeds": {
+   "0x1234": 1952
+  },
+  "psana2 seq": "1..1952",
+  "psana2 with data": 1952,
+  "simxpm NumL0Acc": 1952,
+  "simxpm NumL0Inp": 1952,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1152706209 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T01:57:06-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/pmlogs/2026/11/09_01:56:32_sdfmilan048:epixm320_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:epixm320",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "6b226e5d729f061172ac25090e163291817630c9",
+ "started": "2026-11-09T01:56:38.198-08:00"
+}

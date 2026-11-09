@@ -1,0 +1,60 @@
+2026-11-09T01:55:25.471-08:00 start state: reset
+2026-11-09T01:55:25.472-08:00 setRecord(True) -> OK
+2026-11-09T01:55:27.478-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T01:55:27.479-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-09T01:55:27.632-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-09T01:55:27.635-08:00 setState allocated    -> allocated    OK
+2026-11-09T01:55:28.600-08:00 setState connected    -> connected    OK
+2026-11-09T01:55:29.782-08:00 setState configured   -> configured   OK
+2026-11-09T01:55:30.855-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-09T01:55:30.863-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-09T01:55:30.868-08:00 setState starting     -> starting     OK
+2026-11-09T01:55:30.872-08:00 setState paused       -> paused       OK
+2026-11-09T01:55:30.875-08:00 setState running      -> running      OK
+2026-11-09T01:55:30.876-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-09T01:55:32.834-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1080 (wanted >= 1000)
+2026-11-09T01:55:32.840-08:00 setState paused       -> paused       OK
+2026-11-09T01:55:33.885-08:00 counts after Disable: {'simxpm NumL0Acc': 1962, 'simxpm NumL0Inp': 1962, 'TEB_EvtCt': 1962, 'TEB_TrCt': 7, 'TEB_WrtCt': 1962, 'DRP_Damage': 0, 'DRP_RecordSize': 142899, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-09T01:55:33.888-08:00 setState starting     -> starting     OK
+2026-11-09T01:55:33.897-08:00 setState configured   -> configured   OK
+2026-11-09T01:55:33.900-08:00 setState connected    -> connected    OK
+2026-11-09T01:55:34.036-08:00 setState allocated    -> allocated    OK
+2026-11-09T01:55:34.122-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T01:55:34.124-08:00 setState reset        -> reset        OK
+2026-11-09T01:55:38.942-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-09T01:55:25.472-08:00 -> 2026-11-09T01:55:27.478-08:00  unallocated  unallocated  
+  2026-11-09T01:55:27.479-08:00 -> 2026-11-09T01:55:27.635-08:00  allocated    allocated    
+  2026-11-09T01:55:27.635-08:00 -> 2026-11-09T01:55:28.600-08:00  connected    connected    
+  2026-11-09T01:55:28.600-08:00 -> 2026-11-09T01:55:29.782-08:00  configured   configured   
+  2026-11-09T01:55:29.782-08:00 -> 2026-11-09T01:55:30.868-08:00  starting     starting     
+  2026-11-09T01:55:30.869-08:00 -> 2026-11-09T01:55:30.872-08:00  paused       paused       
+  2026-11-09T01:55:30.872-08:00 -> 2026-11-09T01:55:30.875-08:00  running      running      
+  2026-11-09T01:55:32.834-08:00 -> 2026-11-09T01:55:32.840-08:00  paused       paused       
+  2026-11-09T01:55:33.885-08:00 -> 2026-11-09T01:55:33.888-08:00  starting     starting     
+  2026-11-09T01:55:33.888-08:00 -> 2026-11-09T01:55:33.897-08:00  configured   configured   
+  2026-11-09T01:55:33.897-08:00 -> 2026-11-09T01:55:33.900-08:00  connected    connected    
+  2026-11-09T01:55:33.900-08:00 -> 2026-11-09T01:55:34.036-08:00  allocated    allocated    
+  2026-11-09T01:55:34.036-08:00 -> 2026-11-09T01:55:34.122-08:00  unallocated  unallocated  
+  2026-11-09T01:55:34.122-08:00 -> 2026-11-09T01:55:34.124-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        1962
+  simxpm NumL0Inp        1962
+  TEB_EvtCt              1962
+  TEB_TrCt               7
+  TEB_WrtCt              1962
+  DRP_Damage             0
+  DRP_RecordSize         142899
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (142947 B)
+  psana2 events          1962
+  psana2 with data       1962
+  psana2 checks          PASS
+  psana2 seq             1..1962
+  psana2 seeds           {'0x1234': 1962}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:55:39.167-08:00 evidence 20261109T015539-cycle-6b226e5d7-2300845: det:drp:hrencoder prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:55:39.217-08:00 cycle PASS

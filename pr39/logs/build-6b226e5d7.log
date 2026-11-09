@@ -1,0 +1,36 @@
+host=sdfmilan048 wt=wt-types2 head=6b226e5d7 dirty=0 date=2026-11-09T01:32:21-08:00 job=43839059 step=426
+Building analysis software
+Building DAQ software
+Installation directory: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install
+ninja: Entering directory `/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/builddir'
+ninja: no work to do.
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/ninja -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/builddir -j 16
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 3ms
+   Building psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2
+      Built psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2
+Prepared 1 package in 5.13s
+Uninstalled 1 package in 982ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 6.76s
+ ~ psana==4.3.4 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2)
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 2ms
+   Building psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/psdaq
+      Built psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/psdaq
+Prepared 1 package in 1.63s
+Uninstalled 1 package in 67ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 335ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/psdaq)
+
+real	0m21.005s
+user	0m2.484s
+sys	0m0.982s
+BUILD_EXIT=0
+2026-11-09T01:32:42-08:00

@@ -1,0 +1,560 @@
+# ID:      wave8he_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D wave8he -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x2000,sim_dma_count=1024,sim_seed=0x1234,epics_prefix=SIM:W8HE:00 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/prom -u wave8he_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_02:00:58_sdfmilan048:wave8he_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/bin/drp)
+@@@ The PID of new child "2026/11/09_02:00:58_sdfmilan048:wave8he_0.log" is: 2313806
+@@@ @@@ @@@ @@@ @@@
+tst-drp[2313806]: <I> logging configured
+tst-drp[2313806]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2313806]: <I> MemPoolSim: wave8he data framed as EventBatcher subframes (up to 4312 B of data)
+tst-drp[2313806]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[2313806]: <I> dmaCount 1024,  dmaSize 8192
+tst-drp[2313806]: <I> Allocated 1.1 GB pebble for 128 transitions of 8388608 B and 1024 L1Accepts of 8192 B
+tst-drp[2313806]: <I> nL1Buffers 1024,  pebble buffer size 8192 B
+tst-drp[2313806]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[2313806]: <I> MemPoolSim: simxpm registered wave8he_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[2313806]: <I> BEBDetector: wave8he config runs against simulated device sim://127.0.0.1:31052
+--- lanemask 1  lane 0  timebase 186M ---
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+ctxt_put [['SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable', 'SIM:W8HE:00:Top:DataPathCtrl:EnableStream']] [[0, 0]]
+returned [1, 1]
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+tst-drp[2313806]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[2313806]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/data/tst
+tst-drp[2313806]: <I> Output dir: ready
+tst-drp[2313806]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[2313806]: <I> BufferedFileWriterMT is starting with process ID 2314430
+tst-drp[2313806]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[2313806]: <I> Ready for transitions
+tst-drp[2313806]: <I> received key = rollcall @ Mon Nov  9 02:01:06 2026
+tst-drp[2313806]: <I> received key = rollcall @ Mon Nov  9 02:01:06 2026
+tst-drp[2313806]: <I> received key = alloc @ Mon Nov  9 02:01:06 2026
+tst-drp[2313806]: <I> Using requested interface lo, address 127.0.0.1
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+ctxt_put [SIM:W8HE:00:Top:TriggerEventManager:XpmMessageAligner:TxId] [4194316436]
+returned [1]
+ctxt_put [SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable] [0]
+returned [1]
+wave8he_connect returning {'paddr': 1}
+*** BebDetector: paddr is 00000001 = 1
+tst-drp[2313806]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2313806]: <I> received key = connect @ Mon Nov  9 02:01:09 2026
+tst-drp[2313806]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[2313806]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[2313806]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[2313806]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[2313806]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[2313806]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[2313806]: <I> Outbound link with TEB ID  0 at 127.0.0.1:38571 connected
+tst-drp[2313806]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[2313806]: <I> BEBDetector connect
+tst-drp[2313806]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[2313806]: <I> BEBDetector: sim payload seed 0x1234
+tst-drp[2313806]: <I> received key = configure @ Mon Nov  9 02:01:09 2026
+tst-drp[2313806]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[2313806]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 16 64 entry batches of 40 B
+tst-drp[2313806]: <I> Outbound link with TEB ID  0, 0x55dc26f83000 : 0x55dc26f8d000 (0000a000), configured in    0 ms
+tst-drp[2313806]: <I> Allocated 0.0 GB region for 1024 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[2313806]: <I> Inbound  link with TEB ID  0, 0x55dc26f8e000 : 0x55dc26f98000 (0000a000), configured in    0 ms
+base [{'timebase': '186M', 'prefix': 'SIM:W8HE:00', 'lane': 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+rogue_dev: the simulated IOC serves no PV SIM:W8HE:00:Top:TriggerEventManager:EvrV2CoreTriggers:EvrV2TriggerReg[0]:Delay (reads None)
+Failed to retrieve controls trigger delay: IOC controls delay.
+ctxt_put [SIM:W8HE:00:Top:HlsProcessor:BaselineCnt] [33]
+returned [1]
+ctxt_put [SIM:W8HE:00:Top:HlsProcessor:CalcCfg_blScale] [2033602]
+returned [1]
+ctxt_put [SIM:W8HE:00:Top:HlsProcessor:SignalCnt] [15]
+returned [1]
+ctxt_put [SIM:W8HE:00:Top:HlsProcessor:CalcCfg_intBlScale] [30504029]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:BatcherEventBuilder:Blowoff', 'SIM:W8HE:00:Top:RawBuffers:CntRst', 'SIM:W8HE:00:Top:HlsTrigBuffer:CntRst']] [[1, 1, 1]]
+returned [1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:Partition', 'SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:PauseThreshold', 'SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable', 'SIM:W8HE:00:Top:DataPathCtrl:EnableStream', 'SIM:W8HE:00:Top:RawBuffers:FifoPauseThreshold', 'SIM:W8HE:00:Top:HlsTrigBuffer:PauseThresh']] [[5, 16, 1, 2, 127, 127]]
+returned [1, 1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:BatcherEventBuilder:Blowoff', 'SIM:W8HE:00:Top:RawBuffers:CntRst', 'SIM:W8HE:00:Top:HlsTrigBuffer:CntRst']] [[0, 0, 0]]
+returned [1, 1, 1]
+{':types:': {':enum:': {'baselineEnum': {'_128_samples': 7,
+                                         '_16_samples': 4,
+                                         '_2_samples': 1,
+                                         '_32_samples': 5,
+                                         '_4_samples': 2,
+                                         '_64_samples': 6,
+                                         '_8_samples': 3},
+                        'quadrantEnum': {'Even': 0, 'Odd': 1}},
+             'alg:RO': {'alg:RO': 'CHARSTR',
+                        'doc:RO': 'CHARSTR',
+                        'version:RO': ['INT32', 3]},
+             'detId:RO': 'CHARSTR',
+             'detName:RO': 'CHARSTR',
+             'detType:RO': 'CHARSTR',
+             'doc:RO': 'CHARSTR',
+             'expert': {'AdcConfig0': {'AdcReg_0x0006': 'UINT8',
+                                       'AdcReg_0x0007': 'UINT8',
+                                       'AdcReg_0x0008': 'UINT8',
+                                       'AdcReg_0x000B': 'UINT8',
+                                       'AdcReg_0x000C': 'UINT8',
+                                       'AdcReg_0x000D': 'UINT8',
+                                       'AdcReg_0x000F': 'UINT8',
+                                       'AdcReg_0x0010': 'UINT8',
+                                       'AdcReg_0x0011': 'UINT8',
+                                       'AdcReg_0x0012': 'UINT8',
+                                       'AdcReg_0x0013': 'UINT8',
+                                       'AdcReg_0x0014': 'UINT8',
+                                       'AdcReg_0x0015': 'UINT8',
+                                       'AdcReg_0x0016': 'UINT8',
+                                       'AdcReg_0x0017': 'UINT8',
+                                       'AdcReg_0x0018': 'UINT8',
+                                       'AdcReg_0x001F': 'UINT8',
+                                       'AdcReg_0x0020': 'UINT8'},
+                        'AdcConfig1': {'AdcReg_0x0006': 'UINT8',
+                                       'AdcReg_0x0007': 'UINT8',
+                                       'AdcReg_0x0008': 'UINT8',
+                                       'AdcReg_0x000B': 'UINT8',
+                                       'AdcReg_0x000C': 'UINT8',
+                                       'AdcReg_0x000D': 'UINT8',
+                                       'AdcReg_0x000F': 'UINT8',
+                                       'AdcReg_0x0010': 'UINT8',
+                                       'AdcReg_0x0011': 'UINT8',
+                                       'AdcReg_0x0012': 'UINT8',
+                                       'AdcReg_0x0013': 'UINT8',
+                                       'AdcReg_0x0014': 'UINT8',
+                                       'AdcReg_0x0015': 'UINT8',
+                                       'AdcReg_0x0016': 'UINT8',
+                                       'AdcReg_0x0017': 'UINT8',
+                                       'AdcReg_0x0018': 'UINT8',
+                                       'AdcReg_0x001F': 'UINT8',
+                                       'AdcReg_0x0020': 'UINT8'},
+                        'AdcConfig2': {'AdcReg_0x0006': 'UINT8',
+                                       'AdcReg_0x0007': 'UINT8',
+                                       'AdcReg_0x0008': 'UINT8',
+                                       'AdcReg_0x000B': 'UINT8',
+                                       'AdcReg_0x000C': 'UINT8',
+                                       'AdcReg_0x000D': 'UINT8',
+                                       'AdcReg_0x000F': 'UINT8',
+                                       'AdcReg_0x0010': 'UINT8',
+                                       'AdcReg_0x0011': 'UINT8',
+                                       'AdcReg_0x0012': 'UINT8',
+                                       'AdcReg_0x0013': 'UINT8',
+                                       'AdcReg_0x0014': 'UINT8',
+                                       'AdcReg_0x0015': 'UINT8',
+                                       'AdcReg_0x0016': 'UINT8',
+                                       'AdcReg_0x0017': 'UINT8',
+                                       'AdcReg_0x0018': 'UINT8',
+                                       'AdcReg_0x001F': 'UINT8',
+                                       'AdcReg_0x0020': 'UINT8'},
+                        'AdcConfig3': {'AdcReg_0x0006': 'UINT8',
+                                       'AdcReg_0x0007': 'UINT8',
+                                       'AdcReg_0x0008': 'UINT8',
+                                       'AdcReg_0x000B': 'UINT8',
+                                       'AdcReg_0x000C': 'UINT8',
+                                       'AdcReg_0x000D': 'UINT8',
+                                       'AdcReg_0x000F': 'UINT8',
+                                       'AdcReg_0x0010': 'UINT8',
+                                       'AdcReg_0x0011': 'UINT8',
+                                       'AdcReg_0x0012': 'UINT8',
+                                       'AdcReg_0x0013': 'UINT8',
+                                       'AdcReg_0x0014': 'UINT8',
+                                       'AdcReg_0x0015': 'UINT8',
+                                       'AdcReg_0x0016': 'UINT8',
+                                       'AdcReg_0x0017': 'UINT8',
+                                       'AdcReg_0x0018': 'UINT8',
+                                       'AdcReg_0x001F': 'UINT8',
+                                       'AdcReg_0x0020': 'UINT8'},
+                        'AdcPatternTester': {'Channel': 'UINT8',
+                                             'Mask': 'UINT8',
+                                             'Pattern': 'UINT8',
+                                             'Request': 'UINT8',
+                                             'Samples': 'UINT32'},
+                        'AdcReadout0': {'Convert': 'UINT8',
+                                        'DMode': 'UINT8',
+                                        'DelayAdcALane': ['UINT8', 8],
+                                        'DelayAdcBLane': ['UINT8', 8],
+                                        'Invert': 'UINT8'},
+                        'AdcReadout1': {'Convert': 'UINT8',
+                                        'DMode': 'UINT8',
+                                        'DelayAdcALane': ['UINT8', 8],
+                                        'DelayAdcBLane': ['UINT8', 8],
+                                        'Invert': 'UINT8'},
+                        'AdcReadout2': {'Convert': 'UINT8',
+                                        'DMode': 'UINT8',
+                                        'DelayAdcALane': ['UINT8', 8],
+                                        'DelayAdcBLane': ['UINT8', 8],
+                                        'Invert': 'UINT8'},
+                        'AdcReadout3': {'Convert': 'UINT8',
+                                        'DMode': 'UINT8',
+                                        'DelayAdcALane': ['UINT8', 8],
+                                        'DelayAdcBLane': ['UINT8', 8],
+                                        'Invert': 'UINT8'},
+                        'BatcherEventBuilder': {'Blowoff': 'UINT8',
+                                                'Bypass': 'UINT8',
+                                                'Timeout': 'UINT32'},
+                        'FirFiltering': {'BypassFilter': 'UINT8'},
+                        'HlsProcessor': {'BaselineBeg': 'UINT8',
+                                         'BaselineCnt': 'UINT8',
+                                         'BaselineEnd': 'UINT8',
+                                         'CalcCfg_blScale': 'UINT32',
+                                         'CalcCfg_intBlScale': 'UINT32',
+                                         'PosIntegral_cx': 'FLOAT',
+                                         'PosIntegral_cy': 'FLOAT',
+                                         'PosIntegral_xm': 'UINT8',
+                                         'PosIntegral_xp': 'UINT8',
+                                         'PosIntegral_ym': 'UINT8',
+                                         'PosIntegral_yp': 'UINT8',
+                                         'PosPeak_cx': 'FLOAT',
+                                         'PosPeak_cy': 'FLOAT',
+                                         'PosPeak_xm': 'UINT8',
+                                         'PosPeak_xp': 'UINT8',
+                                         'PosPeak_ym': 'UINT8',
+                                         'PosPeak_yp': 'UINT8',
+                                         'SignalBeg': 'UINT8',
+                                         'SignalCnt': 'UINT8',
+                                         'SignalEnd': 'UINT8'},
+                        'HlsTrigBuffer': {'PauseThresh': 'UINT32'},
+                        'RawBuffers': {'BuffEn': ['UINT8', 8],
+                                       'BuffLen': 'UINT32',
+                                       'FifoPauseThreshold': 'UINT32',
+                                       'TrigPrescale': 'INT32'},
+                        'SystemRegs': {'A0p3V3En': 'UINT8',
+                                       'A1p3V3En': 'UINT8',
+                                       'AdcCtrl1': 'UINT8',
+                                       'AdcCtrl2': 'UINT8',
+                                       'Ap1V8En': 'UINT8',
+                                       'Ap5V0En': 'UINT8',
+                                       'Ap5V5En': 'UINT8',
+                                       'AvccEn0': 'UINT8',
+                                       'AvccEn1': 'UINT8',
+                                       'FpgaTmpCritLatch': 'UINT8',
+                                       'TrigEn': 'UINT8',
+                                       'TrigSrcSel': 'UINT8',
+                                       'timingRxUserRst': 'UINT8',
+                                       'timingTxUserRst': 'UINT8',
+                                       'timingUseMiniTpg': 'UINT8'},
+                        'TriggerEventManager': {'TriggerEventBuffer': {'TriggerDelay': 'UINT32'}}},
+             'firmwareBuild:RO': 'CHARSTR',
+             'firmwareVersion:RO': 'UINT32'},
+ 'alg:RO': {'alg:RO': 'config', 'doc:RO': '', 'version:RO': [2, 0, 0]},
+ 'detId:RO': 'sim-wave8he',
+ 'detName:RO': 'wave8he_0',
+ 'detType:RO': 'wave8he',
+ 'doc:RO': 'No comment',
+ 'expert': {'AdcConfig0': {'AdcReg_0x0006': 128,
+                           'AdcReg_0x0007': 0,
+                           'AdcReg_0x0008': 0,
+                           'AdcReg_0x000B': 0,
+                           'AdcReg_0x000C': 0,
+                           'AdcReg_0x000D': 108,
+                           'AdcReg_0x000F': 0,
+                           'AdcReg_0x0010': 0,
+                           'AdcReg_0x0011': 0,
+                           'AdcReg_0x0012': 0,
+                           'AdcReg_0x0013': 0,
+                           'AdcReg_0x0014': 0,
+                           'AdcReg_0x0015': 1,
+                           'AdcReg_0x0016': 0,
+                           'AdcReg_0x0017': 0,
+                           'AdcReg_0x0018': 0,
+                           'AdcReg_0x001F': 255,
+                           'AdcReg_0x0020': 0},
+            'AdcConfig1': {'AdcReg_0x0006': 128,
+                           'AdcReg_0x0007': 0,
+                           'AdcReg_0x0008': 0,
+                           'AdcReg_0x000B': 0,
+                           'AdcReg_0x000C': 0,
+                           'AdcReg_0x000D': 108,
+                           'AdcReg_0x000F': 0,
+                           'AdcReg_0x0010': 0,
+                           'AdcReg_0x0011': 0,
+                           'AdcReg_0x0012': 0,
+                           'AdcReg_0x0013': 0,
+                           'AdcReg_0x0014': 0,
+                           'AdcReg_0x0015': 1,
+                           'AdcReg_0x0016': 0,
+                           'AdcReg_0x0017': 0,
+                           'AdcReg_0x0018': 0,
+                           'AdcReg_0x001F': 255,
+                           'AdcReg_0x0020': 0},
+            'AdcConfig2': {'AdcReg_0x0006': 128,
+                           'AdcReg_0x0007': 0,
+                           'AdcReg_0x0008': 0,
+                           'AdcReg_0x000B': 0,
+                           'AdcReg_0x000C': 0,
+                           'AdcReg_0x000D': 108,
+                           'AdcReg_0x000F': 0,
+                           'AdcReg_0x0010': 0,
+                           'AdcReg_0x0011': 0,
+                           'AdcReg_0x0012': 0,
+                           'AdcReg_0x0013': 0,
+                           'AdcReg_0x0014': 0,
+                           'AdcReg_0x0015': 1,
+                           'AdcReg_0x0016': 0,
+                           'AdcReg_0x0017': 0,
+                           'AdcReg_0x0018': 0,
+                           'AdcReg_0x001F': 255,
+                           'AdcReg_0x0020': 0},
+            'AdcConfig3': {'AdcReg_0x0006': 128,
+                           'AdcReg_0x0007': 0,
+                           'AdcReg_0x0008': 0,
+                           'AdcReg_0x000B': 0,
+                           'AdcReg_0x000C': 0,
+                           'AdcReg_0x000D': 108,
+                           'AdcReg_0x000F': 0,
+                           'AdcReg_0x0010': 0,
+                           'AdcReg_0x0011': 0,
+                           'AdcReg_0x0012': 0,
+                           'AdcReg_0x0013': 0,
+                           'AdcReg_0x0014': 0,
+                           'AdcReg_0x0015': 1,
+                           'AdcReg_0x0016': 0,
+                           'AdcReg_0x0017': 0,
+                           'AdcReg_0x0018': 0,
+                           'AdcReg_0x001F': 255,
+                           'AdcReg_0x0020': 0},
+            'AdcPatternTester': {'Channel': 0,
+                                 'Mask': 0,
+                                 'Pattern': 0,
+                                 'Request': 0,
+                                 'Samples': 0},
+            'AdcReadout0': {'Convert': 3,
+                            'DMode': 3,
+                            'DelayAdcALane': [12, 11, 14, 14, 16, 16, 18, 11],
+                            'DelayAdcBLane': [17, 17, 18, 18, 16, 17, 11, 11],
+                            'Invert': 0},
+            'AdcReadout1': {'Convert': 3,
+                            'DMode': 3,
+                            'DelayAdcALane': [10, 8, 12, 11, 13, 12, 11, 12],
+                            'DelayAdcBLane': [10, 10, 12, 12, 12, 11, 11, 10],
+                            'Invert': 0},
+            'AdcReadout2': {'Convert': 3,
+                            'DMode': 3,
+                            'DelayAdcALane': [18, 19, 19, 19, 19, 19, 19, 19],
+                            'DelayAdcBLane': [20, 20, 20, 20, 20, 18, 16, 17],
+                            'Invert': 0},
+            'AdcReadout3': {'Convert': 3,
+                            'DMode': 3,
+                            'DelayAdcALane': [13, 12, 13, 11, 10, 18, 18, 19],
+                            'DelayAdcBLane': [19, 18, 19, 18, 18, 17, 18, 17],
+                            'Invert': 0},
+            'BatcherEventBuilder': {'Blowoff': 0, 'Bypass': 0, 'Timeout': 0},
+            'FirFiltering': {'BypassFilter': 0},
+            'HlsProcessor': {'BaselineBeg': 20,
+                             'BaselineCnt': 33,
+                             'BaselineEnd': 52,
+                             'CalcCfg_blScale': 2033602,
+                             'CalcCfg_intBlScale': 30504029,
+                             'PosIntegral_cx': -0.0198,
+                             'PosIntegral_cy': 0.019,
+                             'PosIntegral_xm': 2,
+                             'PosIntegral_xp': 4,
+                             'PosIntegral_ym': 1,
+                             'PosIntegral_yp': 3,
+                             'PosPeak_cx': -0.0198,
+                             'PosPeak_cy': 0.019,
+                             'PosPeak_xm': 2,
+                             'PosPeak_xp': 4,
+                             'PosPeak_ym': 1,
+                             'PosPeak_yp': 3,
+                             'SignalBeg': 100,
+                             'SignalCnt': 15,
+                             'SignalEnd': 114},
+            'HlsTrigBuffer': {'PauseThresh': 127},
+            'RawBuffers': {'BuffEn': [0, 0, 0, 0, 0, 0, 0, 0],
+                           'BuffLen': 100,
+                           'FifoPauseThreshold': 127,
+                           'TrigPrescale': 0},
+            'SystemRegs': {'A0p3V3En': 1,
+                           'A1p3V3En': 1,
+                           'AdcCtrl1': 0,
+                           'AdcCtrl2': 0,
+                           'Ap1V8En': 1,
+                           'Ap5V0En': 1,
+                           'Ap5V5En': 1,
+                           'AvccEn0': 1,
+                           'AvccEn1': 1,
+                           'FpgaTmpCritLatch': 0,
+                           'TrigEn': 0,
+                           'TrigSrcSel': 1,
+                           'timingRxUserRst': 0,
+                           'timingTxUserRst': 0,
+                           'timingUseMiniTpg': 0},
+            'TriggerEventManager': {'TriggerEventBuffer': {'TriggerDelay': 42}}},
+ 'firmwareBuild:RO': '-',
+ 'firmwareVersion:RO': 50331648}
+tst-drp[2313806]: <I> 
+tst-drp[2313806]: <I> Parameters of Contributor ID 0 (127.0.0.1:39529):
+tst-drp[2313806]: <I>   CPU allocation: granted 16 CPUs on NUMA node 0: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+tst-drp[2313806]: <I>   Instrument:                   tst
+tst-drp[2313806]: <I>   Partition:                    5
+tst-drp[2313806]: <I>   Alias (detName, detSeg):      wave8he_0 ('wave8he', 0)
+tst-drp[2313806]: <I>   Readout group receipient:     0x20
+tst-drp[2313806]: <I>   Readout group contractor:     0x20
+tst-drp[2313806]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp[2313806]: <I>   Number of MEBs:               0
+tst-drp[2313806]: <I>   Batching state:               Enabled
+tst-drp[2313806]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp[2313806]: <I>   Batch pool depth:             0x00000010 = 16
+tst-drp[2313806]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp[2313806]: <I>   # of TEB contrib.   buffers:  0x00000400 = 1024
+tst-drp[2313806]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp[2313806]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp[2313806]: <I>   Max  MEB L1Accept      size:  0x00002000 = 8192
+tst-drp[2313806]: <I>   Max  MEB transition    size:  0x00800000 = 8388608
+tst-drp[2313806]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp[2313806]: <I> 
+tst-drp[2313806]: <I> TEB Receiver thread is starting with process ID 2314590
+tst-drp[2313806]: <I> Worker 1 is starting with process ID 2314592
+tst-drp[2313806]: <I> Worker 0 is starting with process ID 2314591
+tst-drp[2313806]: <I> TEBreceiver: pinned to CPU 0
+tst-drp[2313806]: <I> Worker 2 is starting with process ID 2314593
+tst-drp[2313806]: <I> Worker 3 is starting with process ID 2314594
+tst-drp[2313806]: <I> drp/Worker1: pinned to CPU 1
+tst-drp[2313806]: <I> drp/Worker3: pinned to CPU 4
+tst-drp[2313806]: <I> Worker 4 is starting with process ID 2314595
+tst-drp[2313806]: <I> drp/Worker0: pinned to CPU 2
+tst-drp[2313806]: <I> Worker 5 is starting with process ID 2314596
+tst-drp[2313806]: <I> Worker 6 is starting with process ID 2314597
+tst-drp[2313806]: <I> Worker 9 is starting with process ID 2314600
+tst-drp[2313806]: <I> PGP reader is starting with process ID 2314601
+tst-drp[2313806]: <I> drp/Worker9: pinned to CPU 8
+tst-drp[2313806]: <I> drp/Worker4: pinned to CPU 5
+tst-drp[2313806]: <I> drp/Worker5: pinned to CPU 6
+tst-drp[2313806]: <I> drp/Worker6: pinned to CPU 7
+tst-drp[2313806]: <I> Worker 7 is starting with process ID 2314598
+tst-drp[2313806]: <I> Collector is starting with process ID 2314602
+tst-drp[2313806]: <I> Collector: pinned to CPU 11
+tst-drp[2313806]: <I> PGPreader: pinned to CPU 9
+tst-drp[2313806]: <I> Worker 8 is starting with process ID 2314599
+tst-drp[2313806]: <I> drp/Worker7: pinned to CPU 10
+tst-drp[2313806]: <I> PGPDrp: 46 threads (13 of them ours and hot) in 16 granted CPUs
+tst-drp[2313806]: <I> drp/Worker8: pinned to CPU 12
+tst-drp[2313806]: <I> drp/Worker2: pinned to CPU 3
+tst-drp[2313806]: <I> PGPReader  saw    Configure @ 1163066471.234133851 (04732c17dba148)
+tst-drp[2313806]: <I> TebCtrb   sent    Configure @ 1163066471.234133851 (04732c17dba148) to TEB ID 0 @   0x559e2c328000 (00000000 + 0 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw    Configure @ 1163066471.234133851 (04732c17dba148)
+tst-drp[2313806]: <I> received key = beginrun @ Mon Nov  9 02:01:11 2026
+Opening file /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp[2313806]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp[2313806]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-wave8he/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp[2313806]: <I> PGPReader  saw     BeginRun @ 1163066472.359102080 (04732c17ee1db8)
+tst-drp[2313806]: <I> TebCtrb   sent     BeginRun @ 1163066472.359102080 (04732c17ee1db8) to TEB ID 0 @   0x559e2c328028 (00000000 + 1 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw     BeginRun @ 1163066472.359102080 (04732c17ee1db8)
+tst-drp[2313806]: <I> received key = beginstep @ Mon Nov  9 02:01:12 2026
+tst-drp[2313806]: <I> PGPReader  saw    BeginStep @ 1163066472.376136220 (04732c17ee6560)
+tst-drp[2313806]: <I> TebCtrb   sent    BeginStep @ 1163066472.376136220 (04732c17ee6560) to TEB ID 0 @   0x559e2c328050 (00000000 + 2 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw    BeginStep @ 1163066472.376136220 (04732c17ee6560)
+tst-drp[2313806]: <I> received key = enable @ Mon Nov  9 02:01:12 2026
+tst-drp[2313806]: <I> PGPReader  saw       Enable @ 1163066472.379679588 (04732c17ee7448)
+tst-drp[2313806]: <I> TebCtrb   sent       Enable @ 1163066472.379679588 (04732c17ee7448) to TEB ID 0 @   0x559e2c328078 (00000000 + 3 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw       Enable @ 1163066472.379679588 (04732c17ee7448)
+tst-drp[2313806]: <I> received key = disable @ Mon Nov  9 02:01:14 2026
+tst-drp[2313806]: <I> PGPReader  saw      Disable @ 1163066474.460849606 (04732c1810a734)
+tst-drp[2313806]: <I> TebCtrb   sent      Disable @ 1163066474.460849606 (04732c1810a734) to TEB ID 0 @   0x559e2c328640 (00000000 + 40 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw      Disable @ 1163066474.460849606 (04732c1810a734)
+tst-drp[2313806]: <I> received key = endstep @ Mon Nov  9 02:01:15 2026
+tst-drp[2313806]: <I> PGPReader  saw      EndStep @ 1163066475.534210447 (04732c18224a8b)
+tst-drp[2313806]: <I> TebCtrb   sent      EndStep @ 1163066475.534210447 (04732c18224a8b) to TEB ID 0 @   0x559e2c328668 (00000000 + 41 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw      EndStep @ 1163066475.534210447 (04732c18224a8b)
+tst-drp[2313806]: <I> received key = endrun @ Mon Nov  9 02:01:15 2026
+tst-drp[2313806]: <I> PGPReader  saw       EndRun @ 1163066475.542556874 (04732c18226da8)
+tst-drp[2313806]: <I> TebCtrb   sent       EndRun @ 1163066475.542556874 (04732c18226da8) to TEB ID 0 @   0x559e2c328690 (00000000 + 42 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw       EndRun @ 1163066475.542556874 (04732c18226da8)
+tst-drp[2313806]: <I> received key = unconfigure @ Mon Nov  9 02:01:15 2026
+tst-drp[2313806]: <I> PGPReader  saw  Unconfigure @ 1163066475.545449572 (04732c182279d3)
+tst-drp[2313806]: <I> TebCtrb   sent  Unconfigure @ 1163066475.545449572 (04732c182279d3) to TEB ID 0 @   0x559e2c3286b8 (00000000 + 43 * 00000028)
+tst-drp[2313806]: <I> TebRcvr    saw  Unconfigure @ 1163066475.545449572 (04732c182279d3)
+tst-drp[2313806]: <I> received key = disconnect @ Mon Nov  9 02:01:15 2026
+tst-drp[2313806]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x55dc26f83000  size 40960  maxBatchSize 2560  maxEntrySize 40
+tst-drp[2313806]: <I> Shutting down workers
+tst-drp[2313806]: <I> Worker 0 is exiting
+tst-drp[2313806]: <I> Worker 1 is exiting
+tst-drp[2313806]: <I> Worker 2 is exiting
+tst-drp[2313806]: <I> Worker 3 is exiting
+tst-drp[2313806]: <I> Worker 4 is exiting
+tst-drp[2313806]: <I> Worker 5 is exiting
+tst-drp[2313806]: <I> PGPReader is exiting
+tst-drp[2313806]: <I> Worker 6 is exiting
+tst-drp[2313806]: <I> Worker 7 is exiting
+tst-drp[2313806]: <I> Worker 8 is exiting
+tst-drp[2313806]: <I> Worker 9 is exiting
+tst-drp[2313806]: <I> Worker threads finished
+tst-drp[2313806]: <I> PGPReader thread finished
+tst-drp[2313806]: <I> Collector is exiting
+tst-drp[2313806]: <I> Collector thread finished
+ctxt_put [['SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable', 'SIM:W8HE:00:Top:DataPathCtrl:EnableStream']] [[0, 0]]
+returned [1, 1]
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+tst-drp[2313806]: <I> received key = dealloc @ Mon Nov  9 02:01:17 2026
+tst-drp[2313806]: <I> received key = reset @ Mon Nov  9 02:01:17 2026
+ctxt_put [['SIM:W8HE:00:Top:TriggerEventManager:TriggerEventBuffer[0]:MasterEnable', 'SIM:W8HE:00:Top:DataPathCtrl:EnableStream']] [[0, 0]]
+returned [1, 1]
+ctxt_put [['SIM:W8HE:00:Top:SystemRegs:timingUseMiniTpg', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSelEn', 'SIM:W8HE:00:Top:TimingFrameRx:ModeSel', 'SIM:W8HE:00:Top:TimingFrameRx:ClkSel', 'SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0, 1, 1, 1, 1]]
+returned [1, 1, 1, 1, 1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxPllReset']] [[0]]
+returned [1]
+ctxt_put [['SIM:W8HE:00:Top:TimingFrameRx:RxDown', 'SIM:W8HE:00:Timing:TriggerSource']] [[0, 0]]
+returned [1, 1]
+^Ctst-drp[2313806]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2
+@@@ Current time: Mon Nov  9 02:01:38 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 2313806. The process was killed by signal 6

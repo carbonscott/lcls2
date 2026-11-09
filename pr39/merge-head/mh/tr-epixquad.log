@@ -1,0 +1,48 @@
+epixquad on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:52:27 PST
+UP_EXIT=0
+2026-11-09T05:52:50.458-08:00 daq_sim: preflight rc=0: 05:52:50 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:52:55.280-08:00 daq_sim: config DB seeded: tst/BEAM/epixquad_0 key=2 written
+2026-11-09T05:53:02.834-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1902
+  TEB_WrtCt              1902
+  DRP_Damage             0
+  psana2 events          1902
+  psana2 with data       1902
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:53:28.122-08:00 evidence 20261109T055328-cycle-ffaddcbde-2982114: det:drp:epixquad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T05:53:28.211-08:00 cycle PASS
+-- epixquad DRP log: its config code
+tst-drp[2981528]: <I> BEBDetector: epixquad config runs against simulated device sim://127.0.0.1:31052
+INFO:psdaq.sim.rogue_dev:AxiMemMap(sim://127.0.0.1:31052) -> SimMemMap
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked @AxiMemMap(sim://127.0.0.1:31052)+0x920004 = 0x3 (
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp @AxiMemMap(sim://127.0.0.1:31052)+0x980020 = 0x1 (reads
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId @AxiMemMap(sim://127.0.0.1:31052)+0
+INFO:pyrogue.Device.EpixQuadMonitor.EpixQuadMonitor:Making device EpixQuadMonitor
+INFO:root:epixquad_unconfig
+tst-drp[2981528]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2981528]: <I> BEBDetector: sim payload seed 0x1234
+[expert.EpixQuad.AcqCore.AsicAcqWidth] : 10000
+[expert.EpixQuad.Epix10kaSaci0.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci1.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci2.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci3.trbit] : 1
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixquad --seed 0x1234 
+  experiment tstx00001 run 1 detector epixquad raw shape [4, 352, 384]
+  L1Accept events 1902; with epixquad data 1902; events matching the pattern of seed 0x1234: 1902
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixquad --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixquad raw shape [4, 352, 384]
+  L1Accept events 1902; with epixquad data 1902; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T05:53:49.047-08:00 daq_sim: down: clean
+TYPERUN_DONE epixquad 05:53:49

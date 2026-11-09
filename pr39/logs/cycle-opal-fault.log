@@ -1,0 +1,29 @@
+2026-11-09T01:36:17.675-08:00 start state: reset
+2026-11-09T01:36:17.676-08:00 setRecord(True) -> OK
+2026-11-09T01:36:18.682-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T01:36:18.683-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-09T01:36:22.247-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-09T01:36:22.251-08:00 setState allocated    -> allocated    OK
+2026-11-09T01:36:23.490-08:00 setState connected    -> connected    OK
+ERROR:root:getState(tcp://localhost:30005) timeout (60.0 sec)
+2026-11-09T01:37:23.551-08:00 setState configured   -> error        FAIL
+2026-11-09T01:37:23.565-08:00 [error] opal_0 did not respond to configure
+2026-11-09T01:37:23.565-08:00 [error] 1 client did not respond to configure
+2026-11-09T01:37:23.565-08:00 [error] configure failed to change state
+2026-11-09T01:37:23.565-08:00 status: transition connect state connected recording True experiment tstx00001 run 0
+2026-11-09T01:37:53.600-08:00 [error] teb0 did not respond to disconnect
+2026-11-09T01:37:53.600-08:00 [error] opal_0 did not respond to disconnect
+2026-11-09T01:37:53.600-08:00 [error] 2 client did not respond to disconnect
+2026-11-09T01:37:53.600-08:00 [error] disconnect failed to change state
+2026-11-09T01:37:53.601-08:00 setState allocated    -> connected    FAIL
+2026-11-09T01:37:54.102-08:00 final state connected (start reset)
+transitions (request -> read back):
+  2026-11-09T01:36:17.676-08:00 -> 2026-11-09T01:36:18.682-08:00  unallocated  unallocated  
+  2026-11-09T01:36:18.683-08:00 -> 2026-11-09T01:36:22.251-08:00  allocated    allocated    
+  2026-11-09T01:36:22.251-08:00 -> 2026-11-09T01:36:23.490-08:00  connected    connected    
+  2026-11-09T01:36:23.490-08:00 -> 2026-11-09T01:37:23.551-08:00  configured   error        
+  2026-11-09T01:37:23.566-08:00 -> 2026-11-09T01:37:53.601-08:00  allocated    connected    
+counts:
+  equal (simxpm NumL0Acc == TEB_EvtCt) >= 1000: False
+2026-11-09T01:37:54.107-08:00 7 error message(s) on the status stream
+2026-11-09T01:37:54.107-08:00 cycle FAIL

@@ -1,0 +1,41 @@
+epixhremu on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:56:06 PST
+UP_EXIT=0
+2026-11-09T05:56:29.767-08:00 daq_sim: preflight rc=0: 05:56:29 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:56:31.138-08:00 daq_sim: config DB seeded: tst/BEAM/epixhremu_0 key=2 written
+2026-11-09T05:56:35.842-08:00 daq_sim: epixhremu frame (288, 384) from seed 0x1234 written to /sdf/data/lcls/ds/prj/prjcwang31/scratch/mai
+2026-11-09T05:56:41.700-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1999
+  TEB_WrtCt              1999
+  DRP_Damage             0
+  psana2 events          1999
+  psana2 with data       1999
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:56:56.705-08:00 evidence 20261109T055656-cycle-ffaddcbde-2991231: det:drp:epixhremu prog:control prog:drp prog:pyxpm prog:te
+2026-11-09T05:56:56.806-08:00 cycle PASS
+-- epixhremu DRP log: its config code
+tst-drp[2990660]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2990660]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2990660]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[2990660]: <I> EpixHRemu configure
+tst-drp[2990660]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/epixhremu_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 1999; with epixhremu data 1999; events matching the pattern of seed 0x1234: 1999
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 1999; with epixhremu data 1999; events matching the pattern of seed 0x1234: 0
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote, self-test offset 1
+  problem: event 1: 110592 of 110592 pixels differ
+  problem: event 2: 110592 of 110592 pixels differ
+  problem: event 3: 110592 of 110592 pixels differ
+  problem: event 4: 110592 of 110592 pixels differ
+rc=1
+DOWN_EXIT=0
+2026-11-09T05:57:12.765-08:00 daq_sim: down: clean
+TYPERUN_DONE epixhremu 05:57:12

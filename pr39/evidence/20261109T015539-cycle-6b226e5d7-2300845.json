@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/daq_sim.cnf": {
+   "bytes": 1175,
+   "sha256": "e0d9845dfeb8943ebe0578325d92bc45bc856133887dcdcb66b53002a2e9e894"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 142947,
+   "sha256": "3e9013189ba3db3a9d4f982fcf84322e3fe59e6ae7b7b06846da669281379fef"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/configdb.log": {
+   "bytes": 511,
+   "sha256": "99693f942e5e6572b39b318f339e5a7e13293c15f11ed7bba4757751e9dac5ce"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/cycle.jsonl": {
+   "bytes": 2336,
+   "sha256": "f4011b1530285ddf6d7b55141211378c2a221784623bc5672be6306e203dfc19"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/lgbk.log": {
+   "bytes": 1210,
+   "sha256": "b47f403f7ac848cfd5e7ab2786d1dad33911f8a34ebe5721774620078c47eccd"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/simxpm.log": {
+   "bytes": 2755,
+   "sha256": "3802fc87e25f7ecc8385eacbd59e40b41915a4cd23b7c5599e035ef5f0cabc5b"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:control.log": {
+   "bytes": 67866,
+   "sha256": "ae684b7513f1935e161d755cc1b34bf14ba27bbbb94562229b28e83c77f6650e"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:hrencoder_0.log": {
+   "bytes": 14314,
+   "sha256": "7343b85df8b1fd9c824b965e0c4a6696c0a2fd119f97c6632be0bcbed4a94f6c"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:teb0.log": {
+   "bytes": 8922,
+   "sha256": "f16abf3bdbc5f2faba38634d7b601bb175880da76b2ceb1b86e7059e4bbc7d45"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 142899,
+  "TEB_EvtCt": 1962,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1962,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1962,
+  "psana2 seeds": {
+   "0x1234": 1962
+  },
+  "psana2 seq": "1..1962",
+  "psana2 with data": 1962,
+  "simxpm NumL0Acc": 1962,
+  "simxpm NumL0Inp": 1962,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (142947 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T01:55:39-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs/2026/11/09_01:55:19_sdfmilan048:hrencoder_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:hrencoder",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "6b226e5d729f061172ac25090e163291817630c9",
+ "started": "2026-11-09T01:55:24.968-08:00"
+}

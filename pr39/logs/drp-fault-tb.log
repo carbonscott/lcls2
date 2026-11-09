@@ -1,0 +1,170 @@
+# ID:      tb_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D tb -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-tb-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x1000,sim_dma_count=1024,sim_seed=0x1234 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-tb-fault/prom -u tb_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_01:41:01_sdfmilan048:tb_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/bin/drp)
+@@@ The PID of new child "2026/11/09_01:41:01_sdfmilan048:tb_0.log" is: 2263303
+@@@ @@@ @@@ @@@ @@@
+tst-drp[2263303]: <I> logging configured
+tst-drp[2263303]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2263303]: <I> MemPoolSim: tb data framed as EventBatcher subframes (up to 56 B of data)
+tst-drp[2263303]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[2263303]: <I> dmaCount 1024,  dmaSize 4096
+tst-drp[2263303]: <I> Allocated 1.1 GB pebble for 128 transitions of 8388608 B and 1024 L1Accepts of 4096 B
+tst-drp[2263303]: <I> nL1Buffers 1024,  pebble buffer size 4096 B
+tst-drp[2263303]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[2263303]: <I> MemPoolSim: simxpm registered tb_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[2263303]: <I> BEBDetector: tb config runs against simulated device sim://127.0.0.1:31052
+Found image Lcls2XilinxKcu1500Pgp4_6Gbps
+WARNING:psdaq.sim.rogue_dev:FAULT DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay @AxiMemMap(sim://127.0.0.1:31052)+0x94930c reads back 0xffffffff
+rogue_dev: FAULT DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay @AxiMemMap(sim://127.0.0.1:31052)+0x94930c reads back 0xffffffff
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+ConfigLclsTimingV2()
+init_feb lane 3
+tst-drp[2263303]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[2263303]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-tb-fault/data/tst
+tst-drp[2263303]: <I> Output dir: ready
+tst-drp[2263303]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[2263303]: <I> BufferedFileWriterMT is starting with process ID 2263429
+tst-drp[2263303]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[2263303]: <I> Ready for transitions
+tst-drp[2263303]: <I> received key = rollcall @ Mon Nov  9 01:41:07 2026
+tst-drp[2263303]: <I> received key = alloc @ Mon Nov  9 01:41:08 2026
+tst-drp[2263303]: <I> Using requested interface lo, address 127.0.0.1
+*** BebDetector: paddr is ff000000 = 4278190080
+tst-drp[2263303]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2263303]: <I> received key = connect @ Mon Nov  9 01:41:08 2026
+tst-drp[2263303]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[2263303]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[2263303]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[2263303]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[2263303]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[2263303]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[2263303]: <I> Outbound link with TEB ID  0 at 127.0.0.1:33785 connected
+tst-drp[2263303]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[2263303]: <I> TimingBEB connect
+tst-drp[2263303]: <I> BEBDetector connect
+tst-drp[2263303]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[2263303]: <I> BEBDetector: sim payload seed 0x1234
+*** connect_info
+{'body': {'control': {'0': {'active': 1,
+                            'control_info': {'cfg_dbase': 'http://127.0.0.1:31050/ws/configDB',
+                                             'instrument': 'tst',
+                                             'pv_base': 'DAQ:SIM',
+                                             'slow_update_rate': 1,
+                                             'xpm_master': 0},
+                            'hidden': 1,
+                            'monitor': 0,
+                            'proc_info': {'alias': 'control',
+                                          'host': 'sdfmilan048',
+                                          'pid': 2263330}}},
+          'drp': {'8927615246987445750': {'active': 1,
+                                          'connect_info': {'drp_port': '43721',
+                                                           'max_ev_size': 4096,
+                                                           'max_tr_size': 8388608,
+                                                           'nic_ip': '127.0.0.1',
+                                                           'num_buffers': 1024,
+                                                           'xpm_id': 0,
+                                                           'xpm_port': 0},
+                                          'det_info': {'readout': 5},
+                                          'drp_id': 0,
+                                          'hidden': 0,
+                                          'monitor': 0,
+                                          'proc_info': {'alias': 'tb_0',
+                                                        'device': 'sim://127.0.0.1:31052',
+                                                        'host': 'sdfmilan048',
+                                                        'pid': 2263303}}},
+          'teb': {'10168473415032609725': {'active': 1,
+                                           'connect_info': {'mrq_port': '35211',
+                                                            'nic_ip': '127.0.0.1',
+                                                            'teb_port': '33785'},
+                                           'hidden': 1,
+                                           'monitor': 0,
+                                           'proc_info': {'alias': 'teb0',
+                                                         'device': '',
+                                                         'host': 'sdfmilan048',
+                                                         'pid': 2263331},
+                                           'teb_id': 0}}},
+ 'header': {'key': 'connect',
+            'msg_id': '1163065268-654757000',
+            'sender_id': None}}
+link_ids: ['DAQ:SIM:XPM:0:RemoteLinkId0', 'DAQ:SIM:XPM:0:RemoteLinkId1', 'DAQ:SIM:XPM:0:RemoteLinkId2', 'DAQ:SIM:XPM:0:RemoteLinkId3', 'DAQ:SIM:XPM:0:RemoteLinkId4', 'DAQ:SIM:XPM:0:RemoteLinkId5', 'DAQ:SIM:XPM:0:RemoteLinkId6', 'DAQ:SIM:XPM:0:RemoteLinkId7', 'DAQ:SIM:XPM:0:RemoteLinkId8', 'DAQ:SIM:XPM:0:RemoteLinkId9', 'DAQ:SIM:XPM:0:RemoteLinkId10', 'DAQ:SIM:XPM:0:RemoteLinkId11', 'DAQ:SIM:XPM:0:RemoteLinkId12', 'DAQ:SIM:XPM:0:RemoteLinkId13']
+*** rxready ['DAQ:SIM:XPM:0:LinkRxReady0'] : [1]
+RxLink locked after 1 tries
+*** setting xpm link enables ['DAQ:SIM:XPM:0:LinkGroupMask0'] [32]
+tst-drp[2263303]: <I> received key = configure @ Mon Nov  9 01:41:09 2026
+tst-drp[2263303]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[2263303]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 16 64 entry batches of 40 B
+tst-drp[2263303]: <I> Outbound link with TEB ID  0, 0x5600b5b4c000 : 0x5600b5b56000 (0000a000), configured in    0 ms
+tst-drp[2263303]: <I> Allocated 0.0 GB region for 1024 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[2263303]: <I> Inbound  link with TEB ID  0, 0x5600b5b57000 : 0x5600b5b61000 (0000a000), configured in    0 ms
+tb_config
+readout_groups {5}  min 5
+ERROR:pyrogue.Variable.RemoteVariable.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay:Block::checkTransaction: General Error: Verify error for block DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay with address 0x0094930c. Byte: 0. Got: 0xff, Exp: 0x00, Mask: 0xff
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1185, in set
+    self._parent.checkBlocks(recurse=False, variable=self)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Device.py", line 635, in checkBlocks
+    pr.checkTransaction(variable._block, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Block.py", line 70, in checkTransaction
+    block._checkTransaction()
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay with address 0x0094930c. Byte: 0. Got: 0xff, Exp: 0x00, Mask: 0xff
+ERROR:pyrogue.Variable.RemoteVariable.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay:Error setting value '0' to variable 'DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay' with type UInt32. Exception=Block::checkTransaction: General Error: Verify error for block DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay with address 0x0094930c. Byte: 0. Got: 0xff, Exp: 0x00, Mask: 0xff
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/tb_config.py", line 223, in tb_config
+    teb.TriggerDelay.set(0)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1190, in set
+    raise e
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1185, in set
+    self._parent.checkBlocks(recurse=False, variable=self)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Device.py", line 635, in checkBlocks
+    pr.checkTransaction(variable._block, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Block.py", line 70, in checkTransaction
+    block._checkTransaction()
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay with address 0x0094930c. Byte: 0. Got: 0xff, Exp: 0x00, Mask: 0xff
+tst-drp[2263303]: <C> **** python error
+@@@ Current time: Mon Nov  9 01:41:10 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 2263303. The process was killed by signal 6

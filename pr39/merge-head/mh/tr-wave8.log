@@ -1,0 +1,38 @@
+wave8 on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 06:10:40 PST
+UP_EXIT=0
+2026-11-09T06:11:03.121-08:00 daq_sim: preflight rc=0: 06:11:03 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T06:11:09.164-08:00 daq_sim: config DB seeded: tst/BEAM/wave8_0 key=2 written
+2026-11-09T06:11:16.542-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1963
+  TEB_WrtCt              1963
+  DRP_Damage             0
+  psana2 events          1963
+  psana2 with data       1963
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T06:11:35.989-08:00 evidence 20261109T061135-cycle-ffaddcbde-3029600: det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T06:11:36.068-08:00 cycle PASS
+-- wave8 DRP log: its config code
+tst-drp[3029330]: <I> BEBDetector: wave8 config runs against simulated device sim://127.0.0.1:31052
+wave8_connect returning {'paddr': 1}
+tst-drp[3029330]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8:00', 0: 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 1963; with wave8 data 1963; events matching the pattern of seed 0x1234: 1963
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 1963; with wave8 data 1963; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+rc=1
+DOWN_EXIT=0
+2026-11-09T06:11:53.262-08:00 daq_sim: down: clean
+TYPERUN_DONE wave8 06:11:53

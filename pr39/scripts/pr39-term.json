@@ -1,0 +1,224 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/logs/proof39/rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"S=$S\"   # every node command below is its own Slurm step on sdfmilan048: $S <script>"
+ },
+ {
+  "send": "git rev-parse HEAD; git log -1 --format='%s' | cut -c1-138; echo \"local changes: $(git status --short --untracked-files=no | wc -l)\""
+ },
+ {
+  "send": "git log --format='%h %s' --no-merges 8830147da..HEAD | cut -c1-138"
+ },
+ {
+  "send": "git diff --stat 8830147da HEAD | tail -1; git diff --stat 8830147da HEAD -- psdaq/psdaq/configdb | cut -c1-138"
+ },
+ {
+  "send": "# Step 2 at this HEAD. Build (one srun step), then the sim unit tests (one srun step)"
+ },
+ {
+  "send": "export P=$B/rec; mkdir -p $P/ev; echo \"records in $P/ev: $(ls -A $P/ev | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)\""
+ },
+ {
+  "send": "$S $B/build.sh wt-types2 > $P/build.log 2>&1; echo SRUN_EXIT=$?; grep -E '^host=|^real|BUILD_EXIT' $P/build.log | cut -c1-138",
+  "expect": "SRUN_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "$S $B/pytest.sh | cut -c1-138",
+  "expect": "PYTEST_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "# Each type on a fresh DAQ in its own srun step: up --det <type> --detach, cycle --events 1000, its DRP log lines, xtc2_check (as written: PASS; --self-test-offset 1: must FAIL), down"
+ },
+ {
+  "send": "# opal (this PR): its own opal_config on the emulated KCU, FEB and camera; the camera's serial (UART) answers come from the seed files:"
+ },
+ {
+  "send": "python3 -c \"import json; [print(t, json.load(open(f'psdaq/psdaq/sim/seeds/{t}.json'))['_uart']['replies']) for t in ('opal', 'piranha4')]\" | cut -c1-138"
+ },
+ {
+  "send": "$S $B/typerun.sh opal $P 'ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay'",
+  "expect": "TYPERUN_DONE opal ",
+  "timeout": 1800
+ },
+ {
+  "send": "# piranha4 (this PR): its own piranha4_config; serial answers from seeds/piranha4.json (above)"
+ },
+ {
+  "send": "$S $B/typerun.sh piranha4 $P",
+  "expect": "TYPERUN_DONE piranha4 ",
+  "timeout": 1800
+ },
+ {
+  "send": "# tb (this PR): its own tb_config, with this PR's two fixes (563b4711b: the import, and tb_connectionInfo takes the alloc message)"
+ },
+ {
+  "send": "$S $B/typerun.sh tb $P 'DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay'",
+  "expect": "TYPERUN_DONE tb ",
+  "timeout": 1800
+ },
+ {
+  "send": "# epixquad (this PR): its own epixquad_config with the import-order fix (6baccd060); the sim config DB adds user.pixel_map as zeros:"
+ },
+ {
+  "send": "grep -n -A1 \"'epixquad': \\[('user.pixel_map'\" psdaq/psdaq/sim/configdb_seed.py | cut -c1-138"
+ },
+ {
+  "send": "$S $B/typerun.sh epixquad $P 'Top.SystemRegs.TrigEn=0'",
+  "expect": "TYPERUN_DONE epixquad ",
+  "timeout": 1800
+ },
+ {
+  "send": "# fakecam (PR #36, regression): XpmDetector, xpmdet_config"
+ },
+ {
+  "send": "$S $B/typerun.sh fakecam $P",
+  "expect": "TYPERUN_DONE fakecam ",
+  "timeout": 1800
+ },
+ {
+  "send": "# cspad (PR #36, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh cspad $P",
+  "expect": "TYPERUN_DONE cspad ",
+  "timeout": 1800
+ },
+ {
+  "send": "# epixhremu (PR #36, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh epixhremu $P",
+  "expect": "TYPERUN_DONE epixhremu ",
+  "timeout": 1800
+ },
+ {
+  "send": "# jungfrauemu (PR #36, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh jungfrauemu $P",
+  "expect": "TYPERUN_DONE jungfrauemu ",
+  "timeout": 1800
+ },
+ {
+  "send": "# ts (PR #36, regression): xpmdet_config, ts_connect and ts_config on simxpm"
+ },
+ {
+  "send": "$S $B/typerun.sh ts $P",
+  "expect": "TYPERUN_DONE ts ",
+  "timeout": 1800
+ },
+ {
+  "send": "# hrencoder (PR #36, regression): BEB, hrencoder_config"
+ },
+ {
+  "send": "$S $B/typerun.sh hrencoder $P",
+  "expect": "TYPERUN_DONE hrencoder ",
+  "timeout": 1800
+ },
+ {
+  "send": "# epixm320 (PR #36, regression): BEB, epixm320_config"
+ },
+ {
+  "send": "$S $B/typerun.sh epixm320 $P",
+  "expect": "TYPERUN_DONE epixm320 ",
+  "timeout": 1800
+ },
+ {
+  "send": "# epix100 (PR #34, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh epix100 $P",
+  "expect": "TYPERUN_DONE epix100 ",
+  "timeout": 1800
+ },
+ {
+  "send": "# wave8 (PR #34, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh wave8 $P",
+  "expect": "TYPERUN_DONE wave8 ",
+  "timeout": 1800
+ },
+ {
+  "send": "# wave8he (PR #34, regression)"
+ },
+ {
+  "send": "$S $B/typerun.sh wave8he $P",
+  "expect": "TYPERUN_DONE wave8he ",
+  "timeout": 1800
+ },
+ {
+  "send": "# daq_sim coverage at this HEAD over the records of these runs (bound evidence: each record proves a row only if its files show it ran)"
+ },
+ {
+  "send": "echo \"records: $(ls $P/ev | wc -l)\"; $S $B/cov.sh $P",
+  "expect": "lines in cov\\.txt",
+  "timeout": 1800
+ },
+ {
+  "send": "grep -E '^det:drp:[a-z0-9]+ +(RUN|STAND-IN)|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138"
+ },
+ {
+  "send": "# the same check with the tb record removed: the tb row must fail, named, exit 1"
+ },
+ {
+  "send": "$S $B/cov.sh $P det:drp:tb",
+  "expect": "lines in cov-no-tb\\.txt",
+  "timeout": 1800
+ },
+ {
+  "send": "grep -E '^det:drp:tb |^[0-9]+ rows|^(PASS|FAIL)|^  det:drp:tb' $P/cov-no-tb.txt | cut -c1-138"
+ },
+ {
+  "send": "# the hardware path (no sim:// device), every type, from base wt-cov (2d9593bc5) and from this HEAD, each its own srun step; then diffed"
+ },
+ {
+  "send": "TYPES='opal piranha4 tb epixquad fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he epixhr2x2 epixquad1kfps tt epixuhr3x2'; for w in wt-cov wt-types2; do $S $B/hwpath.sh $w $TYPES > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done",
+  "expect": "^== wt-types2 head=",
+  "timeout": 1800
+ },
+ {
+  "send": "diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-types2.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-types2.log | head -2",
+  "expect": "HWPATH_DIFF_EXIT=\\d+",
+  "timeout": 60
+ },
+ {
+  "send": "# only tb differs: at base tb_config dies at import (ModuleNotFoundError); at this HEAD tb_init gets to the device (no /dev/datadev_0 here)"
+ },
+ {
+  "send": "for w in wt-cov wt-types2; do echo \"## $w\"; sed -n '/^-- tb python/,/^-- epixquad python/p' $P/hw-$w.log | head -12 | cut -c1-138; done"
+ },
+ {
+  "send": "# Step 3: the three config-code defects this PR fixes, at the base 8830147da (worktree wt-base39, built there, unmodified), then the same at this HEAD"
+ },
+ {
+  "send": "git -C $R/wt-base39 log -1 --format='base %H %s' | cut -c1-138; echo \"base local changes: $(git -C $R/wt-base39 status --short --untracked-files=no | wc -l)\""
+ },
+ {
+  "send": "W=wt-base39 $S $B/defects.sh",
+  "expect": "DEFECTS_DONE",
+  "timeout": 600
+ },
+ {
+  "send": "$S $B/defects.sh",
+  "expect": "DEFECTS_DONE",
+  "timeout": 600
+ },
+ {
+  "send": "git diff 8830147da HEAD -- psdaq/psdaq/configdb | cut -c1-138"
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short --untracked-files=no | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

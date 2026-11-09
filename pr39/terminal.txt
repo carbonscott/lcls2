@@ -1,0 +1,899 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T09:32:05+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 bash --rcfile $R/logs/proof39/rc.sh -i
+cwang31@sdfiana025:wt-types2$ hostname; date '+%F %T %Z'; echo "S=$S"   # every node command below is its own Slurm step on sdfmilan048: $S <script>
+sdfiana025
+2026-11-09 01:32:08 PST
+S=srun --jobid=43839059 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G
+cwang31@sdfiana025:wt-types2$ git rev-parse HEAD; git log -1 --format='%s' | cut -c1-138; echo "local changes: $(git status --short --untracked-files=no | wc -l)"
+6b226e5d729f061172ac25090e163291817630c9
+Merge pr/covbind (coverage evidence bound to its files) into pr/types2
+local changes: 0
+cwang31@sdfiana025:wt-types2$ git log --format='%h %s' --no-merges 8830147da..HEAD | cut -c1-138
+913dcd195 tests: the camera UART test waits for both replies, not the first 12 characters
+2b580da89 docs: opal, piranha4, tb and epixquad in the runbook and the changelog, RUN; why epixquad1kfps, tt, hsd, jungfrau and epixuhr3x2
+7ce8f870b sim: opal, piranha4, tb and epixquad configure through their own config code
+6baccd060 epixquad_config: import lcls2_pgp_pcie_apps before ePixQuad
+563b4711b tb_config: import lcls2_pgp_pcie_apps through psdaq.utils; tb_connectionInfo takes the alloc message
+ed135b4ec sim: rogue_dev answers a camera's serial commands; seeds for strings, '_' roots, enabled devices
+328724dad coverage: a log names the run's xtc2 file also through a symlinked dir
+c338e3673 docs: coverage evidence bound to its files in the runbook and the changelog
+77da78011 coverage: a record proves a row only if its files show the row ran
+cwang31@sdfiana025:wt-types2$ git diff --stat 8830147da HEAD | tail -1; git diff --stat 8830147da HEAD -- psdaq/psdaq/configdb | cut -c1-138
+ 20 files changed, 1381 insertions(+), 145 deletions(-)
+ psdaq/psdaq/configdb/epixquad_config.py | 6 ++++--
+ psdaq/psdaq/configdb/tb_config.py       | 3 ++-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+cwang31@sdfiana025:wt-types2$ # Step 2 at this HEAD. Build (one srun step), then the sim unit tests (one srun step)
+cwang31@sdfiana025:wt-types2$ export P=$B/rec; mkdir -p $P/ev; echo "records in $P/ev: $(ls -A $P/ev | wc -l); work dirs in $P: $(ls -d $P/wd-* 2>/dev/null | wc -l)"
+records in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/ev: 0; work dirs in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec: 0
+cwang31@sdfiana025:wt-types2$ $S $B/build.sh wt-types2 > $P/build.log 2>&1; echo SRUN_EXIT=$?; grep -E '^host=|^real|BUILD_EXIT' $P/build.log | cut -c1-138
+SRUN_EXIT=0
+host=sdfmilan048 wt=wt-types2 head=6b226e5d7 dirty=0 date=2026-11-09T01:32:21-08:00 job=43839059 step=426
+real	0m21.005s
+BUILD_EXIT=0
+cwang31@sdfiana025:wt-types2$ $S $B/pytest.sh | cut -c1-138
+on sdfmilan048, Slurm job 43839059 step 427, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:32:48 PST
+test_sim_configdb.py test_sim_configdb_seed_store.py test_sim_coverage.py test_sim_framer.py test_sim_lgbk.py test_sim_rogue_dev.py test_s
+........................................................................ [ 56%]
+.......................................................                  [100%]
+127 passed in 76.30s (0:01:16)
+PYTEST_EXIT=0
+cwang31@sdfiana025:wt-types2$ # Each type on a fresh DAQ in its own srun step: up --det <type> --detach, cycle --events 1000, its DRP log lines, xtc2_check (as written: PASS; --self-test-offset 1: must FAIL), down
+cwang31@sdfiana025:wt-types2$ # opal (this PR): its own opal_config on the emulated KCU, FEB and camera; the camera's serial (UART) answers come from the seed files:
+cwang31@sdfiana025:wt-types2$ python3 -c "import json; [print(t, json.load(open(f'psdaq/psdaq/sim/seeds/{t}.json'))['_uart']['replies']) for t in ('opal', 'piranha4')]" | cut -c1-138
+opal {'@ID?': 'OPAL-1000m/Q S/N:00000001\r\x06', '@BS?': '1.20;1.20;1.20\r\x06'}
+piranha4 {'gcp': 'Model #:\tP4_CM_02K10D_00_R\r\nSerial #:\t00000001\r\nBiST:\tGood\r\nCPA:\t0 4095 0\r\nUSER>', 'vt': 'Internal Temperatu
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh opal $P 'ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay'
+opal on sdfmilan048, Slurm job 43839059 step 428, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:34:18 PST
+UP_EXIT=0
+2026-11-09T01:34:41.846-08:00 daq_sim: preflight rc=0: 01:34:41 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:34:45.487-08:00 daq_sim: config DB seeded: tst/BEAM/opal_0 key=2 written
+2026-11-09T01:34:52.889-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1570
+  TEB_WrtCt              1570
+  DRP_Damage             0
+  psana2 events          1570
+  psana2 with data       1570
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:35:18.058-08:00 evidence 20261109T013518-cycle-6b226e5d7-2246500: det:drp:opal prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:35:18.116-08:00 cycle PASS
+-- opal DRP log: its config code
+tst-drp[2246302]: <I> BEBDetector: opal config runs against simulated device sim://127.0.0.1:31052
+opal_init (i2c setup:186M))
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: OPAL-1000m/Q S/N:00000001
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: 1.20;1.20;1.20
+check clock rate: 185.714286
+opalid OPAL-1000m/Q S/N:00000001
+tst-drp[2246302]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2246302]: <I> BEBDetector: sim payload seed 0x1234
+ClinkDev.StartRun() executed
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det opal --seed 0x1234 
+  experiment tstx00001 run 1 detector opal raw shape [1024, 1024]
+  L1Accept events 1570; with opal data 1570; events matching the pattern of seed 0x1234: 1570
+  check: per pixel, pattern(seed, seq, i, 12)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det opal --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector opal raw shape [1024, 1024]
+  L1Accept events 1570; with opal data 1570; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 12), self-test offset 1
+  problem: event 1: 1048345 of 1048576 pixels differ, first at (0, 0): 0x6b != 0x1e9
+  problem: event 2: 1048345 of 1048576 pixels differ, first at (0, 0): 0xea2 != 0x20
+  problem: event 3: 1048345 of 1048576 pixels differ, first at (0, 0): 0xcd9 != 0xe57
+  problem: event 4: 1048345 of 1048576 pixels differ, first at (0, 0): 0xb10 != 0xc8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:35:41.791-08:00 daq_sim: down: clean
+-- opal fault run: PSDAQ_SIM_ROGUE_FAULT='ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay'; evidence records before it: 1
+UP_EXIT=0
+2026-11-09T01:36:05.279-08:00 daq_sim: preflight rc=0: 01:36:05 PREFLIGHT PASS  (logs/preflight.log)
+CYCLE_EXIT=1
+2026-11-09T01:36:23.490-08:00 setState connected    -> connected    OK
+2026-11-09T01:37:23.551-08:00 setState configured   -> error        FAIL
+2026-11-09T01:37:23.565-08:00 [error] opal_0 did not respond to configure
+2026-11-09T01:37:23.565-08:00 [error] 1 client did not respond to configure
+2026-11-09T01:37:54.107-08:00 cycle FAIL
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay @AxiMemMap(sim://127.
+      4 Verify error for block ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay
+DOWN_EXIT=0
+2026-11-09T01:38:00.725-08:00 daq_sim: down: clean
+evidence records after the fault run: 1
+TYPERUN_DONE opal 01:38:00
+cwang31@sdfiana025:wt-types2$ # piranha4 (this PR): its own piranha4_config; serial answers from seeds/piranha4.json (above)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh piranha4 $P
+piranha4 on sdfmilan048, Slurm job 43839059 step 429, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:38:07 PST
+UP_EXIT=0
+2026-11-09T01:38:31.170-08:00 daq_sim: preflight rc=0: 01:38:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:38:35.250-08:00 daq_sim: config DB seeded: tst/BEAM/piranha4_0 key=2 written
+2026-11-09T01:38:42.753-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2025
+  TEB_WrtCt              2025
+  DRP_Damage             0
+  psana2 events          2025
+  psana2 with data       2025
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:38:59.930-08:00 evidence 20261109T013859-cycle-6b226e5d7-2254463: det:drp:piranha4 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:38:59.985-08:00 cycle PASS
+-- piranha4 DRP log: its config code
+tst-drp[2254259]: <I> BEBDetector: piranha4 config runs against simulated device sim://127.0.0.1:31052
+piranha4_init (i2c_setup:186M)
+UartPiranha4: recvString: OK
+UartPiranha4: recvString: USER>Model #:	P4_CM_02K10D_00_R
+UartPiranha4: recvString: Serial #:	00000001
+UartPiranha4: recvString: BiST:	Good
+UartPiranha4: recvString: CPA:	0 4095 0
+check clock rate: 185.714286
+model P4_CM_02K10D_00_R
+serno 00000001
+UartPiranha4: recvString: USER>Internal Temperature:	40.0 C
+UartPiranha4: recvString: USER>Supply Voltage:	12.0 V
+tst-drp[2254259]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2254259]: <I> BEBDetector: sim payload seed 0x1234
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det piranha4 --seed 0x1234 
+  experiment tstx00001 run 1 detector piranha4 raw shape [2048]
+  L1Accept events 2025; with piranha4 data 2025; events matching the pattern of seed 0x1234: 2025
+  check: per pixel, pattern(seed, seq, i, 12)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det piranha4 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector piranha4 raw shape [2048]
+  L1Accept events 2025; with piranha4 data 2025; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 12), self-test offset 1
+  problem: event 1: 2048 of 2048 pixels differ, first at (0,): 0x6b != 0x1e9
+  problem: event 2: 2048 of 2048 pixels differ, first at (0,): 0xea2 != 0x20
+  problem: event 3: 2048 of 2048 pixels differ, first at (0,): 0xcd9 != 0xe57
+  problem: event 4: 2048 of 2048 pixels differ, first at (0,): 0xb10 != 0xc8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:39:15.420-08:00 daq_sim: down: clean
+TYPERUN_DONE piranha4 01:39:15
+cwang31@sdfiana025:wt-types2$ # tb (this PR): its own tb_config, with this PR's two fixes (563b4711b: the import, and tb_connectionInfo takes the alloc message)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh tb $P 'DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay'
+tb on sdfmilan048, Slurm job 43839059 step 430, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:39:23 PST
+UP_EXIT=0
+2026-11-09T01:39:47.142-08:00 daq_sim: preflight rc=0: 01:39:47 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:39:50.332-08:00 daq_sim: config DB seeded: tst/BEAM/tb_0 key=2 written
+2026-11-09T01:39:58.443-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2086
+  TEB_WrtCt              2086
+  DRP_Damage             0
+  psana2 events          2086
+  psana2 with data       2086
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:40:13.791-08:00 evidence 20261109T014013-cycle-6b226e5d7-2257933: det:drp:tb prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:40:13.841-08:00 cycle PASS
+-- tb DRP log: its config code
+tst-drp[2257853]: <I> BEBDetector: tb config runs against simulated device sim://127.0.0.1:31052
+Found image Lcls2XilinxKcu1500Pgp4_6Gbps
+ConfigLclsTimingV2()
+init_feb lane 3
+tst-drp[2257853]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2257853]: <I> TimingBEB connect
+tst-drp[2257853]: <I> BEBDetector: sim payload seed 0x1234
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det tb --seed 0x1234 
+  experiment tstx00001 run 1 detector tb raw shape None
+  L1Accept events 2086; with tb data 2086; events matching the pattern of seed 0x1234: 2086
+  check: the event timing message (TimingDef::createDataETM, ts_raw_2_1_0) vs pattern: rate markers, time slot, beam, sequence values and 
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det tb --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector tb raw shape None
+  L1Accept events 2086; with tb data 2086; events matching the pattern of seed 0x1234: 0
+  check: the event timing message (TimingDef::createDataETM, ts_raw_2_1_0) vs pattern: rate markers, time slot, beam, sequence values and 
+  problem: event 1: fixedRates [0, 0, 0, 0, 0, 0] != [0, 1, 0, 1, 0, 1]; acRates [1, 0, 1, 0, 0, 0] != [0, 0, 1, 0, 1, 1]; timeSlot [6] !=
+  problem: event 2: fixedRates [1, 0, 0, 1, 0, 0] != [1, 1, 1, 0, 0, 1]; acRates [0, 0, 1, 1, 1, 1] != [1, 1, 0, 0, 1, 0]; timeSlot [5] !=
+  problem: event 3: fixedRates [0, 0, 0, 1, 1, 1] != [0, 1, 1, 1, 0, 0]; acRates [1, 1, 0, 1, 1, 1] != [0, 1, 1, 0, 1, 0]; timeSlot [4] !=
+  problem: event 4: fixedRates [1, 0, 1, 0, 1, 1] != [0, 0, 0, 0, 0, 0]; acRates [0, 1, 1, 1, 1, 0] != [0, 0, 0, 0, 1, 0]; timeSlot [3] !=
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:40:32.377-08:00 daq_sim: down: clean
+-- tb fault run: PSDAQ_SIM_ROGUE_FAULT='DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay'; evidence records before it: 3
+UP_EXIT=0
+2026-11-09T01:40:55.821-08:00 daq_sim: preflight rc=0: 01:40:55 PREFLIGHT PASS  (logs/preflight.log)
+CYCLE_EXIT=1
+2026-11-09T01:41:09.896-08:00 setState connected    -> connected    OK
+2026-11-09T01:42:09.921-08:00 setState configured   -> error        FAIL
+2026-11-09T01:42:09.964-08:00 [error] tb_0 did not respond to configure
+2026-11-09T01:42:09.964-08:00 [error] 1 client did not respond to configure
+2026-11-09T01:42:40.506-08:00 cycle FAIL
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay @AxiMemMap(sim://127.0.0.1:3
+      4 Verify error for block DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay
+DOWN_EXIT=0
+2026-11-09T01:42:47.567-08:00 daq_sim: down: clean
+evidence records after the fault run: 3
+TYPERUN_DONE tb 01:42:47
+cwang31@sdfiana025:wt-types2$ # epixquad (this PR): its own epixquad_config with the import-order fix (6baccd060); the sim config DB adds user.pixel_map as zeros:
+cwang31@sdfiana025:wt-types2$ grep -n -A1 "'epixquad': \[('user.pixel_map'" psdaq/psdaq/sim/configdb_seed.py | cut -c1-138
+138:    'epixquad': [('user.pixel_map', lambda: __import__('numpy').zeros((16, 178, 192), 'uint8'),
+139-                  None)],
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh epixquad $P 'Top.SystemRegs.TrigEn=0'
+epixquad on sdfmilan048, Slurm job 43839059 step 432, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:42:56 PST
+UP_EXIT=0
+2026-11-09T01:43:19.589-08:00 daq_sim: preflight rc=0: 01:43:19 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:43:24.749-08:00 daq_sim: config DB seeded: tst/BEAM/epixquad_0 key=2 written
+2026-11-09T01:43:32.713-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2078
+  TEB_WrtCt              2078
+  DRP_Damage             0
+  psana2 events          2078
+  psana2 with data       2078
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:43:58.244-08:00 evidence 20261109T014358-cycle-6b226e5d7-2272593: det:drp:epixquad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:43:58.337-08:00 cycle PASS
+-- epixquad DRP log: its config code
+tst-drp[2272199]: <I> BEBDetector: epixquad config runs against simulated device sim://127.0.0.1:31052
+INFO:psdaq.sim.rogue_dev:AxiMemMap(sim://127.0.0.1:31052) -> SimMemMap
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked @AxiMemMap(sim://127.0.0.1:31052)+0x920004 = 0x3 (
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp @AxiMemMap(sim://127.0.0.1:31052)+0x980020 = 0x1 (reads
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId @AxiMemMap(sim://127.0.0.1:31052)+0
+INFO:pyrogue.Device.EpixQuadMonitor.EpixQuadMonitor:Making device EpixQuadMonitor
+INFO:root:epixquad_unconfig
+tst-drp[2272199]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2272199]: <I> BEBDetector: sim payload seed 0x1234
+[expert.EpixQuad.AcqCore.AsicAcqWidth] : 10000
+[expert.EpixQuad.Epix10kaSaci0.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci1.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci2.trbit] : 1
+[expert.EpixQuad.Epix10kaSaci3.trbit] : 1
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixquad --seed 0x1234 
+  experiment tstx00001 run 1 detector epixquad raw shape [4, 352, 384]
+  L1Accept events 2078; with epixquad data 2078; events matching the pattern of seed 0x1234: 2078
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixquad --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixquad raw shape [4, 352, 384]
+  L1Accept events 2078; with epixquad data 2078; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:44:19.953-08:00 daq_sim: down: clean
+-- epixquad fault run: PSDAQ_SIM_ROGUE_FAULT='Top.SystemRegs.TrigEn=0'; evidence records before it: 4
+UP_EXIT=0
+2026-11-09T01:44:43.467-08:00 daq_sim: preflight rc=0: 01:44:43 PREFLIGHT PASS  (logs/preflight.log)
+CYCLE_EXIT=1
+2026-11-09T01:45:04.229-08:00 setState connected    -> connected    OK
+2026-11-09T01:46:04.290-08:00 setState configured   -> error        FAIL
+2026-11-09T01:46:04.298-08:00 [error] epixquad_0 did not respond to configure
+2026-11-09T01:46:04.298-08:00 [error] 1 client did not respond to configure
+2026-11-09T01:46:34.839-08:00 cycle FAIL
+      1 killed by signal 6
+      1 **** python error
+      1 rogue_dev: FAULT Top.SystemRegs.TrigEn @AxiStreamDma(sim://127.0.0.1:31052,0x1)+0x100400 reads back 0x0
+      4 Verify error for block Top.SystemRegs.TrigEn
+DOWN_EXIT=0
+2026-11-09T01:46:41.948-08:00 daq_sim: down: clean
+evidence records after the fault run: 4
+TYPERUN_DONE epixquad 01:46:41
+cwang31@sdfiana025:wt-types2$ # fakecam (PR #36, regression): XpmDetector, xpmdet_config
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh fakecam $P
+fakecam on sdfmilan048, Slurm job 43839059 step 433, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:46:49 PST
+UP_EXIT=0
+2026-11-09T01:47:13.019-08:00 daq_sim: preflight rc=0: 01:47:13 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:47:14.376-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+2026-11-09T01:47:22.374-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2058
+  TEB_WrtCt              2058
+  DRP_Damage             0
+  psana2 events          2058
+  psana2 with data       2058
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:47:36.751-08:00 evidence 20261109T014736-cycle-6b226e5d7-2282281: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:47:36.808-08:00 cycle PASS
+-- fakecam DRP log: its config code
+tst-drp[2282085]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2282085]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2282085]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[2282085]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2058; with fakecam data 2058; w3 == seed 2058 (seeds seen {0x1234: 2058}); payload pattern ok 2058; w0/w1 pulseId rising
+  seq (w2) 1..2058 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det fakecam --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector fakecam raw shape [1, 128]
+  L1Accept events 2058; with fakecam data 2058; w3 == seed 2058 (seeds seen {0x1234: 2058}); payload pattern ok 0; w0/w1 pulseId rising an
+  seq (w2) 1..2058 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:47:52.350-08:00 daq_sim: down: clean
+TYPERUN_DONE fakecam 01:47:52
+cwang31@sdfiana025:wt-types2$ # cspad (PR #36, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh cspad $P
+cspad on sdfmilan048, Slurm job 43839059 step 434, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:47:59 PST
+UP_EXIT=0
+2026-11-09T01:48:22.771-08:00 daq_sim: preflight rc=0: 01:48:22 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:48:24.145-08:00 daq_sim: config DB seeded: tst/BEAM/cspad_0 key=2 written
+2026-11-09T01:48:31.989-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2083
+  TEB_WrtCt              2083
+  DRP_Damage             0
+  psana2 events          2083
+  psana2 with data       2083
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:48:46.223-08:00 evidence 20261109T014846-cycle-6b226e5d7-2285506: det:drp:cspad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:48:46.278-08:00 cycle PASS
+-- cspad DRP log: its config code
+tst-drp[2284905]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2284905]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2284905]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[2284905]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/cspad_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2083; with cspad data 2083; w3 == seed 2083 (seeds seen {0x1234: 2083}); payload pattern ok 2083; w0/w1 pulseId rising a
+  seq (w2) 1..2083 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2083; with cspad data 2083; w3 == seed 2083 (seeds seen {0x1234: 2083}); payload pattern ok 0; w0/w1 pulseId rising and 
+  seq (w2) 1..2083 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:49:01.403-08:00 daq_sim: down: clean
+TYPERUN_DONE cspad 01:49:01
+cwang31@sdfiana025:wt-types2$ # epixhremu (PR #36, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh epixhremu $P
+epixhremu on sdfmilan048, Slurm job 43839059 step 435, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:49:08 PST
+UP_EXIT=0
+2026-11-09T01:49:31.605-08:00 daq_sim: preflight rc=0: 01:49:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:49:32.860-08:00 daq_sim: config DB seeded: tst/BEAM/epixhremu_0 key=2 written
+2026-11-09T01:49:37.821-08:00 daq_sim: epixhremu frame (288, 384) from seed 0x1234 written to /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/
+2026-11-09T01:49:43.540-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1991
+  TEB_WrtCt              1991
+  DRP_Damage             0
+  psana2 events          1991
+  psana2 with data       1991
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:49:58.692-08:00 evidence 20261109T014958-cycle-6b226e5d7-2288341: det:drp:epixhremu prog:control prog:drp prog:pyxpm prog:te
+2026-11-09T01:49:58.791-08:00 cycle PASS
+-- epixhremu DRP log: its config code
+tst-drp[2288141]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2288141]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2288141]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[2288141]: <I> EpixHRemu configure
+tst-drp[2288141]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/epixhremu_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 1991; with epixhremu data 1991; events matching the pattern of seed 0x1234: 1991
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixhremu --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixhremu raw shape None
+  L1Accept events 1991; with epixhremu data 1991; events matching the pattern of seed 0x1234: 0
+  check: every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) vs the frame daq_sim wrote, self-test offset 1
+  problem: event 1: 110592 of 110592 pixels differ
+  problem: event 2: 110592 of 110592 pixels differ
+  problem: event 3: 110592 of 110592 pixels differ
+  problem: event 4: 110592 of 110592 pixels differ
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:50:15.143-08:00 daq_sim: down: clean
+TYPERUN_DONE epixhremu 01:50:15
+cwang31@sdfiana025:wt-types2$ # jungfrauemu (PR #36, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh jungfrauemu $P
+jungfrauemu on sdfmilan048, Slurm job 43839059 step 436, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:50:21 PST
+UP_EXIT=0
+2026-11-09T01:50:45.200-08:00 daq_sim: preflight rc=0: 01:50:45 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:50:46.471-08:00 daq_sim: config DB seeded: tst/BEAM/jungfrauemu_0 key=2 written
+2026-11-09T01:50:53.952-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1938
+  TEB_WrtCt              1938
+  DRP_Damage             0
+  psana2 events          1938
+  psana2 with data       1938
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:51:51.496-08:00 evidence 20261109T015151-cycle-6b226e5d7-2291236: det:drp:jungfrauemu prog:control prog:drp prog:pyxpm prog:
+2026-11-09T01:51:51.555-08:00 cycle PASS
+-- jungfrauemu DRP log: its config code
+tst-drp[2291042]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2291042]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2291042]: <I> MemPoolSim: readout group 5, 262144 payload words per lane
+tst-drp[2291042]: <I> JungfrauEmulator configure
+tst-drp[2291042]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/jungfrauemu_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 1938; with jungfrauemu data 1938; events matching the pattern of seed 0x1234: 1938
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det jungfrauemu --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector jungfrauemu raw shape None
+  L1Accept events 1938; with jungfrauemu data 1938; events matching the pattern of seed 0x1234: 0
+  check: every TDet word of the 512 x 1024 panel (jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, pattern, pulseId; raw() shape an
+  problem: event 1: 262140 of 262140 payload words differ
+  problem: event 2: 262140 of 262140 payload words differ
+  problem: event 3: 262140 of 262140 payload words differ
+  problem: event 4: 262140 of 262140 payload words differ
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:53:26.164-08:00 daq_sim: down: clean
+TYPERUN_DONE jungfrauemu 01:53:26
+cwang31@sdfiana025:wt-types2$ # ts (PR #36, regression): xpmdet_config, ts_connect and ts_config on simxpm
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh ts $P
+ts on sdfmilan048, Slurm job 43839059 step 437, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:53:33 PST
+UP_EXIT=0
+2026-11-09T01:53:56.570-08:00 daq_sim: preflight rc=0: 01:53:56 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:53:58.677-08:00 daq_sim: config DB seeded: tst/BEAM/ts_0 key=2 written
+2026-11-09T01:54:06.281-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1974
+  TEB_WrtCt              1974
+  DRP_Damage             0
+  psana2 events          1974
+  psana2 with data       1974
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:54:21.930-08:00 evidence 20261109T015421-cycle-6b226e5d7-2297487: det:drp:ts prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:54:21.981-08:00 cycle PASS
+-- ts DRP log: its config code
+tst-drp[2297437]: <I> MemPoolSim: ts data is its TDet firmware's 153 B message
+tst-drp[2297437]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2297437]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2297437]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+*** rxready ['DAQ:SIM:XPM:0:LinkRxReady0'] : [1]
+RxLink locked after 1 tries
+*** setting xpm link enables ['DAQ:SIM:XPM:0:LinkGroupMask0'] [32]
+tst-drp[2297437]: <I> Sim payload seed 4660 (0x00001234) from kwarg sim_seed
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 1974; with ts data 1974; events matching the pattern of seed 0x1234: 1974
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 1974; with ts data 1974; events matching the pattern of seed 0x1234: 0
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId risin
+  problem: event 1: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [4]... != [0]...
+  problem: event 2: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [3]... != [7]...
+  problem: event 3: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [2]... != [6]...
+  problem: event 4: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [1]... != [5]...
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:54:41.402-08:00 daq_sim: down: clean
+TYPERUN_DONE ts 01:54:41
+cwang31@sdfiana025:wt-types2$ # hrencoder (PR #36, regression): BEB, hrencoder_config
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh hrencoder $P
+hrencoder on sdfmilan048, Slurm job 43839059 step 438, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:54:48 PST
+UP_EXIT=0
+2026-11-09T01:55:11.445-08:00 daq_sim: preflight rc=0: 01:55:11 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:55:17.055-08:00 daq_sim: config DB seeded: tst/BEAM/hrencoder_0 key=2 written
+2026-11-09T01:55:24.516-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1962
+  TEB_WrtCt              1962
+  DRP_Damage             0
+  psana2 events          1962
+  psana2 with data       1962
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:55:39.167-08:00 evidence 20261109T015539-cycle-6b226e5d7-2300845: det:drp:hrencoder prog:control prog:drp prog:pyxpm prog:te
+2026-11-09T01:55:39.217-08:00 cycle PASS
+-- hrencoder DRP log: its config code
+tst-drp[2300805]: <I> BEBDetector: hrencoder config runs against simulated device sim://127.0.0.1:31052
+tst-drp[2300805]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2300805]: <I> BEBDetector: sim payload seed 0x1234
+group: 5		delay_ns: 105765		delay_clks: 19642
+ClinkDev.StartRun() executed
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 1962; with hrencoder data 1962; events matching the pattern of seed 0x1234: 1962
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det hrencoder --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector hrencoder raw shape None
+  L1Accept events 1962; with hrencoder data 1962; events matching the pattern of seed 0x1234: 0
+  check: value() (the position), error_cnt, missedTrig_cnt and latches (hrencoder_raw_0_1_0) vs pattern, self-test offset 1
+  problem: event 1: value 45163 != 1678594537; error_cnt 233 != 15; missedTrig_cnt 15 != 94
+  problem: event 2: value 85666 != 1678635040; error_cnt 32 != 70; missedTrig_cnt 70 != 149
+  problem: event 3: value 126169 != 1678675543; error_cnt 87 != 125; missedTrig_cnt 125 != 204
+  problem: event 4: value 166672 != 1678716046; error_cnt 142 != 180; missedTrig_cnt 180 != 3
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:55:54.216-08:00 daq_sim: down: clean
+TYPERUN_DONE hrencoder 01:55:54
+cwang31@sdfiana025:wt-types2$ # epixm320 (PR #36, regression): BEB, epixm320_config
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh epixm320 $P
+epixm320 on sdfmilan048, Slurm job 43839059 step 439, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:56:01 PST
+UP_EXIT=0
+2026-11-09T01:56:24.366-08:00 daq_sim: preflight rc=0: 01:56:24 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:56:30.082-08:00 daq_sim: config DB seeded: tst/BEAM/epixm320_0 key=2 written
+2026-11-09T01:56:37.797-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1952
+  TEB_WrtCt              1952
+  DRP_Damage             0
+  psana2 events          1952
+  psana2 with data       1952
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:57:06.864-08:00 evidence 20261109T015706-cycle-6b226e5d7-2303718: det:drp:epixm320 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:57:07.082-08:00 cycle PASS
+-- epixm320 DRP log: its config code
+tst-drp[2303677]: <I> BEBDetector: epixm320 config runs against simulated device sim://127.0.0.1:31052
+rxId ff000000 found after 0s
+tst-drp[2303677]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2303677]: <I> BEBDetector: sim payload seed 0x1234
+Init ASIC script started
+Initialization routine completed.
+Triggers sent: 2500
+WARNING:root:config_expert complete
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1952; with epixm320 data 1952; events matching the pattern of seed 0x1234: 1952
+  check: per pixel, pattern(seed, seq, i, 15)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1952; with epixm320 data 1952; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 15), self-test offset 1
+  problem: event 1: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x306b != 0x51e9
+  problem: event 2: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x4ea2 != 0x7020
+  problem: event 3: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x6cd9 != 0xe57
+  problem: event 4: 294906 of 294912 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:57:25.060-08:00 daq_sim: down: clean
+TYPERUN_DONE epixm320 01:57:25
+cwang31@sdfiana025:wt-types2$ # epix100 (PR #34, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh epix100 $P
+epix100 on sdfmilan048, Slurm job 43839059 step 440, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:57:32 PST
+UP_EXIT=0
+2026-11-09T01:57:55.363-08:00 daq_sim: preflight rc=0: 01:57:55 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:58:00.984-08:00 daq_sim: config DB seeded: tst/BEAM/epix100_0 key=2 written
+2026-11-09T01:58:08.734-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1949
+  TEB_WrtCt              1949
+  DRP_Damage             0
+  psana2 events          1949
+  psana2 with data       1949
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:58:28.901-08:00 evidence 20261109T015828-cycle-6b226e5d7-2307270: det:drp:epix100 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:58:28.963-08:00 cycle PASS
+-- epix100 DRP log: its config code
+tst-drp[2307222]: <I> BEBDetector: epix100 config runs against simulated device sim://127.0.0.1:31052
+KCU FpgaVersion 0x3040000
+CAM FpgaVersion 0xea020009
+check clock rate: 185.714286
+tst-drp[2307222]: <I> BEBDetector: sim payload seed 0x1234
+*** Loading camera configuration from /tmp/epix100_cfg.yaml
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 1949; with epix100 data 1949; events matching the pattern of seed 0x1234: 1949
+  check: per pixel, pattern(seed, seq, i, 14)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epix100 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epix100 raw shape [704, 768]
+  L1Accept events 1949; with epix100 data 1949; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 14), self-test offset 1
+  problem: event 1: 540640 of 540672 pixels differ, first at (0, 0): 0x306b != 0x11e9
+  problem: event 2: 540640 of 540672 pixels differ, first at (0, 0): 0xea2 != 0x3020
+  problem: event 3: 540640 of 540672 pixels differ, first at (0, 0): 0x2cd9 != 0xe57
+  problem: event 4: 540640 of 540672 pixels differ, first at (0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T01:58:50.097-08:00 daq_sim: down: clean
+TYPERUN_DONE epix100 01:58:50
+cwang31@sdfiana025:wt-types2$ # wave8 (PR #34, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh wave8 $P
+wave8 on sdfmilan048, Slurm job 43839059 step 441, HEAD 6b226e5d7, local changes 0, 2026-11-09 01:58:56 PST
+UP_EXIT=0
+2026-11-09T01:59:20.179-08:00 daq_sim: preflight rc=0: 01:59:20 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:59:26.677-08:00 daq_sim: config DB seeded: tst/BEAM/wave8_0 key=2 written
+2026-11-09T01:59:34.454-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2095
+  TEB_WrtCt              2095
+  DRP_Damage             0
+  psana2 events          2095
+  psana2 with data       2095
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T01:59:54.484-08:00 evidence 20261109T015954-cycle-6b226e5d7-2310783: det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T01:59:54.543-08:00 cycle PASS
+-- wave8 DRP log: its config code
+tst-drp[2310203]: <I> BEBDetector: wave8 config runs against simulated device sim://127.0.0.1:31052
+wave8_connect returning {'paddr': 1}
+tst-drp[2310203]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8:00', 0: 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2095; with wave8 data 2095; events matching the pattern of seed 0x1234: 2095
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector wave8 raw shape None
+  L1Accept events 2095; with wave8 data 2095; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample, integral, baseline and fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+rc=1
+DOWN_EXIT=0
+2026-11-09T02:00:15.661-08:00 daq_sim: down: clean
+TYPERUN_DONE wave8 02:00:15
+cwang31@sdfiana025:wt-types2$ # wave8he (PR #34, regression)
+cwang31@sdfiana025:wt-types2$ $S $B/typerun.sh wave8he $P
+wave8he on sdfmilan048, Slurm job 43839059 step 442, HEAD 6b226e5d7, local changes 0, 2026-11-09 02:00:24 PST
+UP_EXIT=0
+2026-11-09T02:00:48.561-08:00 daq_sim: preflight rc=0: 02:00:48 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T02:00:55.437-08:00 daq_sim: config DB seeded: tst/BEAM/wave8he_0 key=2 written
+2026-11-09T02:01:03.844-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2081
+  TEB_WrtCt              2081
+  DRP_Damage             0
+  psana2 events          2081
+  psana2 with data       2081
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T02:01:24.692-08:00 evidence 20261109T020124-cycle-6b226e5d7-2314048: det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T02:01:24.752-08:00 cycle PASS
+-- wave8he DRP log: its config code
+tst-drp[2313806]: <I> BEBDetector: wave8he config runs against simulated device sim://127.0.0.1:31052
+wave8he_connect returning {'paddr': 1}
+tst-drp[2313806]: <I> BEBDetector: sim payload seed 0x1234
+base [{'timebase': '186M', 'prefix': 'SIM:W8HE:00', 'lane': 0, 'pcie': <class 'psdaq.cas.pgpmonitor.PgpMonitor'> - PgpMonitor}]
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 2081; with wave8he data 2081; events matching the pattern of seed 0x1234: 2081
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det wave8he --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector wave8he raw shape None
+  L1Accept events 2081; with wave8he data 2081; events matching the pattern of seed 0x1234: 0
+  check: 8 raw waveforms of 256 samples, each sample and each peak/baseline/integral/position fex value vs pattern, self-test offset 1
+  problem: event 1: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 2: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 3: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+  problem: event 4: raw_0: 256 of 256 samples differ (shape (256,)); raw_1: 256 of 256 samples differ (shape (256,)); raw_2: 256 of 256 sa
+rc=1
+DOWN_EXIT=0
+2026-11-09T02:01:44.664-08:00 daq_sim: down: clean
+TYPERUN_DONE wave8he 02:01:44
+cwang31@sdfiana025:wt-types2$ # daq_sim coverage at this HEAD over the records of these runs (bound evidence: each record proves a row only if its files show it ran)
+cwang31@sdfiana025:wt-types2$ echo "records: $(ls $P/ev | wc -l)"; $S $B/cov.sh $P
+records: 14
+on sdfmilan048, Slurm job 43839059 step 443, HEAD 6b226e5d7, local changes 0
+COVERAGE_EXIT=1
+96 lines in cov.txt
+cwang31@sdfiana025:wt-types2$ grep -E '^det:drp:[a-z0-9]+ +(RUN|STAND-IN)|^prog:(control|drp|teb|pyxpm) |^[0-9]+ rows|^status file|^(PASS|FAIL)' $P/cov.txt | cut -c1-138
+det:drp:fakecam                RUN       evidence 20261109T014736-cycle-6b226e5d7-2282281
+det:drp:cspad                  RUN       evidence 20261109T014846-cycle-6b226e5d7-2285506
+det:drp:epixquad               RUN       evidence 20261109T014358-cycle-6b226e5d7-2272593
+det:drp:epixhremu              RUN       evidence 20261109T014958-cycle-6b226e5d7-2288341
+det:drp:epixm320               RUN       evidence 20261109T015706-cycle-6b226e5d7-2303718
+det:drp:epix100                RUN       evidence 20261109T015828-cycle-6b226e5d7-2307270
+det:drp:jungfrauemu            RUN       evidence 20261109T015151-cycle-6b226e5d7-2291236
+det:drp:opal                   RUN       evidence 20261109T013518-cycle-6b226e5d7-2246500
+det:drp:tb                     RUN       evidence 20261109T014013-cycle-6b226e5d7-2257933
+det:drp:ts                     RUN       evidence 20261109T015421-cycle-6b226e5d7-2297487
+det:drp:wave8                  RUN       evidence 20261109T015954-cycle-6b226e5d7-2310783
+det:drp:wave8he                RUN       evidence 20261109T020124-cycle-6b226e5d7-2314048
+det:drp:hrencoder              RUN       evidence 20261109T015539-cycle-6b226e5d7-2300845
+det:drp:piranha4               RUN       evidence 20261109T013859-cycle-6b226e5d7-2254463
+prog:control                   RUN       evidence 20261109T020124-cycle-6b226e5d7-2314048 (+13 more)
+prog:drp                       RUN       evidence 20261109T020124-cycle-6b226e5d7-2314048 (+13 more)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:teb                       RUN       evidence 20261109T020124-cycle-6b226e5d7-2314048 (+13 more)
+78 rows, 17 run, 1 stand-in, 3 N/A, 57 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 17 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 57 unproven row(s)
+cwang31@sdfiana025:wt-types2$ # the same check with the tb record removed: the tb row must fail, named, exit 1
+cwang31@sdfiana025:wt-types2$ $S $B/cov.sh $P det:drp:tb
+on sdfmilan048, Slurm job 43839059 step 444, HEAD 6b226e5d7, local changes 0
+removed 20261109T014013-cycle-6b226e5d7-2257933.json (it lists det:drp:tb)
+records: 14 in ev, 13 in ev-no-tb
+COVERAGE_EXIT=1
+97 lines in cov-no-tb.txt
+cwang31@sdfiana025:wt-types2$ grep -E '^det:drp:tb |^[0-9]+ rows|^(PASS|FAIL)|^  det:drp:tb' $P/cov-no-tb.txt | cut -c1-138
+det:drp:tb                     RUN       NO VALID EVIDENCE at HEAD 6b226e5d7
+78 rows, 16 run, 1 stand-in, 3 N/A, 57 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 57 unproven row(s)
+  det:drp:tb: RUN row without valid evidence at HEAD 6b226e5d7
+cwang31@sdfiana025:wt-types2$ # the hardware path (no sim:// device), every type, from base wt-cov (2d9593bc5) and from this HEAD, each its own srun step; then diffed
+cwang31@sdfiana025:wt-types2$ TYPES='opal piranha4 tb epixquad fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he epixhr2x2 epixquad1kfps tt epixuhr3x2'; for w in wt-cov wt-types2; do $S $B/hwpath.sh $w $TYPES > $P/hw-$w.log 2>&1; head -1 $P/hw-$w.log; done
+== wt-cov head=2d9593bc5 dirty=0
+== wt-types2 head=6b226e5d7 dirty=0
+cwang31@sdfiana025:wt-types2$ diff <(tail -n +2 $P/hw-wt-cov.log) <(tail -n +2 $P/hw-wt-types2.log); echo HWPATH_DIFF_EXIT=$?; wc -l $P/hw-wt-cov.log $P/hw-wt-types2.log | head -2
+26,30c26,29
+<     import lcls2_pgp_pcie_apps
+< ModuleNotFoundError: No module named 'lcls2_pgp_pcie_apps'
+< Traceback (most recent call last):
+< Traceback (most recent call last):
+< rc=1
+---
+> raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+> psdaq.sim modules loaded: []
+> AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+> rc=0
+HWPATH_DIFF_EXIT=1
+  210 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/hw-wt-cov.log
+  209 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/hw-wt-types2.log
+cwang31@sdfiana025:wt-types2$ # only tb differs: at base tb_config dies at import (ModuleNotFoundError); at this HEAD tb_init gets to the device (no /dev/datadev_0 here)
+cwang31@sdfiana025:wt-types2$ for w in wt-cov wt-types2; do echo "## $w"; sed -n '/^-- tb python/,/^-- epixquad python/p' $P/hw-$w.log | head -12 | cut -c1-138; done
+## wt-cov
+-- tb python: psdaq.configdb.tb_config.tb_init('tb', '/dev/datadev_0', 1, None, '186M', 0)
+    import lcls2_pgp_pcie_apps
+ModuleNotFoundError: No module named 'lcls2_pgp_pcie_apps'
+Traceback (most recent call last):
+Traceback (most recent call last):
+rc=1
+-- tb drp -D tb -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+## wt-types2
+-- tb python: psdaq.configdb.tb_config.tb_init('tb', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- tb drp -D tb -d /dev/datadev_0
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad python: psdaq.configdb.epixquad_config.epixquad_init('epixquad', '/dev/datadev_0', 1, None, '186M', 0)
+cwang31@sdfiana025:wt-types2$ # Step 3: the three config-code defects this PR fixes, at the base 8830147da (worktree wt-base39, built there, unmodified), then the same at this HEAD
+cwang31@sdfiana025:wt-types2$ git -C $R/wt-base39 log -1 --format='base %H %s' | cut -c1-138; echo "base local changes: $(git -C $R/wt-base39 status --short --untracked-files=no | wc -l)"
+base 8830147da58f51ccfcc1a2c01db1f4efb67040e4 Merge PR #36: sim: XpmDetector types configure through xpmdet_config on an emulated device
+base local changes: 0
+cwang31@sdfiana025:wt-types2$ W=wt-base39 $S $B/defects.sh
+wt-base39 on sdfmilan048, Slurm job 43839059 step 447: HEAD 8830147da Merge PR #36: sim: XpmDetector types configure through xpmde, local changes 0
+seed files for tb, epixquad: 0 (none: the DRPs get PSDAQ_SIM_ROGUE_SEEDS=$T/empty.json)
+== 1. tb_config: import it, as the DRP does at start
+import psdaq.configdb.tb_config raised ModuleNotFoundError: No module named 'lcls2_pgp_pcie_apps'
+rc=1
+-- drp -D tb -d sim://127.0.0.1:31999 (alone, stopped after 40 s)
+tst-drp[2326159]: <I> BEBDetector: tb config runs against simulated device sim://127.0.0.1:31999
+Traceback (most recent call last):
+ModuleNotFoundError: No module named 'lcls2_pgp_pcie_apps'
+tst-drp[2326159]: <C> **** python error
+rc=134
+== 2. tb_connectionInfo: BEBDetector's call at Alloc, the function's signature, and that call
+197: PyObject* mbytes = _check(PyObject_CallFunction(pFunc,"Os",m_root,alloc_json.c_str()));
+tb_connectionInfo(base)
+tb_connectionInfo(root, alloc_json) raised TypeError: tb_connectionInfo() takes 1 positional argument but 2 were given
+== 3. epixquad_config: the DRP's epixquad_init builds lcls2_pgp_pcie_apps.DevRoot
+6:from psdaq.utils import enable_epix_quad
+7:import ePixQuad
+8:from psdaq.utils import enable_lcls2_pgp_pcie_apps
+9:import lcls2_pgp_pcie_apps
+-- drp -D epixquad -d sim://127.0.0.1:31999 -k sim_dma_size=0x110000 (alone, stopped after 40 s)
+tst-drp[2326579]: <I> BEBDetector: epixquad config runs against simulated device sim://127.0.0.1:31999
+INFO:psdaq.sim.rogue_dev:AxiMemMap(sim://127.0.0.1:31999) -> SimMemMap
+Traceback (most recent call last):
+TypeError: __init__() got an unexpected keyword argument 'extended'
+tst-drp[2326579]: <C> **** python error
+rc=134
+DEFECTS_DONE
+cwang31@sdfiana025:wt-types2$ $S $B/defects.sh
+wt-types2 on sdfmilan048, Slurm job 43839059 step 448: HEAD 6b226e5d7 Merge pr/covbind (coverage evidence bound to its files) into, local changes 0
+seed files for tb, epixquad: 2 
+== 1. tb_config: import it, as the DRP does at start
+import psdaq.configdb.tb_config: imported
+rc=0
+-- drp -D tb -d sim://127.0.0.1:31999 (alone, stopped after 40 s)
+tst-drp[2327534]: <I> BEBDetector: tb config runs against simulated device sim://127.0.0.1:31999
+Found image Lcls2XilinxKcu1500Pgp4_6Gbps
+init_feb lane 3
+tst-drp[2327534]: <I> Ready for transitions
+rc=124
+== 2. tb_connectionInfo: BEBDetector's call at Alloc, the function's signature, and that call
+197: PyObject* mbytes = _check(PyObject_CallFunction(pFunc,"Os",m_root,alloc_json.c_str()));
+tb_connectionInfo(base, alloc_json_str=None)
+tb_connectionInfo(root, alloc_json) raised AttributeError: 'NoneType' object has no attribute 'DevPcie'
+== 3. epixquad_config: the DRP's epixquad_init builds lcls2_pgp_pcie_apps.DevRoot
+8:from psdaq.utils import enable_lcls2_pgp_pcie_apps
+9:import lcls2_pgp_pcie_apps
+10:from psdaq.utils import enable_epix_quad
+11:import ePixQuad
+-- drp -D epixquad -d sim://127.0.0.1:31999 -k sim_dma_size=0x110000 (alone, stopped after 40 s)
+tst-drp[2328602]: <I> BEBDetector: epixquad config runs against simulated device sim://127.0.0.1:31999
+INFO:psdaq.sim.rogue_dev:AxiMemMap(sim://127.0.0.1:31999) -> SimMemMap
+INFO:pyrogue.Device.AxiPcieCore.AxiPcieCore:Making device AxiPcieCore
+tst-drp[2328602]: <I> Ready for transitions
+rc=124
+DEFECTS_DONE
+cwang31@sdfiana025:wt-types2$ git diff 8830147da HEAD -- psdaq/psdaq/configdb | cut -c1-138
+diff --git a/psdaq/psdaq/configdb/epixquad_config.py b/psdaq/psdaq/configdb/epixquad_config.py
+index 45c86fef9..2920ec601 100644
+--- a/psdaq/psdaq/configdb/epixquad_config.py
++++ b/psdaq/psdaq/configdb/epixquad_config.py
+@@ -3,10 +3,12 @@ from psdaq.configdb.scan_utils import *
+ from psdaq.configdb.typed_json import cdict
+ from psdaq.cas.xpm_utils import timTxId
+ from .xpmmini import *
+-from psdaq.utils import enable_epix_quad
+-import ePixQuad
++#  lcls2_pgp_pcie_apps first: its axi-pcie-core is the one its DevRoot is written for (with
++#  epix-quad's older one first on the path, DevRoot's AxiPcieCore rejects 'extended')
+ from psdaq.utils import enable_lcls2_pgp_pcie_apps
+ import lcls2_pgp_pcie_apps
++from psdaq.utils import enable_epix_quad
++import ePixQuad
+ import rogue
+ #import epix
+ import time
+diff --git a/psdaq/psdaq/configdb/tb_config.py b/psdaq/psdaq/configdb/tb_config.py
+index 90cc52b0e..d28643ee6 100644
+--- a/psdaq/psdaq/configdb/tb_config.py
++++ b/psdaq/psdaq/configdb/tb_config.py
+@@ -14,6 +14,7 @@ import logging
+ #  I need to import some project to get the surf library
+ #  This library may be a different version in other projects
+ #
++from psdaq.utils import enable_lcls2_pgp_pcie_apps
+ import lcls2_pgp_pcie_apps
+ 
+ #
+@@ -173,7 +174,7 @@ def ts_connect(json_connect_info):
+     connector = ts_connector(json_connect_info)
+     return json.dumps({})
+ 
+-def tb_connectionInfo(base):
++def tb_connectionInfo(base, alloc_json_str=None):
+     pbase = base['pcie']
+     rxId = pbase.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId.get()
+     logging.info('RxId {:x}'.format(rxId))
+cwang31@sdfiana025:wt-types2$ echo "checkout local changes: $(git status --short --untracked-files=no | wc -l)"; date '+%F %T %Z'; exit
+checkout local changes: 0
+2026-11-09 02:07:30 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

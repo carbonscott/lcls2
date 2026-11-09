@@ -1,0 +1,50 @@
+host=sdfmilan048 head=6b226e5d7 dirty=0 date=2026-11-09T02:08:15-08:00 job=43839059 step=449
+== drp -D tt -d sim://127.0.0.1:31999 -k sim_seed=0x1234 PSDAQ_SIM_ROGUE_SEEDS=/tmp/p39-blk-9YX9OA/empty.json
+tst-drp[2331772]: <I> logging configured
+tst-drp[2331772]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2331772]: <I> Simulated PGP device 'sim://127.0.0.1:31999': timing frames from tcp://127.0.0.1:31999
+--
+tst-drp[2331772]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[2331772]: <I> BEBDetector: tt config runs against simulated device sim://127.0.0.1:31999
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/tt_config.py", line 43, in tt_init
+--
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/lcls2-timetool/firmware/submodules/surf/python/surf/devices/micron/_AxiMicronN25Q.py", line 30, in __init__
+    super().__init__(
+TypeError: __init__() got an unexpected keyword argument 'size'
+tst-drp[2331772]: <C> **** python error
+timeout: the monitored command dumped core
+rc=134
+== drp -D hsd -d sim://127.0.0.1:31999 -k hsd_epics_prefix=SIM:HSD:00 
+tst-drp[2331940]: <I> logging configured
+tst-drp[2331940]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2331940]: <I> Simulated PGP device 'sim://127.0.0.1:31999': timing frames from tcp://127.0.0.1:31999
+--
+tst-drp[2331940]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+*** found epics name SIM:HSD:00
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/hsd_config.py", line 32, in hsd_init
+--
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/l2si-drp/firmware/python/l2si_drp/_PcieControl.py", line 29, in __init__
+    self._dataMap = rogue.hardware.axi.AxiMemMap(devname)
+rogue.GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: sim://127.0.0.1:31999
+tst-drp[2331940]: <C> **** python error
+timeout: the monitored command dumped core
+rc=134
+== drp -D jungfrau -d sim://127.0.0.1:31999 -k sim_seed=0x1234,slsHosts=127.0.0.1 PSDAQ_SIM_ROGUE_SEEDS=/tmp/p39-blk-9YX9OA/empty.json
+tst-drp[2332332]: <I> logging configured
+tst-drp[2332332]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2332332]: <I> Simulated PGP device 'sim://127.0.0.1:31999': timing frames from tcp://127.0.0.1:31999
+--
+[0m
+[31m[1m- 02:08:27.447 ERROR: No modules added[0m
+tst-drp[2332332]: <C> Failed to initialize the Jungfrau control interface: No modules added
+timeout: the monitored command dumped core
+rc=134
+== configdb_seed --det-type epixuhr3x2 (its store's beam_cdict, as its __main__ writes)
+    return ds.open(path, mode, encoding=encoding, newline=newline)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/numpy/lib/_datasource.py", line 533, in open
+    raise FileNotFoundError(f"{path} not found.")
+FileNotFoundError: /cds/home/p/psrel/EpixUHR/pll/PLLConfig_Si5345_temp_250.csv not found.
+rc=1
+SHOWBLK_DONE

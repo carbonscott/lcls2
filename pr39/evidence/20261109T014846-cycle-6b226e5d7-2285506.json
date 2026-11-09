@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/daq_sim.cnf": {
+   "bytes": 1106,
+   "sha256": "ee8e6416a07030a25b3101811a70b3c8b4aa31286398a6bb21735afcc6fc6733"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 870534,
+   "sha256": "8e1d0cf81e0df62da70851b46dfbbf408ce2410eea7fbce471ba1206e00eed37"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/configdb.log": {
+   "bytes": 503,
+   "sha256": "06c814f710d98bf4abe1b8e2a496cf306b4fcdaeebda4dbe2b8a50782e0c87b1"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/cycle.jsonl": {
+   "bytes": 2332,
+   "sha256": "61e46a1638ebf1694dd06f421e2158eb5c75add09ade9a54002ae9f1ac6ab114"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/lgbk.log": {
+   "bytes": 1202,
+   "sha256": "515a1f3543b2de058f601c64a1e12652df55f0495879be4fe3c5fa67287d2e12"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/simxpm.log": {
+   "bytes": 2735,
+   "sha256": "ae7c5373d7b22a6eb4f0cdb2b9fe243589d3cf7407fb6d39723d207a0b517d32"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:control.log": {
+   "bytes": 66705,
+   "sha256": "a7ea386107dfac7a5d46fb60d796f6da52ebbdd774b9ea3576399d293bbc361d"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:cspad_0.log": {
+   "bytes": 13644,
+   "sha256": "1f4da6e7444afaafd92992bbf731e7c1062b269d96460d3096735c098036c56a"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:teb0.log": {
+   "bytes": 8840,
+   "sha256": "56cbab9c3df01c0842cbf7545b461d000f0909367c3074f42e5d125c22d55758"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 870486,
+  "TEB_EvtCt": 2083,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2083,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2083,
+  "psana2 seeds": {
+   "0x1234": 2083
+  },
+  "psana2 seq": "1..2083",
+  "psana2 with data": 2083,
+  "simxpm NumL0Acc": 2083,
+  "simxpm NumL0Inp": 2083,
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (870534 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T01:48:46-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-cspad/pmlogs/2026/11/09_01:48:26_sdfmilan048:cspad_0.log"
+ ],
+ "host": "sdfmilan048",
+ "job_id": "43839059",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:cspad",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "6b226e5d729f061172ac25090e163291817630c9",
+ "started": "2026-11-09T01:48:32.420-08:00"
+}

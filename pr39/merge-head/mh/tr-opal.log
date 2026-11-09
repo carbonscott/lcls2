@@ -1,0 +1,43 @@
+opal on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:48:35 PST
+UP_EXIT=0
+2026-11-09T05:48:59.246-08:00 daq_sim: preflight rc=0: 05:48:59 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:49:03.381-08:00 daq_sim: config DB seeded: tst/BEAM/opal_0 key=2 written
+2026-11-09T05:49:10.996-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1693
+  TEB_WrtCt              1693
+  DRP_Damage             0
+  psana2 events          1693
+  psana2 with data       1693
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:49:36.053-08:00 evidence 20261109T054936-cycle-ffaddcbde-2966135: det:drp:opal prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T05:49:36.110-08:00 cycle PASS
+-- opal DRP log: its config code
+tst-drp[2965928]: <I> BEBDetector: opal config runs against simulated device sim://127.0.0.1:31052
+opal_init (i2c setup:186M))
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: OPAL-1000m/Q S/N:00000001
+ClinkDevRoot.ClinkFeb[0].ClinkTop.Ch[0].UartOpal1000: recvString: 1.20;1.20;1.20
+check clock rate: 185.714286
+opalid OPAL-1000m/Q S/N:00000001
+tst-drp[2965928]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2965928]: <I> BEBDetector: sim payload seed 0x1234
+ClinkDev.StartRun() executed
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det opal --seed 0x1234 
+  experiment tstx00001 run 1 detector opal raw shape [1024, 1024]
+  L1Accept events 1693; with opal data 1693; events matching the pattern of seed 0x1234: 1693
+  check: per pixel, pattern(seed, seq, i, 12)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det opal --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector opal raw shape [1024, 1024]
+  L1Accept events 1693; with opal data 1693; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 12), self-test offset 1
+  problem: event 1: 1048345 of 1048576 pixels differ, first at (0, 0): 0x6b != 0x1e9
+  problem: event 2: 1048345 of 1048576 pixels differ, first at (0, 0): 0xea2 != 0x20
+  problem: event 3: 1048345 of 1048576 pixels differ, first at (0, 0): 0xcd9 != 0xe57
+  problem: event 4: 1048345 of 1048576 pixels differ, first at (0, 0): 0xb10 != 0xc8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T05:49:58.529-08:00 daq_sim: down: clean
+TYPERUN_DONE opal 05:49:58

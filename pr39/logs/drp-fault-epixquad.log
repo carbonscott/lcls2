@@ -1,0 +1,1516 @@
+# ID:      epixquad_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D epixquad -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixquad-fault/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0x110000,sim_dma_count=256,sim_seed=0x1234 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixquad-fault/prom -u epixquad_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_01:44:50_sdfmilan048:epixquad_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/bin/drp)
+@@@ The PID of new child "2026/11/09_01:44:50_sdfmilan048:epixquad_0.log" is: 2277431
+@@@ @@@ @@@ @@@ @@@
+tst-drp[2277431]: <I> logging configured
+tst-drp[2277431]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2277431]: <I> MemPoolSim: epixquad data framed as EventBatcher subframes (up to 1093752 B of data)
+tst-drp[2277431]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[2277431]: <I> dmaCount 256,  dmaSize 1114112
+tst-drp[2277431]: <I> Allocated 1.4 GB pebble for 128 transitions of 8388608 B and 256 L1Accepts of 1114112 B
+tst-drp[2277431]: <I> nL1Buffers 256,  pebble buffer size 1114112 B
+tst-drp[2277431]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[2277431]: <I> MemPoolSim: simxpm registered epixquad_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[2277431]: <I> BEBDetector: epixquad config runs against simulated device sim://127.0.0.1:31052
+INFO:pyrogue.Root.DevRoot.DevRoot:Making device DevRoot
+INFO:psdaq.sim.rogue_dev:AxiMemMap(sim://127.0.0.1:31052) -> SimMemMap
+INFO:pyrogue.Device.PcieFpga.DevPcie:Making device DevPcie
+INFO:pyrogue.Device.AxiPcieCore.AxiPcieCore:Making device AxiPcieCore
+INFO:pyrogue.Device.PcieAxiVersion.AxiVersion:Making device AxiVersion
+INFO:pyrogue.Device.AxiStreamMonAxiL.DmaIbAxisMon:Making device DmaIbAxisMon
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiStreamMonAxiL.DmaObAxisMon:Making device DmaObAxisMon
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiPciePhy.AxiPciePhy:Making device AxiPciePhy
+INFO:pyrogue.Device.I2CBus.I2cBus:Making device I2cBus
+INFO:pyrogue.Device.Qsfp.QSFP:Making device QSFP
+INFO:pyrogue.Device._UpperPageProxy.UpperPageProxy:Making device UpperPageProxy
+INFO:pyrogue.Device.QsfpUpperPage00h.UpperPage00h:Making device UpperPage00h
+INFO:pyrogue.Device.QsfpUpperPage03h.UpperPage03h:Making device UpperPage03h
+INFO:pyrogue.Device.Si570.Si570:Making device Si570
+INFO:pyrogue.Device.Application.Application:Making device Application
+INFO:pyrogue.Device.AppLane.AppLane[0]:Making device AppLane[0]
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.EventBuilder:Making device EventBuilder
+INFO:pyrogue.Device.AppLane.AppLane[1]:Making device AppLane[1]
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.EventBuilder:Making device EventBuilder
+INFO:pyrogue.Device.AppLane.AppLane[2]:Making device AppLane[2]
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.EventBuilder:Making device EventBuilder
+INFO:pyrogue.Device.AppLane.AppLane[3]:Making device AppLane[3]
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.EventBuilder:Making device EventBuilder
+INFO:pyrogue.Device.Hsio.Hsio:Making device Hsio
+INFO:pyrogue.Device.Pgp4AxiL.PgpMon[0]:Making device PgpMon[0]
+INFO:pyrogue.Device.Pgp4AxiLCtrl.Ctrl:Making device Ctrl
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.RxStatus:Making device RxStatus
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.TxStatus:Making device TxStatus
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpRxVcMon[0]:Making device PgpRxVcMon[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpTxVcMon[0]:Making device PgpTxVcMon[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.Pgp4AxiL.PgpMon[1]:Making device PgpMon[1]
+INFO:pyrogue.Device.Pgp4AxiLCtrl.Ctrl:Making device Ctrl
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.RxStatus:Making device RxStatus
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.TxStatus:Making device TxStatus
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpRxVcMon[1]:Making device PgpRxVcMon[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpTxVcMon[1]:Making device PgpTxVcMon[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.Pgp4AxiL.PgpMon[2]:Making device PgpMon[2]
+INFO:pyrogue.Device.Pgp4AxiLCtrl.Ctrl:Making device Ctrl
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.RxStatus:Making device RxStatus
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.TxStatus:Making device TxStatus
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpRxVcMon[2]:Making device PgpRxVcMon[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpTxVcMon[2]:Making device PgpTxVcMon[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.Pgp4AxiL.PgpMon[3]:Making device PgpMon[3]
+INFO:pyrogue.Device.Pgp4AxiLCtrl.Ctrl:Making device Ctrl
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.RxStatus:Making device RxStatus
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.TxStatus:Making device TxStatus
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpRxVcMon[3]:Making device PgpRxVcMon[3]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.AxiStreamMonAxiL.PgpTxVcMon[3]:Making device PgpTxVcMon[3]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[1]:Making device Ch[1]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[2]:Making device Ch[2]
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[3]:Making device Ch[3]
+INFO:pyrogue.Device.TimingRx.TimingRx:Making device TimingRx
+INFO:pyrogue.Device.GtRxAlignCheck.GtRxAlignCheck[0]:Making device GtRxAlignCheck[0]
+INFO:pyrogue.Device.GtRxAlignCheck.GtRxAlignCheck[1]:Making device GtRxAlignCheck[1]
+INFO:pyrogue.Device.TimingFrameRx.TimingFrameRx:Making device TimingFrameRx
+INFO:pyrogue.Device.XpmMiniWrapper.XpmMiniWrapper:Making device XpmMiniWrapper
+INFO:pyrogue.Device.TPGMiniCore.TPGMiniCore:Making device TPGMiniCore
+INFO:pyrogue.Device.XpmMini.XpmMini:Making device XpmMini
+INFO:pyrogue.Device.TriggerEventManager.TriggerEventManager:Making device TriggerEventManager
+INFO:pyrogue.Device.EvrV2CoreTriggers.EvrV2CoreTriggers:Making device EvrV2CoreTriggers
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[0]:Making device EvrV2ChannelReg[0]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[1]:Making device EvrV2ChannelReg[1]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[2]:Making device EvrV2ChannelReg[2]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[3]:Making device EvrV2ChannelReg[3]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[4]:Making device EvrV2ChannelReg[4]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[5]:Making device EvrV2ChannelReg[5]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[6]:Making device EvrV2ChannelReg[6]
+INFO:pyrogue.Device.EvrV2ChannelReg.EvrV2ChannelReg[7]:Making device EvrV2ChannelReg[7]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[0]:Making device EvrV2TriggerReg[0]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[1]:Making device EvrV2TriggerReg[1]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[2]:Making device EvrV2TriggerReg[2]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[3]:Making device EvrV2TriggerReg[3]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[4]:Making device EvrV2TriggerReg[4]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[5]:Making device EvrV2TriggerReg[5]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[6]:Making device EvrV2TriggerReg[6]
+INFO:pyrogue.Device.EvrV2TriggerReg.EvrV2TriggerReg[7]:Making device EvrV2TriggerReg[7]
+INFO:pyrogue.Device.XpmMessageAligner.XpmMessageAligner:Making device XpmMessageAligner
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[0]:Making device TriggerEventBuffer[0]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[1]:Making device TriggerEventBuffer[1]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[2]:Making device TriggerEventBuffer[2]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[3]:Making device TriggerEventBuffer[3]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[4]:Making device TriggerEventBuffer[4]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[5]:Making device TriggerEventBuffer[5]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[6]:Making device TriggerEventBuffer[6]
+INFO:pyrogue.Device.TriggerEventBuffer.TriggerEventBuffer[7]:Making device TriggerEventBuffer[7]
+INFO:pyrogue.Device.TimingPhyMonitor.TimingPhyMonitor:Making device TimingPhyMonitor
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1048 block offset=1048 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1052 block offset=1052 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1052 block offset=1052 block bytes=4
+INFO:pyrogue.Device.PcieAxiVersion.DevRoot.DevPcie.AxiPcieCore.AxiVersion:Overlap detected var offset=1052 block offset=1052 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaIbAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.AxiPcieCore.DmaObAxisMon:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=60 block offset=60 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=60 block offset=60 block bytes=4
+INFO:pyrogue.Device.AxiPciePhy.DevRoot.DevPcie.AxiPcieCore.AxiPciePhy:Overlap detected var offset=60 block offset=60 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage00h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage00h:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=896 block offset=896 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=900 block offset=900 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=936 block offset=936 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=940 block offset=940 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=944 block offset=944 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=948 block offset=948 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=952 block offset=952 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=956 block offset=956 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=960 block offset=960 block bytes=4
+INFO:pyrogue.Device.QsfpUpperPage03h.DevRoot.DevPcie.I2cBus.QSFP.UpperPage03h:Overlap detected var offset=964 block offset=964 block bytes=4
+INFO:pyrogue.Device.Qsfp.DevRoot.DevPcie.I2cBus.QSFP:Overlap detected var offset=392 block offset=392 block bytes=4
+INFO:pyrogue.Device.Si570.DevRoot.DevPcie.I2cBus.Si570:Overlap detected var offset=28 block offset=28 block bytes=4
+INFO:pyrogue.Device.Si570.DevRoot.DevPcie.I2cBus.Si570:Overlap detected var offset=540 block offset=540 block bytes=4
+INFO:pyrogue.Device.Si570.DevRoot.DevPcie.I2cBus.Si570:Overlap detected var offset=540 block offset=540 block bytes=4
+INFO:pyrogue.Device.Si570.DevRoot.DevPcie.I2cBus.Si570:Overlap detected var offset=540 block offset=540 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[0].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[0].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[0].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[0].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[0].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[1].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[1].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[1].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[1].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[1].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[2].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[2].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[2].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[2].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[2].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[3].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[3].EventBuilder:Overlap detected var offset=4084 block offset=4084 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[3].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[3].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.AxiStreamBatcherEventBuilder.DevRoot.DevPcie.Application.AppLane[3].EventBuilder:Overlap detected var offset=4092 block offset=4092 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[0].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.DevRoot.DevPcie.Hsio.PgpMon[0].TxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[1].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.DevRoot.DevPcie.Hsio.PgpMon[1].TxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[2].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.DevRoot.DevPcie.Hsio.PgpMon[2].TxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLCtrl.DevRoot.DevPcie.Hsio.PgpMon[3].Ctrl:Overlap detected var offset=12 block offset=12 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLRxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].RxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.Pgp4AxiLTxStatus.DevRoot.DevPcie.Hsio.PgpMon[3].TxStatus:Overlap detected var offset=784 block offset=784 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpRxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.DevRoot.DevPcie.Hsio.PgpTxVcMon[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.GtRxAlignCheck.DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[0]:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.GtRxAlignCheck.DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[0]:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.GtRxAlignCheck.DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[1]:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.GtRxAlignCheck.DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[1]:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.TimingFrameRx.DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=76 block offset=76 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=76 block offset=76 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=76 block offset=76 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=76 block offset=76 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=80 block offset=80 block bytes=8
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=120 block offset=120 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=120 block offset=120 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=120 block offset=120 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=120 block offset=120 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=120 block offset=120 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=512 block offset=512 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=516 block offset=516 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.TPGMiniCore.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.TPGMiniCore:Overlap detected var offset=520 block offset=520 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=24 block offset=24 block bytes=4
+INFO:pyrogue.Device.XpmMini.DevRoot.DevPcie.Hsio.TimingRx.XpmMiniWrapper.XpmMini:Overlap detected var offset=72 block offset=72 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[0]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[0]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[0]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[1]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[1]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[1]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[2]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[2]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[2]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[3]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[3]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[3]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[4]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[4]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[4]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[5]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[5]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[5]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[6]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[6]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[6]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[7]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[7]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2ChannelReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2ChannelReg[7]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[0]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[1]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[2]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[3]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[4]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[4]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[4]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[4]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[5]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[5]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[5]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[5]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[6]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[6]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[6]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[6]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[7]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[7]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[7]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.EvrV2TriggerReg.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.EvrV2CoreTriggers.EvrV2TriggerReg[7]:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[1]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[2]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[4]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[5]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[6]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=4 block offset=4 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TriggerEventBuffer.DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[7]:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.TimingPhyMonitor.DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor:Overlap detected var offset=24 block offset=24 block bytes=4
+INFO:pyrogue.Device.TimingPhyMonitor.DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor:Overlap detected var offset=24 block offset=24 block bytes=4
+INFO:pyrogue.Root.DevRoot.DevRoot:Starting update thread
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked @AxiMemMap(sim://127.0.0.1:31052)+0x920004 = 0x3 (reads 3)
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp @AxiMemMap(sim://127.0.0.1:31052)+0x980020 = 0x1 (reads 1)
+INFO:psdaq.sim.rogue_dev:seed DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId @AxiMemMap(sim://127.0.0.1:31052)+0x948024 = 0xff000000 (reads 4278190080)
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+INFO:pyrogue.PollQueue:PollQueue Started
+ConfigLclsTimingV2()
+INFO:pyrogue.Root.DevRoot.DevRoot:Start root read
+INFO:pyrogue.Root.DevRoot.DevRoot:Check root read
+INFO:pyrogue.Root.DevRoot.DevRoot:Done root read
+INFO:pyrogue.Root.DevRoot.DevRoot:Start root read
+INFO:pyrogue.Root.DevRoot.DevRoot:Check root read
+INFO:pyrogue.Root.DevRoot.DevRoot:Done root read
+INFO:pyrogue.Root.Top.Top:Making device Top
+INFO:psdaq.sim.rogue_dev:AxiStreamDma(sim://127.0.0.1:31052, 0x1) -> SimStreamDma (SRPv3 responder)
+INFO:pyrogue.Device.RunControl.RunControl:Making device RunControl
+INFO:pyrogue.Device.EpixVersion.AxiVersion:Making device AxiVersion
+INFO:pyrogue.Device.SystemRegs.SystemRegs:Making device SystemRegs
+INFO:pyrogue.Device.AcqCore.AcqCore:Making device AcqCore
+INFO:pyrogue.Device.RdoutCore.RdoutCore:Making device RdoutCore
+INFO:pyrogue.Device.AxiStreamMonAxiL.RdoutStreamMonitoring:Making device RdoutStreamMonitoring
+INFO:pyrogue.Device.AxiStreamMonChannel.Ch[0]:Making device Ch[0]
+INFO:pyrogue.Device.SsiPrbsTx.PrbsTx:Making device PrbsTx
+INFO:pyrogue.Device.PseudoScopeCore.PseudoScopeCore:Making device PseudoScopeCore
+INFO:pyrogue.Device.VguardDac.VguardDac:Making device VguardDac
+INFO:pyrogue.Device.EpixQuadMonitor.EpixQuadMonitor:Making device EpixQuadMonitor
+INFO:pyrogue.Device.AxiMemTester.AxiMemTester:Making device AxiMemTester
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[0]:Making device Epix10kaSaci[0]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[1]:Making device Epix10kaSaci[1]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[2]:Making device Epix10kaSaci[2]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[3]:Making device Epix10kaSaci[3]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[4]:Making device Epix10kaSaci[4]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[5]:Making device Epix10kaSaci[5]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[6]:Making device Epix10kaSaci[6]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[7]:Making device Epix10kaSaci[7]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[8]:Making device Epix10kaSaci[8]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[9]:Making device Epix10kaSaci[9]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[10]:Making device Epix10kaSaci[10]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[11]:Making device Epix10kaSaci[11]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[12]:Making device Epix10kaSaci[12]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[13]:Making device Epix10kaSaci[13]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[14]:Making device Epix10kaSaci[14]
+INFO:pyrogue.Device.Epix10kaAsic.Epix10kaSaci[15]:Making device Epix10kaSaci[15]
+INFO:pyrogue.Device.SaciConfigCore.SaciConfigCore:Making device SaciConfigCore
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[0]:Making device Ad9249Config[0]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[1]:Making device Ad9249Config[1]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[2]:Making device Ad9249Config[2]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[3]:Making device Ad9249Config[3]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[4]:Making device Ad9249Config[4]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[5]:Making device Ad9249Config[5]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[6]:Making device Ad9249Config[6]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[7]:Making device Ad9249Config[7]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[8]:Making device Ad9249Config[8]
+INFO:pyrogue.Device.Ad9249ConfigGroup.Ad9249Config[9]:Making device Ad9249Config[9]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[0]:Making device Ad9249Readout[0]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[1]:Making device Ad9249Readout[1]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[2]:Making device Ad9249Readout[2]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[3]:Making device Ad9249Readout[3]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[4]:Making device Ad9249Readout[4]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[5]:Making device Ad9249Readout[5]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[6]:Making device Ad9249Readout[6]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[7]:Making device Ad9249Readout[7]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[8]:Making device Ad9249Readout[8]
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Ad9249Readout[9]:Making device Ad9249Readout[9]
+INFO:pyrogue.Device.AdcTester.Ad9249Tester:Making device Ad9249Tester
+INFO:pyrogue.Device.StreamRepeater.StreamRepeater:Making device StreamRepeater
+INFO:pyrogue.Device.CypressS25Fl.CypressS25Fl:Making device CypressS25Fl
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=44 block offset=44 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.AcqCore.Top.AcqCore:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.AxiStreamMonAxiL.Top.RdoutStreamMonitoring:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=0 block offset=0 block bytes=4
+INFO:pyrogue.Device.SsiPrbsTx.Top.PrbsTx:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=8 block offset=8 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=16 block offset=16 block bytes=4
+INFO:pyrogue.Device.PseudoScopeCore.Top.PseudoScopeCore:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.AxiMemTester.Top.AxiMemTester:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.AxiMemTester.Top.AxiMemTester:Overlap detected var offset=256 block offset=256 block bytes=4
+INFO:pyrogue.Device.AxiMemTester.Top.AxiMemTester:Overlap detected var offset=300 block offset=300 block bytes=4
+INFO:pyrogue.Device.AxiMemTester.Top.AxiMemTester:Overlap detected var offset=300 block offset=300 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[0]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[1]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[2]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[3]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[4]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[5]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[6]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[7]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[8]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[9]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[10]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[11]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[12]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[13]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[14]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16388 block offset=16388 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16396 block offset=16396 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16400 block offset=16400 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16404 block offset=16404 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16408 block offset=16408 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16412 block offset=16412 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16416 block offset=16416 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16420 block offset=16420 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16424 block offset=16424 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16428 block offset=16428 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16432 block offset=16432 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16436 block offset=16436 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16440 block offset=16440 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16444 block offset=16444 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16448 block offset=16448 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16472 block offset=16472 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16476 block offset=16476 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16480 block offset=16480 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16484 block offset=16484 block bytes=4
+INFO:pyrogue.Device.Epix10kaAsic.Top.Epix10kaSaci[15]:Overlap detected var offset=16488 block offset=16488 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[0]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[0]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[0]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[0]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[0]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[1]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[1]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[1]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[1]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[1]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[2]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[2]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[2]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[2]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[2]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[3]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[3]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[3]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[3]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[3]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[4]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[4]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[4]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[4]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[4]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[5]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[5]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[5]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[5]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[5]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[6]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[6]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[6]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[6]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[6]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[7]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[7]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[7]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[7]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[7]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[8]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[8]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[8]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[8]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[8]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[9]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[9]:Overlap detected var offset=20 block offset=20 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[9]:Overlap detected var offset=32 block offset=32 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[9]:Overlap detected var offset=52 block offset=52 block bytes=4
+INFO:pyrogue.Device.Ad9249ConfigGroup.Top.Ad9249Config[9]:Overlap detected var offset=80 block offset=80 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[0]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[1]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[2]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[3]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[4]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[5]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[6]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[7]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[8]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Device.Ad9249ReadoutGroup.Top.Ad9249Readout[9]:Overlap detected var offset=48 block offset=48 block bytes=4
+INFO:pyrogue.Root.Top.Top:Starting update thread
+INFO:psdaq.sim.rogue_dev:seed Top.SystemRegs.AdcTestDone @AxiStreamDma(sim://127.0.0.1:31052,0x1)+0x10050c = 0x1 (reads True)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.PrbsTx.AxiEn (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.AxiMemTester.Passed (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[0].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[1].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[2].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[3].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[4].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[5].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[6].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[7].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[8].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[9].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[10].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[11].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[12].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[13].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[14].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Epix10kaSaci[15].CompTH_DAC (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.SaciConfigCore.ConfWrReq (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[0].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[1].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[2].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[3].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[4].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[5].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[6].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[7].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[8].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Config[9].ChipId (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[0].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[1].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[2].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[3].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[4].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[5].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[6].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[7].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[8].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Readout[9].ChannelDelay[0] (0 answered)
+WARNING:psdaq.sim.rogue_dev:rogue_dev: cannot tell which simulated transport serves Top.Ad9249Tester.TestChannel (0 answered)
+WARNING:psdaq.sim.rogue_dev:FAULT Top.SystemRegs.TrigEn @AxiStreamDma(sim://127.0.0.1:31052,0x1)+0x100400 reads back 0x0
+rogue_dev: FAULT Top.SystemRegs.TrigEn @AxiStreamDma(sim://127.0.0.1:31052,0x1)+0x100400 reads back 0x0
+Start: Started zmqServer on ports 9103-9105
+    To start a gui: python -m pyrogue gui --server='localhost:9103'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9103)
+INFO:pyrogue.PollQueue:PollQueue Started
+firmwareVersion [0]
+buildStamp      []
+gitHash         [0]
+INFO:root:epixquad_unconfig
+INFO:root:StopRun() executed
+INFO:root:stopRun eventBuilder: [<class 'surf.protocols.batcher._AxiStreamBatcherEventBuilder.AxiStreamBatcherEventBuilder'> - DevRoot.DevPcie.Application.AppLane[0].EventBuilder]
+INFO:root:stopRun trigger: [<class 'l2si_core._TriggerEventBuffer.TriggerEventBuffer'> - DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0]]
+INFO:root:Using timebase 186M
+tst-drp[2277431]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[2277431]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixquad-fault/data/tst
+tst-drp[2277431]: <I> Output dir: ready
+tst-drp[2277431]: <I> BufferedFileWriterMT is starting with process ID 2277693
+tst-drp[2277431]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[2277431]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[2277431]: <I> Ready for transitions
+tst-drp[2277431]: <I> received key = rollcall @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> received key = rollcall @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> received key = rollcall @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> received key = rollcall @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> received key = rollcall @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> received key = alloc @ Mon Nov  9 01:45:02 2026
+tst-drp[2277431]: <I> Using requested interface lo, address 127.0.0.1
+INFO:root:RxId ff000000
+INFO:root:TxId f7003094
+*** BebDetector: paddr is ff000000 = 4278190080
+tst-drp[2277431]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2277431]: <I> received key = connect @ Mon Nov  9 01:45:03 2026
+tst-drp[2277431]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[2277431]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[2277431]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[2277431]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[2277431]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[2277431]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[2277431]: <I> Outbound link with TEB ID  0 at 127.0.0.1:43653 connected
+tst-drp[2277431]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[2277431]: <I> BEBDetector connect
+tst-drp[2277431]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[2277431]: <I> BEBDetector: sim payload seed 0x1234
+tst-drp[2277431]: <I> received key = configure @ Mon Nov  9 01:45:04 2026
+tst-drp[2277431]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[2277431]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 4 64 entry batches of 40 B
+tst-drp[2277431]: <I> Outbound link with TEB ID  0, 0x555e1179e000 : 0x555e117a0800 (00002800), configured in    0 ms
+tst-drp[2277431]: <I> Allocated 0.0 GB region for 256 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[2277431]: <I> Inbound  link with TEB ID  0, 0x555e117a2000 : 0x555e117a4800 (00002800), configured in    0 ms
+ERROR:pyrogue.Variable.RemoteVariable.Top.SystemRegs.TrigEn:Block::checkTransaction: General Error: Verify error for block Top.SystemRegs.TrigEn with address 0x00100400. Byte: 0. Got: 0x00, Exp: 0x01, Mask: 0x01
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1185, in set
+    self._parent.checkBlocks(recurse=False, variable=self)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Device.py", line 635, in checkBlocks
+    pr.checkTransaction(variable._block, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Block.py", line 70, in checkTransaction
+    block._checkTransaction()
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Top.SystemRegs.TrigEn with address 0x00100400. Byte: 0. Got: 0x00, Exp: 0x01, Mask: 0x01
+ERROR:pyrogue.Variable.RemoteVariable.Top.SystemRegs.TrigEn:Error setting value '1' to variable 'Top.SystemRegs.TrigEn' with type Bool. Exception=Block::checkTransaction: General Error: Verify error for block Top.SystemRegs.TrigEn with address 0x00100400. Byte: 0. Got: 0x00, Exp: 0x01, Mask: 0x01
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/epixquad_config.py", line 510, in epixquad_config
+    if _checkADCs() != 0:
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/epixquad_config.py", line 710, in _checkADCs
+    epixquad_external_trigger(base)
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/epixquad_config.py", line 769, in epixquad_external_trigger
+    cbase.SystemRegs.TrigEn.set(1)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1190, in set
+    raise e
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1185, in set
+    self._parent.checkBlocks(recurse=False, variable=self)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Device.py", line 635, in checkBlocks
+    pr.checkTransaction(variable._block, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Block.py", line 70, in checkTransaction
+    block._checkTransaction()
+rogue.GeneralError: Block::checkTransaction: General Error: Verify error for block Top.SystemRegs.TrigEn with address 0x00100400. Byte: 0. Got: 0x00, Exp: 0x01, Mask: 0x01
+tst-drp[2277431]: <C> **** python error
+@@@ Current time: Mon Nov  9 01:45:04 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 2277431. The process was killed by signal 6

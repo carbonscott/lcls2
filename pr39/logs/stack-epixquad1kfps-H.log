@@ -1,0 +1,88 @@
+host=sdfmilan048 job=43839059 step=450 head=6b226e5d7 dirty=0 date=2026-11-09T02:08:40-08:00
+=== STEP configdb
+configdb: http://127.0.0.1:33697/ws/ tst/BEAM/epixquad1kfps_0 (key, written): (1, True)
+=== STEP install rogue_dev(sim://epixquad1kfps)
+seeds: 6 fault: None
+=== STEP import psdaq.configdb.epixquad1kfps_config
+=== STEP epixquad1kfps_init
+Fatal Python error: Aborted
+
+Thread 0x00007f7367fff640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_PollQueue.py", line 149 in _poll
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f738affd640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 684 in _hbeatWorker
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f738a7fc640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/queue.py", line 171 in get
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 1011 in _updateWorker
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f7389ffb640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/queue.py", line 171 in get
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/firmware/submodules/surf/python/surf/axi/_AxiLiteMasterProxy.py", line 80 in _pollWorker
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f73a0ff9640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/queue.py", line 171 in get
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/sim/rogue_dev.py", line 293 in _run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f73a17fa640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_PollQueue.py", line 149 in _poll
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f73a3fff640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 684 in _hbeatWorker
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Thread 0x00007f73acf64640 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 312 in wait
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/queue.py", line 171 in get
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 1011 in _updateWorker
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 917 in run
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 980 in _bootstrap_inner
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 937 in _bootstrap
+
+Current thread 0x00007f73c814f1c0 (most recent call first):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/threading.py", line 365 in notify
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/queue.py", line 152 in put
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/sim/rogue_dev.py", line 289 in _acceptFrame
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Block.py", line 50 in startTransaction
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Device.py", line 532 in writeBlocks
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Variable.py", line 1181 in set
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/firmware/submodules/surf/python/surf/devices/micron/_AxiMicronN25Q.py", line 442 in setCmdReg
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/firmware/submodules/surf/python/surf/devices/cypress/_CypressS25Fl.py", line 105 in waitForFlashReady
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/firmware/submodules/surf/python/surf/devices/micron/_AxiMicronN25Q.py", line 414 in setCmd
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/firmware/submodules/surf/python/surf/devices/cypress/_CypressS25Fl.py", line 98 in resetFlash
+  File "/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026/epix-quad-1kfps/software/python/ePixQuad/Top.py", line 1004 in start
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pyrogue/_Root.py", line 170 in __enter__
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/epixquad1kfps_config.py", line 783 in epixquad_init
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/configdb/epixquad1kfps_config.py", line 1449 in epixquad1kfps_init
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/sim/rogue_drive.py", line 133 in main
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/python3.9/site-packages/psdaq/sim/rogue_drive.py", line 188 in <module>
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 87 in _run_code
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/runpy.py", line 197 in _run_module_as_main
+timeout: the monitored command dumped core
+DRIVE_EXIT=124

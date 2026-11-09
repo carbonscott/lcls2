@@ -1,0 +1,39 @@
+cspad on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:55:00 PST
+UP_EXIT=0
+2026-11-09T05:55:23.239-08:00 daq_sim: preflight rc=0: 05:55:23 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:55:24.549-08:00 daq_sim: config DB seeded: tst/BEAM/cspad_0 key=2 written
+2026-11-09T05:55:32.056-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        2058
+  TEB_WrtCt              2058
+  DRP_Damage             0
+  psana2 events          2058
+  psana2 with data       2058
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:55:46.049-08:00 evidence 20261109T055546-cycle-ffaddcbde-2987992: det:drp:cspad prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T05:55:46.101-08:00 cycle PASS
+-- cspad DRP log: its config code
+tst-drp[2987767]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:XPM remote link id 0xff000000: XPM:0 link 0 = QSFP0-0 (10.0.0.100)
+tst-drp[2987767]: <I> XpmDetector: emulated RxId 0xff000000; link id 0x0 from simxpm
+tst-drp[2987767]: <I> MemPoolSim: readout group 5, 64 payload words per lane
+tst-drp[2987767]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/cspad_0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2058; with cspad data 2058; w3 == seed 2058 (seeds seen {0x1234: 2058}); payload pattern ok 2058; w0/w1 pulseId rising a
+  seq (w2) 1..2058 gap-free from 1: True
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det cspad --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector cspad raw shape [1, 128]
+  L1Accept events 2058; with cspad data 2058; w3 == seed 2058 (seeds seen {0x1234: 2058}); payload pattern ok 0; w0/w1 pulseId rising and 
+  seq (w2) 1..2058 gap-free from 1: True
+  problem: event 1: payload pattern broken
+  problem: event 2: payload pattern broken
+  problem: event 3: payload pattern broken
+  problem: event 4: payload pattern broken
+rc=1
+DOWN_EXIT=0
+2026-11-09T05:56:01.408-08:00 daq_sim: down: clean
+TYPERUN_DONE cspad 05:56:01

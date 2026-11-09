@@ -1,0 +1,48 @@
+piranha4 on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 05:50:03 PST
+UP_EXIT=0
+2026-11-09T05:50:26.931-08:00 daq_sim: preflight rc=0: 05:50:26 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T05:50:30.749-08:00 daq_sim: config DB seeded: tst/BEAM/piranha4_0 key=2 written
+2026-11-09T05:50:38.209-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1986
+  TEB_WrtCt              1986
+  DRP_Damage             0
+  psana2 events          1986
+  psana2 with data       1986
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T05:50:55.394-08:00 evidence 20261109T055055-cycle-ffaddcbde-2973065: det:drp:piranha4 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T05:50:55.451-08:00 cycle PASS
+-- piranha4 DRP log: its config code
+tst-drp[2972841]: <I> BEBDetector: piranha4 config runs against simulated device sim://127.0.0.1:31052
+piranha4_init (i2c_setup:186M)
+UartPiranha4: recvString: OK
+UartPiranha4: recvString: USER>Model #:	P4_CM_02K10D_00_R
+UartPiranha4: recvString: Serial #:	00000001
+UartPiranha4: recvString: BiST:	Good
+UartPiranha4: recvString: CPA:	0 4095 0
+check clock rate: 185.714286
+model P4_CM_02K10D_00_R
+serno 00000001
+UartPiranha4: recvString: USER>Internal Temperature:	40.0 C
+UartPiranha4: recvString: USER>Supply Voltage:	12.0 V
+tst-drp[2972841]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2972841]: <I> BEBDetector: sim payload seed 0x1234
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det piranha4 --seed 0x1234 
+  experiment tstx00001 run 1 detector piranha4 raw shape [2048]
+  L1Accept events 1986; with piranha4 data 1986; events matching the pattern of seed 0x1234: 1986
+  check: per pixel, pattern(seed, seq, i, 12)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det piranha4 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector piranha4 raw shape [2048]
+  L1Accept events 1986; with piranha4 data 1986; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 12), self-test offset 1
+  problem: event 1: 2048 of 2048 pixels differ, first at (0,): 0x6b != 0x1e9
+  problem: event 2: 2048 of 2048 pixels differ, first at (0,): 0xea2 != 0x20
+  problem: event 3: 2048 of 2048 pixels differ, first at (0,): 0xcd9 != 0xe57
+  problem: event 4: 2048 of 2048 pixels differ, first at (0,): 0xb10 != 0xc8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T05:51:10.454-08:00 daq_sim: down: clean
+TYPERUN_DONE piranha4 05:51:10

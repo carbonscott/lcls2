@@ -1,0 +1,30 @@
+mh39 on sdfmilan048 job 43839059 step 571 start 2026-11-09T05:45:40-08:00
+host=sdfmilan048 wt=wt-types2 head=ffaddcbde dirty=0 date=2026-11-09T05:45:45-08:00 job=43839059 step=571
+BUILD_EXIT=0
+.......................................................                  [100%]
+127 passed in 77.39s (0:01:17)
+PYTEST_EXIT=0
+opal: 1 cycle-PASS;   simxpm NumL0Acc        1693   psana2 events          1693 ; down: 1
+piranha4: 1 cycle-PASS;   simxpm NumL0Acc        1986   psana2 events          1986 ; down: 1
+tb: 1 cycle-PASS;   simxpm NumL0Acc        1963   psana2 events          1963 ; down: 1
+epixquad: 1 cycle-PASS;   simxpm NumL0Acc        1902   psana2 events          1902 ; down: 1
+fakecam: 1 cycle-PASS;   simxpm NumL0Acc        1985   psana2 events          1985 ; down: 1
+cspad: 1 cycle-PASS;   simxpm NumL0Acc        2058   psana2 events          2058 ; down: 1
+epixhremu: 1 cycle-PASS;   simxpm NumL0Acc        1999   psana2 events          1999 ; down: 1
+jungfrauemu: 1 cycle-PASS;   simxpm NumL0Acc        2003   psana2 events          2003 ; down: 1
+ts: 1 cycle-PASS;   simxpm NumL0Acc        1972   psana2 events          1972 ; down: 1
+hrencoder: 1 cycle-PASS;   simxpm NumL0Acc        2047   psana2 events          2047 ; down: 1
+epixm320: 1 cycle-PASS;   simxpm NumL0Acc        1995   psana2 events          1995 ; down: 1
+epix100: 1 cycle-PASS;   simxpm NumL0Acc        2046   psana2 events          2046 ; down: 1
+wave8: 1 cycle-PASS;   simxpm NumL0Acc        1963   psana2 events          1963 ; down: 1
+wave8he: 1 cycle-PASS;   simxpm NumL0Acc        1894   psana2 events          1894 ; down: 1
+COVERAGE_EXIT=1
+96 lines in cov.txt
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+78 rows, 17 run, 1 stand-in, 3 N/A, 57 unproven, 0 claimed without valid evidence
+COVERAGE_EXIT=1
+97 lines in cov-no-tb.txt
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+det:drp:tb                     RUN       NO VALID EVIDENCE at HEAD ffaddcbde
+78 rows, 16 run, 1 stand-in, 3 N/A, 57 unproven, 1 claimed without valid evidence
+MH39_DONE 2026-11-09T06:13:42-08:00

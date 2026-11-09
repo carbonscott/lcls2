@@ -1,0 +1,19 @@
+2026-11-09T01:35:42.215-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 428), platform 5, workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault
+2026-11-09T01:35:42.215-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T01:36:05.279-08:00 daq_sim: preflight rc=0: 01:36:05 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:36:09.170-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-09T01:36:09.170-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T01:36:09.170-08:00 daq_sim: config DB seeded: tst/BEAM/opal_0 key=2 written
+2026-11-09T01:36:10.991-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T01:36:16.719-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, opal_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault/daq_sim.cnf  pids {'control': 2249248, 'teb0': 2249249, 'opal_0': 2249250}  logs /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault/pmlogs
+  data         /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault/data  (xtc2 written when recording)
+  prometheus   /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault --events 1000   or   daq_sim e2e -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-opal-fault

@@ -1,0 +1,19 @@
+2026-11-09T01:54:48.632-08:00 daq_sim: up on sdfmilan048 (job 43839059 step 438), platform 5, workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder
+2026-11-09T01:54:48.632-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T01:55:11.445-08:00 daq_sim: preflight rc=0: 01:55:11 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T01:55:17.055-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+2026-11-09T01:55:17.055-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T01:55:17.055-08:00 daq_sim: config DB seeded: tst/BEAM/hrencoder_0 key=2 written
+2026-11-09T01:55:18.882-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T01:55:24.516-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan048 (Slurm job 43839059)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, hrencoder_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/daq_sim.cnf  pids {'control': 2300803, 'teb0': 2300804, 'hrencoder_0': 2300805}  logs /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/pmlogs
+  data         /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/data  (xtc2 written when recording)
+  prometheus   /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder --events 1000   or   daq_sim e2e -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-hrencoder

@@ -1,0 +1,360 @@
+# ID:      epixm320_0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: drp -P tst -C localhost -D epixm320 -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data -k ep_domain=lo,ep_provider=tcp,sim_dma_size=0xa0000,sim_dma_count=256,sim_seed=0x1234 -M /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/prom -u epixm320_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_01:56:32_sdfmilan048:epixm320_0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/bin/drp)
+@@@ The PID of new child "2026/11/09_01:56:32_sdfmilan048:epixm320_0.log" is: 2303677
+@@@ @@@ @@@ @@@ @@@
+tst-drp[2303677]: <I> logging configured
+tst-drp[2303677]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[2303677]: <I> MemPoolSim: epixm320 data framed as EventBatcher subframes (up to 590280 B of data)
+tst-drp[2303677]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp[2303677]: <I> dmaCount 256,  dmaSize 655360
+tst-drp[2303677]: <I> Allocated 1.2 GB pebble for 128 transitions of 8388608 B and 256 L1Accepts of 655360 B
+tst-drp[2303677]: <I> nL1Buffers 256,  pebble buffer size 655360 B
+tst-drp[2303677]: <I> nTrBuffers 128,  transition buffer size 8388608 B
+tst-drp[2303677]: <I> MemPoolSim: simxpm registered epixm320_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp[2303677]: <I> BEBDetector: epixm320 config runs against simulated device sim://127.0.0.1:31052
+WARNING:root:epixm320_init
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+Root.Core.Si5345Pll.Page0.DataBlock.setPollInterval(1)
+Start: Started zmqServer on ports 9103-9105
+    To start a gui: python -m pyrogue gui --server='localhost:9103'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9103)
+Root.Core.AxiVersion count reset called
+firmwareVersion [0]
+buildDate       []
+gitHashShort    [dirty (uncommitted code)]
+WARNING:root:Using timebase 186M
+WARNING:root:epixm320_unconfig
+_stop
+Root.App.StopRun() executed
+TriggerEventBuffer[0] turned off
+TriggerEventBuffer[1] turned off
+BatcherEventBuilder0 flushed
+BatcherEventBuilder1 flushed
+BatcherEventBuilder2 flushed
+BatcherEventBuilder3 flushed
+ConfigLclsTimingV2()
+ConfigLclsTimingV2() Done
+rxId ff000000 found after 0s
+tst-drp[2303677]: <I> Prometheus run-time monitoring data is on port 9201
+tst-drp[2303677]: <I> Output dir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst
+tst-drp[2303677]: <I> Output dir: ready
+tst-drp[2303677]: <I> Allocated 1.1 GB for 2 buffers of 536870912 B in BufferedFileWriterMT
+tst-drp[2303677]: <I> BufferedFileWriterMT is starting with process ID 2303894
+tst-drp[2303677]: <I> Allocated 0.0 GB for 1 buffers of 8388608 B in BufferedFileWriter
+tst-drp[2303677]: <I> Ready for transitions
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = rollcall @ Mon Nov  9 01:56:43 2026
+tst-drp[2303677]: <I> received key = alloc @ Mon Nov  9 01:56:44 2026
+tst-drp[2303677]: <I> Using requested interface lo, address 127.0.0.1
+*** BebDetector: paddr is ff000000 = 4278190080
+tst-drp[2303677]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[2303677]: <I> received key = connect @ Mon Nov  9 01:56:44 2026
+tst-drp[2303677]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-drp[2303677]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-drp[2303677]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-drp[2303677]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-drp[2303677]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-drp[2303677]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-drp[2303677]: <I> Outbound link with TEB ID  0 at 127.0.0.1:35919 connected
+tst-drp[2303677]: <I> Inbound  link with TEB ID  0 connected
+tst-drp[2303677]: <I> BEBDetector connect
+tst-drp[2303677]: <I> MemPoolSim: readout group 5, 0 payload words per lane
+tst-drp[2303677]: <I> BEBDetector: sim payload seed 0x1234
+tst-drp[2303677]: <I> received key = configure @ Mon Nov  9 01:56:45 2026
+tst-drp[2303677]: <I> Created generic TriggerPrimitive [create_producer]
+tst-drp[2303677]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+Allocated 0.0 GB region for 4 64 entry batches of 40 B
+tst-drp[2303677]: <I> Outbound link with TEB ID  0, 0x5559454f4000 : 0x5559454f6800 (00002800), configured in    0 ms
+tst-drp[2303677]: <I> Allocated 0.0 GB region for 256 result buffers of 40 B for inbound link with TEB ID 0
+tst-drp[2303677]: <I> Inbound  link with TEB ID  0, 0x5559454f8000 : 0x5559454fa800 (00002800), configured in    0 ms
+WARNING:root:partitionDelay[6] 0  rawStart 107749  triggerDelay 20010
+WARNING:root:partitionDelay[5] 0  rawStart 107749  triggerDelay 20010
+[expert.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay] : 20010
+[expert.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay] : 20010
+[expert.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition] : 6
+[expert.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].Partition] : 5
+[expert.App.Mv2Asic[0].CompTH_ePixM] : 24
+[expert.App.Mv2Asic[0].Precharge_DAC_ePixM] : 50
+[expert.App.Mv2Asic[1].CompTH_ePixM] : 24
+[expert.App.Mv2Asic[1].Precharge_DAC_ePixM] : 50
+[expert.App.Mv2Asic[2].CompTH_ePixM] : 24
+[expert.App.Mv2Asic[2].Precharge_DAC_ePixM] : 50
+[expert.App.Mv2Asic[3].CompTH_ePixM] : 24
+[expert.App.Mv2Asic[3].Precharge_DAC_ePixM] : 50
+_stop
+Root.App.StopRun() executed
+TriggerEventBuffer[0] turned off
+TriggerEventBuffer[1] turned off
+BatcherEventBuilder0 flushed
+BatcherEventBuilder1 flushed
+BatcherEventBuilder2 flushed
+BatcherEventBuilder3 flushed
+=== external triggering ===
+Set Timing Trigger command executed
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].PauseThreshold to 16
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay to 20010
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition to 6
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].PauseThreshold to 16
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay to 20010
+Setting cbase.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].Partition to 5
+=== configure bypass [0, 0, 0, 0] ===
+Wrote /tmp/ePixM320_PowerSupply.yml
+Wrote /tmp/ePixM320_DESER.yml
+Wrote /tmp/ePixM320_WaveForms.yml
+Wrote /tmp/ePixM320_PacketReg.yml
+Wrote /tmp/ePixM320_Batcher.yml
+Wrote /tmp/ePixM320_ASIC_u1.yml
+Wrote /tmp/ePixM320_ASIC_u2.yml
+Wrote /tmp/ePixM320_ASIC_u3.yml
+Wrote /tmp/ePixM320_ASIC_u4.yml
+Loading supply configuration
+Loaded /tmp/ePixM320_PowerSupply.yml
+WARNING:root:Calling fnInitAsicScript(None,None,[4, 1, 1, 1, 1])
+Init ASIC script started
+Loading PLL configuration
+Loading lane delay configurations
+Loading /tmp/ePixM320_DESER.yml
+Loading waveforms configuration
+ERROR:pyrogue.Device.App.Root.App:Entry ForceWrite not found
+ERROR:pyrogue.Device.App.Root.App:Entry InitAfterConfig not found
+Loading /tmp/ePixM320_WaveForms.yml
+Loading batcher configurations
+ERROR:pyrogue.Device.App.Root.App:Entry ForceWrite not found
+ERROR:pyrogue.Device.App.Root.App:Entry InitAfterConfig not found
+Loading /tmp/ePixM320_Batcher.yml
+Loading packet register configurations
+ERROR:pyrogue.Device.App.Root.App:Entry ForceWrite not found
+ERROR:pyrogue.Device.App.Root.App:Entry InitAfterConfig not found
+Loading /tmp/ePixM320_PacketReg.yml
+Taking asic off of reset
+Loading ASICs and timing configuration
+Loading /tmp/ePixM320_ASIC_u1.yml
+Loading /tmp/ePixM320_ASIC_u2.yml
+Loading /tmp/ePixM320_ASIC_u3.yml
+Loading /tmp/ePixM320_ASIC_u4.yml
+Initialization routine completed.
+Disabling batchers
+Disabling batchers
+Disabling batchers
+Disabling batchers
+Stop Triggers command executed
+Set Auto Trigger command executed
+Start Auto Trigger command executed
+Triggers sent: 2500
+Stop Triggers command executed
+ASIC lane adjustment completed unsuccessfully
+[1mDisabled lanes of asic 0 now is 0x0[0m
+[1mDisabled lanes of asic 1 now is 0x0[0m
+[1mDisabled lanes of asic 2 now is 0x0[0m
+[1mDisabled lanes of asic 3 now is 0x0[0m
+Setting gain mode 2:  CompTH 24,  Precharge_DAC 50
+WARNING:root:config_expert complete
+_start
+Root.App.StartRun() executed
+BatcherEventBuilder0 armed
+BatcherEventBuilder1 armed
+BatcherEventBuilder2 armed
+BatcherEventBuilder3 armed
+TriggerEventBuffer[0] turned on
+TriggerEventBuffer[1] turned on
+gain_mode 2  CompTH_ePixM [24, 24, 24, 24]  Precharge_DAC_ePixM [50, 50, 50, 50]
+ePixM320k ids: f/w 0, carrier 0, digital 0, pwrComm 0
+ePixM320k id: 0000000000-0000000000-0000000000-0000000000-0000000000-0000000000-0000000000
+WARNING:root:json seg 0  detname epixm320hw_0
+WARNING:root:json seg 1  detname epixm320_0
+tst-drp[2303677]: <I> 
+tst-drp[2303677]: <I> Parameters of Contributor ID 0 (127.0.0.1:44489):
+tst-drp[2303677]: <I>   CPU allocation: granted 16 CPUs on NUMA node 0: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+tst-drp[2303677]: <I>   Instrument:                   tst
+tst-drp[2303677]: <I>   Partition:                    5
+tst-drp[2303677]: <I>   Alias (detName, detSeg):      epixm320_0 ('epixm320', 0)
+tst-drp[2303677]: <I>   Readout group receipient:     0x20
+tst-drp[2303677]: <I>   Readout group contractor:     0x20
+tst-drp[2303677]: <I>   Bit list of TEBs:             0x0000000000000001, cnt: 1
+tst-drp[2303677]: <I>   Number of MEBs:               0
+tst-drp[2303677]: <I>   Batching state:               Enabled
+tst-drp[2303677]: <I>   Batch duration:               0x00000000000040 = 64 ticks
+tst-drp[2303677]: <I>   Batch pool depth:             0x00000004 = 4
+tst-drp[2303677]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-drp[2303677]: <I>   # of TEB contrib.   buffers:  0x00000100 = 256
+tst-drp[2303677]: <I>   # of TEB transition buffers:  0x00000080 = 128
+tst-drp[2303677]: <I>   Max  TEB contribution  size:  0x00000028 = 40
+tst-drp[2303677]: <I>   Max  MEB L1Accept      size:  0x000a0000 = 655360
+tst-drp[2303677]: <I>   Max  MEB transition    size:  0x00800000 = 8388608
+tst-drp[2303677]: <I>   # of MEB transition buffers:  0x00000018 = 24
+tst-drp[2303677]: <I> 
+tst-drp[2303677]: <I> TEB Receiver thread is starting with process ID 2304431
+tst-drp[2303677]: <I> Worker 0 is starting with process ID 2304432
+tst-drp[2303677]: <I> Worker 3 is starting with process ID 2304435
+tst-drp[2303677]: <I> TEBreceiver: pinned to CPU 0
+tst-drp[2303677]: <I> Worker 2 is starting with process ID 2304434
+tst-drp[2303677]: <I> Worker 1 is starting with process ID 2304433
+tst-drp[2303677]: <I> Worker 7 is starting with process ID 2304439
+tst-drp[2303677]: <I> drp/Worker0: pinned to CPU 1
+tst-drp[2303677]: <I> Worker 9 is starting with process ID 2304441
+tst-drp[2303677]: <I> drp/Worker3: pinned to CPU 2
+tst-drp[2303677]: <I> Collector is starting with process ID 2304443
+tst-drp[2303677]: <I> drp/Worker2: pinned to CPU 3
+tst-drp[2303677]: <I> Worker 4 is starting with process ID 2304436
+tst-drp[2303677]: <I> Worker 8 is starting with process ID 2304440
+tst-drp[2303677]: <I> drp/Worker8: pinned to CPU 9
+tst-drp[2303677]: <I> drp/Worker7: pinned to CPU 5
+tst-drp[2303677]: <I> Worker 5 is starting with process ID 2304437
+tst-drp[2303677]: <I> PGP reader is starting with process ID 2304442
+tst-drp[2303677]: <I> drp/Worker9: pinned to CPU 6
+tst-drp[2303677]: <I> Worker 6 is starting with process ID 2304438
+tst-drp[2303677]: <I> Collector: pinned to CPU 7
+tst-drp[2303677]: <I> drp/Worker4: pinned to CPU 8
+tst-drp[2303677]: <I> drp/Worker1: pinned to CPU 4
+tst-drp[2303677]: <I> PGPDrp: 54 threads (13 of them ours and hot) in 16 granted CPUs
+tst-drp[2303677]: <I> drp/Worker5: pinned to CPU 10
+tst-drp[2303677]: <I> PGPreader: pinned to CPU 11
+tst-drp[2303677]: <I> drp/Worker6: pinned to CPU 12
+tst-drp[2303677]: <I> PGPReader  saw    Configure @ 1163066214.960072428 (04732c0768654d)
+tst-drp[2303677]: <I> TebCtrb   sent    Configure @ 1163066214.960072428 (04732c0768654d) to TEB ID 0 @   0x55c27bcd5000 (00000000 + 0 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw    Configure @ 1163066214.960072428 (04732c0768654d)
+tst-drp[2303677]: <I> received key = beginrun @ Mon Nov  9 01:56:55 2026
+Opening file /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+tst-drp[2303677]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2'
+tst-drp[2303677]: <I> Opening file '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof39/rec/wd-epixm320/data/tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2'
+tst-drp[2303677]: <I> PGPReader  saw     BeginRun @ 1163066216.086141790 (04732c077ae660)
+tst-drp[2303677]: <I> TebCtrb   sent     BeginRun @ 1163066216.086141790 (04732c077ae660) to TEB ID 0 @   0x55c27bcd5028 (00000000 + 1 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw     BeginRun @ 1163066216.086141790 (04732c077ae660)
+tst-drp[2303677]: <I> received key = beginstep @ Mon Nov  9 01:56:56 2026
+tst-drp[2303677]: <I> PGPReader  saw    BeginStep @ 1163066216.103194233 (04732c077b2e1c)
+tst-drp[2303677]: <I> TebCtrb   sent    BeginStep @ 1163066216.103194233 (04732c077b2e1c) to TEB ID 0 @   0x55c27bcd5050 (00000000 + 2 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw    BeginStep @ 1163066216.103194233 (04732c077b2e1c)
+tst-drp[2303677]: <I> received key = enable @ Mon Nov  9 01:56:56 2026
+=== external triggering ===
+Set Timing Trigger command executed
+tst-drp[2303677]: <I> PGPReader  saw       Enable @ 1163066216.108594670 (04732c077b44d4)
+tst-drp[2303677]: <I> TebCtrb   sent       Enable @ 1163066216.108594670 (04732c077b44d4) to TEB ID 0 @   0x55c27bcd5078 (00000000 + 3 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw       Enable @ 1163066216.108594670 (04732c077b44d4)
+tst-drp[2303677]: <I> received key = disable @ Mon Nov  9 01:56:58 2026
+tst-drp[2303677]: <I> PGPReader  saw      Disable @ 1163066218.060885082 (04732c079b5996)
+tst-drp[2303677]: <I> TebCtrb   sent      Disable @ 1163066218.060885082 (04732c079b5996) to TEB ID 0 @   0x55c27bcd69f0 (00000000 + 166 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw      Disable @ 1163066218.060885082 (04732c079b5996)
+tst-drp[2303677]: <I> received key = endstep @ Mon Nov  9 01:56:59 2026
+tst-drp[2303677]: <I> PGPReader  saw      EndStep @ 1163066219.120491680 (04732c07acc311)
+tst-drp[2303677]: <I> TebCtrb   sent      EndStep @ 1163066219.120491680 (04732c07acc311) to TEB ID 0 @   0x55c27bcd6a18 (00000000 + 167 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw      EndStep @ 1163066219.120491680 (04732c07acc311)
+tst-drp[2303677]: <I> received key = endrun @ Mon Nov  9 01:56:59 2026
+tst-drp[2303677]: <I> PGPReader  saw       EndRun @ 1163066219.129444793 (04732c07ace8bb)
+tst-drp[2303677]: <I> TebCtrb   sent       EndRun @ 1163066219.129444793 (04732c07ace8bb) to TEB ID 0 @   0x55c27bcd6a40 (00000000 + 168 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw       EndRun @ 1163066219.129444793 (04732c07ace8bb)
+tst-drp[2303677]: <I> received key = unconfigure @ Mon Nov  9 01:56:59 2026
+tst-drp[2303677]: <I> PGPReader  saw  Unconfigure @ 1163066219.131751840 (04732c07acf26f)
+tst-drp[2303677]: <I> TebCtrb   sent  Unconfigure @ 1163066219.131751840 (04732c07acf26f) to TEB ID 0 @   0x55c27bcd6a68 (00000000 + 169 * 00000028)
+tst-drp[2303677]: <I> TebRcvr    saw  Unconfigure @ 1163066219.131751840 (04732c07acf26f)
+tst-drp[2303677]: <I> received key = disconnect @ Mon Nov  9 01:56:59 2026
+tst-drp[2303677]: <I> TEB Receiver thread finished
+
+BatchManager dump:
+  Region base 0x5559454f4000  size 10240  maxBatchSize 2560  maxEntrySize 40
+tst-drp[2303677]: <I> Shutting down workers
+tst-drp[2303677]: <I> Worker 0 is exiting
+tst-drp[2303677]: <I> Worker 1 is exiting
+tst-drp[2303677]: <I> Worker 2 is exiting
+tst-drp[2303677]: <I> Worker 3 is exiting
+tst-drp[2303677]: <I> Worker 4 is exiting
+tst-drp[2303677]: <I> Worker 5 is exiting
+tst-drp[2303677]: <I> Worker 6 is exiting
+tst-drp[2303677]: <I> Worker 7 is exiting
+tst-drp[2303677]: <I> Worker 8 is exiting
+tst-drp[2303677]: <I> Worker 9 is exiting
+tst-drp[2303677]: <I> Worker threads finished
+tst-drp[2303677]: <I> Collector is exiting
+tst-drp[2303677]: <I> PGPReader is exiting
+tst-drp[2303677]: <I> PGPReader thread finished
+tst-drp[2303677]: <I> Collector thread finished
+tst-drp[2303677]: <I> received key = dealloc @ Mon Nov  9 01:56:59 2026
+tst-drp[2303677]: <I> received key = reset @ Mon Nov  9 01:56:59 2026
+^Cepixm320 received signal: Interrupt
+tst-drp[2303677]: <W> Shutting down on INT signal
+epixm320 received signal: Segmentation fault
+epixm320_0[2303677]: <C> FATAL: Segmentation Fault - stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/libcollection.so(+0x102dc)[0x7fcec91172dc]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-types2/install/lib/libcollection.so(+0x10377)[0x7fcec9117377]
+/lib64/libc.so.6(+0x3ebf0)[0x7fcec7e3ebf0]
+/lib64/libc.so.6(+0x15c2cb)[0x7fcec7f5c2cb]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(+0x21756)[0x7fcec40a9756]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(_ZN5boost6python7objects18find_instance_implEP7_objectNS0_9type_infoEb+0x57)[0x7fcec40a2e47]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(_ZN5boost6python9converter22get_lvalue_from_pythonEP7_objectRKNS1_12registrationE+0x15)[0x7fcec409ed15]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../librogue-core.so.v6.1(+0x14683e)[0x7fcec420b83e]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(_ZNK5boost6python7objects8function4callEP7_objectS4_+0x25f)[0x7fcec40a759f]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(+0x1f779)[0x7fcec40a7779]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(_ZNK5boost6python6detail17exception_handlerclERKNS_9function0IvEE+0x6b)[0x7fcec40abf7b]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../librogue-core.so.v6.1(+0x1b5324)[0x7fcec427a324]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(_ZN5boost6python21handle_exception_implENS_9function0IvEE+0x3d)[0x7fcec40abe8d]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/../../libboost_python39.so.1.78.0(+0x1cca3)[0x7fcec40a4ca3]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyObject_MakeTpCall+0x273)[0x7fcec8d80903]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x13f94f)[0x7fcec8d8f94f]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyEval_EvalFrameDefault+0x4391)[0x7fcec8d7d971]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x136652)[0x7fcec8d86652]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x13f694)[0x7fcec8d8f694]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyEval_EvalFrameDefault+0x3cf)[0x7fcec8d799af]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x136652)[0x7fcec8d86652]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x13f8e3)[0x7fcec8d8f8e3]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyEval_EvalFrameDefault+0x3646)[0x7fcec8d7cc26]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x136652)[0x7fcec8d86652]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyEval_EvalFrameDefault+0x65e)[0x7fcec8d79c3e]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x136652)[0x7fcec8d86652]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(_PyEval_EvalFrameDefault+0x65e)[0x7fcec8d79c3e]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x136652)[0x7fcec8d86652]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x13f8e3)[0x7fcec8d8f8e3]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x1f69f6)[0x7fcec8e469f6]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libpython3.9.so.1.0(+0x1f69a5)[0x7fcec8e469a5]
+/lib64/libc.so.6(+0x8a19a)[0x7fcec7e8a19a]
+/lib64/libc.so.6(+0x10f100)[0x7fcec7f0f100]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 01:57:18 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 2303677. Normal exit status = 1

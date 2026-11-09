@@ -1,0 +1,42 @@
+epixm320 on sdfmilan048, Slurm job 43839059 step 571, HEAD ffaddcbde, local changes 0, 2026-11-09 06:06:56 PST
+UP_EXIT=0
+2026-11-09T06:07:19.830-08:00 daq_sim: preflight rc=0: 06:07:19 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T06:07:25.869-08:00 daq_sim: config DB seeded: tst/BEAM/epixm320_0 key=2 written
+2026-11-09T06:07:33.466-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+  simxpm NumL0Acc        1995
+  TEB_WrtCt              1995
+  DRP_Damage             0
+  psana2 events          1995
+  psana2 with data       1995
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T06:08:01.484-08:00 evidence 20261109T060801-cycle-ffaddcbde-3018709: det:drp:epixm320 prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T06:08:01.675-08:00 cycle PASS
+-- epixm320 DRP log: its config code
+tst-drp[3018495]: <I> BEBDetector: epixm320 config runs against simulated device sim://127.0.0.1:31052
+rxId ff000000 found after 0s
+tst-drp[3018495]: <I> BebDetector: simulated device, link id 0x0 from simxpm
+tst-drp[3018495]: <I> BEBDetector: sim payload seed 0x1234
+Init ASIC script started
+Initialization routine completed.
+Triggers sent: 2500
+WARNING:root:config_expert complete
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1995; with epixm320 data 1995; events matching the pattern of seed 0x1234: 1995
+  check: per pixel, pattern(seed, seq, i, 15)
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det epixm320 --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector epixm320 raw shape [4, 192, 384]
+  L1Accept events 1995; with epixm320 data 1995; events matching the pattern of seed 0x1234: 0
+  check: per pixel, pattern(seed, seq, i, 15), self-test offset 1
+  problem: event 1: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x306b != 0x51e9
+  problem: event 2: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x4ea2 != 0x7020
+  problem: event 3: 294906 of 294912 pixels differ, first at (0, 0, 0): 0x6cd9 != 0xe57
+  problem: event 4: 294906 of 294912 pixels differ, first at (0, 0, 0): 0xb10 != 0x2c8e
+rc=1
+DOWN_EXIT=0
+2026-11-09T06:08:19.350-08:00 daq_sim: down: clean
+TYPERUN_DONE epixm320 06:08:19
