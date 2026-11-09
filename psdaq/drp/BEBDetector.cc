@@ -116,13 +116,8 @@ BEBDetector::~BEBDetector()
     if (m_module)  Py_DECREF(m_module);
 }
 
-void BEBDetector::_init(const char* arg)
+void BEBDetector::_simInstall()
 {
-    char module_name[64];
-    sprintf(module_name,"psdaq.configdb.%s_config",m_para->detType.c_str());
-
-    char func_name[64];
-
     // With a simulated device, replace rogue's hardware transports before the config module
     // builds its firmware roots, so the type's own config code runs against it (psdaq.sim.rogue_dev)
     if (m_sim) {
@@ -136,6 +131,16 @@ void BEBDetector::_init(const char* arg)
         logging::info("BEBDetector: %s config runs against simulated device %s",
                       m_para->detType.c_str(), m_para->device.c_str());
     }
+}
+
+void BEBDetector::_init(const char* arg)
+{
+    char module_name[64];
+    sprintf(module_name,"psdaq.configdb.%s_config",m_para->detType.c_str());
+
+    char func_name[64];
+
+    _simInstall();
 
     // returns new reference
     m_module = _check(PyImport_ImportModule(module_name));

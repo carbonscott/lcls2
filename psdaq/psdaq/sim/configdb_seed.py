@@ -174,6 +174,11 @@ STORE_KEYS = {
     # the simulated hsd sends its fex stream as well as the raw one (MemPoolSim.cc hsdMessage), so
     # its config enables it: hsd_config_store's default has user.fex.prescale 0 (raw only)
     'hsd': [('user.fex.prescale', 1, 'UINT32')],
+    # the ePixUHR 3x2 panel has six ASICs, all of which the simulated one sends; the store's default
+    # user.asic_enable is 0xf (its numAsics 4), whose disabled ASICs 4 and 5 make epixuhr3x2_config's
+    # setup_bypasses_for_disabled_asics write 24 into EventSeqMux[1].Bypass, a 4-bit register in the
+    # firmware tree here (EventFrameSequencerMux numberSlaves 4): 'Value range error' at Configure
+    'epixuhr3x2': [('user.asic_enable', 0x3f, 'UINT32')],
 }
 
 

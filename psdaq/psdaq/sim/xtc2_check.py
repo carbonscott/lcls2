@@ -38,7 +38,7 @@ import sys
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
                'epixquad': ((4, 352, 384), 14), 'epixquad1kfps': ((4, 352, 384), 14),
-               'epixUHR': ((4, 168, 192), 12)}
+               'epixUHR': ((4, 168, 192), 12), 'epixuhr3x2': ((1, 336, 576), 12)}
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
 

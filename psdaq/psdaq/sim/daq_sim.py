@@ -115,6 +115,13 @@ SIM_TYPES = {
     # (psdaq.sim.epixuhr_files); 4 ASICs of 48,384 B packed pixels per event
     'epixUHR':   {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
                   'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR')},
+    # the ePixUHR 3x2 panel: its store reads the same files; its C1100 card's management (CMS) is
+    # behind a firmware AXI-Lite proxy (rogue_dev emulates both); one 336 x 576 uint16 panel per
+    # event.  Its DRP's init (the readout system's Root) takes about 40 s here, longer than
+    # control's rollcall waits, so 'up' waits for it ('ready_s')
+    'epixuhr3x2': {'kwargs': 'sim_dma_size=0x80000,sim_dma_count=256,sim_seed={seed:#x}',
+                   'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR'),
+                   'ready_s': 180},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -503,6 +510,8 @@ def cmd_up(args):
             raise Fail(f'not RUNNING after start: {bad}\n{text}')
         state['procs'] = {i: int(status[i][1]) for i in procs(state)}
         work.save(state)
+        if sim_type.get('ready_s'):
+            _wait_drps_ready(work, state, sim_type['ready_s'])
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
@@ -591,6 +600,30 @@ def _wait_running(state, timeout):
         if all(status.get(i, ('?',))[0] == 'RUNNING' for i in procs(state)) or time.monotonic() > end:
             return status
         time.sleep(1)
+
+
+def _wait_drps_ready(work, state, timeout):
+    """Wait until each DRP's log says 'Ready for transitions' (PGPDetectorApp, once its detector's
+    init has returned): control's rollcall finds only a DRP that is."""
+    import glob
+    end = time.monotonic() + timeout
+    pending = [i for i in procs(state) if i.startswith(DETECTOR + '_')]
+    while pending:
+        for alias in list(pending):
+            for log in glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')):
+                with open(log, errors='replace') as f:
+                    if 'Ready for transitions' in f.read():
+                        pending.remove(alias)
+                        say(f'{alias} ready for transitions ({os.path.relpath(log, work.dir)})')
+                        break
+        if not pending:
+            return
+        status, text = procmgr_status(state)
+        dead = [i for i in pending if status.get(i, ('?',))[0] != 'RUNNING']
+        if dead or time.monotonic() > end:
+            raise Fail(f'{", ".join(dead or pending)} not ready for transitions '
+                       f'{"(not RUNNING)" if dead else f"after {timeout} s"}\n{text}')
+        time.sleep(2)
 
 
 def _control_state(platform, timeout=5000):

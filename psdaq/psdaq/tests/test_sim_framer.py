@@ -344,3 +344,18 @@ def test_epixUHR_frame_descrambles_to_the_pattern():
     img = det._descramble_3d_frames(raw)
     assert np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12))
     assert not np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12, offset=1))
+
+
+def test_epixuhr3x2_panel_is_the_pattern():
+    """EpixUHR3x2::_event records subframe 3 as the panel, 336 x 576 uint16 in row order, and
+    psana's epixuhr3x2 raw() (raw alg 1.0.0, raw_v100) keeps each word's low 12 bits: pixel
+    (y, x) must be pattern(576 y + x, 12), with nothing in the bits above."""
+    ueu = pytest.importorskip('psana.detector.UtilsEpixUHR')
+    seq = 5
+    data, order = subframes(frame('epixuhr3x2', seq))
+    assert order == [0, 2, 3]
+    assert data[0] == timing_header(seq) and data[2] == timing_header(seq)
+    panel = np.frombuffer(data[3], dtype=np.uint16).reshape(336, 576)
+    assert np.array_equal(ueu.bit_opers_3x2_raw(panel), panel)
+    assert np.array_equal(panel, pattern.image(SEED, seq, (336, 576), 12))
+    assert not np.array_equal(panel, pattern.image(SEED, seq, (336, 576), 12, offset=1))
