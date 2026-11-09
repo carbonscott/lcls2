@@ -19,6 +19,10 @@
     "status": "RUN",
     "note": "daq_sim up --det hrencoder + cycle: hrencoder_config.py against rogue_dev (PgpMonitor KCU, the encoder board over SRPv3), every event's position and counts checked"
   },
+  "det:drp:epixm320": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixm320 + cycle: epixm320_config.py against rogue_dev (PgpMonitor KCU, the camera over SRPv3, its fnInitAsicScript), every pixel of the 4 ASICs checked"
+  },
   "det:drp:cspad": {
     "status": "RUN",
     "note": "daq_sim up --det cspad + cycle: an AreaDetector through xpmdet_config.py against rogue_dev; cspad_raw_2_0_0 checks every word"

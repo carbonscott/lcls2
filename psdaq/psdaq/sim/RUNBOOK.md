@@ -391,7 +391,7 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
-`wave8he`, `hrencoder`, and the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
+`wave8he`, `hrencoder`, `epixm320`, and the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -430,6 +430,7 @@ What each type needs:
 | epix100 | `epix100_init`, `_connectionInfo`, `_config`, `_enable`, `_disable`, `_unconfig` | lcls2_epix_hr_pcie DevRoot + ePix100a board over SRPv3: 9 seeds (KCU and camera FPGA versions, DMA size, clock and lock bits, RxId, BaseClock) | `ePix100a_asics_0123.yml` through `yaml_config_store_example` | 3: 1,087,532 B image, rows interleaved by ASIC | `epix100_raw_2_0_1` raw (704,768), every pixel, 14 bit |
 | wave8 | `wave8_init`, `_connectionInfo`, `_config`, `_unconfig` (with PgpMonitor `init_lanes`/`check_lanes`, `config_timing`, `configure_trigger_delay`) | PgpMonitor KCU: board type and 2 link bits; driver text; 213 IOC PVs (29 the script writes or polls, 184 of the expert config it records); new IOC (no `EvrV2TriggerReg[0]:Delay`) | `wave8_config_store` through its `write_to_daq_config_db` | 1: aux timing; 2-9: 8 waveforms of 256 samples; 10: integrals (56 B); 11: processed (32 B) | `wave8_raw_0_0_1` raw_0..7, `wave8_fex_0_0_1` integrals, baselines, counts, intensity, position |
 | wave8he | `wave8he_init`, `_connectionInfo`, `_config` (writes the HLS counts and scales), `_unconfig` | as wave8, with the HLS PVs: 228 keys | no wave8he store in the tree: the wave8 store's config plus the HLS region bounds | 2-9: 8 waveforms; 0x0C: peaks (64 B); 0x0D: integrals (32 B), 24-bit packed | `wave8he_raw_0_0_1`, `wave8he_fex_0_0_1`: every field |
+| epixm320 | `epixm320_init` (PgpMonitor, `ePix320kM.Root` with `justCtrl`, `ConfigLclsTimingV2`, the RxId wait), `_connectionInfo`, `_config` (the firmware's own `fnInitAsicScript`: PLL, lane delays, waveforms, batchers, the ASIC YAMLs it writes to `/tmp`, then a 2500-trigger `hwTrigger` and `laneDiagnostics`), `_enable`, `_disable`, `_unconfig` | PgpMonitor KCU as hrencoder; camera over SRPv3: `RxId`, and `TriggerRegisters.AcqCount` and each `DigAsicStrmRegisters<i>.FrameCount` 2500, what the camera reports after the 2500-trigger train `hwTrigger` waits for | `epixm320_config_store.epixm320_cdict($SUBMODULEDIR/epix-hr-m-320k/software/config)`, as its `__main__` (`--dir`) | 1: timing copy; 2-5: ASICs 0-3, each a 48 B header (frameNo, asicNo), 192 x 384 in the ASIC's bank order (`EpixM320::_descramble`'s inverse), 48 B trailer | `epixm320_raw_0_1_0` raw (4, 192, 384), every pixel, 15 bit |
 | hrencoder | `hrencoder_init` (PgpMonitor `init_lanes`, `high_rate_encoder_dev.Root` start: `ConfigLclsTimingV2`, Fmc write-and-verify, `StopRun`), `_connectionInfo`, `_config` (`StartRun`), `_unconfig` | PgpMonitor KCU: board type, DMA size, 2 link bits, driver text; encoder board over SRPv3: `FpgaVersion` 0x02040000 (the root's `FebVersionLock`), `RemRxLinkReady`, `RxId`. Its XVC server (`rogue.protocols.xilinx.Xvc(2542)`) is a null stream endpoint: no socket | `hrencoder_config_store` through its `write_to_daq_config_db` | 2: `Enc::Stream` (8 B: position, error, missed-trigger and latch counts) | `hrencoder_raw_0_1_0` `value()` (position) and the three counts |
 
 Fault runs that fail Configure and name the register: epix100
@@ -437,7 +438,8 @@ Fault runs that fail Configure and name the register: epix100
 wave8 and wave8he `pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0`
 (`ValueError: TriggerDelay(ns) too small`), hrencoder
 `Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay` (rogue's write-verify in
-`config_expert`).
+`config_expert`), epixm320 `Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`
+(write-verify when `_config` applies the expert config).
 
 **Debugging a type without a DRP.** `python -B -m psdaq.sim.rogue_drive --type <type>` runs the
 entry points in the DRP's order against `rogue_dev` and a private config DB. It prints the first
@@ -460,7 +462,10 @@ failure with its traceback, which is how a type's seeds are found.
   board's registers are answered by no simulated transport (rogue_dev cannot place its seeds).
   It also has no `epixhr2x2_connectionInfo`, which `BEBDetector::connectionInfo` requires (it has
   `epixhr2x2_connect(base)` instead); no run gets that far yet.
-- **epixm320, epixUHR:** not tried.
+- **epixUHR:** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables from
+  `/cds/home/p/psrel/EpixUHR/pll/`, a facility path (the same CSVs are in
+  `$SUBMODULEDIR/epix-uhr-gtreadout-dev/software/config/pll/`), so `configdb_seed` cannot build its
+  default config here; nothing past that was tried.
 
 ## 3f. XpmDetector types: fakecam, cspad, epixhremu, jungfrauemu, ts
 
