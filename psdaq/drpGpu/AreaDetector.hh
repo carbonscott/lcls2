@@ -20,8 +20,10 @@ public:
 public:
   unsigned     rangeOffset() const override { return 14; }
   unsigned     rangeBits()   const override { return 2; }
-  float const* pedestals_d() const override { return nullptr; };
-  float const* gains_d()     const override { return nullptr; };
+  // PedGainCalib reads both for every pixel, so they must exist: pedestals of 0 and gains
+  // of 1 in every range, which leave the 14-bit value as it is
+  float const* pedestals_d() const override { return m_peds_d; };
+  float const* gains_d()     const override { return m_gains_d; };
 
   // Launches the _event kernel template instantiated with PedGainCalib, from
   // this .so, so that the calibration is inlined into the kernel
@@ -29,6 +31,8 @@ public:
                    const EventKernelArgs&) override;
 private:
   unsigned m_nPixels;
+  float*   m_peds_d {nullptr};            // [1 << rangeBits()][m_nPixels]
+  float*   m_gains_d{nullptr};            // [1 << rangeBits()][m_nPixels]
 };
 
   } // Gpu
