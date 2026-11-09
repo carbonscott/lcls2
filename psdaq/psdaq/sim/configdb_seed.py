@@ -181,6 +181,13 @@ STORE_KEYS = {
 }
 
 
+# Types whose store's __main__ gives the config DB entry another detType than the DRP's -D: the
+# entry is the whole device's configuration, which the config script records as a detector of
+# its own (epixhr2x2_config: <name>hw, read by psana's epixhr2x2hw_config_2_0_0) beside the
+# type's segment
+STORE_DETTYPE = {'epixhr2x2': 'epixhr2x2hw'}
+
+
 def type_cdict(det_type, name, segm=0, yaml=None):
     """The type's own config: <type>_config_store.<type>_cdict(), the config its
     write_to_daq_config_db writes (when it has no <type>_cdict), or with a rogue YAML file
@@ -217,7 +224,8 @@ def type_cdict(det_type, name, segm=0, yaml=None):
                 top.set(key, value())
             else:
                 top.set(key, value, typ)
-    top.setInfo(det_type, name, segm, 'sim-%s' % det_type, 'Seeded by psdaq.sim.configdb_seed')
+    top.setInfo(STORE_DETTYPE.get(det_type, det_type), name, segm, 'sim-%s' % det_type,
+                'Seeded by psdaq.sim.configdb_seed')
     return top
 
 

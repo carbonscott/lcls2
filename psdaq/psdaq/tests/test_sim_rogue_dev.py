@@ -395,3 +395,35 @@ def test_the_epixquad1kfps_prom_seed_loads():
     assert seeds['Top.CypressS25Fl.CmdReg'] == {'response': 0, 'bits': 8}
     with pytest.raises(rogue_dev.SimDeviceError, match='bits'):
         rogue_dev._seed_value('X.CmdReg', {'response': 0, 'bits': 40})
+
+
+def test_scratch_yaml_goes_under_PSDAQ_SIM_TMPDIR(tmp_path, monkeypatch):
+    """A seed file's "_scratch" prefixes: det_config.dictToYaml (what epixhr2x2_config writes its
+    settings with, for LoadConfig) writes such a file under $PSDAQ_SIM_TMPDIR; other paths, and
+    every path once uninstalled or with the variable unset, stay where the script says."""
+    from psdaq.configdb import det_config
+    path = tmp_path / 'seeds.json'
+    path.write_text(json.dumps({'_scratch': [str(tmp_path / 'fixed' / 'pfx')]}))
+    monkeypatch.setenv(rogue_dev.ENV_SEEDS, str(path))
+    monkeypatch.setenv(rogue_dev.ENV_TMPDIR, str(tmp_path / 'sim'))
+    (tmp_path / 'fixed').mkdir()
+    orig = det_config.dictToYaml
+
+    class Dev:
+        pass
+    args = ({'Part': {'A': 1}}, {'Part': {'A': 'UINT32'}}, ['Part'], Dev())
+    rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+    fn = det_config.dictToYaml(*args, str(tmp_path / 'fixed' / 'pfx'), 'MMCM', ('Top', 'App'))
+    assert fn == str(tmp_path / 'sim' / 'pfxMMCM.yml') and (tmp_path / 'sim' / 'pfxMMCM.yml').exists()
+    assert 'Part:' in (tmp_path / 'sim' / 'pfxMMCM.yml').read_text()
+    other = det_config.dictToYaml(*args, str(tmp_path / 'fixed' / 'other'), 'X', ('Top', 'App'))
+    assert other == str(tmp_path / 'fixed' / 'otherX.yml')
+    rogue_dev.uninstall()
+    assert det_config.dictToYaml is orig
+    monkeypatch.delenv(rogue_dev.ENV_TMPDIR)
+    rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+    assert det_config.dictToYaml is orig
+
+
+def test_the_epixhr2x2_seed_file_moves_its_yaml():
+    assert rogue_dev.load_scratch('epixhr2x2') == ['/tmp/epixhr']

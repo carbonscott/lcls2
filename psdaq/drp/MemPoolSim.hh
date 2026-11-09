@@ -37,7 +37,7 @@ namespace Drp {
 //
 // Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
 // DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
-// as subframe 0 and, for L1Accepts, the type's subframes.  The layout is chosen by detType
+// as subframe 0 (epixhr2x2: an EventBatcher holding it) and, for L1Accepts, the type's subframes.  The layout is chosen by detType
 // from a table in MemPoolSim.cc ('batcher' below); a BEB type not in it cannot run sim://.
 // Each data subframe starts with {w0 = pulseId lo, w1 = pulseId hi, w2 = seq, w3 = seed}
 // where the type has room for it.  Pixel i of the image the type's DRP builds (psana's raw
@@ -81,6 +81,9 @@ public:
                                         //   TimingHeader's, tails included
         // Write the type's L1Accept subframes after the TimingHeader's (tdest 0)
         void      (*data)(Out& out, const Frame& f, uint32_t seed);
+        // Subframe 0 is itself an EventBatcher whose first subframe is the TimingHeader, for a
+        //   DRP whose getTimingHeader() steps into it (EpixHR2x2); 16 B more, in dataBytes
+        bool        timingBatch = false;
     };
     static const Batcher* batcher(const std::string& detType);
     // A type whose front-end sends a formatted message instead of the TDetSemi words above:

@@ -52,7 +52,10 @@ import sys
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
                'epixquad': ((4, 352, 384), 14), 'epixquad1kfps': ((4, 352, 384), 14),
-               'epixUHR': ((4, 168, 192), 12)}
+               'epixUHR': ((4, 168, 192), 12), 'epixhr2x2': ((288, 384), 16)}
+# BEB types whose config code records, besides the type's segment, a detector of the whole
+# device's configuration with no event data: {type: (its name, its config interface)}
+CONFIG_DETECTORS = {'epixhr2x2': ('epixhr2x2hw', 'epixhr2x2hw_config_2_0_0')}
 # GPU DRP types (drp_gpu -d sim://): {type: (image shape, calibration of a uint16 pixel)}, the
 # calibration as the type's GPU code applies it with no calibSerNo (pedestals 0, gains 1)
 GPU_TYPES = {
@@ -493,6 +496,10 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
         r['run'] = run.runnum
         r['experiment'] = run.expt
         det = run.Detector(det_name)
+        kind = det_name.rsplit('_', 1)[0]
+        if kind in CONFIG_DETECTORS:
+            r['config_detector'], problems = _config_detector(run, det, *CONFIG_DETECTORS[kind])
+            r['problems'] += problems
         for evt in run.events():
             r['events'] += 1
             n = r['events']
@@ -524,10 +531,30 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     r['seq_gap_free'] = r['pattern_ok'] == n
     r['seeds'] = {seed if seed is not None else -1: r['seed_ok']}
     r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n
-                     and (expect is None or n == expect))
+                     and (expect is None or n == expect) and r.get('config_detector', True) is not None)
     if expect is not None and n != expect:
         r['problems'].append(f'{n} events, expected {expect}')
     return r
+
+
+def _config_detector(run, det, name, iface):
+    """(what was found or None, [problems]) for a type's configuration-only detector: psana gives
+    `name` through its interface class `iface`, with the device's whole configuration (user and
+    expert) in segment 0, and the type's own detector has its segment configs (asicPixelConfig)."""
+    try:
+        impl = run.Detector(name).config
+    except Exception as e:
+        return None, [f'no {name} detector: {str(e).splitlines()[0][:160]}']
+    if type(impl).__name__ != iface:
+        return None, [f'{name}: {type(impl).__name__}, not {iface}']
+    hw = impl._seg_configs()
+    if sorted(hw) != [0] or not all(hasattr(hw[0].config, k) for k in ('user', 'expert')):
+        return None, [f'{name}: segments {sorted(hw)}, segment 0 without user and expert']
+    own = det.raw._seg_configs()
+    if sorted(own) != [0] or not hasattr(own[0].config, 'asicPixelConfig'):
+        return None, [f'{det.raw._det_name}: segments {sorted(own)}, segment 0 without asicPixelConfig']
+    return (f'{name} segment 0 (user, expert) through {iface}; {det.raw._det_name} segment 0 '
+            f'asicPixelConfig {list(own[0].config.asicPixelConfig.shape)}'), []
 
 
 def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp',
@@ -838,6 +865,8 @@ def main():
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
                   f'events matching {what}: {r["pattern_ok"]}')
             print(f'  check: {r["check"]}{"" if args.expect is None else f"; expected {args.expect} events"}')
+            if 'config_detector' in r:  # a configuration-only detector beside the type's segment
+                print(f'  config: {r["config_detector"]}')
         else:
             print(f'  L1Accept events {n}; with {r["detector"]} data {r["with_data"]}; '
                   f'w3 == seed {r["seed_ok"]} (seeds seen {{{", ".join(f"{s:#x}: {c}" for s, c in r["seeds"].items())}}}); '

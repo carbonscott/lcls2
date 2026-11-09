@@ -61,6 +61,14 @@ Two more parts of the device that some config scripts reach without rogue:
           (a reply ends with CR where the camera's does; "default", ACK by default, answers the
           rest).  The commands are recorded with the register writes.
 
+  scratch a config script that hands rogue its settings as YAML files written to a fixed
+          /tmp path (psdaq/configdb/det_config.dictToYaml, then the root's LoadConfig)
+          writes them under $PSDAQ_SIM_TMPDIR instead, when that is set (daq_sim up
+          sets it to its workdir's tmp/): the seed file's "_scratch" lists the path
+          prefixes moved, e.g. "/tmp/epixhr" (epixhr2x2_config) becomes
+          $PSDAQ_SIM_TMPDIR/epixhr.  Unset, or for a type without "_scratch", the files
+          go where the script says.
+
 Every register write is recorded (WRITES, and one JSON line per write to
 $PSDAQ_SIM_ROGUE_LOG if set) with the register paths it covers.
 
@@ -91,6 +99,7 @@ SIM_PREFIX = 'sim://'
 ENV_SEEDS = 'PSDAQ_SIM_ROGUE_SEEDS'
 ENV_FAULT = 'PSDAQ_SIM_ROGUE_FAULT'
 ENV_LOG = 'PSDAQ_SIM_ROGUE_LOG'
+ENV_TMPDIR = 'PSDAQ_SIM_TMPDIR'
 SEED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'seeds')
 
 log = logging.getLogger('psdaq.sim.rogue_dev')
@@ -716,6 +725,34 @@ def load_uart(det_type=None, path=None):
         return json.load(f).get('_uart')
 
 
+def load_scratch(det_type=None, path=None):
+    """The seed file's "_scratch" list (path prefixes of a config script's YAML files), or []."""
+    path = path or os.environ.get(ENV_SEEDS) or (
+        os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
+    if not path:
+        return []
+    with open(path) as f:
+        return list(json.load(f).get('_scratch', []))
+
+
+def _move_scratch(prefixes, tmpdir):
+    """det_config.dictToYaml writes a file whose path starts with one of prefixes under tmpdir.
+    Before the config module imports it (from psdaq.configdb.det_config import *)."""
+    from psdaq.configdb import det_config
+    write = det_config.dictToYaml
+
+    def dictToYaml(d, types, keys, dev, path, name, tree, ordering=None):
+        for pfx in prefixes:
+            if path.startswith(pfx):
+                os.makedirs(tmpdir, exist_ok=True)
+                path = os.path.join(tmpdir, os.path.basename(pfx)) + path[len(pfx):]
+                break
+        return write(d, types, keys, dev, path, name, tree, ordering)
+    det_config.dictToYaml = dictToYaml
+    _SIM._orig_yaml = write
+    log.info('rogue_dev: YAML files under %s go under %s', prefixes, tmpdir)
+
+
 def parse_fault(s):
     if not s:
         return None
@@ -756,6 +793,9 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
         proc = proc if proc is not None else sproc
         log.info('rogue_dev: %d seeds from %s', len(seeds), spath)
         _SIM.uart = load_uart(det_type)
+        scratch = load_scratch(det_type)
+        if scratch and os.environ.get(ENV_TMPDIR):
+            _move_scratch(scratch, os.environ[ENV_TMPDIR])
     pvs = {k[len(PV_PREFIX):]: v for k, v in seeds.items() if k.startswith(PV_PREFIX)}
     _SIM.seeds = {k: v for k, v in seeds.items() if not k.startswith(PV_PREFIX)}
     _SIM.fault = parse_fault(fault if fault is not None else os.environ.get(ENV_FAULT))
@@ -845,6 +885,9 @@ def uninstall():
         rogue.protocols.xilinx.Xvc = _SIM._orig_xvc
     if getattr(_SIM, '_orig_open', None):
         builtins.open = _SIM._orig_open
+    if getattr(_SIM, '_orig_yaml', None):
+        from psdaq.configdb import det_config
+        det_config.dictToYaml = _SIM._orig_yaml
     if _SIM._logf:
         _SIM._logf.close()
     _SIM = _Sim()

@@ -453,6 +453,51 @@ static void epixUHRData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32
     }
 }
 
+// epixhr2x2 (EpixHR2x2::_event, getTimingHeader): the card's event builder nests the camera
+// board's.  Subframe 0 is an EventBatcher whose first subframe is the TimingHeader (fillBatcher,
+// timingBatch: getTimingHeader steps into it); subframes 3 and 4, ASICs 0/1 and 2/3, are each an
+// EventBatcher of {tdest 0: a copy of the TimingHeader, tdest 2: the ASIC pair's 146 rows of 384
+// uint16}.  The DRP (m_descramble false) drops the first and the last row of each and records
+// rows 1-144 of subframe 3's, then of subframe 4's, as raw (288, 384), as they come.  The framer
+// puts raw pixel i = 384 r + c there (r < 144 from ASICs 0/1, the rest from 2/3), 16 bits, and
+// indices past the image in the dropped rows; the first row starts with the data header.
+static const unsigned Hr2Rows = 144, Hr2Cols = 384, Hr2StreamRows = Hr2Rows + 2;
+static const unsigned Hr2StreamBytes = Hr2StreamRows * Hr2Cols * 2;
+// subframe 3 or 4: its header line, the TimingHeader copy and the rows, each subframe with its tail
+static const unsigned Hr2NestedBytes = 8 + _padded(32) + _padded(Hr2StreamBytes);
+
+static void epixhr2x2Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<PixelMap> pairs = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t p = 0; p < 2; ++p)
+            v.emplace_back(Hr2StreamRows * Hr2Cols, 16, [p](size_t j) {
+                uint32_t r = j / Hr2Cols, c = j % Hr2Cols;
+                if (r == 0 || r == Hr2StreamRows - 1)       // dropped: past the image
+                    return uint32_t(2 * Hr2Rows * Hr2Cols + (2 * p + (r ? 1 : 0)) * Hr2Cols + c);
+                return uint32_t((p * Hr2Rows + r - 1) * Hr2Cols + c);
+            });
+        return v;
+    }();
+    // The TimingHeader in subframe 0's EventBatcher: after the header line and its own
+    const uint8_t* th = out.buffer + 2 * EvtBatcherHeader::lineWidth(2);
+    for (unsigned p = 0; p < 2; ++p) {
+        uint8_t* nb = out.data();
+        memset(nb, 0, EvtBatcherHeader::lineWidth(2));
+        auto ebh = reinterpret_cast<EvtBatcherHeader*>(nb);
+        ebh->version        = 1;
+        ebh->width          = 2;
+        ebh->sequence_count = out.buffer[1];
+        MemPoolSim::Out in{nb, EvtBatcherHeader::lineWidth(2)};
+        memcpy(in.data(), th, sizeof(Pds::TimingHeader));
+        in.tail(sizeof(Pds::TimingHeader), 0);
+        pairs[p].fill(reinterpret_cast<uint16_t*>(in.data()), seed, f.seq);
+        _dataHeader(in.data(), f, seed);
+        in.tail(Hr2StreamBytes, 2);
+        out.tail(in.pos, 3 + p);
+    }
+}
+
 // jungfrau (Jungfrau::_event): a module sends each frame as JungfrauData::PacketNum UDP packets
 // to the card's UDP engine, at the destination Drp::Jungfrau programs through sls::Detector (the
 // config's user.kcu_ip and user.port), and the card's timing receiver triggers the module for
@@ -616,6 +661,8 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
     { "epixquad1kfps", 2 * _padded(32) + _padded(EquadBytes), epixquadData },  // the same EpixQuad DRP
     { "epixUHR",  _padded(32) + 4 * _padded(UhrAsicBytes), epixUHRData },
+    // + 16: subframe 0 is an EventBatcher of the TimingHeader (its header line and tail)
+    { "epixhr2x2", 16 + 2 * _padded(Hr2NestedBytes), epixhr2x2Data, true },
     // its data comes from the module's UDP stream (UdpFront above), not from a framer
     { "jungfrau", _padded(32) + _padded(UdpFront::DataBytes), nullptr },
 };
@@ -737,9 +784,22 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     ebh->sequence_count = evtCounter & 0xff;
     Out out{buffer, lw};
 
-    // Subframe 0: the TimingHeader (getTimingHeader() returns its address)
-    size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
-    out.tail(th, 0);
+    // Subframe 0: the TimingHeader (getTimingHeader() returns its address), or an EventBatcher
+    // whose only subframe it is (timingBatch)
+    if (b.timingBatch) {
+        uint8_t* nb = out.data();
+        memset(nb, 0, lw);
+        auto neh = reinterpret_cast<EvtBatcherHeader*>(nb);
+        neh->version        = 1;
+        neh->width          = width;
+        neh->sequence_count = evtCounter & 0xff;
+        Out in{nb, lw};
+        in.tail(fill(in.data(), f, evtCounter, 0, 0, 0), 0);
+        out.tail(in.pos, 0);
+    } else {
+        size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
+        out.tail(th, 0);
+    }
     if (!l1 || !b.data)  return out.pos;
 
     b.data(out, f, seed);

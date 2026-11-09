@@ -5,5 +5,7 @@
  "DevRoot.DevPcie.Hsio.TimingRx.TimingPhyMonitor.MmcmLocked": 3,
  "DevRoot.DevPcie.Hsio.TimingRx.TimingFrameRx.RxLinkUp": 1,
  "_Locked": "what the timing receiver reports once its clocks and link are up: ConfigLclsTimingV2's LockProc waits for MmcmLocked == 3 and RxLinkUp == 1",
+ "_scratch": ["/tmp/epixhr"],
+ "_scratch_why": "config_expert writes its EpixHR settings as /tmp/epixhr<part>.yml (dictToYaml) for fnInitAsicScript's LoadConfig and removes them after; under daq_sim they go under the workdir's tmp/ (rogue_dev, PSDAQ_SIM_TMPDIR)",
  "_RxId": "no RxId seed: epixhr2x2_connect reads the camera board RxId, and a read of the camera board TriggerEventManager reaches no simulated transport (rogue_dev cannot place a seed there), so it reads 0; under sim:// BEBDetector takes the link id simxpm assigns instead (BEBDetector.cc m_sim->paddr())"
 }

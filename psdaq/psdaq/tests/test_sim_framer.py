@@ -344,3 +344,29 @@ def test_epixUHR_frame_descrambles_to_the_pattern():
     img = det._descramble_3d_frames(raw)
     assert np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12))
     assert not np.array_equal(img, pattern.image(SEED, seq, (4, 168, 192), 12, offset=1))
+
+
+def test_epixhr2x2_frame_layout():
+    """EpixHR2x2::getTimingHeader steps into subframe 0, an EventBatcher of the TimingHeader;
+    subframes 3 and 4 (ASICs 0/1, 2/3) are EventBatchers of {0: the TimingHeader, 2: 146 rows of
+    384 uint16}, whose rows 1-144 EpixHR2x2::_event records, subframe 3's then 4's, as raw
+    (288, 384): pixel i must be pattern(i, 16); the dropped rows carry indices past the image."""
+    seq = 9
+    buf = frame('epixhr2x2', seq)
+    data, order = subframes(buf)
+    assert order == [0, 3, 4]
+    inner, inner_order = subframes(data[0])
+    assert inner_order == [0] and inner[0] == timing_header(seq)
+    assert buf[16:48] == timing_header(seq)                 # where getTimingHeader looks
+    rows = []
+    for k, p in ((3, 0), (4, 1)):
+        d, d_order = subframes(data[k])
+        assert d_order == [0, 2] and d[0] == timing_header(seq)
+        assert len(d[2]) == 146 * 384 * 2                   # _event needs >= 146 rows
+        assert struct.unpack_from('<4I', d[2], 0) == (PID & 0xffffffff, PID >> 32, seq, SEED)
+        s = np.frombuffer(d[2], dtype=np.uint16).reshape(146, 384)
+        past = 288 * 384 + 2 * p * 384
+        assert (s[0, 8:] == pattern.pattern(SEED, seq, np.arange(past + 8, past + 384), 16)).all()
+        assert (s[145] == pattern.pattern(SEED, seq, np.arange(past + 384, past + 768), 16)).all()
+        rows.append(s[1:145])
+    assert (np.concatenate(rows) == pattern.image(SEED, seq, (288, 384), 16)).all()

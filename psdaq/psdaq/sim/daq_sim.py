@@ -120,6 +120,14 @@ SIM_TYPES = {
     # (psdaq.sim.epixuhr_files); 4 ASICs of 48,384 B packed pixels per event
     'epixUHR':   {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
                   'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR')},
+    # the ePixHR 2x2: epixhr2x2_config imports lcls2_epix_hr_pcie and epix_hr_single_10k, which no
+    # psdaq.utils.enable_* module puts on the path, so PSDAQ_SIM_PYTHONPATH in the environment of
+    # 'up' (inherited by the drp through procmgr) names them (sim_path, RUNBOOK §3e and §3k); 'up'
+    # reports it and never sets it ('inherit').  Its ePixFpga package imports PyQt5's widgets:
+    # offscreen, as for epixquad1kfps.
+    # 2 nested EventBatchers of 146 rows of 384 uint16 per event (224,400 B)
+    'epixhr2x2': {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
+                  'env': {'QT_QPA_PLATFORM': 'offscreen'}, 'inherit': ('PSDAQ_SIM_PYTHONPATH',)},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -460,6 +468,8 @@ def cmd_up(args):
     env[TAG] = work.dir
     env['PYTHONUNBUFFERED'] = '1'
     os.environ[TAG] = work.dir          # procmgr and everything it starts inherit it
+    # where a BEB type's config script writes the YAML files it hands rogue (rogue_dev, "_scratch")
+    env['PSDAQ_SIM_TMPDIR'] = os.environ['PSDAQ_SIM_TMPDIR'] = work.path('tmp')
     if sim_type.get('sls'):             # the DRP's sls::Detector shared memory, this platform's
         env['SLSDETNAME'] = os.environ['SLSDETNAME'] = sls_tag(args.platform)
 
@@ -467,10 +477,13 @@ def cmd_up(args):
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
              'started': now(), 'ports': P, 'services': {}, 'loglink': loglink,
              'cnf': 'daq_sim.cnf', 'rate': args.rate, 'seed': args.seed, 'length': args.length,
-             'segments': segments, 'det': DETECTOR, 'drp': DRP}
+             'segments': segments, 'det': DETECTOR, 'drp': DRP,
+             'det_env': {k: os.environ.get(k) for k in sim_type.get('inherit', ())}}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
+    for k, v in state['det_env'].items():   # what the type's drp inherits; unset is reported
+        say(f'{DETECTOR}: {k}={v!r}' if v else f'{DETECTOR}: {k} is not set (RUNBOOK §3k)')
 
     try:
         if not args.skip_preflight:
@@ -567,13 +580,18 @@ def cmd_up(args):
                       drp=DRP, env=f" env:'LD_LIBRARY_PATH={cuda_lib}'," if DRP == 'drp_gpu' and cuda_lib else '',
                       simk=sim_type['kwargs'].format(length=args.length, seed=args.seed, work=work.dir,
                                                      **P))
+        cnf = CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
+                         xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
+                         slow=args.slow_update, configdb=cfg_url + 'configDB',
+                         lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
+                         segments=''.join(SEGMENT.format(segm=i, **common)
+                                          for i in range(1, segments)), **common)
+        if state['det_env']:            # after the two header lines: what the drp inherits from 'up'
+            line1, line2, rest = cnf.split('\n', 2)
+            cnf = line1 + '\n' + line2 + '\n' + ''.join(
+                f'# {DETECTOR}_* inherit {k}={v}\n' for k, v in state['det_env'].items() if v) + rest
         with open(work.path(state['cnf']), 'w') as f:
-            f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
-                               xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
-                               slow=args.slow_update, configdb=cfg_url + 'configDB',
-                               lgbk=f'http://127.0.0.1:{P["lgbk"]}/', activedet=work.path('activedet.json'),
-                               segments=''.join(SEGMENT.format(segm=i, **common)
-                                                for i in range(1, segments)), **common))
+            f.write(cnf)
         say('procmgr start', state['cnf'])
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             rc = subprocess.run(procmgr_cmd(state, 'start') + ['-v'], cwd=work.dir, stdout=out,
