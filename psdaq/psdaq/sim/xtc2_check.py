@@ -24,6 +24,14 @@ pixel exactly equal to pattern(seed, n, i, bits) for the n-th event, so a pixel 
 the wrong place fails.  --self-test-offset K expects pixel i to hold index i+K instead: the
 check must then FAIL (it shows the check can fail).
 
+For a GPU DRP run (drp_gpu -d sim://, --drp drp_gpu) the file holds what the GPU computed: each
+event's pixels calibrated on the GPU and recorded by the NoOpReducer as float32
+(psana: <type>_noOp_0_0_0.calib, psana/psana/detector/drpgpu.py).  The device's payload is
+the TDet words above, read as the type's uint16 pixels; the check computes, for the n-th event,
+the words (pulseId, seq n, seed, the w[k] pattern) and the calibration the type's own GPU code
+applies to each pixel (GPU_TYPES), and compares every pixel.  The event's pulseId is the one,
+of the few ticks simxpm may add to its timestamp's, whose words match; it must rise.
+
 psana2's calibration DB lookup is switched off (skip_calib_load='all') and LCLS_CALIB_HTTP points
 at a dead loopback port unless already set, so reading the file contacts no service.
 """
@@ -38,6 +46,14 @@ import sys
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
                'epixquad': ((4, 352, 384), 14)}
+# GPU DRP types (drp_gpu -d sim://): {type: (image shape, calibration of a uint16 pixel)}, the
+# calibration as the type's GPU code applies it with no calibSerNo (pedestals 0, gains 1)
+GPU_TYPES = {
+    # Gpu::AreaDetector: range in bits 14-15, the value in bits 0-13 (AreaDetector.hh)
+    'fakecam': (None, lambda u: (u & 0x3fff).astype('float32')),
+    # Gpu::EpixUHRemu: gain in bit 0, an 11-bit value in bits 1-11 (EpixUHRemu.hh)
+    'epixuhremu': ((336, 576), lambda u: ((u >> 1) & 0x7ff).astype('float32')),
+}
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
 
@@ -398,8 +414,12 @@ def check_image(path, det_name, shape, bits, seed=None, expect=None, max_report=
     return r
 
 
-def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0):
+def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset=0, drp='drp'):
     kind = det_name.rsplit('_', 1)[0]
+    if drp == 'drp_gpu':
+        if kind not in GPU_TYPES:
+            raise SystemExit(f'xtc2_check: no GPU DRP check for {kind!r}; one of {sorted(GPU_TYPES)}')
+        return check_gpu(path, det_name, kind, seed, expect, max_report, offset)
     if kind in IMAGE_TYPES:
         shape, bits = IMAGE_TYPES[kind]
         return check_image(path, det_name, shape, bits, seed, expect, max_report, offset)
@@ -465,6 +485,80 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
     return r
 
 
+def _gpu_words(pid, seq, seed, nwords, offset=0):
+    """The TDet words of MemPoolSim::fill for lane 0, as uint16 pixels (little endian)."""
+    import numpy as np
+    k = np.arange(nwords, dtype=np.uint64)
+    w = (np.uint64(seed) + np.uint64(pid & 0xffffffff) + k + np.uint64(offset)) & np.uint64(0xffffffff)
+    w[:4] = [pid & 0xffffffff, pid >> 32, seq, seed][:min(4, nwords)]
+    return w.astype(np.uint32).view(np.uint16)
+
+
+def check_gpu(path, det_name, kind, seed=None, expect=None, max_report=5, offset=0):
+    """The per-event check of a GPU DRP type in GPU_TYPES (module doc); seed is required."""
+    os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
+    import numpy as np
+    from psana import DataSource
+    shape, calib = GPU_TYPES[kind]
+    seed = 0x1234 if seed is None else seed
+    r = {'file': path, 'detector': det_name, 'events': 0, 'with_data': 0, 'seed_ok': 0,
+         'pattern_ok': 0, 'pulseid_ok': 0, 'pulseid_checked': 0, 'seeds': {}, 'shape': None,
+         'first_seq': None, 'last_seq': None, 'seq_gap_free': None, 'problems': [],
+         'check': (f'every pixel of {det_name}.noOp.calib (drp_gpu: calibrated on the GPU, '
+                   f'NoOpReducer) vs the calibration of the TDet words of seed, seq n, pulseId'
+                   + (f', self-test offset {offset}' if offset else ''))}
+    ds = DataSource(files=[path], skip_calib_load='all')
+    last = -1
+    for run in ds.runs():
+        r['run'] = run.runnum
+        r['experiment'] = run.expt
+        det = run.Detector(det_name)
+        for evt in run.events():
+            r['events'] += 1
+            n = r['events']
+            got = det.noOp.calib(evt)
+            if got is None:
+                if len(r['problems']) < max_report:
+                    r['problems'].append(f'event {n}: no {det_name} data')
+                continue
+            r['with_data'] += 1
+            r['shape'] = list(got.shape)
+            flat = np.ascontiguousarray(got).reshape(-1)
+            problems = []
+            if shape is not None and got.shape != shape:
+                problems.append(f'shape {got.shape}, not {shape}')
+            npix = int(np.prod(shape)) if shape is not None else flat.size  # fakecam: sim_length * 2
+            clock = _pulse_id_from_time(evt.timestamp)
+            pid = next((c for c in range(clock, clock + 64)                # the words' pulseId
+                        if (calib(_gpu_words(c, n, seed, 4)) == flat[:8]).all()), None)
+            r['pulseid_checked'] += 1
+            if pid is not None and pid > last:
+                r['pulseid_ok'] += 1
+                last = pid
+            else:
+                problems.append(f'no pulseId within 64 ticks of the timestamp clock {clock:#x} '
+                                f'(previous {last:#x}) gives the first 4 words')
+                pid = clock
+            want = calib(_gpu_words(pid, n, seed, npix // 2, offset))
+            bad = int((flat != want).sum()) if flat.size == want.size else flat.size
+            if bad:
+                problems.append(f'{bad} of {want.size} pixels differ')
+            else:
+                r['pattern_ok'] += 1
+                r['seed_ok'] += 1
+            if problems and len(r['problems']) < max_report:
+                r['problems'].append(f'event {n}: ' + '; '.join(problems[:3]))
+    n = r['events']
+    r['first_seq'], r['last_seq'] = (1, n) if n else (None, None)
+    r['seq_gap_free'] = r['pattern_ok'] == n
+    r['seeds'] = {seed: r['seed_ok']}
+    r['pass'] = bool(n > 0 and r['with_data'] == n and r['pattern_ok'] == n and r['pulseid_ok'] == n
+                     and (expect is None or n == expect))
+    if expect is not None and n != expect:
+        r['problems'].append(f'{n} events, expected {expect}')
+    return r
+
+
 def _pulse_id_from_time(timestamp):
     """simxpm's pulseId for an EPICS-epoch (seconds << 32 | nanoseconds) time (simxpm.timing_now)."""
     sec, ns = timestamp >> 32, timestamp & 0xffffffff
@@ -480,10 +574,12 @@ def main():
     parser.add_argument('--seed', type=lambda s: int(s, 0), help='expected sim_seed (default: any, reported)')
     parser.add_argument('--expect', type=int, help='expected number of L1Accept events')
     parser.add_argument('--json', action='store_true', help='print the result as one JSON line')
+    parser.add_argument('--drp', default='drp', choices=('drp', 'drp_gpu'),
+                        help='the DRP that wrote the file (default %(default)s)')
     parser.add_argument('--self-test-offset', type=int, default=0, metavar='K',
                         help='expect pixel/sample/word i to hold the value of i+K (must FAIL)')
     args = parser.parse_args()
-    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset)
+    r = check(args.file, args.det, args.seed, args.expect, offset=args.self_test_offset, drp=args.drp)
     if args.json:
         print(json.dumps(r))
     else:
