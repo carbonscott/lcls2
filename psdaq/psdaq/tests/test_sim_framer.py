@@ -251,3 +251,30 @@ def test_epixm320_frame_layout():
         want = pattern.pattern(SEED, seq, q * 192 * 384 + np.arange(192 * 384), 15).reshape(192, 384)
         assert (img == want).all(), q
         assert sf[-48:] == bytes(48)
+
+
+@pytest.mark.parametrize('det, shape, bits', [('opal', (1024, 1024), 12), ('piranha4', (2048,), 12)])
+def test_camera_link_frame_layout(det, shape, bits):
+    """Opal::_event and Piranha4::_event read subframe 2 as the camera's image (rows x columns
+    uint16 in row order; Piranha4's one line), after the timing frame in subframe 1."""
+    seq = 3
+    data, order = subframes(frame(det, seq))
+    assert order == [0, 1, 2]
+    assert data[0] == timing_header(seq) and data[1] == timing_header(seq)
+    img = np.frombuffer(data[2], dtype=np.uint16).reshape(shape)
+    assert (img == pattern.image(SEED, seq, shape, bits)).all()
+
+
+def test_tb_event_timing_message_layout():
+    """TimingBEB::_event reads the TimingHeader of subframe 0 and the event timing message of
+    the last subframe (TimingDef::createDataETM)."""
+    seq = 9
+    data, order = subframes(frame('tb', seq))
+    assert order == [0, 2]
+    assert data[0] == timing_header(seq)
+    etm = data[2]
+    assert len(etm) == 48
+    p = lambda i, bits: int(pattern.pattern(SEED, seq, i, bits))
+    pid, rates, slot, beam = struct.unpack_from('<QHBB', etm, 0)
+    assert (pid, rates, slot, beam) == (PID, p(2, 16), p(3, 3), p(4, 8))
+    assert list(struct.unpack_from('<18H', etm, 12)) == [p(5 + i, 16) for i in range(18)]

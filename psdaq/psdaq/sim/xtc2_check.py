@@ -35,7 +35,9 @@ import sys
 
 
 # BEB types: (raw image shape, pixel bit depth), as MemPoolSim's batcher table writes them
-IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15)}
+IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
+               'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
+               'epixquad': ((4, 352, 384), 14)}
 # BEB types whose data is not one image: {type: (events checker, description)}
 WAVE8_SAMPLES = 256
 
@@ -158,6 +160,53 @@ def _ts_event(det, evt, seed, n, offset=0, state=None):
     return True, problems
 
 
+def _tb_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one tb event (MemPoolSim.cc tbData; TimingBEB records it with
+    TimingDef::createDataETM as ts_raw_2_1_0): the rate markers bit by bit (createDataETM stores
+    bit i of the fixed rates at index 9-i, of the AC rates at 5-i), time slot, beam present and
+    destination, the 18 sequence values and their event codes; every field the message does not
+    carry 0; timestamp == the event's; pulseId the timing header's word: its low 56 bits rising
+    with the timestamp, its service field (bits 56-59) L1Accept."""
+    import numpy as np
+    from psdaq.sim import pattern
+    info = det.raw._info(evt)
+    if info is None:
+        return False, []
+
+    def p(i, bits):
+        return int(pattern.pattern(seed, n, i + offset, bits))
+    rates, slot, beam = p(2, 16), p(3, 3), p(4, 8)
+    seqv = [p(5 + i, 16) for i in range(18)]
+    want = {'fixedRates': [(rates >> (9 - k)) & 1 for k in range(10)],
+            'acRates': [(rates >> (10 + 5 - k)) & 1 for k in range(6)],
+            'timeSlot': [slot], 'timeSlotPhase': [0], 'ebeamPresent': [beam & 1],
+            'ebeamDestn': [beam >> 4], 'ebeamCharge': [0], 'ebeamEnergy': [0] * 4,
+            'xWavelength': [0] * 2, 'dmod5': [0], 'mpsLimits': [0] * 16, 'mpsPowerClass': [0] * 16,
+            'sequenceValues': seqv, 'inhibitCounts': [0] * 8}
+    problems = []
+    for name, w in want.items():
+        got = np.atleast_1d(np.asarray(getattr(info, name))).astype(np.int64).tolist()
+        if got != w:
+            problems.append(f'{name} {got[:6]} != {w[:6]}')
+    codes = det.raw.eventcodes(evt)
+    want_codes = [int((seqv[i >> 4] >> (i & 0xf)) & 1) for i in range(288)]
+    if list(codes) != want_codes:
+        problems.append(f'eventcodes: {sum(a != b for a, b in zip(codes, want_codes))} of 288 differ')
+    if det.raw.destination(evt) != beam >> 4:
+        problems.append(f'destination {det.raw.destination(evt)} != {beam >> 4}')
+    if int(info.timeStamp) != evt.timestamp:
+        problems.append(f'timeStamp {int(info.timeStamp):#x} != the event\'s {evt.timestamp:#x}')
+    word = det.raw.pulseId(evt)
+    pid, clock = word & ((1 << 56) - 1), _pulse_id_from_time(evt.timestamp)
+    last = state.get('pid', -1) if state is not None else -1
+    if not (pid > last and 0 <= pid - clock < 64) or (word >> 56) & 0xf != 12:
+        problems.append(f'pulseId {word:#x} vs timestamp clock {clock:#x} (previous {last:#x}, '
+                        f'service {(word >> 56) & 0xf}, L1Accept 12)')
+    if state is not None:
+        state['pid'] = pid
+    return True, problems
+
+
 def _epixhremu_event(det, evt, seed, n, offset=0, state=None):
     """(has data, [problems]) for one epixhremu event: the frame EpixHRemu replays from the
     file daq_sim wrote (psdaq.sim.epixhremu_frame), as the DRP lays it out, every pixel."""
@@ -239,6 +288,9 @@ EVENT_TYPES = {
                                     'latches (hrencoder_raw_0_1_0) vs pattern'),
     'ts': (_ts_event, 'every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, '
                       'inhibitCounts, destination, timestamp == the event\'s, pulseId rising'),
+    'tb': (_tb_event, 'the event timing message (TimingDef::createDataETM, ts_raw_2_1_0) vs '
+                      'pattern: rate markers, time slot, beam, sequence values and event codes, '
+                      'the rest 0; timestamp == the event\'s, pulseId rising'),
     'epixhremu': (_epixhremu_event, 'every pixel of the replayed frame (epixhremu_raw_0_0_1.raw) '
                                     'vs the frame daq_sim wrote'),
     'jungfrauemu': (_jungfrauemu_event, 'every TDet word of the 512 x 1024 panel '
