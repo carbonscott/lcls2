@@ -255,5 +255,8 @@ async function poll() {
   document.getElementById('page').append(render(spec.tree));
   document.body.dataset.ready = '1';
   await poll();
-  setInterval(poll, 300);
+  for (;;) {                       // the next poll 300 ms after the last answer: over a slow link the polls
+    await new Promise((r) => setTimeout(r, 300));   // never pile up in the server (setInterval sent one
+    await poll();                   // every 300 ms whatever the answer time)
+  }
 })();
