@@ -391,7 +391,8 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
-`wave8he`, `hrencoder`, `epixm320`, and the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
+`wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), and the XpmDetector
+types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -445,15 +446,30 @@ wave8 and wave8he `pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:Tri
 entry points in the DRP's order against `rogue_dev` and a private config DB. It prints the first
 failure with its traceback, which is how a type's seeds are found.
 
-**Not running yet** (found with `rogue_drive`):
-- **epixquad:** with this `$SUBMODULEDIR`, `epixquad_config.py` imports ePixQuad (whose path setup
-  brings epix-quad's older axi-pcie-core) before lcls2_pgp_pcie_apps. So DevRoot aborts with
-  `TypeError: __init__() got an unexpected keyword argument 'extended'`. With the imports swapped,
-  Configure aborts with `KeyError: 'pixel_map'`: `epixquad_config_store` now writes
-  `user.pixel_map_raw`, which only `epixquad1kfps_config.py` reads.
-- **epixquad1kfps:** its ePixQuad package builds a Qt viewer at import (needs
-  `QT_QPA_PLATFORM=offscreen` with no display); there is no epixquad1kfps store; `ePixQuad.Top`
-  checks the PCIe card's build string on the same PCIe map as DevRoot.
+**Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
+- **epixquad1kfps:** `ePixQuad.Top.start` (its epix-quad-1kfps package) reads the camera's ADC
+  calibration from its SPI PROM (`CypressS25Fl`: `resetFlash`, `readCmd`, `waitForFlashReady`), a
+  command/response device behind registers; `rogue_dev`'s registers only keep what is written,
+  so `epixquad1kfps_init` never returns (`seeds/` has none for it). Before that it needs the
+  card's image name and `FpgaVersion` >= 0x04020000 on `Top.AxiPcieCore`; its config DB entry
+  is `epixquad_config_store`'s (`configdb_seed.BORROWED_STORES`).
+- **tt:** `tt_init` dies building `lcls2_timetool.TimeToolKcu1500Root`: that package's surf
+  `AxiMicronN25Q` passes `size=` to pyrogue's `Device`, which this rogue (6.1.3) rejects
+  (`TypeError: __init__() got an unexpected keyword argument 'size'`), before any register access,
+  so on hardware too. `tt_config.py` also has no `tt_connectionInfo` (it has `tt_connect(cl)`),
+  which `BEBDetector::connectionInfo` calls.
+- **hsd:** its DRP class (`Digitizer`) is not a BEBDetector: `hsd_init` builds
+  `l2si_drp.DrpPgpIlvRoot` on the device itself, with no `rogue_dev` under `sim://`, and the rest
+  of its configuration goes through the hsdioc's PVA PVs (`<prefix>:CONFIG`, `:READY`, `:PADDR_U`,
+  `:MONTIMING`, `:RESET`, ...), for
+  which there is no stand-in yet; the hsd data format has no `MemPoolSim` framer.
+- **jungfrau:** its DRP drives the modules through `sls::Detector` (the slsDetector control
+  protocol to each module's server at `slsHosts`); there is no stand-in for that server, and the
+  module data arrives over UDP (`jungfrauSim` generates such packets, not the control protocol).
+- **epixuhr3x2:** `epixuhr3x2_config_store.beam_cdict()` (what its `__main__` writes) reads PLL
+  tables and pixel bitmaps from `/cds/home/p/psrel/EpixUHR/{pll,pixelBitMaps_prod}/`, facility
+  paths absent here (the PLL CSVs are also in `$SUBMODULEDIR/epix-uhr-gtreadout-dev`, the
+  `pixelBitMaps_prod` maps nowhere), so `configdb_seed` cannot build its default config.
 - **epixhr2x2:** `drp -D epixhr2x2 -d sim://` aborts at start: `epixhr2x2_config.py` imports
   `lcls2_epix_hr_pcie` and `epix_hr_single_10k` without the `psdaq.utils.enable_*` modules that
   put them on the path (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`). With those
@@ -502,6 +518,53 @@ What each type needs and what psana2 checks (every L1Accept, `xtc2_check --det <
 simxpm's `LinkRxReady<n>` and `LinkTxReady<n>` read 1 while a DRP holds link n; `RemoteLinkId<n>`
 reads 0 (no XPM behind it, so `ts_connect` does not recurse), and the trigger and inhibit PVs only
 keep what is written: simxpm's L1Accepts stay at `SIM:L1Rate`.
+
+## 3g. Camera link cameras, the timing BEB and the ePixQuad: opal, piranha4, tb, epixquad
+
+`daq_sim up --det opal|piranha4|tb|epixquad`, then `daq_sim cycle` as in §3e. Each is a
+BEBDetector type, so its DRP runs the type's own `psdaq/psdaq/configdb/<type>_config.py` against
+`rogue_dev` exactly as §3e describes. What is new for these types:
+
+- **The camera's serial port (opal, piranha4).** `cameralink_gateway.ClinkDevRoot` talks to the
+  camera through the FEB's UART, one character per 32-bit word on the lane's VC2 stream (surf
+  `ClinkSerialTx`/`ClinkSerialRx`). With a `"_uart"` table in the seed file, `rogue_dev` answers
+  each command on the streams it names with the table's reply (and `"default"` for the rest), as
+  the camera would; the commands are logged with the register writes
+  (`{"store": "uart", "cmd": ...}`).
+  - Opal: `@ID?` answers `OPAL-1000m/Q S/N:00000001`, which `opal_connectionInfo` turns into
+    model 1000 (1024 x 1024) and the serial number; `@BS?` the build string `opal_config` reads.
+    Every reply ends with CR and the ACK the camera sends; other commands get the ACK only.
+  - Piranha4: every command is answered with its lines and the `USER>` prompt the config script
+    waits for. `gcp` is the configuration summary `piranha4_connectionInfo` parses (Model
+    `P4_CM_02K10D_00_R`: 2048 pixels; `Serial #`; `BiST Good`; last the `CPA` line); `vt`/`vv` the
+    temperature and voltage lines; everything else `OK`.
+- **Seeds.** A seed may now be a string register's text (`{"string": "..."}`), may name a root
+  whose class name starts with `_` (tb_config's `_DevRoot`; only keys with no `.` are comments),
+  and may sit on a device that another seed enables: a FEB whose `enableDeps` is its PGP
+  link-ready bit is reached once pyrogue's update thread has applied the link seed.
+- **tb (TimingBEB).** `tb_init` reads the card's image name through its own `_DevRoot`
+  (`seeds/tb.json`: a `BuildStamp` naming `Lcls2XilinxKcu1500Pgp4_6Gbps`), then builds
+  `lcls2_pgp_pcie_apps.DevRoot`; `ts_connect` and `tb_config` program simxpm's PVs as ts does
+  (§3f); the config is `ts_config_store.beam_cdict()`.
+- **epixquad.** `epixquad_init` builds `lcls2_pgp_pcie_apps.DevRoot` and the camera
+  (`ePixQuad.Top`, SRPv3); `seeds/epixquad.json` has the timing locks and `SystemRegs.AdcTestDone`,
+  which `_checkADCs` polls at Configure. Its config DB entry is `epixquad_config_store`'s default
+  plus `user.pixel_map` (zeros, 16 x 178 x 192, `configdb_seed.STORE_KEYS`): `epixquad_config`
+  reads that key, which the store no longer writes (it writes `user.pixel_map_raw`, read by
+  `epixquad1kfps_config`); with the store's all-zero map both views are zeros.
+
+| type | config entry points run | emulated device (seeds) | DRP data (subframes) | psana check |
+|---|---|---|---|---|
+| opal | `opal_init` (ClinkDevRoot start: PCIe and FEB version checks), `_connectionInfo` (barrier, clock check, `TxId`, `RxId`, `@ID?`), `_config` (`@BS?`, `user_to_expert`, `config_expert` over registers and UART, `StartRun`), `_unconfig` | ClinkPcie: `RxRemLinkReady`, PCIe and FEB `FpgaVersion`, `DMA_SIZE_G`, `TxClkFreqRaw` 185.71 MHz, `RxId`; the Opal's UART | 1: timing copy; 2: 1024 x 1024 uint16 image in row order | `opal_raw_2_0_0` raw (1024, 1024), every pixel, 12 bit |
+| piranha4 | `piranha4_init` (ClinkDevRoot start: `spf`, `gcp`), `_connectionInfo` (`gcp`, `vt`, `vv`), `_config` (the UART settings, `lpc`, `stm`), `_unconfig` | as opal; the Piranha4's console | 1: timing copy; 2: 2048 uint16 pixels | `piranha4_raw_2_1_0` raw (2048,), every pixel, 12 bit |
+| tb | `tb_init` (`_DevRoot` image name, `DevRoot`), `ts_connect`, `tb_connectionInfo`, `tb_config` (trigger event buffer, `StartRun`, simxpm PVs) | `_DevRoot` `BuildStamp`; `DevRoot` timing locks, `RxId` | 2: the 48 B event timing message (rate markers, AC time slot, beam, 18 sequence values) | `ts_raw_2_1_0`: every field `TimingDef::createDataETM` records (the rest 0), event codes, destination, timestamp == the event's, pulseId rising with service L1Accept |
+| epixquad | `epixquad_init`, `_connectionInfo`, `_config` (`_checkADCs`, the 16 ASICs' SACI settings and pixel maps, `startRun`, the 4 element configs), `_enable`, `_disable`, `_unconfig` | `DevRoot` timing locks, `RxId`; camera `SystemRegs.AdcTestDone` | 1, 3: timing copies; 2: 32 B header, 176 super rows of 8 element rows (columns reversed), 4 calibration rows per element | `epix10ka_raw_3_0_1` raw (4, 352, 384), every pixel, 14 bit |
+
+Fault runs that fail Configure and name the register: opal and piranha4
+`ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`,
+tb `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].TriggerDelay` (all
+rogue's write-verify), epixquad `Top.SystemRegs.TrigEn=0` (write-verify when `_checkADCs` switches
+to external triggers).
 
 ## 4. Read the file back with psana2
 ```bash
