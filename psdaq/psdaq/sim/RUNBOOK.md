@@ -638,6 +638,91 @@ daq_sim cycle -w $WD --events 1000
 daq_sim down -w $WD
 ```
 
+## 3i. System features: `daq_sim feature a|b|e`
+
+Each feature is one command, run inside a Slurm step on the node as in §2. It brings the DAQ up
+(`up --detach` with the feature's options), drives one run, takes the DAQ down (always, unless
+`--keep-up`) and prints a report: the Slurm job and step, the host, the checkout's HEAD SHA, each
+transition with its time (each state as the client read it back, and each transition frame
+simxpm sent the DRPs, from `logs/simxpm.log`), each DRP's L1Accepts as the DAQ counts them (the
+L1Accepts simxpm sent its link, `SIM:LinkL1Acc`) against psana2's events in its stream, and
+`FEATURE <x> PASS` (exit 0) or `FEATURE <x> FAIL` with the failing checks (exit 1).
+
+```bash
+# inside one srun step on the node (WD as in §2); each takes a few minutes
+daq_sim feature a -w $WD       # readout groups at different rates
+daq_sim feature b -w $WD       # a 3-step scan through generic_timing_scan.py
+daq_sim feature e -w $WD       # drp_pva, drp_bld, drp_udpencoder, epicsArch with a PGP DRP
+daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail (no DAQ)
+```
+
+| feature | `up` options | the run | checks |
+|---|---|---|---|
+| a | `--det hrencoder --also epix100:<p+1> --also wave8:<p+1> --fixed-rate <p>:3 --fixed-rate <p+1>:4` | one cycle of `--events` (1000) L1Accepts of group p | hrencoder_0 (group p, 1.02 kHz marker), epix100_0 and wave8_0 (group p+1, 102 Hz): each DRP's DAQ count == psana2's events in its stream == events with its data, each passing the type's per-event check (`xtc2_check`); each group took its marker's share (group p+1 1/10 of group p's, within 10 %) |
+| b | `--det tb --also epix100 --rate 100` | `python -m psdaq.cas.generic_timing_scan -p <p> -C localhost --detname epix100_0 --scantype timing --events <N> --record 1 --config BEAM --linear 700000 730000 10000`, from connected | psana2 reads 3 steps in tb's stream, `step_value` 700000, 710000, 720000 and a `step_docstring` naming each; each DRP has `--events` (200) L1Accepts in every step, all with data; each DRP's DAQ count == psana2's; every event passes its per-event check; `epix100_update` applied 700000, 710000, 720000 in order (its DRP's log) |
+| e | `--pva --epics --udp --bld --rate 100` | one cycle | sysdrp_check reads drp_pva's, drp_udpencoder's, epicsArch's and drp_bld's data event by event; each system DRP's DAQ count == psana2's events in its stream; drp_bld's L1Accepts less its `bld_miss_count` == psana2's events with BLD data |
+
+The step values are recorded by the timing DRP, as at the hutches: `TimingBEB::scanEnabled()`
+(tb) and `TimingSystem::scanEnabled()` (ts) are true, `Epix100::scanEnabled()` is false, so a scan
+of epix100 alone records no `step_value` (the first feature-b run showed it: psana2 had no
+`step_value` detector). tb rather than ts: ts is an XpmDetector and would wait for epix100 at
+Connect (below). Until a8bda341f the step values were all 0.0: `ControlDef.MyFloatPv.update` dropped
+the numpy values `generic_timing_scan.py` yields (fixed; CHANGELOG).
+
+What each feature adds to `up` (usable on its own):
+
+- **`--also TYPE[:GROUP]`** (repeatable): one more DRP `<TYPE>_0` of another simulated type, its
+  own config in the config DB, in readout group GROUP (default: the platform's). The groups go to
+  control through `activedet.json`, as the partition dialog's choice would. `cycle` then checks
+  every PGP DRP's count, not only the `--det` one's.
+  `up` refuses a mix that cannot connect on one node: `xpmdet_config` (fakecam, cspad, epixhremu,
+  jungfrauemu, ts, and the system DRPs, which are XpmDetectors), `opal_config` and
+  `piranha4_config` take every active DRP on the node for a segment on their board
+  (`configdb/barrier.py` `supervisor_info`: "assume non-gpu hosts have only one board") and wait
+  at Connect for all of them to join their barrier, which a DRP of the other BEB types never does.
+  The first feature-a run, fakecam with epix100 and wave8, hung exactly so ("fakecam_0 did not
+  respond to alloc"); hence hrencoder, a BEB type, in group p.
+- **`--fixed-rate GROUP:INDEX`** (repeatable): simxpm runs with `--fixed-rates` and `up` puts
+  `PART:<GROUP>:L0Select` = 0 (FixedRate) and `L0Select_FixedRate` = INDEX, the PVs an operator
+  sets in the XPM GUI (pyxpm's markers: 3 is 1.02 kHz, 4 is 102 Hz, 5 is 10.2 Hz, 6 is 1.02 Hz;
+  simxpm does not tick faster than 2 kHz, so markers 0-2 keep `--rate`). The markers are nested
+  as on a real XPM: every L1Accept of the 102 Hz group is also one of the 1.02 kHz group's.
+  Each DRP's seq (MemPoolSim's payload) is its own group's L1Accept count, so each stream
+  checks on its own.
+- **`--bld`**: `drp_bld -D simbld+scbld+DAQ:SIM:BLD -k interface=lo` (bld_0) records simxpm's
+  BLD source (`simxpm --bld`): one LCLS-II style packet per L1Accept tick (time, pulseId, id,
+  severity and three fields, `simxpm.bld_values(seed, seq)`) sent by multicast to
+  `239.254.31.<p>`, UDP port 31220 + p, with TTL 1 on the 127.0.0.1 interface only. The group
+  is outside 239.255.0.0/16, where LCLS's BLD lives, and simxpm refuses one inside it.
+  drp_bld reads the group and port from the CA PVs `DAQ:SIM:BLD:BLD1_MULT_ADDR`/`PORT` of the
+  stand-in IOC and the payload's layout from simxpm's PVA PV `DAQ:SIM:BLD:BLD_PAYLOAD`, as
+  `BldPVA` does. psana2 reads it through `scbld_raw_1_0_0` (`energy`, `value`, `seq` and each
+  field's 2-bit `<field>_sevr`).
+
+Breaks (`--check-only --break KIND`, on a broken copy of the recorded run; the run's files stay
+as they are): `a`: `drop-l1` cuts the last 10 L1Accepts off epix100_0's stream, `same-rate`
+expects both groups at one rate; `b`: `expect-values` expects each step value + 1; `e`:
+`bld-seed` expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1.
+
+## 3j. Two nodes (a plan): `daq_sim up --hosts A,B --dry-run`
+
+`daq_sim up --hosts nodeA,nodeB --dry-run [--also TYPE:GROUP ...]` prints, and starts nothing:
+the `.cnf` of one partition with control, the TEB, the `--det` DRP, simxpm and the stand-ins on
+node A and the `--also` DRPs on node B (procmgr's `host:` field), every endpoint on one of the
+two nodes (simxpm's frames, PVA and control `-X` socket, the config and run DB stand-ins,
+control's ZMQ ports, libfabric over the nodes' NIC, `ep_domain=<nic>`), the EPICS environment
+for both nodes (`EPICS_PVA_ADDR_LIST` and `EPICS_CA_ADDR_LIST` = the two nodes, auto address
+lists off), and what is still needed to run it. `test_sim_features.py::test_two_node_plan`
+checks the plan. It has not run on two nodes. To run it:
+
+- procmgr starts node B's processes through procServ there: procServ and procmgrd must be
+  reachable from node A (ssh between the nodes, or procServ started in a Slurm step on node B
+  of the job that holds it);
+- configdb_server and lgbk_server must bind the node's address instead of 127.0.0.1, and simxpm
+  its `--bind`, `--frames` and `--pull` (with `--allow-remote`);
+- preflight.sh must accept those two-node address lists (it now requires loopback only);
+- the DRP on node B writes its file under the work dir, on a file system both nodes share.
+
 ## 4. Read the file back with psana2
 ```bash
 F=$WD/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2      # run 1; see the fileReport line of cycle
@@ -717,7 +802,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 
   Isolation relies on every peer being on this node and on the non-default EPICS ports.
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
-- **Partition size.** There is one detector DRP and one lane. Rates above about 1 kHz are untested.
+- **Partition size.** One node. Up to three PGP DRPs of different types (`--also`, §3i) or four
+  segments of one type, one lane each. Rates above about 1 kHz are untested; simxpm ticks at
+  most at 2 kHz, so fixed-rate markers faster than 1.02 kHz keep `--rate`. Two nodes: a plan
+  only (§3j).
 - **BEB types.** `rogue_dev` serves the registers a config script touches, plus what the seeds
   preset. It runs no firmware logic: a register the firmware would change on its own (a counter,
   a status bit) keeps its seed. A BEB type's frame has the subframes its DRP reads, with the
@@ -738,7 +826,8 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   ami-client's own PVA server gets ports 31210 + 2 p and 31211 + 2 p. With two PVA servers on
   15076, drp_pva's PV once failed to connect within its 3 s at Configure.
 - **System DRPs.** drp_pva records one camera PV that simxpm updates for every L1Accept; drp_bld
-  is not run. drp_pva takes PV updates only once it has handled Enable, and at the default 1 kHz
+  records simxpm's BLD source (`--bld`, §3i), one packet per L1Accept tick on loopback
+  multicast. drp_pva takes PV updates only once it has handled Enable, and at the default 1 kHz
   its PVA monitor fell behind for the first ~50 L1Accepts of a run (they were recorded without
   the image); run `--pva` at `--rate 100`, near a camera's rate, as §3h does. Even then an update
   can miss its L1Accept (2 of 1119 in one run); the check counts them and requires drp_pva's own

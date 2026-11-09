@@ -413,7 +413,7 @@ def report(feature, work, state, rec, counts, problems, started):
     for k, v in counts.items():
         if k == 'simxpm links' or k.startswith(('drp ', 'bld ', 'step ', 'readout groups', 'per-DRP', 'psana2', 'sysdrp',
                                                  'system DRP', 'simxpm NumL0Acc', 'TEB_', 'drp_match',
-                                                 'bld_miss', 'scan exit')):
+                                                 'bld_miss', 'scan exit', f'{SCAN_DET}_update')):
             print(f'  {k:<26} {v}', flush=True)
     for p in problems:
         print(f'  problem: {p}', flush=True)
