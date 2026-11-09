@@ -461,13 +461,20 @@ A record proves a row only if all of these hold, and the row's line names the fi
     `missing`, those the stand-in does not serve, empty (`simhsd does not serve 2 of the 40 PVs
     hsdpvs defines, e.g. ...`).
   - every GUI or monitor row above (R2, R2b, R2c, R4) also needs procmgr's own instance of the
-    program to have run through the run, not only cycle's offscreen copy of it: the record lists
-    its procmgr log (`# ID:`, with one `The PID of new child` line: procServ never restarted it),
-    and procstat's entry holds two more tables that `cycle` reads with procstat in Configured,
-    `before` (its walk ends before the run's BeginRun) and `after` (its walk starts after the
-    EndRun); the id must be RUNNING in both and in the table read while Running (`procstat's
-    table before the run shows procmgr's groupca SHUTDOWN, not RUNNING`, `procstat's table
-    "after" was read from ... not after the run's EndRun`, `names 2 child pids`).
+    program to have run through the run, not only cycle's offscreen copy of it. The record lists
+    every procmgr log of the id since `up` (`# ID:`; a procmgr or procstat restart starts a new
+    log), and between them they must name one child pid (`The PID of new child`) and no
+    `Received a sigChild` (procServ saw the child end). procstat's entry holds two more tables
+    that `cycle` reads with procstat in Configured, `before` (its walk ends before the run's
+    BeginRun) and `after` (its walk starts after the EndRun), each with the pids `procmgr status`
+    gave right after the walk (`procmgr_pids`). The id must be RUNNING in both and in the table
+    read while Running, and its pid in `before` and `after` must be that one child pid
+    (`procstat's table before the run shows procmgr's groupca SHUTDOWN, not RUNNING`, `procstat's
+    table "after" was read from ... not after the run's EndRun`, `its procmgr logs of partca
+    (partca, 2 listed) name 2 child pids`, `says procServ received a sigChild for process ...`,
+    `procmgr status, read with procstat's table after the run, gives dtica pid ..., not the child
+    pid ... its procmgr log names`). So a GUI killed, or restarted by `procmgr restart` or
+    procstat's Restart button, at any time between `up` and the record does not count.
   - the values a GUI, monitor or client read must be ones their PVs' servers served while it
     read. Each stand-in (simxpm, simhsd, simtpr, simdti) logs every value it serves to
     `logs/<service>.served.jsonl` (`psdaq.sim.served_log`), which the record lists. A live read
@@ -477,7 +484,18 @@ A record proves a row only if all of these hold, and the row's line names the fi
     entry shows '1' for DAQ:SIM:XPM:0:PART:5:NumL0Acc, a value simxpm did not serve while groupca
     read`, `shows groupca read no live value of a PV a served-value log holds`, `the record lists
     no served-value log`). simhsd, simtpr and simdti start their counts at a random second, so
-    another run's values do not fit this one's log.
+    another run's values do not fit this one's log. A served-value log counts only at
+    `logs/<service>.served.jsonl` next to `logs/<service>.log`, a log the record lists, which runs
+    the program the served log's first line names and whose `# PID:` line (`daq_sim up` writes it
+    when it starts the service, and removes an older served log first) is the pid that first line
+    gives (`served-value logs not counted: extra.served.jsonl: the record lists no log extra.log of
+    the service that wrote it`). A served-value log stops at 64 MiB (`DAQ_SIM_SERVED_LOG_MAX`
+    bytes; simdti's grows about 46 MB an hour) with a last line `{"t": ..., "capped": ...}`; a
+    read after that time fails and says the log stopped at its cap.
+  - what these rules catch: a forged witness or log that the record's hashes still match, as
+    long as the forger did not also fit the run's other files to it. The record is not signed: a
+    forger who also edits or adds a served-value log, takes AMI matches from the xtc2 file itself,
+    or edits procstat's tables still passes.
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R4, the
   procmgr instance, the served values) and checks the row's line says why.
 
