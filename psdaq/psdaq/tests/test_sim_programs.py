@@ -638,13 +638,20 @@ def test_tpr_entries_run_the_configs_tpr_programs_on_cards_of_their_own(tmp_path
     assert f"id:'enc_trig', flags:'spu', env:'PSDAQ_SIM_TPR={tmp_path}/tpr/enc_trig'" in extra
     assert "cmd:'tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10'" in extra
     assert gui_witness.tpr_card(str(tmp_path), 'tpr_trigger') == f'{tmp_path}/tpr/enc_trig/tpra'
+    # lclsBldServer as lab3-bld.cnf:52 starts it, with -b and, on loopback, a group and port off the production network
+    assert f"id:'lclsbldsvc', flags:'s', env:'PSDAQ_SIM_TPR={tmp_path}/tpr/lclsbldsvc'" in extra
+    assert "cmd:'lclsBldServer -i lo -r 4 -b ebeam -a 239.254.33.0 -p 31245'" in extra
+    assert gui_witness.tpr_card(str(tmp_path), 'lclsBldServer') == f'{tmp_path}/tpr/lclsbldsvc/tpra'
+    assert daq_sim.ports(5)['lclsbld'] == 31245 and gui_witness.bld_group_ok(gui_witness.BLD_GROUP_BASE)
+    assert not gui_witness.bld_group_ok('239.255.25.0') and not gui_witness.bld_group_ok('224.0.0.1')
+    assert set(daq_sim.TPR_FRAME_PROCS) <= set(daq_sim.TPR_PROCS)
     assert set(daq_sim.TPR_PROCS) <= set(daq_sim.procs({'tpr': True}))
     assert not set(daq_sim.TPR_PROCS) & set(daq_sim.procs({}))
     assert "PSDAQ_SIM_TPR" not in daq_sim.extra_entries(str(tmp_path), 5, gui=True, pvservers=True)
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
-    assert {'prog:tprtrig', 'prog:tpr_trigger'} <= set(rows)
+    assert {'prog:tprtrig', 'prog:tpr_trigger', 'prog:lclsBldServer'} <= set(rows)
     enumerated, _ = coverage.enumerate_rows(REPO)
-    assert {'prog:tprtrig', 'prog:tpr_trigger'} <= set(enumerated)
+    assert {'prog:tprtrig', 'prog:tpr_trigger', 'prog:lclsBldServer'} <= set(enumerated)
 
 
 def test_tprtrig_programs_a_simulated_card_as_its_argv_says(tmp_path):
@@ -670,3 +677,65 @@ def test_tprtrig_programs_a_simulated_card_as_its_argv_says(tmp_path):
         env.pop('PSDAQ_SIM_TPR')
         r = subprocess.run([exe] + argv, env=env, capture_output=True, text=True, timeout=60)
         assert r.returncode != 0 and 'Could not open tpr: No such file or directory' in r.stdout + r.stderr
+
+
+def _free_udp_port():
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        s.bind(('127.0.0.1', 0))
+        return s.getsockname()[1]
+
+
+def test_lclsBldServer_sends_its_bld_for_the_frames_tprframes_delivers(tmp_path):
+    """lclsBldServer on a simulated card (PSDAQ_SIM_TPR) whose channel-1 frames psdaq.sim.tprframes writes, as the
+    driver would, at the fixed rate the channel selects: a receiver on its group (-a, -p: off the production network,
+    on loopback) gets its packets, which coverage.bld_problem accepts (times, fixed rate 4's marker, simxpm's pulse
+    IDs, the ebeam words, its pid); the queue file tpr::Client made is sizeof(Queues) as tprframes lays it out."""
+    import shutil
+    import time
+    from psdaq.sim import gui_witness, tprframes
+    exe = shutil.which('lclsBldServer')
+    if not exe:
+        pytest.skip('lclsBldServer is not built')
+    port = _free_udp_port()
+    argv = ['-i', 'lo', '-r', '4', '-b', 'ebeam', '-a', gui_witness.BLD_GROUP_BASE, '-p', str(port)]
+    env = dict(os.environ, PSDAQ_SIM_TPR=str(tmp_path))
+    card = str(tmp_path / 'tpra')
+    feed = subprocess.Popen([sys.executable, '-m', 'psdaq.sim.tprframes', card, '--duration', '30'], env=env,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    srv = subprocess.Popen([exe] + argv, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        time.sleep(2)
+        t0, t1, packets = gui_witness.bld_receive(gui_witness.BLD_GROUP_BASE, port, 3)
+        _, t2, reads = gui_witness.tpr_reads(card, 1)
+    finally:
+        srv.kill()
+        feed.terminate()
+    out, log = srv.communicate(timeout=30)[0], feed.communicate(timeout=30)[0]
+    assert os.path.getsize(card + '1') == tprframes.QUEUES_SIZE
+    assert 'fixed rate 4 (102.0 Hz): frames to ' + card + '1' in log, log
+    e = gui_witness.bld_entry('lclsBldServer', card, gui_witness.BLD_GROUP_BASE, port, t0, t1, reads, packets)
+    assert e['pass'], e['problems']
+    assert 200 <= len(e['packets']) <= 400, len(e['packets'])          # 3 s at 102 Hz
+    text = (f'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is {card}\n'
+            f'@@@ The PID of new child "lclsBldServer" is: {srv.pid}\r\n')
+    logs = [(('lclsBldServer', argv), text)]
+    lo, hi = e['start'] - 5, t2 - gui_witness.EPICS_EPOCH + 1     # the run: around the packets and the reads
+    assert coverage.tpr_problem('lclsBldServer', e, logs, None, lo, hi) is None
+    assert coverage.bld_problem('lclsBldServer', e, logs, lo, hi) is None
+    assert 'pid' in coverage.bld_problem('lclsBldServer', e, [(('lclsBldServer', argv), text.replace(
+        str(srv.pid), str(srv.pid + 1)))], lo, hi)
+
+
+def test_lclsBldServer_refuses_a_bad_group_or_port_and_keeps_its_usage_otherwise():
+    """-a and -p are new; without them lclsBldServer parses its command line as before (lab3-bld.cnf:52's line, with no
+    -b, still ends in its usage, exit 1); a bad -a or -p is refused with the usage."""
+    import shutil
+    exe = shutil.which('lclsBldServer')
+    if not exe:
+        pytest.skip('lclsBldServer is not built')
+    env = {k: v for k, v in os.environ.items() if k != 'PSDAQ_SIM_TPR'}
+    for argv, why in ((['-i', 'lo', '-r', '4'], 'Usage:'), (['-i', 'lo', '-b', 'ebeam', '-a', 'x'], "option `-a' parsing error"),
+                      (['-i', 'lo', '-b', 'ebeam', '-p', '70000'], "option `-p' parsing error")):
+        r = subprocess.run([exe] + argv, env=env, capture_output=True, text=True, timeout=30)
+        assert r.returncode == 1 and why in r.stdout, r.stdout

@@ -31,7 +31,9 @@ daqstat (R5) reads no PV: its entry ("kind": "slurm") holds the walk's refreshes
 reads of simslurm meanwhile.  The tree's own PV servers (PROGRAM_SERVERS: bldcas, hpsdbuscas) get a 'servers' entry
 keyed by the program (R3b), the stand-ins of SERVERS one keyed by the stand-in (R3).  The TPR programs ('daq_sim up
 --tpr': tprtrig, tpr_trigger, each on a simulated TPR card) get a 'programs' entry ("kind": "tpr", R8) with their card's
-channel and trigger registers, read once a second.
+channel and trigger registers, read once a second; lclsBldServer, on a card whose frames psdaq.sim.tprframes delivers,
+one of "kind": "bld" that also holds the BLD packets a receiver on its group (loopback, off the production network)
+got meanwhile.
 """
 
 import argparse
@@ -118,11 +120,24 @@ MONITORS = {
 # Connect), each on a card of its own (both program /dev/tpra channel 0, output 1, as the configs do).  Neither logs a
 # run: while the run is Running the cycle reads each card's channel and trigger registers once a second, and coverage
 # checks them against what the program's own command line programs.
+# lclsBldServer (lab3-bld.cnf:52: lclsBldServer -i enp1s0f1 -r 4) is the BLD server of the configs ('kind': 'bld'): on
+# each timing frame its card's channel 1 receives (here from psdaq.sim.tprframes, the card's frames of the fixed rate
+# the channel selects) it sends its BLD type's packet to the type's multicast group.  The cnf line predates the -b its
+# source has required since 27c997fae (which also made the groups the production 239.255.25.0-3), so it runs with
+# -b ebeam, the type the usage names the default, on the loopback interface (-i lo), to a group and port off the
+# production network (-a, -p: BLD_GROUP_BASE, the 'lclsbld' port of daq_sim.ports); while the run is Running the cycle
+# reads its card and receives its packets (bld_receive).
 TPR_PROGRAMS = {
     'tprtrig':     {'id': 'tprtrig', 'flags': 'sp', 'argv': ['-t', 'a', '-c', '0', '-o', '1', '-d', '2', '-w', '10', '-z']},
     'tpr_trigger': {'id': 'enc_trig', 'flags': 'spu',
                     'argv': ['-H', '{instr}', '-C', 'localhost', '-t', 'a', '-c', '0', '-o', '1', '-d', '2', '-w', '10']},
+    'lclsBldServer': {'id': 'lclsbldsvc', 'flags': 's', 'kind': 'bld', 'dev': '-d', 'channel': 1,
+                      'argv': ['-i', 'lo', '-r', '4', '-b', 'ebeam', '-a', '{bld_base}', '-p', '{bld_port}']},
 }
+# lclsBldServer's multicast group base on the loopback interface: administratively scoped, outside LCLS's
+# 239.255.0.0/16 (as daq_sim.bld_group and simxpm's --bld-dest), so no production BLD receiver can see a packet
+BLD_GROUP_BASE = '239.254.33.0'
+BLD_MIN_PACKETS = 10                    # packets a 'bld' entry needs within the run
 # TprReg (psdaq/psdaq/tpr/Module.hh, the card's BAR 1): TprBase at 0x80000, its 14 channels 0x1000 bytes apart
 # (control, evtSel, ...), its 12 triggers from 0xA0000, 0x1000 bytes apart (control, delay, width, delayTap)
 TPR_CHANNELS, TPR_TRIGGERS, TPR_STRIDE, TPR_NCHANNELS, TPR_NTRIGGERS = 0x80000, 0xA0000, 0x1000, 14, 12
@@ -144,9 +159,12 @@ def tpr_registers(path):
 
 
 def tpr_card(workdir, name):
-    """The register map file of TPR program `name`'s simulated card: <workdir>/tpr/<procmgr id>/tpra."""
-    return os.path.join(workdir, 'tpr', TPR_PROGRAMS[name]['id'], 'tpr' + TPR_PROGRAMS[name]['argv'][
-        TPR_PROGRAMS[name]['argv'].index('-t') + 1])
+    """The register map file of TPR program `name`'s simulated card: <workdir>/tpr/<procmgr id>/tpr<x>, x the card its
+    argv names (tprtrig's and tpr_trigger's -t, lclsBldServer's -d; 'a' by default)."""
+    T = TPR_PROGRAMS[name]
+    opt = T.get('dev', '-t')
+    return os.path.join(workdir, 'tpr', T['id'], 'tpr' + (T['argv'][T['argv'].index(opt) + 1] if opt in T['argv']
+                                                          else 'a'))
 
 
 def tpr_reads(card, seconds, period=1.0):
@@ -167,9 +185,80 @@ def tpr_reads(card, seconds, period=1.0):
     return t0, time.time(), out
 
 
-def tpr_argv(name, instr):
-    """The argv procmgr's entry of TPR program `name` gives it (before procmgr's -p and -u)."""
-    return [a.format(instr=instr) for a in TPR_PROGRAMS[name]['argv']]
+def tpr_argv(name, instr, bld_base=BLD_GROUP_BASE, bld_port=None):
+    """The argv procmgr's entry of TPR program `name` gives it (before procmgr's -p and -u); lclsBldServer's group
+    base and port (-a, -p) are bld_base and bld_port."""
+    return [a.format(instr=instr, bld_base=bld_base, bld_port=bld_port) for a in TPR_PROGRAMS[name]['argv']]
+
+
+def bld_group_ok(group):
+    """Whether a BLD receiver may join `group`: a multicast group in 239.0.0.0/8 outside LCLS's 239.255.0.0/16."""
+    import ipaddress
+    a = ipaddress.ip_address(group)
+    return a in ipaddress.ip_network('239.0.0.0/8') and a not in ipaddress.ip_network('239.255.0.0/16')
+
+
+def bld_receive(group, port, seconds, iface='127.0.0.1'):
+    """Join multicast `group` on the interface `iface` (the loopback interface) and keep every packet that arrives on
+    `port` for `seconds`: (Unix start, Unix end, packets), each (EPICS-epoch receive time, the packet's bytes).
+    Refuses a group in LCLS's 239.255.0.0/16 (bld_group_ok)."""
+    import socket
+    if not bld_group_ok(group):
+        raise ValueError(f'{group}: a BLD receiver joins only a group in 239.0.0.0/8 outside 239.255.0.0/16')
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    out = []
+    try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind((group, port))
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(group) + socket.inet_aton(iface))
+        s.settimeout(0.2)
+        t0 = time.time()
+        while time.time() < t0 + seconds:
+            try:
+                b = s.recv(9000)
+            except socket.timeout:
+                continue
+            out.append((round(time.time() - EPICS_EPOCH, 6), b))
+        return t0, time.time(), out
+    finally:
+        s.close()
+
+
+def bld_packet(b):
+    """lclsBldServer's packet (psdaq/psdaq/app/lclsBldServer.cc): [ns, sec, pulseId, nbytes, the words its source
+    fills after the time and pulse ID (payload[4] .. payload[14 + payloadWords], payloadWords = (nbytes - 96) / 4)];
+    None if it is too short for that."""
+    import struct
+    n = (len(b) - 96) // 4
+    if len(b) < 96 or (len(b) - 96) % 4 or 4 * (15 + n) > len(b):
+        return None
+    w = struct.unpack_from(f'<{15 + n}I', b)
+    return [w[0], w[1], w[2] | (w[3] << 32), len(b), list(w[4:])]
+
+
+def bld_entry(name, card, group, port, t0, t1, reads, packets):
+    """The witness entry of a BLD server on a simulated TPR card ('kind': 'bld'): its card's register reads (as a 'tpr'
+    entry) and the packets received on its group and port while the run ran, each [receive time, sec, ns, pulseId,
+    nbytes]; 'body' the words after the time and pulse ID of the first, 'bodies' how many packets carry exactly those
+    (coverage checks them, the times and the pulse IDs against the program's argv)."""
+    e = tpr_entry(name, card, t0, t1, reads)
+    e.update(kind='bld', group=group, port=port, packets=[], body=None, bodies=0)
+    for t, b in packets:
+        p = bld_packet(b)
+        if p is None:
+            e['problems'].append(f'a packet of {len(b)} B is not one of lclsBldServer\'s')
+            continue
+        ns, sec, pid, nbytes, body = p
+        e['packets'].append([t, sec, ns, pid, nbytes])
+        if e['body'] is None:
+            e['body'] = body
+        e['bodies'] += body == e['body']
+    if len(e['packets']) < BLD_MIN_PACKETS:
+        e['problems'].append(f'received {len(e["packets"])} packet(s) on {group}:{port} ({BLD_MIN_PACKETS} or more '
+                             f'needed)')
+    e['live'] = e['live'] + ([f'{group}:{port}'] if e['packets'] else [])
+    e['pass'] = not e['problems']
+    return e
 
 
 def tpr_entry(name, card, t0, t1, reads):

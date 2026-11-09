@@ -66,7 +66,12 @@ listed .xtc2 files.  Rows that need one:
                      tpr_trigger on a simulated TPR card, tpr::Client with PSDAQ_SIM_TPR), 2 or
                      more reads of the card's registers within the run, each showing what the
                      program's own command line programs (tpr_expected; tpr_trigger's channel on
-                     the partition's readout group), of the card its own log says it mapped
+                     the partition's readout group), of the card its own log says it mapped; for
+                     a BLD server on such a card ('kind': 'bld': lclsBldServer, its card's frames
+                     from psdaq.sim.tprframes), that and BLD_MIN_PACKETS or more packets received
+                     on the group and port its command line sends to (bld_expected), every one
+                     timed within the run's L1Accepts, at the rate and with the words its source
+                     sends for its -b type, from the pid its log gives (bld_problem)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -871,6 +876,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         return None
     if e.get('kind') == 'tpr':                              # R8: a TPR program on a simulated TPR card
         return tpr_problem(prog, e, logs, w.get('partition'), lo, hi)
+    if e.get('kind') == 'bld':                              # R8 + its packets: a BLD server on a simulated TPR card
+        return tpr_problem(prog, e, logs, w.get('partition'), lo, hi) or bld_problem(prog, e, logs, lo, hi)
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -926,7 +933,13 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
 
 TPR_CARD = re.compile(r'Tpr::Client: simulated TPR \(PSDAQ_SIM_TPR\): (\S+) is (\S+)')
 # getopt strings of the TPR programs (psdaq/psdaq/app/tprtrig.cc, psdaq/drp/TprTrigger.cc), '?' left out
-TPR_GETOPT = {'tprtrig': 'c:d:D:m:w:o:t:r:e:p:zC:L:M:P:h', 'tpr_trigger': 'p:C:u:k:H:c:d:D:w:o:t:K:L:M:P:hv'}
+TPR_GETOPT = {'tprtrig': 'c:d:D:m:w:o:t:r:e:p:zC:L:M:P:h', 'tpr_trigger': 'p:C:u:k:H:c:d:D:w:o:t:K:L:M:P:hv',
+              'lclsBldServer': 'a:d:b:e:i:p:r:vh'}
+# lclsBldServer's BLD types (psdaq/psdaq/app/lclsBldServer.cc): -b name -> (group offset = bldInfo, typeId, payload
+# words); its groups are <-a base, 239.255.25.0 by default> + offset on <-p port, 12148 by default>
+BLD_TYPES = {'ebeam': (0, (7 << 16) | 15, 41), 'pcav': (1, 17, 8), 'gmd': (2, (2 << 16) | 64, 12),
+             'xgmd': (3, 64, 12)}
+BLD_DEFAULT_BASE, BLD_DEFAULT_PORT, BLD_MIN_PACKETS = 0xefff1900, 12148, 10
 
 
 def _strtoul(text):
@@ -945,6 +958,13 @@ def tpr_expected(prog, args, group=None):
     ({'channel': i, 'control': c, 'evtSel': s or None}, [{'trigger': i, 'control', 'delay', 'width', 'delayTap'}]),
     tpr_trigger's channel on readout group `group` (control's, at Connect); None for an argv the program refuses."""
     import getopt
+    if prog == 'lclsBldServer':         # Client(dev, 1, ...): setup(0, 0, 1), then start(FixedRate(-r) or EventCode(-e))
+        b = bld_expected(args)
+        if b is None:
+            return None
+        sel = (1 << 30) | (2 << 11) | (b['evcode'] & 0x3ff) if b['evcode'] is not None else (1 << 30) | b['rate']
+        return ({'channel': 1, 'control': 7, 'evtSel': sel & 0xffffffff},
+                [{'trigger': 0, 'control': 1 | (1 << 16) | (1 << 31), 'delay': 0, 'width': 1, 'delayTap': 0}])
     try:
         opts, rest = getopt.getopt(list(args), TPR_GETOPT[prog])
     except (getopt.GetoptError, KeyError):
@@ -977,6 +997,103 @@ def tpr_expected(prog, args, group=None):
               'delay': v['d'] & m32, 'width': v['w'] & m32, 'delayTap': v['D'] & m32}
              for i in range(32) if v['o'] >> i & 1]
     return chan, trigs
+
+
+def bld_expected(args):
+    """What lclsBldServer with command line `args` sends, as its source does: {'group' (dotted), 'port', 'type',
+    'bldInfo', 'typeId', 'words' (payload words), 'rate' (FixedRate index, -r, 5 by default) or 'evcode' (-e)}; None
+    for an argv it refuses (no -b of BLD_TYPES or no -i, a bad -a or -p, a word that is no option)."""
+    import getopt
+    import socket
+    try:
+        opts, rest = getopt.getopt(list(args), TPR_GETOPT['lclsBldServer'])
+    except getopt.GetoptError:
+        return None
+    if rest:
+        return None
+    o = {k[1:]: a for k, a in opts}
+    if o.get('b') not in BLD_TYPES or 'i' not in o:
+        return None
+    base, port = BLD_DEFAULT_BASE, BLD_DEFAULT_PORT
+    if 'a' in o:
+        try:
+            base = struct.unpack('>I', socket.inet_aton(o['a'].strip('\'"')))[0]
+        except OSError:
+            return None
+        if not base:
+            return None
+    if 'p' in o:
+        port = _strtoul(o['p'])
+        if not port or port > 0xffff:
+            return None
+    rate = _strtoul(o.get('r', '5'))
+    evcode = _strtoul(o['e']) if 'e' in o else None
+    if rate is None or ('e' in o and evcode is None):
+        return None
+    info, type_id, words = BLD_TYPES[o['b']]
+    return {'group': socket.inet_ntoa(struct.pack('>I', (base + info) & 0xffffffff)), 'port': port, 'type': o['b'],
+            'bldInfo': info, 'typeId': type_id, 'words': words, 'rate': rate, 'evcode': evcode}
+
+
+def bld_problem(prog, e, logs, lo, hi):
+    """Why a 'bld' witness entry does not show BLD server prog send what its command line says while the run ran
+    (lo..hi, EPICS-epoch seconds), or None: BLD_MIN_PACKETS or more packets received on the group and port of its
+    command line (bld_expected, from the log that names its card), each timed (sec.ns) within the run's L1Accepts and
+    after the one before, at the fixed rate it selects (times on that marker, psdaq.sim.tprframes: every
+    simxpm.FIXED_RATE_DIV[rate] pulses of 1300/1.4 MHz, and as many as its rate gives over the time received, half at
+    least), each pulse ID the one simxpm's timing gives its time, each of the size and with the words its source sends
+    for its type, the pid in them the one its log gives."""
+    from psdaq.sim.simxpm import FIXED_RATE_DIV, TIMING_BASE_HZ
+    mine = [(args, text) for (name, args), text in logs if name == prog and TPR_CARD.search(text)]
+    b = bld_expected(mine[0][0]) if mine else None
+    if b is None:
+        return f'its log of {prog} gives a command line {prog} refuses: {mine[0][0] if mine else None}'
+    if (e.get('group'), e.get('port')) != (b['group'], b['port']):
+        return (f'received on {e.get("group")}:{e.get("port")}, but its command line sends to '
+                f'{b["group"]}:{b["port"]}')
+    pk = [p for p in e.get('packets') or [] if isinstance(p, list) and len(p) == 5 and
+          all(isinstance(x, (int, float)) for x in p)]
+    if len(pk) < BLD_MIN_PACKETS:
+        return f'received {len(pk)} packet(s) of {prog} on {b["group"]}:{b["port"]} ({BLD_MIN_PACKETS} or more needed)'
+    if b['evcode'] is not None or b['rate'] >= len(FIXED_RATE_DIV):
+        return f'its command line selects {"event code " + str(b["evcode"]) if b["evcode"] is not None else "rate " + str(b["rate"])}, which no simulated card delivers'
+    div = FIXED_RATE_DIV[b['rate']]
+    last = None
+    for t, sec, ns, pid, nbytes in pk:
+        when = sec + ns * 1e-9
+        if not lo <= when <= hi:
+            return f'its packet of pulseId {pid:#x} is timed {when:.6f}, not within the run\'s L1Accepts ({lo:.3f} to {hi:.3f})'
+        if last is not None and (pid, when) <= last:
+            return f'its packet of pulseId {pid:#x} does not come after the one before ({last[0]:#x})'
+        if ((sec * 10**9 + ns) * 13 // 14000) % div:     # the LCLS-II pulse of its time (psdaq.sim.tprframes)
+            return (f'its packet of pulseId {pid:#x} is timed {sec}.{ns:09d}, not on fixed rate {b["rate"]}\'s marker '
+                    f'(every {div} pulses of 1300/1.4 MHz)')
+        if pid != ((sec * 14000000) // 13 + (ns * 14) // 13000) & ((1 << 56) - 1):
+            return (f'its packet of pulseId {pid:#x} is timed {sec}.{ns:09d}, to which simxpm\'s timing gives '
+                    f'another pulse ID')
+        if nbytes != 96 + 4 * b['words']:
+            return f'its packet of pulseId {pid:#x} has {nbytes} B, not the {96 + 4 * b["words"]} its -b {b["type"]} sends'
+        last = (pid, when)
+    span = pk[-1][0] - pk[0][0]
+    want = int(0.5 * span * TIMING_BASE_HZ / div)
+    if len(pk) < want:
+        return (f'received {len(pk)} packets in {span:.1f} s, fewer than half the {2 * want} fixed rate {b["rate"]} '
+                f'gives')
+    pids = [log_pid(text) for _, text in mine]
+    body = e.get('body')
+    exp = None
+    if isinstance(body, list) and len(body) == 11 + b['words']:
+        src = body[2] if isinstance(body[2], int) else -1
+        exp = [0, 0, src, b['bldInfo'], b['typeId'], 4 * b['words'] + 20,
+               0, src, b['bldInfo'], b['typeId'], 4 * b['words'] + 20] + list(range(b['words']))
+    if exp is None or body != exp or src >> 24 != 6:
+        return f'its packets do not hold the words lclsBldServer sends for -b {b["type"]}: {str(body)[:120]}'
+    if e.get('bodies') != len(e.get('packets') or []):
+        return f'{len(e.get("packets") or []) - (e.get("bodies") or 0)} of its packets differ from the first after the pulse ID'
+    if not any(p is not None and (p & 0xffffff) == (src & 0xffffff) for p in pids):
+        return (f'its packets carry pid {src & 0xffffff}, but its log of {prog} gives pid '
+                f'{", ".join(str(p) for p in pids if p is not None) or "none"}')
+    return None
 
 
 def tpr_problem(prog, e, logs, partition, lo, hi):

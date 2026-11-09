@@ -67,7 +67,8 @@ every state and count itself, prints E2E PASS or E2E FAIL and the exit code says
 
 Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
-UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>).
+UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>),
+31240 + p lclsBldServer's BLD multicast (--tpr, group 239.254.33.0, gui_witness.BLD_GROUP_BASE).
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
 EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
@@ -155,7 +156,7 @@ def ports(platform):
     return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
-            'bld': 31220 + platform,
+            'bld': 31220 + platform, 'lclsbld': 31240 + platform,
             'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform),
             'pvservers': {'simhsd': (31300 + 10 * platform, 31301 + 10 * platform),
                           'simtpr': (31302 + 10 * platform, 31303 + 10 * platform),
@@ -475,9 +476,12 @@ PVSERVER_PROCS = ('bldcas', 'hpsdbuscas')
 PVSERVER = ''' {{ id:'{id}', flags:'s', env:'EPICS_PVAS_SERVER_PORT={srv} EPICS_PVAS_BROADCAST_PORT={bcast}',
    cmd:'{id} {args}' }},
 '''
-# --tpr: the TPR programs of the configs (gui_witness.TPR_PROGRAMS: tprtrig, tpr_trigger) on simulated TPR cards, one
-# each: tpr::Client maps <workdir>/tpr/<id>/tpra, a file, instead of /dev/tpra (PSDAQ_SIM_TPR, psdaq/psdaq/tpr/Client.cc)
-TPR_PROCS = ('tprtrig', 'enc_trig')    # the procmgr ids of gui_witness.TPR_PROGRAMS
+# --tpr: the TPR programs of the configs (gui_witness.TPR_PROGRAMS: tprtrig, tpr_trigger, lclsBldServer) on simulated
+# TPR cards, one each: tpr::Client maps <workdir>/tpr/<id>/tpra, a file, instead of /dev/tpra (PSDAQ_SIM_TPR,
+# psdaq/psdaq/tpr/Client.cc); 'up' also starts tprframes (psdaq.sim.tprframes), which delivers the timing frames of
+# the BLD server's card (TPR_FRAME_PROCS), as the card's driver would
+TPR_PROCS = ('tprtrig', 'enc_trig', 'lclsbldsvc')    # the procmgr ids of gui_witness.TPR_PROGRAMS
+TPR_FRAME_PROCS = ('lclsbldsvc',)       # the cards tprframes delivers frames to (the programs that read frames)
 TPR_ENTRY = ''' {{ id:'{id}', flags:'{flags}', env:'PSDAQ_SIM_TPR={card}',
    cmd:'{cmd}' }},
 '''
@@ -572,7 +576,8 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         from psdaq.sim import gui_witness
         for name, T in gui_witness.TPR_PROGRAMS.items():
             out += TPR_ENTRY.format(id=T['id'], flags=T['flags'], card=os.path.join(workdir, 'tpr', T['id']),
-                                    cmd=' '.join([name] + gui_witness.tpr_argv(name, INSTRUMENT)))
+                                    cmd=' '.join([name] + gui_witness.tpr_argv(name, INSTRUMENT,
+                                                                                bld_port=P['lclsbld'])))
     if pvservers:
         from psdaq.sim import gui_witness
         for g in PVSERVER_PROCS:
@@ -873,8 +878,14 @@ def cmd_up(args):
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
                 f'worker reads psana://shmem={meb_tag(args.platform)}')
         if tpr:                         # each TPR program's simulated card (tpr::Client, PSDAQ_SIM_TPR)
+            from psdaq.sim import gui_witness
             for i in TPR_PROCS:
                 os.makedirs(work.path('tpr', i), exist_ok=True)
+            cards = [gui_witness.tpr_card(work.dir, n) for n, T in gui_witness.TPR_PROGRAMS.items()
+                     if T['id'] in TPR_FRAME_PROCS]
+            p = start_service(work, state, 'tprframes', [py, '-m', 'psdaq.sim.tprframes'] + cards, env)
+            _wait_log(state['services']['tprframes']['log'], 'ready', 30, p, 'tprframes')
+            say(f'tprframes pid {p.pid}: the timing frames of {", ".join(cards)} (the fixed rate each channel selects)')
         extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
                               also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
@@ -1240,7 +1251,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb'):
+    for name in ('tprframes', 'simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -1893,6 +1904,19 @@ class GuiWitness:
         for name, T in gui_witness.TPR_PROGRAMS.items():   # R8: each TPR program's card, read in a thread
             if T['id'] in procs(state):
                 res = self.tprs[name] = {'card': gui_witness.tpr_card(work.dir, name)}
+                if T.get('kind') == 'bld':      # a BLD server: also receive its packets on its group, meanwhile
+                    res.update(group=gui_witness.BLD_GROUP_BASE, port=state['ports']['lclsbld'], packets=[])
+
+                    def bread(res=res):
+                        try:
+                            res['b0'], res['b1'], res['packets'] = gui_witness.bld_receive(
+                                res['group'], res['port'], gui_witness.PUMPS + 4)
+                        except Exception as ex:
+                            res['error'] = f'{type(ex).__name__}: {ex}'
+                    res['bthread'] = threading.Thread(target=bread, daemon=True)
+                    res['bthread'].start()
+                    print(f'{now()} GUI witness: receiving {name}\'s BLD on {res["group"]}:{res["port"]} '
+                          f'(loopback)', flush=True)
 
                 def tread(res=res):
                     res['t0'], res['t1'], res['reads'] = gui_witness.tpr_reads(res['card'], gui_witness.PUMPS + 4)
@@ -1933,6 +1957,8 @@ class GuiWitness:
             time.sleep(0.1)
         for name, res in list(self.monitors.items()) + list(self.servers.items()) + list(self.tprs.items()):
             res['thread'].join(max(1, end - time.monotonic()))
+            if res.get('bthread'):
+                res['bthread'].join(max(1, end - time.monotonic()))
         if self.stimulus and self.stimulus.get('link') is not None:     # the link is full no more
             err = pv_put(self.stimulus['pv'], [0.] * len(self.stimulus['value']))
             self.stimulus.update(off=round(time.time() - EPICS_EPOCH_UNIX, 3), off_error=err)
@@ -1954,8 +1980,17 @@ class GuiWitness:
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
                                                    res.get('reads', []), prefix, self.params)
         for name, res in self.tprs.items():
-            programs[name] = self.gw.tpr_entry(name, res['card'], res.get('t0', 0), res.get('t1', 0),
-                                               res.get('reads', []))
+            if 'group' in res:          # a BLD server: its window spans the card reads and the packets received
+                t0 = min(res.get('t0', 0), res.get('b0', res.get('t0', 0)))
+                t1 = max(res.get('t1', 0), res.get('b1', 0))
+                programs[name] = self.gw.bld_entry(name, res['card'], res['group'], res['port'], t0, t1,
+                                                   res.get('reads', []), res.get('packets', []))
+                if res.get('error'):
+                    programs[name]['problems'].append(f'BLD receiver: {res["error"]}')
+                    programs[name]['pass'] = False
+            else:
+                programs[name] = self.gw.tpr_entry(name, res['card'], res.get('t0', 0), res.get('t1', 0),
+                                                   res.get('reads', []))
         servers = {name: res.get('entry') or {'pass': False, 'problems': ['no result']}
                    for name, res in self.servers.items()}
         if 'deadca' in programs:
@@ -1975,6 +2010,10 @@ class GuiWitness:
                                     f'{len(e.get("squeue", []))} squeue reads' if e.get('kind') == 'slurm' else
                                     f'TPR card read {len(e["reads"])} times, enabled: {" ".join(e["live"]) or "none"}'
                                     if e.get('kind') == 'tpr' else
+                                    f'{len(e["packets"])} BLD packets on {e["group"]}:{e["port"]}, pulseIds '
+                                    f'{e["packets"][0][3]:#x}..{e["packets"][-1][3]:#x}' if e.get('kind') == 'bld'
+                                    and e['packets'] else
+                                    f'no BLD packet on {e["group"]}:{e["port"]}' if e.get('kind') == 'bld' else
                                     f'{len(e["live"])} live PVs' + (f' of {e["stand_in"]}' if e.get('stand_in') else '') +
                                     ', e.g. ' + shown(e))
                for n, e in programs.items()}
@@ -2180,9 +2219,11 @@ def main(argv=None):
                              '(for dticas), each on PVA ports of its own; cycle reads their PVs while Running '
                              '(psdaq.sim.gui_witness)')
     upopts.add_argument('--tpr', action='store_true',
-                        help='also run the TPR programs tprtrig and tpr_trigger as the configs start them, each on a '
-                             'simulated TPR card (tpr::Client with PSDAQ_SIM_TPR: its register map is a file in '
-                             '<workdir>/tpr/<id>/); cycle reads their registers while Running (psdaq.sim.gui_witness)')
+                        help='also run the TPR programs tprtrig, tpr_trigger and lclsBldServer as the configs start '
+                             'them, each on a simulated TPR card (tpr::Client with PSDAQ_SIM_TPR: its register map is a '
+                             'file in <workdir>/tpr/<id>/), and tprframes, which delivers the timing frames of the BLD '
+                             'server\'s card; cycle reads their registers and receives lclsBldServer\'s packets (on '
+                             'loopback, a group off the production network) while Running (psdaq.sim.gui_witness)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
