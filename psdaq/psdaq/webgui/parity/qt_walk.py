@@ -828,6 +828,22 @@ def sim_params(sim_dir):
 LOOPBACK_HOSTS = ('127.0.0.1', 'localhost', '::1', '[::1]', '0.0.0.0', '*')
 
 
+def this_host():
+    """This host's own name and addresses: a connect to them stays on this host (procmgr, as procstat runs it,
+    reaches the procServ ports of a local config through the host's name)."""
+    import socket as _socket
+    names = {_socket.gethostname()}
+    try:
+        names.add(_socket.getfqdn())
+        names.update(a[4][0] for a in _socket.getaddrinfo(_socket.gethostname(), None))
+    except OSError:
+        pass
+    return frozenset(n for n in names if n)
+
+
+THIS_HOST = this_host()
+
+
 def _endpoint_host(ep):
     """host of a zmq endpoint ('tcp://h:p'), '' for ipc:// and inproc://, None if unparsable."""
     ep = str(ep)
@@ -879,7 +895,8 @@ def guard_subprocess(OUT):
 
 
 def guard_network(OUT):
-    """The walked GUI may open TCP connections and ZMQ sockets only to this host: anything else is recorded in
+    """The walked GUI may open TCP connections and ZMQ sockets only to this host (loopback, or its own name and
+    addresses, THIS_HOST): anything else is recorded in
     OUT['calls'] (opener 'refused:...') and not made (a ZMQ connect is skipped; a TCP connect raises
     ConnectionRefusedError), so a GUI with a hard-coded DAQ host (collection_widget's drp-tst-acc06) reaches none.
     No remote shell or Slurm command starts either (guard_subprocess)."""
@@ -890,7 +907,7 @@ def guard_network(OUT):
 
     def _ok(addr):
         h = addr[0] if isinstance(addr, tuple) else None
-        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.')
+        return h is None or h in LOOPBACK_HOSTS or str(h).startswith('127.') or str(h) in THIS_HOST
 
     def connect(self, addr):
         if not _ok(addr):

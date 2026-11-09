@@ -44,6 +44,8 @@ WITNESS = {
     'procstat': {'file': 'procmgr/procstat', 'argv': ['-p', '{platform}', '-i', '1', '{cnf}'], 'kind': 'procmgr',
                  'record_calls': ['psdaq.procmgr.ProcMgr:ProcMgr.spawnConsole', 'psdaq.procmgr.ProcMgr:ProcMgr.spawnLogfile',
                                   'psdaq.procmgr.ProcMgr:ProcMgr.stop', 'psdaq.procmgr.ProcMgr:ProcMgr.start']},
+    # partca (lab3-cam.cnf: partca DAQ:LAB2:PART:<platform>) on the partition's PVs
+    'partca':  {'file': 'cas/partca.py', 'argv': ['{part}']},
     'pvant':   {'file': 'cas/pvant.py',
                 'argv': ['--bases', '{part}', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']},
 }
@@ -56,6 +58,17 @@ MONITORS = {
     'epics_exporter': {'id': 'pvrtmon_0',
                        'argv': ['-H', 'tst', '-I', 'xpm-{xpm}', '-M', '{prom}', '-P', '{pvbase}:XPM:{xpm}',
                                 'NumL0Acc', 'NumL0Inp', 'RunTime']},
+}
+# PV-server stand-ins (R3) daq_sim up --pvservers starts, each on PVA ports of its own (so simxpm stays the
+# only server on the node's search port): what the cycle reads of each while Running (a PV and a field that
+# changes once a second) and the programs it stands in for, each with the PV names that program's own source
+# defines (interface()).
+SERVERS = {
+    'simhsd': {'args': ['-P', '{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B'], 'prefix': '{pvbase}:HSD:1_DA',
+               'live': [('{pvbase}:HSD:1_DA:A:MONTIMING', 'timframecnt'), ('{pvbase}:HSD:1_DA:B:MONTIMING', 'trigcntsum')],
+               'programs': ['hsdpvs']},
+    'simtpr': {'args': ['-P', '{pvbase}:TPR'], 'prefix': '{pvbase}:TPR',
+               'live': [('{pvbase}:TPR:EVTCNT', None)], 'programs': ['tprcas']},
 }
 PORT_LINE = re.compile(r'Providing run-time monitoring data on port (\d+)')
 
@@ -162,6 +175,123 @@ def monitor_entry(name, port, t0, t1, reads, prefix, params):
     return e
 
 
+def hsdpvs_names(prefixes):
+    """The PV names psdaq/psdaq/cas/hsdpvs.py serves for `hsdpvs -P <prefixes>`: its ChipServer adds
+    them to the provider it is given, here one that only keeps the names."""
+    from psdaq.cas import hsdpvs
+
+    class Names:
+        def __init__(self):
+            self.names = []
+
+        def add(self, name, pv):
+            self.names.append(name)
+    prov = Names()
+    for p in prefixes:
+        hsdpvs.ChipServer(prov, p, False)
+    return sorted(prov.names)
+
+
+def tprcas_names(prefix):
+    """The PV names psdaq/psdaq/cas/tprcas.py serves for `tprcas -P <prefix>`: its main() builds its PV
+    table and hands it to PVAServer.createPV, here a stand-in that keeps the table and serves nothing."""
+    import contextlib
+    import io
+    import sys as _sys
+    from psdaq.cas import tprcas
+    got = []
+
+    class Keep:
+        def __init__(self, *a, **k):
+            pass
+
+        def createPV(self, pfx, pvdb):
+            got.extend(pfx + k for k in pvdb)
+
+        def forever(self):
+            pass
+    argv, orig = _sys.argv, tprcas.PVAServer
+    try:
+        _sys.argv, tprcas.PVAServer = ['tprcas', '-P', prefix], Keep
+        with contextlib.redirect_stdout(io.StringIO()):     # it prints its table
+            tprcas.main()
+    finally:
+        _sys.argv, tprcas.PVAServer = argv, orig
+    return sorted(got)
+
+
+def interface(program, args):
+    """The PV names `program`'s own source defines for the stand-in's -P args."""
+    prefixes = args[args.index('-P') + 1:] if '-P' in args else []
+    if program == 'hsdpvs':
+        return hsdpvs_names(prefixes)
+    if program == 'tprcas':
+        return tprcas_names(prefixes[0])
+    raise KeyError(program)
+
+
+def pva_context(port):
+    """A p4p client context that searches only the PVA server whose search (broadcast) port is `port`
+    on 127.0.0.1."""
+    from p4p.client.thread import Context
+    return Context('pva', conf={'EPICS_PVA_ADDR_LIST': f'127.0.0.1:{port}', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
+                                'EPICS_PVA_BROADCAST_PORT': str(port)}, useenv=False)
+
+
+def server_prepare(name, params, port):
+    """(args, {program: the PV names its source defines}, a client context for the stand-in): what
+    server_entry needs, made in the calling thread (the imports of the programs' modules and of p4p
+    must not run in a reader thread while the main thread imports too: Python's import locks then
+    deadlock, as seen at 07ba5ab75)."""
+    args = [a.format(**params) for a in SERVERS[name]['args']]
+    return args, {prog: interface(prog, args) for prog in SERVERS[name]['programs']}, pva_context(port)
+
+
+def server_entry(name, params, port, seconds, period=1.0, prepared=None):
+    """A 'servers' witness entry for stand-in `name`: its interface for each program it stands in for
+    (every name the program defines, got once from the stand-in) and its live PVs read once a second
+    for `seconds`, while the run runs.  prepared: server_prepare()'s result."""
+    S = SERVERS[name]
+    args, defined, ctx = prepared or server_prepare(name, params, port)
+    e = {'args': args, 'port': port, 'prefix': S['prefix'].format(**params), 'interfaces': {}, 'reads': [],
+         'problems': []}
+    t0 = time.time()
+    for prog in S['programs']:
+        names = defined[prog]
+        got = ctx.get(names, timeout=5.0, throw=False)
+        missing = [n for n, v in zip(names, got) if isinstance(v, Exception)]
+        e['interfaces'][prog] = {'defined': len(names), 'served': len(names) - len(missing), 'missing': missing}
+        if missing:
+            e['problems'].append(f'{name} does not serve {len(missing)} of {prog}\'s {len(names)} PVs, e.g. {missing[:3]}')
+    reads = {}
+    end = time.time() + seconds
+    while True:
+        for pv, field in S['live']:
+            pv = pv.format(**params)
+            try:
+                v = ctx.get(pv, timeout=2.0)
+                x = v[field] if field else v
+                x = getattr(x, 'raw', x)
+                x = x.value if hasattr(x, 'value') else x
+                text = f'{float(x):g}'
+            except Exception as ex:
+                text = f'error {type(ex).__name__}'
+            key = pv + ('.' + field if field else '')
+            vals = reads.setdefault(key, [])
+            if not vals or vals[-1] != text:
+                vals.append(text)
+        if time.time() >= end:
+            break
+        time.sleep(period)
+    e['start'], e['end'] = round(t0 - EPICS_EPOCH, 3), round(time.time() - EPICS_EPOCH, 3)
+    e['reads'] = [{'name': k, 'values': v} for k, v in sorted(reads.items())]
+    e['live'] = [r['name'] for r in e['reads'] if len(numbers(r['values'])) >= 2]
+    if not e['live']:
+        e['problems'].append(f'no PV of {name} showed 2 or more distinct numbers')
+    e['pass'] = not e['problems']
+    return e
+
+
 def numbers(values):
     from psdaq.sim.coverage import numbers as n
     return n(values)
@@ -197,9 +327,9 @@ def entry(name, walk_path, code, t0, t1, prefix, params):
     return e
 
 
-def witness(run_id, xtc2, prefix, programs):
+def witness(run_id, xtc2, prefix, programs, servers=None):
     return {'witness': 'gui_witness', 'run_id': run_id, 'xtc2': list(xtc2), 'partition': prefix,
-            'programs': programs}
+            'programs': programs, 'servers': servers or {}}
 
 
 def main(argv_=None):

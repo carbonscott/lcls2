@@ -174,5 +174,21 @@
   "prog:procstat": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2): procmgr runs procstat -p <platform> -i 1 <workdir>/daq_sim.cnf offscreen; while the run is Running cycle runs its main() once more offscreen through qt_walk, and logs/gui_witness.json names the run and the table it showed, every process whose procmgr log names the run (teb0, fakecam_0, ...) RUNNING, read within the run's L1Accepts"
+  },
+  "prog:partca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<platform> offscreen (lab3-cam.cnf: launch_py <bins>/partca.py DAQ:LAB2:PART:<platform>; psdaq installs no partca command) on simxpm's partition PVs; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run and the partition PVs it showed changing (NumL0Inp, NumL1, RunTime, rates), read within the run's L1Accepts"
+  },
+  "prog:hsdpvs": {
+    "status": "STAND-IN",
+    "stand_in": "simhsd",
+    "interface": "hsdpvs's PVs over PVA: every name its ChipServer adds under each -P prefix (CONFIG, READY, PGPCONFIG, FWBUILD, ..., MONTIMING, ..., RESET), which simhsd builds with hsdpvs.ChipServer itself; the cycle's witness gets each of them from simhsd and reads its monitoring change while the run runs",
+    "note": "daq_sim up --pvservers + cycle (R3): simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B on PVA ports of its own; logs/gui_witness.json 'servers' entry: hsdpvs's names defined vs served, MONTIMING counters read within the run's L1Accepts"
+  },
+  "prog:tprcas": {
+    "status": "STAND-IN",
+    "stand_in": "simtpr",
+    "interface": "tprcas's PVs over PVA: every name of the table its main() builds for -P <prefix> (ACCSEL ... EVTCNT, CH0..CH13 settings and RATE), which simtpr serves with tprcas's types and start values; the cycle's witness gets each of them from simtpr and reads EVTCNT advance while the run runs",
+    "note": "daq_sim up --pvservers + cycle (R3): simtpr -P DAQ:SIM:TPR on PVA ports of its own; logs/gui_witness.json 'servers' entry: tprcas's names defined vs served, EVTCNT read within the run's L1Accepts"
   }
 }
