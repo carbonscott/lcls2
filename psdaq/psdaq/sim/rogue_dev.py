@@ -156,6 +156,8 @@ class Store(object):
         self._responses = []    # (var_addr, offsets, sizes, value): bits a device answers in
         self._counters = []     # (var_addr, offsets, sizes, hz, t0): free-running counters
         self._vars = {}         # word address -> [(path, var_addr, offsets, sizes)]
+        self._hooks = {}        # word address -> fn(store): what a write there makes the device do
+        self.proxy_of = None    # the store whose AXI-Lite master proxy this one is behind
 
     def _span(self, addr, size):
         while size > 0:
@@ -202,6 +204,9 @@ class Store(object):
             old = self.raw_read(addr, len(data))
             self.raw_write(addr, data)
         _SIM.record(self, addr, old, data)
+        for a in range(addr - (addr % 4), addr + len(data), 4):
+            if a in self._hooks:
+                self._hooks[a](self)
 
     def poke(self, var_addr, offsets, sizes, value):
         nbytes = (max(o + s for o, s in zip(offsets, sizes)) + 7) // 8
@@ -510,6 +515,9 @@ class _Sim(object):
             if hit or time.monotonic() >= end:
                 break
             time.sleep(0.05)
+        behind = [s for s in hit if s.proxy_of in hit]     # through an AXI-Lite master proxy
+        if behind:
+            hit = behind
         if len(hit) != 1:
             raise SimDeviceError('rogue_dev: cannot tell which simulated transport serves %s '
                                  '(%d answered)' % (var.path, len(hit)))
@@ -561,6 +569,9 @@ class _Sim(object):
             log.info('rogue_dev: root %s is not on a simulated transport; left alone', root.path)
             return
         self.roots.append(root)
+        for dev in root.deviceList:
+            if type(dev).__module__.endswith('_AxiLiteMasterProxy') and type(dev).__name__ == '_Regs':
+                self._axil_proxy(dev)
         pfx = root.path + '.'
         for path in [p for p in self.seeds if p.startswith(pfx)]:
             var = self._resolve(root, path, 'seed')
@@ -595,6 +606,29 @@ class _Sim(object):
             self.fault_applied = (path, store.name, addr, value)
             log.warning('FAULT %s @%s+0x%x reads back 0x%x', path, store.name, addr, value)
             _say('FAULT %s @%s+0x%x reads back 0x%x' % (path, store.name, addr, value))
+
+    def _axil_proxy(self, regs):
+        """Emulate a firmware AXI-Lite master proxy (surf AxiLiteMasterProxy): the host writes Addr
+        (and Data), then Rnw, and polls Done; the firmware does the access on its AXI-Lite bus and
+        sets Done (Resp 0), a read's data in Data.  The proxied bus is a register store of its own."""
+        rnw, done, addr, data = (regs.nodes[n] for n in ('Rnw', 'Done', 'Addr', 'Data'))
+        store = self._locate(addr, wait=0)
+        bus = Store('AxiLiteMasterProxy(%s)' % regs.path)
+        bus.proxy_of = store
+        self.stores.append(bus)
+        a_rnw, a_done = self._var_addr(rnw), self._var_addr(done)
+        a_addr, a_data = self._var_addr(addr), self._var_addr(data)
+
+        def kick(st):
+            word = lambda a: int.from_bytes(st.raw_read(a, 4), 'little')
+            target = word(a_addr)
+            if (word(a_rnw) >> rnw.bitOffset[0]) & 1:                  # Read
+                st.raw_write(a_data, bus.read(target, 4))
+            else:
+                bus.write(target, st.raw_read(a_data, 4))
+            st.poke(a_done, done.bitOffset, [3], 1)                    # Done 1, Resp 0 (OK)
+        store._hooks[a_rnw - (a_rnw % 4)] = kick
+        log.info('rogue_dev: %s is an AXI-Lite master proxy onto %s', regs.path, bus.name)
 
     def pending(self):
         out = sorted(self.seeds)

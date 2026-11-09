@@ -498,11 +498,16 @@ failure with its traceback, which is how a type's seeds are found.
   (`jungfrauDetectorServer_virtual` is built only from slsDetectorPackage's source with its
   simulator option), and there is no stand-in for that server; the module data arrives over UDP
   (`jungfrauSim` generates such packets, not the control protocol).
-- **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3h).
-  `epixuhr3x2_init` then hangs starting `epixuhr_3x2_readout_testing.Root`: its C1100 card's
-  `axipcie.CmsProxy._start` resets the card-management mailbox and polls `HOST_STATUS2_REG` and
-  `CONTROL_REG[5]`, a request/response handshake with the card's management firmware through
-  the mailbox, which `rogue_dev`'s registers do not answer.
+- **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3h), and
+  `epixuhr3x2_init` returns with `seeds/epixuhr3x2.json`: its C1100 card's management (axipcie
+  `CmsProxy`) sits behind a surf `AxiLiteMasterProxy`, a firmware AXI-Lite master the host drives
+  through `Addr`/`Data`/`Rnw` and polls `Done` on, which `rogue_dev` emulates (any root with one:
+  the access goes to a register store of its own and `Done` is set), and the seeds give the
+  mailbox's ready and map id and make `CONTROL_REG[5]` answer at once. `epixuhr3x2_connectionInfo`
+  then fails in `manager.ReadAll()`: the root reads every QSFP register of the card's two cages,
+  each a mailbox request through the proxy, about 9500 in a row on one worker thread, and the
+  last ones pass rogue's 1 s transaction timeout (`Timeout waiting for register transaction ...
+  QsfpLowSpeedIo[0].QSFP_INT_L`). Its data framer and psana check are not written.
 - **epixhr2x2:** `drp -D epixhr2x2 -d sim://` aborts at start: `epixhr2x2_config.py` imports
   `lcls2_epix_hr_pcie` and `epix_hr_single_10k` without the `psdaq.utils.enable_*` modules that
   put them on the path (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`). With those
