@@ -1,7 +1,7 @@
 """daq_sim: bring up, check, drive and take down the hardware-free lcls2 DAQ on one node.
 
     daq_sim up     [-w WORKDIR] [-p PLATFORM] [--rate HZ] [--seed N] [--length WORDS] [--segments N]
-                   [--webgui] [--detach]
+                   [--det TYPE] [--webgui] [--detach]
     daq_sim status [-w WORKDIR]
     daq_sim cycle  [-w WORKDIR] [--events N] [--no-record]
     daq_sim e2e    [-w WORKDIR] [--events N] [--edit-seed N [--expect-seed M]]
@@ -18,7 +18,9 @@
   4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
-     with its config in the config DB, all in the partition's readout group),
+     with its config in the config DB, all in the partition's readout group; with --det TYPE a
+     BEB type of SIM_TYPES instead of fakecam: its own <type>_config.py configures a device
+     psdaq.sim.rogue_dev emulates, from the type's own config in the config DB),
   6. with --webgui, the web GUI (daq_webgui) on 127.0.0.1:<block +3>: the real DaqControl
      backend against this platform's control, and the events counter read from simxpm's
      NumL0Acc PV over PV Access.

@@ -19,7 +19,11 @@ Everything in `psdaq/psdaq/sim/`:
 | `configdb_server.py`, `configdb_seed.py` | Config DB stand-in, seeded with `tst/BEAM/tmoteb_0` (persistValue 0xdeadbeef) and `tst/BEAM/fakecam_0` (`user.sim_seed`). |
 | `lgbk_server.py` | Run DB / eLog stand-in. Experiment `tstx00001`; runs are numbered from 1. |
 | `simxpm.py` | Software XPM: the pyxpm PVs over PVA, timing frames to `sim://` DRPs, and the `control -X` PULL receiver. |
-| `xtc2_check.py` | psana2 read-back with a per-event payload check. |
+| `xtc2_check.py` | psana2 read-back with a per-event payload check (every pixel or sample for BEB types, §3e). |
+| `rogue_dev.py`, `seeds/<type>.json` | The emulated device of a BEB type under `drp -d sim://` (§3e). |
+| `pattern.py` | The simulated BEB pixel values, the same function as `MemPoolSim::pattern` in C++. |
+| `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
+| `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` and `daq_sim matrix` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
@@ -333,25 +337,32 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
 
 **Evidence.** Each passing run writes one JSON record with
 `psdaq.sim.coverage.record_evidence(rows, kind, files, ...)`:
-- **Fields:** `{sha, rows, kind, run_id, job_id, host, files, started, ended, counts}`, plus `dirty`
-  when tracked files differ from HEAD.
+- **Fields:** `{sha, dirty, rows, kind, run_id, job_id, host, files, started, ended, counts}`;
+  `dirty` is true when tracked files differed from HEAD during the run.
 - **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
 - **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
-  `daq_sim.cnf` (control, teb, drp), the drp's `-D fakecam`, and `prog:pyxpm`, because the status
-  file names simxpm as its stand-in. It prints
+  `daq_sim.cnf` (control, teb, drp), the drp's `-D` type (`fakecam`, or the `--det` type of
+  §3e), and `prog:pyxpm`, because the status file names simxpm as its stand-in. It prints
   `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`.
 - **Files:** the record lists the run's xtc2 file and logs from the work dir. If you delete the
   work dir, the record no longer counts.
 
 **Verdict.** The tool prints every row on its own line with its status and either its evidence id
-or its reason. Then it prints `N rows, R run, S stand-in, K N/A, U unproven`. It ends with one of:
-- **PASS (exit 0):** no row is UNPROVEN, and every RUN and STAND-IN row has a record whose `sha` is
-  `git rev-parse HEAD` and whose files all exist.
+or its reason. Then it prints `N rows, R run, S stand-in, K N/A, U unproven, X claimed without
+valid evidence`: R and S count only rows whose evidence is valid at HEAD. The next line,
+`status file claims ...`, gives what the status file says, counted apart. It ends with one of:
+- **PASS (exit 0):** no row is UNPROVEN and every RUN and STAND-IN row has a valid record.
 - **FAIL (exit 1):** the failing rows follow.
 
-A record made at another commit is rejected, and the row's line says
-`rejected <id>: recorded at <sha>, not at HEAD <sha>`. So after every new commit, the runs must be
-repeated.
+A record is valid only if all of these hold, and the row's line names the first that does not:
+- its `sha` is `git rev-parse HEAD` (`recorded at <sha>, not at HEAD <sha>`);
+- `dirty` is false: the run used the commit's own code (`recorded with tracked files modified`);
+- it has a `run_id` (`names no run (run_id)`);
+- every file it lists exists and is non-empty, and every `.xtc2` file is a whole chain of xtc2
+  datagrams that starts with a Configure and ends at the end of the file
+  (`coverage.xtc2_problem`; e.g. `not an xtc2 file (first datagram is transition 8, not a Configure)`).
+
+So commit first, build, then run: after every new commit, the runs must be repeated.
 
 Options:
 
@@ -366,6 +377,77 @@ Options:
 `daq_sim matrix` (same options) is the one command for the whole hardware-free matrix. For now it
 only runs the coverage check and returns its exit code; later changes add the runs that write the
 evidence. Until every row has a run, both commands end in FAIL.
+
+## 3e. BEB detector types: `daq_sim up --det <type>`
+
+```bash
+# step A, as in §2 but with the type (WD as in §2; take down any earlier 'up' first, §5)
+nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim up -w $WD --det wave8" > $ROOT/daq_sim_up.log 2>&1 &
+sleep 45; cat $ROOT/daq_sim_up.log
+# step B, as in §3: a cycle; it records evidence for det:drp:wave8 and psana2 checks every sample
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
+```
+`--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), `epix100`, `wave8`, `wave8he`.
+The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
+`psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
+
+- **Control plane (`rogue_dev.py`).** With a `sim://` device only, BEBDetector calls
+  `rogue_dev.install(device, type, epics_prefix)` before it imports the config module. It replaces
+  rogue's `AxiMemMap` (the PCIe map) with an in-process register store, and `AxiStreamDma` with
+  an SRPv3 responder, so the real pyrogue firmware trees run on top. A register reads back what
+  was last written, except:
+  - **seeds** in `seeds/<type>.json` preset what the script polls (firmware versions, lock bits,
+    clocks). A seed path that is not a register of the tree raises; nothing is created on demand.
+  - `_proc` in the seed file is what `open('/proc/<device>')` reads (PgpMonitor's board check).
+  - `pv:` keys are the PVs of the front-end's IOC, for types configured over Channel Access
+    (wave8, wave8he); `{prefix}` is the drp's `-k epics_prefix`. `epics.PV` is replaced in
+    process; no CA leaves the process. A PV the table lacks reads `None` and is reported,
+    as pyepics does when no IOC serves it.
+  - **fault:** `PSDAQ_SIM_ROGUE_FAULT='<register path>[=<value>]'` (or `pv:<name>[=<value>]`)
+    in the environment of `daq_sim up` makes that register read back wrong, so Configure fails
+    and names it.
+- **Data plane (`MemPoolSim.cc`).** A table keyed by type lays out each L1Accept as the
+  AxiStreamBatcherEventBuilder would: the TimingHeader as subframe 0, then the type's
+  subframes. Pixel (or sample) `i` of what the DRP builds is
+  `pattern(seed, seq, i) = (mix(i) + seq*0x9e37 + seed)` masked to the type's bit depth
+  (`pattern.py`), written where the firmware sends it (epix100: interleaved ASIC rows).
+- **Check (`xtc2_check.py`).** psana2 reads the file through the type's own detector interface
+  and compares every pixel, sample and fex value of every event with the pattern. So a pixel
+  the DRP puts in the wrong place fails. `--self-test-offset 1` expects every value one place
+  off and must FAIL.
+- **Config DB.** `configdb_seed --det-type <type>` stores the type's own default:
+  `<type>_config_store.<type>_cdict()`; or the config the store's `write_to_daq_config_db` would
+  write, built against a configdb that contacts nothing; or (epix100) the firmware YAML.
+
+What each type needs:
+
+| type | config entry points run | emulated device (seeds) | DB config | DRP data (subframes) | psana check |
+|---|---|---|---|---|---|
+| epix100 | `epix100_init`, `_connectionInfo`, `_config`, `_enable`, `_disable`, `_unconfig` | lcls2_epix_hr_pcie DevRoot + ePix100a board over SRPv3: 9 seeds (KCU and camera FPGA versions, DMA size, clock and lock bits, RxId, BaseClock) | `ePix100a_asics_0123.yml` through `yaml_config_store_example` | 3: 1,087,532 B image, rows interleaved by ASIC | `epix100_raw_2_0_1` raw (704,768), every pixel, 14 bit |
+| wave8 | `wave8_init`, `_connectionInfo`, `_config`, `_unconfig` (with PgpMonitor `init_lanes`/`check_lanes`, `config_timing`, `configure_trigger_delay`) | PgpMonitor KCU: board type and 2 link bits; driver text; 213 IOC PVs (29 the script writes or polls, 184 of the expert config it records); new IOC (no `EvrV2TriggerReg[0]:Delay`) | `wave8_config_store` through its `write_to_daq_config_db` | 1: aux timing; 2-9: 8 waveforms of 256 samples; 10: integrals (56 B); 11: processed (32 B) | `wave8_raw_0_0_1` raw_0..7, `wave8_fex_0_0_1` integrals, baselines, counts, intensity, position |
+| wave8he | `wave8he_init`, `_connectionInfo`, `_config` (writes the HLS counts and scales), `_unconfig` | as wave8, with the HLS PVs: 228 keys | no wave8he store in the tree: the wave8 store's config plus the HLS region bounds | 2-9: 8 waveforms; 0x0C: peaks (64 B); 0x0D: integrals (32 B), 24-bit packed | `wave8he_raw_0_0_1`, `wave8he_fex_0_0_1`: every field |
+
+Fault runs that fail Configure and name the register: epix100
+`ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay` (rogue's write-verify),
+wave8 and wave8he `pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0`
+(`ValueError: TriggerDelay(ns) too small`).
+
+**Debugging a type without a DRP.** `python -B -m psdaq.sim.rogue_drive --type <type>` runs the
+entry points in the DRP's order against `rogue_dev` and a private config DB. It prints the first
+failure with its traceback, which is how a type's seeds are found.
+
+**Not running yet** (found with `rogue_drive`):
+- **epixquad:** with this `$SUBMODULEDIR`, `epixquad_config.py` imports ePixQuad (whose path setup
+  brings epix-quad's older axi-pcie-core) before lcls2_pgp_pcie_apps. So DevRoot aborts with
+  `TypeError: __init__() got an unexpected keyword argument 'extended'`. With the imports swapped,
+  Configure aborts with `KeyError: 'pixel_map'`: `epixquad_config_store` now writes
+  `user.pixel_map_raw`, which only `epixquad1kfps_config.py` reads.
+- **epixquad1kfps:** its ePixQuad package builds a Qt viewer at import (needs
+  `QT_QPA_PLATFORM=offscreen` with no display); there is no epixquad1kfps store; `ePixQuad.Top`
+  checks the PCIe card's build string on the same PCIe map as DevRoot.
+- **epixhr2x2, epixm320, epixUHR, hrencoder:** not tried.
 
 ## 4. Read the file back with psana2
 ```bash
@@ -445,6 +527,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   Isolation relies on every peer being on this node and on the non-default EPICS ports.
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
 - **Partition size.** There is one detector DRP and one lane. Rates above about 1 kHz are untested.
+- **BEB types.** `rogue_dev` serves the registers a config script touches, plus what the seeds
+  preset. It runs no firmware logic: a register the firmware would change on its own (a counter,
+  a status bit) keeps its seed. A BEB type's frame has the subframes its DRP reads, with the
+  timing header copied where the firmware sends a detailed timing frame.
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
   each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector
