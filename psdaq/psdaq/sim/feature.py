@@ -11,11 +11,15 @@ L1Accepts simxpm sent its link) against psana2's count in its stream, and the ve
 'FEATURE <x> PASS' and exit 0 only if every check passes.
 
 a  Readout groups at different rates: one partition with 3 PGP DRPs of 3 types in 2 readout
-   groups, fakecam_0 in group p (the platform) on pyxpm's 1.02 kHz fixed-rate marker, epix100_0
-   and wave8_0 in group p+1 on the 102 Hz marker (up --also epix100:<p+1> --also wave8:<p+1>
-   --fixed-rate <p>:3 --fixed-rate <p+1>:4), one cycle.  Checks: each DRP's DAQ count equals
-   psana2's events in its stream, all with data and each passing the type's per-event check
-   (xtc2_check); each group's L1Accepts follow its marker (group p+1 took 1/10 of group p's).
+   groups, hrencoder_0 in group p (the platform) on pyxpm's 1.02 kHz fixed-rate marker,
+   epix100_0 and wave8_0 in group p+1 on the 102 Hz marker (up --det hrencoder --also
+   epix100:<p+1> --also wave8:<p+1> --fixed-rate <p>:3 --fixed-rate <p+1>:4), one cycle.
+   Checks: each DRP's DAQ count equals psana2's events in its stream, all with data and each
+   passing the type's per-event check (xtc2_check); each group's L1Accepts follow its marker
+   (group p+1 took 1/10 of group p's).  All three are BEB types: xpmdet_config (fakecam and
+   the other XpmDetector types), opal_config and piranha4_config take every active DRP on the
+   host for a segment on their board (barrier.supervisor_info) and wait at Connect for the
+   other DRPs to join their barrier, which a DRP of another config script never does.
 b  A scan: psdaq/psdaq/cas/generic_timing_scan.py, the facility's config scan script
    (ConfigScanBase, ConfigScan: control.py's Configure with the scan's step_keys, then per step
    BeginStep with the step's values and readout_count, Enable, simxpm's StepDone after
@@ -64,7 +68,7 @@ TRANSITION_RE = re.compile(r'^(\S+ \S+) simxpm INFO ((ClearReadout|Configure|Unc
 def up_options(feature, platform):
     """daq_sim up options of each feature."""
     g2 = (platform + 1) % 8
-    return {'a': ['--also', f'epix100:{g2}', '--also', f'wave8:{g2}',
+    return {'a': ['--det', 'hrencoder', '--also', f'epix100:{g2}', '--also', f'wave8:{g2}',
                   '--fixed-rate', f'{platform}:3', '--fixed-rate', f'{g2}:4'],
             'b': ['--det', 'epix100', '--rate', '100'],
             'e': ['--pva', '--epics', '--udp', '--bld', '--rate', '100']}[feature]

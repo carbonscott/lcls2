@@ -200,6 +200,14 @@ def test_also_and_fixed_rate_options():
     simxpm.check_bld_dest(f'{daq_sim.bld_group(5)}:31225')
 
 
+def test_barrier_conflict():
+    assert daq_sim.barrier_conflict(['hrencoder', 'epix100', 'wave8']) is None
+    assert daq_sim.barrier_conflict(['fakecam', 'cspad'], system_drps=True) is None
+    assert 'epix100' in daq_sim.barrier_conflict(['fakecam', 'epix100'])
+    assert daq_sim.barrier_conflict(['epix100'], system_drps=True)
+    assert daq_sim.barrier_conflict(['piranha4', 'wave8'])
+
+
 def test_activedet_puts_each_drp_in_its_group(tmp_path):
     daq_sim.use_det('fakecam')
     path = tmp_path / 'activedet.json'
@@ -245,6 +253,6 @@ def test_feature_rejects_a_break_of_another_feature(tmp_path):
     args.breakage, args.check_only = 'drop-l1', False
     with pytest.raises(daq_sim.Fail):
         feature.cmd_feature(args)
-    assert feature.up_options('a', 5) == ['--also', 'epix100:6', '--also', 'wave8:6',
+    assert feature.up_options('a', 5) == ['--det', 'hrencoder', '--also', 'epix100:6', '--also', 'wave8:6',
                                           '--fixed-rate', '5:3', '--fixed-rate', '6:4']
-    assert feature.up_options('a', 7)[1] == 'epix100:0'
+    assert feature.up_options('a', 7)[3] == 'epix100:0'

@@ -592,6 +592,9 @@ def cmd_up(args):
     bld = getattr(args, 'bld', False)
     also = parse_also(getattr(args, 'also', None) or [], args.platform)
     fixed = parse_fixed_rates(getattr(args, 'fixed_rate', None) or [])
+    why = barrier_conflict([DETECTOR] + [a['det'] for a in also], pva or epics or udp or bld)
+    if why:
+        raise Fail(why)
     ioc = soft_ioc() if (epics or bld) else None
     work = Work(args.workdir)
     os.makedirs(work.dir, exist_ok=True)
@@ -838,6 +841,24 @@ def parse_also(items, platform):
             raise Fail(f'--also {item}: readout group {g} not in 0..7')
         out.append({'det': det, 'group': g, 'alias': f'{det}_0'})
     return out
+
+
+# Config scripts that take every active DRP on the node for a segment on their board and wait at
+# Connect until all of them join their barrier (psdaq/psdaq/configdb/barrier.py supervisor_info:
+# "assume non-gpu hosts have only one board"): xpmdet_config (the XpmDetector types, and drp_pva,
+# epicsArch, drp_udpencoder and drp_bld, which are XpmDetectors), opal_config, piranha4_config.
+BARRIER_TYPES = {'fakecam', 'cspad', 'epixhremu', 'jungfrauemu', 'ts', 'opal', 'piranha4'}
+
+
+def barrier_conflict(dets, system_drps=False):
+    """Why this mix of DRP types cannot connect on one node, or None: a DRP whose config script
+    waits at Connect for every DRP on the node to join its barrier, beside one that never does."""
+    waits = sorted(d for d in dets if d in BARRIER_TYPES) + (['the system DRPs'] if system_drps else [])
+    never = sorted(d for d in dets if d not in BARRIER_TYPES)
+    if waits and never:
+        return (f'{", ".join(waits)} wait(s) at Connect for every DRP on this node to join their '
+                f'barrier (configdb/barrier.py), which {", ".join(never)} never do(es): run them apart')
+    return None
 
 
 FIXED_RATE_LABELS = ('929 kHz', '71.4 kHz', '10.2 kHz', '1.02 kHz', '102 Hz', '10.2 Hz', '1.02 Hz')
