@@ -305,7 +305,8 @@ void _loopbackSend()
 // Timing from simxpm instead of a TPR (-T sim://<host>:<port>), with the protocol a DRP's
 // -d sim:// device uses (psdaq/drp/MemPoolSim.hh): HELLO, then CONNECT to readout group -p and
 // CREDIT; simxpm then sends every frame of that group, in timing order, and this sends one
-// encoder frame for each L1Accept, as it does for each TPR frame of the partition.
+// encoder frame for each L1Accept, as it does for each TPR frame of the partition.  It prints
+// the time of every transition frame (with -v, of every frame).
 struct SimFrame
 {
   uint64_t pulseIdAndControl;           // transition id in bits 56-59
@@ -363,7 +364,7 @@ int _simTiming(int group)
       const SimFrame* f = (const SimFrame*)zmq_msg_data(&body);
       for (size_t i = 0; i < n; ++i) {
         unsigned tid = unsigned(f[i].pulseIdAndControl >> 56) & 0xf;
-        if (m_verbose)
+        if (m_verbose || tid != 12)     // every transition, and with -v every L1Accept
           printf("Timestamp %u.%09u  %-10s seq %u\n", f[i].seconds, f[i].nanoseconds,
                  tid == 12 ? "L1Accept" : XtcData::TransitionId::name(XtcData::TransitionId::Value(tid)),
                  f[i].seq);
@@ -371,7 +372,7 @@ int _simTiming(int group)
           _loopbackSend();
       }
       credit = n < credit ? credit - n : 0;
-      if (m_verbose)  fflush(stdout);
+      fflush(stdout);
     }
     if (registered && credit < window / 2) {
       uint32_t grant = window - credit;

@@ -115,13 +115,16 @@ def fetch(addr):
 
 
 def psana_events(path, det='fakecam'):
-    """{timestamp: (seq, pixel)} for every L1Accept of an xtc2 file, read with psana2."""
+    """{timestamp: (seq, pixel)} for every L1Accept of an xtc2 file, read with psana2; None if the
+    file (one stream of the run) has no detector det."""
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/calib_ws')
     from psana import DataSource
     ds = DataSource(files=path, skip_calib_load='all')
     out = {}
     row, col = PIXEL
     for run in ds.runs():
+        if det not in run.detnames:
+            return None
         d = run.Detector(det)
         for evt in run.events():
             raw = d.raw.raw(evt)
@@ -131,10 +134,17 @@ def psana_events(path, det='fakecam'):
     return out
 
 
-def check(ami, path, det='fakecam', minimum=100, events=None):
-    """The verdict on AMI's result 'ami' (fetch()) against the xtc2 file: a dict with 'pass'.
-    'events' (psana_events of the file) may be given instead of read."""
-    events = psana_events(path, det) if events is None else events
+def check(ami, paths, det='fakecam', minimum=100, events=None):
+    """The verdict on AMI's result 'ami' (fetch()) against the run: a dict with 'pass'.  'paths' is
+    the run's xtc2 file or files (one per stream, numbered as control assigns them); the one with
+    the detector is read.  'events' (psana_events of it) may be given instead."""
+    if events is None:
+        for path in [paths] if isinstance(paths, str) else paths:
+            events = psana_events(path, det)
+            if events is not None:
+                break
+        else:
+            events = {}
     seen, problems = {}, []
     for ts, seq, pix in ami['rows']:
         if ts in seen and seen[ts] != (seq, pix):
@@ -179,7 +189,7 @@ def main(argv=None):
                         help='AMI source tree to import ami from (default $DAQ_SIM_AMI_SRC)')
     parser.add_argument('--out', help='fetch: write the result here (JSON)')
     parser.add_argument('--rows', help='check: a fetch result (JSON)')
-    parser.add_argument('--xtc2', help='check: the run\'s xtc2 file')
+    parser.add_argument('--xtc2', nargs='+', help='check: the run\'s xtc2 file(s), one per stream')
     parser.add_argument('--min', type=int, default=100, help='check: rows AMI must keep (default %(default)d)')
     args = parser.parse_args(argv)
     if args.ami_src:

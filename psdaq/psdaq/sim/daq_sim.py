@@ -372,13 +372,13 @@ record(ao, "{pvbase}:EPICS:CONST") {{
 EPICS_CONST = 1234.5
 # --udp: drp_udpencoder reads the encoder frames sim_udpencoder sends to 127.0.0.1:<udp port>,
 # one per L1Accept of the readout group, paced by simxpm's frames (sim_udpencoder -T sim://)
-# instead of a TPR; -v prints each frame's time.
+# instead of a TPR; it prints each transition's time.
 UDP_PROCS = ('encoder_0', 'simenc')
 UDP = ''' {{ id:'encoder_0', flags:'spu',
    cmd:'drp_udpencoder{v} -P {instr} -C localhost -d sim://127.0.0.1:{frames} -l 0x1 -o {data}'
        ' -k {ep} -M {prom} -L {udpport}' }},
  {{ id:'simenc', flags:'s',
-   cmd:'sim_udpencoder -T sim://127.0.0.1:{frames} -p {platform} -a 127.0.0.1 -d {udpport} -v' }},
+   cmd:'sim_udpencoder -T sim://127.0.0.1:{frames} -p {platform} -a 127.0.0.1 -d {udpport}' }},
 '''
 # --gui: PyQt GUIs as the configs start them, offscreen: control_gui (asc.cnf: control_gui -H
 # localhost -p <p>) on the config DB stand-in, which at its default log level (DEBUG) logs every
@@ -1242,9 +1242,9 @@ class AmiRun:
         if not files:
             return {'ami rows': len(self.result['rows']), 'ami check': 'FAIL no recorded xtc2 file '
                     'to compare with (cycle without --no-record)'}
-        res = ami_check.check(self.result, files[0], DETECTOR)
+        res = ami_check.check(self.result, files, DETECTOR)
         with open(work.path('logs', 'ami_check.json'), 'w') as f:
-            json.dump(dict(res, xtc2=files[0], addr=self.addr), f, indent=1)
+            json.dump(dict(res, xtc2=files, addr=self.addr), f, indent=1)
         out = {k: res[k] for k in ('ami rows', 'ami events', 'ami matched', 'ami pixsum',
                                    'psana2 pixsum (same events)', 'ami seq range')}
         out['ami check'] = 'PASS' if res['pass'] else f'FAIL {res["problems"][:3]}'
