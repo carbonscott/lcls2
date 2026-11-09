@@ -81,7 +81,12 @@ listed .xtc2 files.  Rows that need one:
                      within the run's L1Accepts, its packets' ID that mask, and every PV of its
                      source (PVCtrls) served, PAYLOAD's type ID the mask; hpsBldCopy's events
                      carrying the times of hpsBldServer's events, as its Client gives them
-                     (hps_problem)
+                     (hps_problem); for wave8pvs ('kind': 'pvs', R6b: in a site conda env of its own,
+                     its board simulated in process), every PV its own log lists under its --base
+                     served, its PVA server's port held by the pid its log gives, a simulated
+                     device (--dev sim://), and one PV read back 2 or more distinct numbers, each
+                     after the first one its board logged written to the PV's register
+                     (pvs_problem)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -890,6 +895,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         return tpr_problem(prog, e, logs, w.get('partition'), lo, hi) or bld_problem(prog, e, logs, lo, hi)
     if e.get('kind') == 'hps':                              # R9: the HPS BLD chain, hpsBldServer's crate a stand-in
         return hps_problem(prog, e, logs, lo, hi, w)
+    if e.get('kind') == 'pvs':                              # R6b: wave8pvs in a site env, its board simulated
+        return pvs_problem(prog, e, logs)
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -1227,6 +1234,56 @@ def hps_problem(prog, e, logs, lo, hi, w=None):
         when = (v[0] >> 32) + (v[0] & 0xffffffff) * 1e-9
         if not lo - 1 <= when <= hi + 1:
             return f'its event of {v[0]:#x} carries the time {when:.6f}, not within the run\'s L1Accepts ({lo:.3f} to {hi:.3f})'
+    return None
+
+
+PVS_DUMP = re.compile(r'^(\S+) -> (Top\b\S*)[ \t\r]*$', re.M)     # pyrogue's EpicsPvServer.dump(): '<pv> -> <path>'
+
+
+def pvs_problem(prog, e, logs):
+    """R6b: why a 'pvs' witness entry does not show prog (wave8pvs) serve its board's PVs while the run ran, or None
+    (module doc)."""
+    mine = [(args, text) for (name, args), text in logs if name == prog]
+    if not mine:
+        return f'lists no log of {prog}'
+    args, text = mine[0]
+    dev, base = _opt(args, '--dev') or '/dev/datadev_0', _opt(args, '--base') or 'DAQ:WAVE8'
+    if not dev.startswith('sim://'):
+        return f'its log of {prog} runs --dev {dev}, not a simulated device (sim://)'
+    pvs = dict(PVS_DUMP.findall(text))
+    names = [n for n in pvs if n.startswith(base + ':')]
+    if not names:
+        return f'its log of {prog} lists no PV under its --base {base} (EpicsPvServer.dump())'
+    if e.get('names') != len(names) or e.get('served') != len(names) or e.get('nmissing'):
+        return (f'shows {prog} serve {e.get("served")} of {e.get("names")} PVs, but its log lists {len(names)} '
+                f'(missing {str(e.get("missing"))[:100]})')
+    pids = {log_pid(t) for _, t in mine} - {None}
+    if not (isinstance(e.get('owners'), list) and pids & set(e['owners'])):
+        return (f'its PVA server\'s port is held by pids {e.get("owners")}, not the pid its log of {prog} gives '
+                f'({", ".join(str(p) for p in sorted(pids)) or "none"})')
+    pv, path = e.get('put'), e.get('path')
+    if pv not in pvs or pvs[pv] != path:
+        return f'puts {pv}, which its log of {prog} does not list as the register {path}'
+    nums = numbers(e.get('values') or [])
+    if len(nums) < 2:
+        return f'{pv} read back {e.get("values")}, not 2 or more distinct numbers'
+    written = set()
+    for wr in e.get('writes') or []:
+        for r in (wr.get('regs') or []) if isinstance(wr, dict) else []:
+            if str(r).startswith(f'{path}='):
+                try:
+                    written.add(int(str(r).split('=', 1)[1], 0))
+                except ValueError:
+                    pass
+    shown = []
+    for v in (e.get('values') or [])[1:]:
+        try:
+            shown.append(int(float(v)))
+        except ValueError:
+            continue
+    if not shown or not set(shown) <= written:
+        return (f'{pv} read back {shown}, but its board logged {path} written to {sorted(written)} '
+                f'(a value read back after a put must have reached the simulated board)')
     return None
 
 

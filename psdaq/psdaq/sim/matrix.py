@@ -29,7 +29,8 @@ Sections, in this order (--only picks some, repeated or comma-separated):
   programs  one DAQ with every program option of daq_sim up (PROGRAM_OPTIONS: the MEB, AMI, drp_pva,
             epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs, the PV-server stand-ins
             simhsd, simtpr and simdti and the GUIs on them, tprtrig, tpr_trigger and lclsBldServer on simulated
-            TPR cards; RUNBOOK 3h), in
+            TPR cards, the HPS BLD chain; with $PSDAQ_SIM_WAVE8PVS_ENV and $PSDAQ_SIM_WAVE8PVS_SRC set, also
+            wave8pvs in that env; RUNBOOK 3h), in
             <WORKDIR>/programs: up, one recorded cycle with --ami-shot, down.  Assertions
             programs/<what>: those of a type for fakecam_0, and 'checks' (the cycle's checks of
             the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all
@@ -295,6 +296,8 @@ def run_programs(args, wd, env):
     """The programs run: up with PROGRAM_OPTIONS (the MEB, AMI, the system DRPs, the GUIs), a
     recorded cycle with the AMI screenshot, down; assertions programs/<what>."""
     up = list(PROGRAM_OPTIONS) + (['--ami-src', args.ami_src] if args.ami_src else [])
+    if os.environ.get('PSDAQ_SIM_WAVE8PVS_ENV') and os.environ.get('PSDAQ_SIM_WAVE8PVS_SRC'):
+        up.append('--wave8pvs')         # its site env and wave8 source (R6b, RUNBOOK 3d)
     return run_daq(args, 'programs', 'fakecam', wd, env, up, ['--ami-shot', os.path.join(wd, 'ami-shot.png')])
 
 

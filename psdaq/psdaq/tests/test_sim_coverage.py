@@ -1655,3 +1655,66 @@ def test_simhps_packets_are_what_hpsEventIterator_reads():
         sec, ns = tprframes.pulse_time(n0 + k * simhps.EVENT_STEP)
         assert d >> 20 == evs[k][0] - evs[0][0] and d & 0xfffff == (sec - sec0) * 10**9 + ns - ns0
         assert evs[k][0] == tprframes.stamp_pid(sec, ns)
+
+
+# R6b: wave8pvs in a site conda env of its own, its board simulated in process (daq_sim up --wave8pvs)
+W8_ENV = '/site/envs/ps-x'
+W8_CMD = f'{W8_ENV}/bin/python -m psdaq.cas.wave8pvs --l 0 --dev sim://wave8pvs --base DAQ:SIM:WAVE8'
+W8_PID = 4501
+W8_DUMP = ['DAQ:SIM:WAVE8:Top:enable -> Top.enable', 'DAQ:SIM:WAVE8:Top:AxiVersion:ScratchPad -> Top.AxiVersion.ScratchPad',
+           'DAQ:SIM:WAVE8:Top:AxiVersion:FpgaVersion -> Top.AxiVersion.FpgaVersion',
+           'DAQ:SIM:WAVE8:Top:RawBuffers:TrigCnt -> Top.RawBuffers.TrigCnt']
+
+
+def w8_run(tmp_path, cmd=W8_CMD, dump=W8_DUMP, pid=W8_PID, mutate=None):
+    """(exit code, line) of a record for prog:wave8pvs: the run's xtc2 file, its log (its PV list, procServ's line with
+    its pid) and a gui_witness whose 'pvs' entry holds every listed PV served, the pid of its PVA port, the scratch
+    register put and read back, and the board's writes of it."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    log = write_log(d / 'w8.log', cmd, f'@@@ The PID of new child "python" is: {pid}\r', *dump, 'Main complete')
+    w = gui_witness(xtc, ['wave8pvs'])
+    pv = 'DAQ:SIM:WAVE8:Top:AxiVersion:ScratchPad'
+    w['programs']['wave8pvs'] = {
+        'kind': 'pvs', 'base': 'DAQ:SIM:WAVE8', 'names': 4, 'served': 4, 'nmissing': 0, 'missing': [],
+        'owners': [W8_PID], 'put': pv, 'path': 'Top.AxiVersion.ScratchPad', 'values': ['0', '23130', '0'],
+        'writes': [{'store': 'AxiStreamDma(sim://wave8pvs,0x0)', 'addr': '0x4', 'size': 4,
+                    'regs': [f'Top.AxiVersion.ScratchPad={v}'], 'nregs': 1} for v in ('0x5a5a', '0x0')],
+        'start': L1_FIRST + 1, 'end': L1_FIRST + 5, 'reads': [{'name': pv, 'values': ['0', '23130', '0']}],
+        'live': [pv], 'problems': [], 'pass': True}
+    if mutate:
+        mutate(w, w['programs']['wave8pvs'])
+    files = [xtc, log, write_witness(d / 'gui_witness.json', w)]
+    status = write_status(tmp_path / 'status.json', {'prog:wave8pvs': {'status': 'RUN'}})
+    record(['prog:wave8pvs'], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, 'prog:wave8pvs'))
+    return code, line_of(out, 'prog:wave8pvs')
+
+
+def test_wave8pvs_is_run_when_it_serves_every_pv_it_lists_and_a_put_reaches_its_board(tmp_path):
+    code, line = w8_run(tmp_path)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (w8_run arguments, what the row's line says)
+W8_FORGERIES = {
+    'hardware': (dict(cmd=W8_CMD.replace('sim://wave8pvs', '/dev/datadev_0')), 'not a simulated device'),
+    'no-list': (dict(dump=[]), 'lists no PV under its --base DAQ:SIM:WAVE8'),
+    'other-base': (dict(cmd=W8_CMD.replace('--base DAQ:SIM:WAVE8', '--base DAQ:SIM:W8')), 'lists no PV under its --base'),
+    'more-listed': (dict(dump=W8_DUMP + ['DAQ:SIM:WAVE8:Top:Time -> Top.Time']), 'but its log lists 5'),
+    'missing': (dict(mutate=lambda w, e: e.update(served=3, nmissing=1, missing=['DAQ:SIM:WAVE8:Top:enable'])),
+                'serve 3 of 4 PVs'),
+    'other-pid': (dict(pid=W8_PID + 1), f'not the pid its log of wave8pvs gives ({W8_PID + 1})'),
+    'other-put': (dict(mutate=lambda w, e: e.update(put='DAQ:SIM:WAVE8:Top:Nope')), 'does not list as the register'),
+    'one-value': (dict(mutate=lambda w, e: e.update(values=['0'])), 'not 2 or more distinct numbers'),
+    'not-written': (dict(mutate=lambda w, e: e['writes'].pop(0)), 'its board logged Top.AxiVersion.ScratchPad written to [0]'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['no']})), 'says wave8pvs failed'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(W8_FORGERIES))
+def test_wave8pvs_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = W8_FORGERIES[case]
+    code, line = w8_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line

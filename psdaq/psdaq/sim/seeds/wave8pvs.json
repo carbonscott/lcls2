@@ -1,0 +1,5 @@
+{
+ "_comment": "The simulated wave8 board of wave8pvs (psdaq/psdaq/cas/wave8pvs.py, daq_sim up --wave8pvs) for psdaq.sim.rogue_dev: the Top of the wave8 package's python (1.0.1 from its source tarball) on the board's register lane. Keys are pyrogue register paths; values are what the board reports. Everything else reads back what was last written (0 if never written).",
+ "Top.AxiVersion.FpgaVersion": "0xA0000002",
+ "_FpgaVersion": "wave8 1.0.1's Top.start raises unless AxiVersion.FpgaVersion is its FwVersionLock, 0xA0000002 (firmware/targets/Wave8Digitizer/Makefile)"
+}

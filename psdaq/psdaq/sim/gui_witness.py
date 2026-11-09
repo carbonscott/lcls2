@@ -367,16 +367,17 @@ def hpsbld_names(prefix):
     return sorted(c.provider.names)
 
 
-def udp_owner(ip, port):
-    """The pids (this user's processes) holding a UDP socket bound to ip:port (/proc/net/udp, /proc/<pid>/fd)."""
+def udp_owner(ip, port, proto='udp', ips=None):
+    """The pids (this user's processes) holding a socket (/proc/net/<proto>) bound to ip:port (or to any of `ips`)
+    (/proc/<pid>/fd)."""
     import socket
     import struct
-    want = '%08X:%04X' % (struct.unpack('<I', socket.inet_aton(ip))[0], port)
+    want = {'%08X:%04X' % (struct.unpack('<I', socket.inet_aton(a))[0], port) for a in (ips or [ip])}
     inodes = set()
-    with open('/proc/net/udp') as f:
+    with open(f'/proc/net/{proto}') as f:
         for line in f.readlines()[1:]:
             w = line.split()
-            if len(w) > 9 and w[1] == want:
+            if len(w) > 9 and w[1] in want:
                 inodes.add(f'socket:[{w[9]}]')
     pids = set()
     for d in os.listdir('/proc'):
@@ -461,6 +462,75 @@ def hps_entry(name, group, port, t0, t1, packets, owners, mask, pvs=None):
     if e['count'] < HPS_MIN_PACKETS:
         e['problems'].append(f'received {e["count"]} packet(s) on {group}:{port} ({HPS_MIN_PACKETS} or more needed)')
     e['live'] = [f'{group}:{port}'] if e['count'] else []
+    e['pass'] = not e['problems']
+    return e
+
+
+# --wave8pvs (R6b, 'kind': 'pvs'): wave8pvs serves its board's registers as PVs under its --base (pyrogue's
+# EpicsPvServer); its log lists them ('<pv> -> <register path>', EpicsPvServer.dump()).  While the run is Running the
+# cycle gets every one of them from it, finds the pids holding its PVA server's TCP port, and puts WAVE8PVS_PUT's PV to
+# each of its values in turn, one a second, reading it back; its simulated board (rogue_dev in its process) logs the
+# register writes that reach it.
+WAVE8PVS_PUT = ('Top:AxiVersion:ScratchPad', [0x5a5a, 0])      # the board's scratch register, put and put back
+WAVE8PVS_DUMP = re.compile(r'^(\S+) -> (Top\b\S*)[ \t\r]*$', re.M)
+
+
+def wave8pvs_entry(log, base, ctx, tcp_port, writes, seconds, period=1.0):
+    """The witness entry of wave8pvs ('kind': 'pvs'): every PV its log lists under `base`, got once from it with ctx
+    ('served', 'missing'), the pids holding its PVA TCP port (`owners`), the put PV's texts as read before each put and
+    after the last ('values'), and the writes of that PV's register its board logged (`writes`, PSDAQ_SIM_ROGUE_LOG)."""
+    text = open(log, errors='replace').read() if log else ''
+    pvs = dict(WAVE8PVS_DUMP.findall(text))
+    names = sorted(n for n in pvs if n.startswith(base + ':'))
+    e = {'kind': 'pvs', 'base': base, 'log': log, 'names': len(names), 'problems': []}
+    t0 = time.time()
+    got = ctx.get(names, timeout=10.0, throw=False) if names else []
+    missing = [n for n, v in zip(names, got) if isinstance(v, Exception)]
+    e.update(served=len(names) - len(missing), nmissing=len(missing), missing=missing[:20],
+             owners=udp_owner('127.0.0.1', tcp_port, proto='tcp', ips=['127.0.0.1', '0.0.0.0']))
+    pv, values = f'{base}:{WAVE8PVS_PUT[0]}', list(WAVE8PVS_PUT[1])
+    e['put'], e['path'] = pv, pvs.get(pv)
+    vals, k = [], 0
+    end = time.time() + seconds
+    while True:
+        try:
+            v = ctx.get(pv, timeout=2.0)
+            t = f'{float(v["value"] if hasattr(v, "getID") else v):g}'
+        except Exception as ex:
+            t = f'error {type(ex).__name__}'
+        if not vals or vals[-1] != t:
+            vals.append(t)
+        if k < len(values):
+            try:
+                ctx.put(pv, values[k], timeout=2.0)
+            except Exception as ex:
+                e['problems'].append(f'put {pv} = {values[k]}: {type(ex).__name__}: {ex}')
+            k += 1
+        elif time.time() >= end:
+            break
+        time.sleep(period)
+    e['values'] = vals
+    e['writes'] = []
+    if e['path'] and os.path.exists(writes):
+        with open(writes) as f:
+            for line in f:
+                try:
+                    w = json.loads(line)
+                except ValueError:
+                    continue
+                if any(str(r).startswith(e['path'] + '=') for r in w.get('regs') or []):
+                    e['writes'].append(w)
+    e['start'], e['end'] = round(t0 - EPICS_EPOCH, 3), round(time.time() - EPICS_EPOCH, 3)
+    e['reads'] = [{'name': pv, 'values': vals}]
+    e['live'] = [pv] if len(numbers(vals)) >= 2 else []
+    if not names:
+        e['problems'].append(f'its log {log} lists no PV under {base}')
+    if missing:
+        e['problems'].append(f'wave8pvs does not serve {len(missing)} of the {len(names)} PVs it lists, e.g. {missing[:3]}')
+    if not e['live']:
+        e['problems'].append(f'{pv} did not read back 2 or more distinct numbers ({vals})')
+    if not e['writes']:
+        e['problems'].append(f'its board logged no write of {e["path"]}')
     e['pass'] = not e['problems']
     return e
 
