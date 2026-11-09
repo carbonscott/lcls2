@@ -5,6 +5,7 @@
 #include <atomic>
 #include <condition_variable>
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -43,6 +44,12 @@ namespace Drp {
 // that reorders or offsets pixels wrongly fails psdaq/psdaq/sim/xtc2_check.py (pattern.py is
 // the same function in Python).  The framer writes each pixel where the detector's firmware
 // would, e.g. epix100's interleaved ASIC rows, so the DRP's own reordering is what is checked.
+//
+// jungfrau's data comes from its module instead (UdpFront, MemPoolSim.cc): for each L1Accept
+// the card triggers the module (psdaq/psdaq/sim/simsls.py, the stand-in for its slsDetector
+// servers) and frames the UDP packets the module sends back, as the card's UDP engine does.
+class UdpFront;
+
 class MemPoolSim : public MemPool
 {
 public:
@@ -112,6 +119,7 @@ private:
     void _return(unsigned count, const uint32_t* indices);
     void _receiver();
     void _frames(const uint8_t* data, size_t size);
+    void _udpFrames(const uint8_t* data, size_t size);
     int  _send(void* socket, const std::string& type, const void* data, size_t size);
 private:
     struct Ready { int32_t size; uint32_t index; uint32_t dest; };
@@ -119,6 +127,7 @@ private:
     std::string             m_alias;
     const Batcher*          m_batcher;          // EventBatcher framing, or nullptr for TDet
     const TDetMsg*          m_tdetMsg;          // TDet message instead of TDetSemi words, or nullptr
+    std::unique_ptr<UdpFront> m_udp;            // a front-end that sends its data over UDP, or nullptr
     unsigned                m_nLanes;
     uint8_t                 m_laneMask;
     unsigned                m_virtChan;

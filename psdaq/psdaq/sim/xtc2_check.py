@@ -267,6 +267,50 @@ def _jungfrauemu_event(det, evt, seed, n, offset=0, state=None):
     return True, problems
 
 
+JUNGFRAU_SHAPE = (1, 512, 1024)
+
+
+def _jungfrau_event(det, evt, seed, n, offset=0, state=None):
+    """(has data, [problems]) for one jungfrau event (Jungfrau::_event, jungfrau_raw_0_2_0).
+    The module stand-in (psdaq.sim.simsls) sends frame n of the run (Drp::Jungfrau sets its next
+    frame number to 1 at BeginRun) as 128 UDP packets whose pixel i is pattern(seed, n, i, 16),
+    14 data bits and 2 gain bits; the DRP puts the packets together by packet number.  Checks:
+    raw() is one 512 x 1024 panel equal to that pixel by pixel; frame_cnt == n (the DRP's own
+    check is frame number == its L1Accept count); the module's timestamp rises; numHotPixels ==
+    the count of pixels in gain 3 with 0x3fff - data > hotPixelThresh (Jungfrau::
+    _countNumHotPixels in dynamic gain), recomputed from the recorded pixels."""
+    import numpy as np
+    from psdaq.sim import pattern
+    raw = det.raw.raw(evt)
+    if raw is None:
+        return False, []
+    if raw.size != 512 * 1024:
+        return True, [f'raw shape {tuple(raw.shape)}, not {JUNGFRAU_SHAPE}']
+    raw = raw.reshape(JUNGFRAU_SHAPE)
+    problems = []
+    want = pattern.image(seed, n, JUNGFRAU_SHAPE, 16, offset)
+    same = raw == want
+    if not bool(same.all()):
+        bad = np.argwhere(~same)
+        i0 = tuple(int(x) for x in bad[0])
+        problems.append(f'{len(bad)} of {raw.size} pixels differ, first at {i0}: '
+                        f'{int(raw[i0]):#x} != {int(want[i0]):#x}')
+    seg = det.raw._segments(evt)[0]
+    if int(seg.frame_cnt) != n:
+        problems.append(f'frame_cnt {int(seg.frame_cnt)} != {n}')
+    ts, last = int(seg.timestamp), (state or {}).get('ts', -1)
+    if ts <= last:
+        problems.append(f'module timestamp {ts} not after {last}')
+    if state is not None:
+        state['ts'] = ts
+    v = raw.astype(np.int64)
+    hot = int(((((v >> 14) & 3) == 3) & ((0x3fff - (v & 0x3fff)) > int(seg.hotPixelThresh))).sum())
+    if int(seg.numHotPixels) != hot:
+        problems.append(f'numHotPixels {int(seg.numHotPixels)} != {hot} recomputed '
+                        f'(hotPixelThresh {int(seg.hotPixelThresh)})')
+    return True, problems
+
+
 def _hrencoder_event(det, evt, seed, n, offset=0, state=None):
     """(has data, [problems]) for one hrencoder event (MemPoolSim.cc hrencoderData,
     HREncoder.cc): value() is the position; error_cnt, missedTrig_cnt and latches too."""
@@ -296,6 +340,9 @@ EVENT_TYPES = {
     'jungfrauemu': (_jungfrauemu_event, 'every TDet word of the 512 x 1024 panel '
                                         '(jungfrauemu_raw_0_1_0, AreaDetectorRaw.raw): seed, seq, '
                                         'pattern, pulseId; raw() shape and noise'),
+    'jungfrau': (_jungfrau_event, 'every pixel of the 512 x 1024 panel (jungfrau_raw_0_2_0.raw) '
+                                  'vs the frame the module stand-in sent, frame_cnt == event '
+                                  'number, module timestamp rising, numHotPixels recomputed'),
     'wave8': (_wave8_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample, integral, '
                             'baseline and fex value vs pattern'),
     'wave8he': (_wave8he_event, f'8 raw waveforms of {WAVE8_SAMPLES} samples, each sample and '

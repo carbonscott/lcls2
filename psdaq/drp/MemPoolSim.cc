@@ -1,5 +1,6 @@
 #include "MemPoolSim.hh"
 #include "EventBatcher.hh"
+#include "JungfrauData.hh"
 
 #include "psdaq/service/EbDgram.hh"
 #include "xtcdata/xtc/TransitionId.hh"
@@ -7,8 +8,13 @@
 
 #include <nlohmann/json.hpp>
 #include <zmq.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <poll.h>
 #include <sys/eventfd.h>
 #include <sys/prctl.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <cstdlib>
 #include <cstring>
@@ -380,6 +386,156 @@ static void epixquadData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint3
     out.timingCopy(3);
 }
 
+// jungfrau (Jungfrau::_event): a module sends each frame as JungfrauData::PacketNum UDP packets
+// to the card's UDP engine, at the destination Drp::Jungfrau programs through sls::Detector (the
+// config's user.kcu_ip and user.port), and the card's timing receiver triggers the module for
+// each L1Accept.  Here the module is psdaq/psdaq/sim/simsls.py, a stand-in for its slsDetector
+// servers, and this is the card's side:
+//   - for each L1Accept, a datagram to the module's trigger input (UDP to its control
+//     host:port, the drp's -k slsHosts, which must be a 127.x address),
+//   - the frame's packets, received on 127.0.0.1:<sim_udp_port> (the config's user.port),
+//   - written as the card's UdpFrameReorg and batcher do: subframe 2 is an EventBatcher of one
+//     subframe per packet, in descending packet number (BEBDetector::_subframes reads the tails
+//     back to front, so Jungfrau::_event sees packet 0 first), after subframe 1, a copy of the
+//     timing frame standing in for the detailed one.
+// A packet that has not arrived 200 ms after the last one (1 s for the first) is missing from
+// the frame, which Jungfrau::_event flags as MissingData; a frame with no packet at all gets one
+// empty subframe, so the event is recorded damaged instead of stalling the readout.  One module
+// (one lane) only.
+class UdpFront
+{
+public:
+    static constexpr unsigned PacketBytes = sizeof(JungfrauData::JungfrauPacket);
+    static constexpr unsigned Line        = 8;                          // EventBatcher width 2
+    static constexpr unsigned DataBytes   = Line + JungfrauData::PacketNum * (PacketBytes + Line);
+    static_assert(PacketBytes % Line == 0, "packets fill whole batcher lines");
+
+    UdpFront(const Parameters& para);
+    ~UdpFront();
+    size_t frame(uint8_t* dst);         // trigger, receive, write the inner batcher; its size
+private:
+    int                   m_fd;
+    sockaddr_in           m_module;
+    std::string           m_moduleStr;
+    std::vector<uint8_t>  m_packets;    // PacketNum x PacketBytes, by packet number
+    std::vector<uint8_t>  m_have;
+    std::vector<uint8_t>  m_rx;
+    uint64_t              m_frames, m_incomplete, m_dropped;
+};
+
+static bool _loopback(const in_addr& a) { return (ntohl(a.s_addr) >> 24) == 127; }
+
+UdpFront::UdpFront(const Parameters& para) :
+    m_fd(-1), m_packets(JungfrauData::PacketNum * PacketBytes), m_have(JungfrauData::PacketNum),
+    m_rx(PacketBytes + 1), m_frames(0), m_incomplete(0), m_dropped(0)
+{
+    if (__builtin_popcount(para.laneMask) != 1) {
+        logging::critical("MemPoolSim: %s on sim:// runs one module (one lane), not lane mask 0x%x",
+                          para.detType.c_str(), para.laneMask);
+        abort();
+    }
+    auto hosts = para.kwargs.find("slsHosts");
+    auto port  = para.kwargs.find("sim_udp_port");
+    if (hosts == para.kwargs.end() || port == para.kwargs.end()) {
+        logging::critical("MemPoolSim: %s on sim:// needs -k slsHosts=<127.x host>:<port> (the "
+                          "module stand-in, psdaq.sim.simsls) and sim_udp_port=<the config's user.port>",
+                          para.detType.c_str());
+        abort();
+    }
+    m_moduleStr = hosts->second;
+    auto colon = m_moduleStr.rfind(':');
+    addrinfo hints{}, *res = nullptr;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    if (colon == std::string::npos ||
+        getaddrinfo(m_moduleStr.substr(0, colon).c_str(), m_moduleStr.substr(colon + 1).c_str(),
+                    &hints, &res) != 0 || !res) {
+        logging::critical("MemPoolSim: slsHosts '%s' is not <host>:<port>", m_moduleStr.c_str());
+        abort();
+    }
+    memcpy(&m_module, res->ai_addr, sizeof(m_module));
+    freeaddrinfo(res);
+    if (!_loopback(m_module.sin_addr)) {
+        logging::critical("MemPoolSim: the module stand-in '%s' must be on loopback (127.x)",
+                          m_moduleStr.c_str());
+        abort();
+    }
+    m_fd = socket(AF_INET, SOCK_DGRAM | SOCK_CLOEXEC, 0);
+    int rcvbuf = 16 << 20;
+    setsockopt(m_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, sizeof(rcvbuf));
+    sockaddr_in local{};
+    local.sin_family = AF_INET;
+    local.sin_port   = htons(std::stoul(port->second, nullptr, 0));
+    inet_pton(AF_INET, "127.0.0.1", &local.sin_addr);
+    if (m_fd < 0 || bind(m_fd, (sockaddr*)&local, sizeof(local)) < 0) {
+        logging::critical("MemPoolSim: cannot bind the card's UDP port 127.0.0.1:%s: %m",
+                          port->second.c_str());
+        abort();
+    }
+    socklen_t len = sizeof(rcvbuf);
+    getsockopt(m_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf, &len);
+    logging::info("MemPoolSim: %s module at %s (trigger: UDP there); its frames arrive on "
+                  "127.0.0.1:%s (receive buffer %d B)", para.detType.c_str(), m_moduleStr.c_str(),
+                  port->second.c_str(), rcvbuf);
+}
+
+UdpFront::~UdpFront()
+{
+    logging::info("MemPoolSim: %lu module frames, %lu incomplete, %lu stray packets dropped",
+                  m_frames, m_incomplete, m_dropped);
+    if (m_fd >= 0)  close(m_fd);
+}
+
+size_t UdpFront::frame(uint8_t* dst)
+{
+    while (recv(m_fd, m_rx.data(), m_rx.size(), MSG_DONTWAIT) > 0)  ++m_dropped;   // late packets
+
+    static const char trigger[] = "TRIG";
+    if (sendto(m_fd, trigger, 4, 0, (const sockaddr*)&m_module, sizeof(m_module)) != 4 &&
+        m_frames < 5)
+        logging::error("MemPoolSim: trigger to %s failed: %m", m_moduleStr.c_str());
+
+    std::fill(m_have.begin(), m_have.end(), 0);
+    unsigned n = 0;
+    uint64_t framenum = 0;
+    while (n < JungfrauData::PacketNum) {
+        pollfd p{m_fd, POLLIN, 0};
+        if (poll(&p, 1, n ? 200 : 1000) <= 0)  break;
+        ssize_t sz = recv(m_fd, m_rx.data(), m_rx.size(), 0);
+        if (sz != ssize_t(PacketBytes)) { ++m_dropped; continue; }
+        auto pkt = reinterpret_cast<const JungfrauData::JungfrauPacket*>(m_rx.data());
+        unsigned pn = pkt->header.packetnum;
+        if (n == 0)  framenum = pkt->header.framenum;
+        if (pkt->header.framenum != framenum || pn >= JungfrauData::PacketNum || m_have[pn]) {
+            ++m_dropped;
+            continue;
+        }
+        memcpy(&m_packets[size_t(pn) * PacketBytes], m_rx.data(), PacketBytes);
+        m_have[pn] = 1;
+        ++n;
+    }
+    ++m_frames;
+    if (n < JungfrauData::PacketNum && m_incomplete++ < 5)
+        logging::error("MemPoolSim: module %s sent %u of %zu packets of frame %lu",
+                       m_moduleStr.c_str(), n, JungfrauData::PacketNum, framenum);
+
+    memset(dst, 0, Line);
+    auto ebh = reinterpret_cast<EvtBatcherHeader*>(dst);
+    ebh->version = 1;
+    ebh->width   = 2;
+    MemPoolSim::Out in{dst, Line};
+    for (int pn = JungfrauData::PacketNum - 1; pn >= 0; --pn) {
+        if (!m_have[pn])  continue;
+        memcpy(in.data(), &m_packets[size_t(pn) * PacketBytes], PacketBytes);
+        in.tail(PacketBytes, uint8_t(pn));
+    }
+    if (n == 0) {                       // nothing came: one empty subframe
+        memset(in.data(), 0, Line);
+        in.tail(Line, 0);
+    }
+    return in.pos;
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
@@ -391,6 +547,8 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "piranha4", _padded(32) + _padded(2 * Piranha4Pixels), piranha4Data },
     { "tb",       _padded(TbEtmBytes), tbData },
     { "epixquad", 2 * _padded(32) + _padded(EquadBytes), epixquadData },
+    // its data comes from the module's UDP stream (UdpFront above), not from a framer
+    { "jungfrau", _padded(32) + _padded(UdpFront::DataBytes), nullptr },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
@@ -472,7 +630,7 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     // Subframe 0: the TimingHeader (getTimingHeader() returns its address)
     size_t th = fill(out.data(), f, evtCounter, 0, 0, 0);
     out.tail(th, 0);
-    if (!l1)  return out.pos;
+    if (!l1 || !b.data)  return out.pos;
 
     b.data(out, f, seed);
     return out.pos;
@@ -524,6 +682,8 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         }
         logging::info("MemPoolSim: %s data framed as EventBatcher subframes (up to %u B of data)",
                       para.detType.c_str(), m_batcher->dataBytes);
+        if (!m_batcher->data)
+            m_udp = std::make_unique<UdpFront>(para);
     }
     if (m_tdetMsg) {
         if (m_dmaSize < sizeof(Pds::TimingHeader) + m_tdetMsg->bytes + sizeof(uint32_t)) {
@@ -662,6 +822,10 @@ int MemPoolSim::_send(void* socket, const std::string& type, const void* data, s
 // Turn each frame into DMA buffers, as the timing receiver and TDetSemi firmware would
 void MemPoolSim::_frames(const uint8_t* data, size_t size)
 {
+    if (m_udp) {
+        _udpFrames(data, size);
+        return;
+    }
     bool     connected = m_connected.load(std::memory_order_acquire);
     unsigned length    = m_length.load(std::memory_order_acquire);
     uint32_t seed      = m_seed.load(std::memory_order_acquire);
@@ -705,6 +869,55 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
         }
     }
     if (nReady) {
+        uint64_t one = 1;
+        [[maybe_unused]] auto rc = write(m_efd, &one, sizeof(one));
+    }
+}
+
+// As _frames, for a front-end whose data arrives over UDP (UdpFront): the module is triggered
+// and its frame received outside m_simLock, so the readout is not held up meanwhile
+void MemPoolSim::_udpFrames(const uint8_t* data, size_t size)
+{
+    bool     connected = m_connected.load(std::memory_order_acquire);
+    unsigned lane      = __builtin_ffs(m_laneMask) - 1;
+
+    for (size_t offset = 0; offset + sizeof(Frame) <= size; offset += sizeof(Frame)) {
+        Frame f;
+        memcpy(&f, data + offset, sizeof(f));
+        if (m_credit)  --m_credit;
+        if (!connected)  continue;      // Like a disabled TriggerEventBuffer
+
+        auto tid = TransitionId::Value((f.pulseIdAndControl >> 56) & 0xf);
+        if (tid == TransitionId::ClearReadout) {
+            m_evtCounter = 0;           // The next event is number 1, as PgpReader expects
+            continue;
+        }
+        m_evtCounter = (m_evtCounter + 1) & EvtCtrMask;
+
+        uint32_t idx;
+        {
+            std::lock_guard<std::mutex> lock(m_simLock);
+            if (m_free.empty()) [[unlikely]] {
+                if (m_nOverruns++ < 5)
+                    logging::error("MemPoolSim: no free DMA buffer for %s (credit protocol violated)",
+                                   TransitionId::name(tid));
+                continue;
+            }
+            idx = m_free.back();
+            m_free.pop_back();
+        }
+        auto   buffer = (uint8_t*)dmaBuffers[idx];
+        size_t sz     = fillBatcher(buffer, *m_batcher, f, m_evtCounter, false, 0);
+        if (tid == TransitionId::L1Accept) {
+            Out out{buffer, sz};
+            out.timingCopy(1);          // the detailed timing frame; a copy stands in for it
+            out.tail(m_udp->frame(out.data()), 2);
+            sz = out.pos;
+        }
+        {
+            std::lock_guard<std::mutex> lock(m_simLock);
+            m_ready.push_back({int32_t(sz), idx, (lane << 8) | m_virtChan});
+        }
         uint64_t one = 1;
         [[maybe_unused]] auto rc = write(m_efd, &one, sizeof(one));
     }

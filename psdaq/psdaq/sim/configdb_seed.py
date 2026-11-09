@@ -15,6 +15,8 @@ hardware-free DAQ needs to Configure:
                                (psdaq.configdb.<type>_config_store, or with --det-yaml
                                a firmware YAML through yaml_config_store_example, as a
                                production config is made), for drp -D <type> -d sim://.
+                               --set KEY=VALUE changes a key of it, keeping its type
+                               (daq_sim points jungfrau's module data at loopback so).
 
 It writes through psdaq.configdb.configdb, the same HTTP client the DAQ
 uses, and is idempotent: a device whose stored config already matches is
@@ -175,6 +177,19 @@ def type_cdict(det_type, name, segm=0, yaml=None):
     return top
 
 
+def apply_sets(top, sets):
+    """Set existing keys of a config from 'KEY=VALUE' strings, each keeping its type."""
+    for item in sets or ():
+        key, eq, text = item.partition('=')
+        cur = top.get(key, True)
+        if not eq or not isinstance(cur, tuple):
+            raise ValueError('--set %r: not KEY=VALUE for a key of the config' % item)
+        typ = cur[0]
+        value = text if typ == 'CHARSTR' else float(text) if typ in ('DOUBLE', 'FLOAT') else int(text, 0)
+        top.set(key, value, typ)
+    return top
+
+
 def _store(db, alias, top):
     value = json.loads(json.dumps(top.typed_json()))    # as stored and served
     device = value['detName:RO']
@@ -187,7 +202,7 @@ def _store(db, alias, top):
 
 def seed(url, inst='tst', alias='BEAM', root='configDB', trigger='tmoteb',
          det='fakecam', segm=0, sim_seed=0x1234, sim_length=1024, det_type='fakecam',
-         det_yaml=None):
+         det_yaml=None, sets=None):
     """Create inst/alias and store the trigger and detector configs.
 
     Returns {device: (key, changed)}."""
@@ -195,6 +210,7 @@ def seed(url, inst='tst', alias='BEAM', root='configDB', trigger='tmoteb',
     db.add_alias(alias)
     top = (fakecam_cdict(det, segm, sim_seed, sim_length, det_type) if det_type in XPMDET_TYPES
            else type_cdict(det_type, det, segm, det_yaml))
+    apply_sets(top, sets)
     return {
         trigger + '_0': _store(db, alias, trigger_cdict(trigger, 0)),
         '%s_%d' % (det, segm): _store(db, alias, top),
@@ -216,11 +232,14 @@ def main():
                         help='store this type\'s own default config instead of fakecam\'s')
     parser.add_argument('--det-yaml', default=None,
                         help='with --det-type: make it from this firmware YAML')
+    parser.add_argument('--set', action='append', metavar='KEY=VALUE', default=[],
+                        help='change this key of the detector config (its type kept); repeatable')
     args = parser.parse_args()
     if 'ws-auth' in args.url or 'ws-kerb' in args.url or not args.url.startswith('http://127.'):
         sys.exit('configdb_seed: refusing non-local URL %s' % args.url)
     result = seed(args.url, args.inst, args.alias, args.root, args.trigger, args.det,
-                  args.segm, args.sim_seed, args.sim_length, args.det_type, args.det_yaml)
+                  args.segm, args.sim_seed, args.sim_length, args.det_type, args.det_yaml,
+                  args.set)
     for device, (key, changed) in result.items():
         print('%s/%s/%s key=%d %s' % (args.inst, args.alias, device, key,
                                       'written' if changed else 'unchanged'))

@@ -15,7 +15,8 @@
      preflight (preflight.sh); 'up' stops if the preflight does not pass,
   2. the config DB stand-in (configdb_server), seeded by configdb_seed,
   3. the run DB / eLog stand-in (lgbk_server),
-  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver),
+  4. simxpm, the software XPM (PVA server + timing frames + control.py -X receiver), and for
+     --det jungfrau simsls, the stand-in for the module's slsDetector servers (psdaq.sim.simsls),
   5. procmgr with a generated .cnf: control in normal mode, teb0, and drp -D fakecam -d sim://
      (with --segments N: N such DRPs, fakecam_0 .. fakecam_<N-1>, segments of one detector, each
      with its config in the config DB, all in the partition's readout group; with --det TYPE
@@ -48,6 +49,8 @@ every state and count itself, prints E2E PASS or E2E FAIL and the exit code says
 
 Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +0 config DB stand-in   +1 run DB stand-in   +2 simxpm frames   +3 web GUI (up --webgui)
+  +4 simsls control (TCP) and trigger input (UDP), +5 simsls stop (TCP), +6 the jungfrau
+     module's data destination (UDP; the config's user.port), with --det jungfrau
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
 EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
@@ -115,6 +118,15 @@ SIM_TYPES = {
                     'frame': 'epixhremu-frame.xtc2'},
     'jungfrauemu': {'kwargs': 'sim_length=262144,sim_dma_size=0x101000,sim_dma_count=256'},
     'ts':          {'kwargs': 'sim_seed={seed:#x}'},
+    # jungfrau: Drp::Jungfrau drives its module through sls::Detector at slsHosts, here simsls
+    # (psdaq.sim.simsls) on loopback; MemPoolSim triggers the module per L1Accept and frames the
+    # 128 UDP packets it sends to sim_udp_port (1 MiB per event), and the config DB entry points
+    # the module's data there (user.kcu_ip, user.port; 'sets', applied by configdb_seed --set)
+    'jungfrau':    {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=128,segNums=0,'
+                              'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
+                    'sls': True,
+                    'sets': ('user.kcu_ip=127.0.0.1', 'user.jungfrau_ip=127.0.0.1',
+                             'user.port={sls_data}')},
 }
 
 
@@ -132,7 +144,30 @@ TAG = 'DAQ_SIM_WORKDIR'                 # Environment tag of every process 'up' 
 
 def ports(platform):
     base = 31000 + 10 * platform
-    return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3}
+    return {'configdb': base, 'lgbk': base + 1, 'frames': base + 2, 'webgui': base + 3,
+            'sls': base + 4, 'sls_stop': base + 5, 'sls_data': base + 6}
+
+
+def sls_ports(P):
+    """The ports simsls (--det jungfrau) holds: control and stop (TCP), the trigger input and the
+    module data destination (UDP)."""
+    return [P['sls'], P['sls_stop']]
+
+
+def sls_tag(platform):
+    """SLSDETNAME for this platform's DRPs: sls::Detector's shared memory names carry it."""
+    return f'daq_sim_p{platform}'
+
+
+def udp_busy(port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.bind(('127.0.0.1', port))
+        return False
+    except OSError:
+        return True
+    finally:
+        s.close()
 
 
 def control_ports(platform):
@@ -351,7 +386,12 @@ def cmd_up(args):
     want = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(args.platform)
     if getattr(args, 'webgui', False):
         want.append(P['webgui'])
+    sim_type = SIM_TYPES[DETECTOR]
+    if sim_type.get('sls'):
+        want += sls_ports(P)
     busy = [p for p in want if port_busy(p)]
+    if sim_type.get('sls'):
+        busy += [f'{p}/udp' for p in (P['sls'], P['sls_data']) if udp_busy(p)]
     if busy:
         raise Fail(f'ports already in use: {busy}')
     for d in ('logs', 'pmlogs', 'prom', os.path.join('data', INSTRUMENT)):
@@ -369,6 +409,8 @@ def cmd_up(args):
     env[TAG] = work.dir
     env['PYTHONUNBUFFERED'] = '1'
     os.environ[TAG] = work.dir          # procmgr and everything it starts inherit it
+    if sim_type.get('sls'):             # the DRP's sls::Detector shared memory, this platform's
+        env['SLSDETNAME'] = os.environ['SLSDETNAME'] = sls_tag(args.platform)
 
     state = {'workdir': work.dir, 'host': host, 'platform': args.platform, 'up_pid': os.getpid(),
              'slurm': {k: os.environ.get(k) for k in ('SLURM_JOB_ID', 'SLURM_STEP_ID')},
@@ -397,10 +439,11 @@ def cmd_up(args):
                            '--port', str(P['configdb']),
                            '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
         wait_listen(P['configdb'], 30, p, 'configdb_server')
-        sim_type = SIM_TYPES[DETECTOR]
         det_args = ['--det-type', DETECTOR] if DETECTOR != 'fakecam' else []
         if sim_type.get('det_yaml'):
             det_args += ['--det-yaml', sim_type['det_yaml'].format(**os.environ)]
+        for item in sim_type.get('sets', ()):
+            det_args += ['--set', item.format(**P)]
         for segm in range(segments):
             r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
                                 '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
@@ -427,6 +470,13 @@ def cmd_up(args):
         wait_listen(P['frames'], 30, p, 'simxpm frames')
         wait_listen(pull_port(), 30, p, 'simxpm pull')
 
+        if sim_type.get('sls'):         # the module the DRP drives through sls::Detector
+            p = start_service(work, state, 'simsls',
+                              [py, '-m', 'psdaq.sim.simsls', '--port', str(P['sls']),
+                               '--seed', str(args.seed)], env)
+            wait_listen(P['sls'], 30, p, 'simsls control')
+            wait_listen(P['sls_stop'], 30, p, 'simsls stop')
+
         if sim_type.get('frame'):       # the frame an emulator type replays, from the seed
             r = subprocess.run([py, '-m', 'psdaq.sim.%s_frame' % DETECTOR, work.path(sim_type['frame']),
                                 '--seed', str(args.seed)], env=env, capture_output=True, text=True,
@@ -441,7 +491,7 @@ def cmd_up(args):
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
-                                                                work=work.dir))
+                                                                work=work.dir, **P))
         with open(work.path(state['cnf']), 'w') as f:
             f.write(CNF.format(when=now(), platform=args.platform, alias=CONFIG_ALIAS,
                                xpm=XPM, pvbase=PVBASE, trigger=TRIGGER,
@@ -627,7 +677,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('simxpm', 'lgbk', 'configdb'):
+    for name in ('simsls', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -644,6 +694,9 @@ def teardown(work, quiet=False):
         check = [P['configdb'], P['lgbk'], P['frames'], pull_port()] + control_ports(state['platform'])
         if 'webgui' in state['services']:
             check.append(P['webgui'])
+        if 'simsls' in state['services']:
+            check += sls_ports(P)
+            _free_sls_shm(state['platform'], quiet)
         busy = [p for p in check if port_busy(p)]
         if busy:
             ok = False
@@ -656,6 +709,24 @@ def teardown(work, quiet=False):
         work.save(state)
     say('down: ' + ('clean' if ok else 'NOT clean'))
     return ok
+
+
+def _free_sls_shm(platform, quiet):
+    """Remove the sls::Detector shared memory a DRP of this platform left (Drp::Jungfrau frees it
+    when it exits normally): only names carrying this platform's SLSDETNAME, owned by this user."""
+    shm = '/dev/shm'
+    tag = '_' + sls_tag(platform)
+    try:
+        names = os.listdir(shm)
+    except OSError:
+        return
+    for name in names:
+        path = os.path.join(shm, name)
+        if name.startswith('slsDetectorPackage_detector_') and tag in name and \
+                os.stat(path).st_uid == os.getuid():
+            if not quiet:
+                say(f'removing leftover sls shared memory {path}')
+            os.unlink(path)
 
 
 def cmd_down(args):
