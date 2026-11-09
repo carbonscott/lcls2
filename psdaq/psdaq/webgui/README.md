@@ -120,9 +120,22 @@ with a run-time import probe, `no-window`: the walk of the program's own entry r
 | `cas/xpmpatt.py` | `/gui/xpmpatt` | simxpm `PATT:GROUPS`, `PATT:COINC`, `PART:<g>` trigger PVs | `--pvgui 'xpmpatt:<base>:XPM:<n>'` |
 | `cas/tprca.py` | `/gui/tprca` | simtpr (the PVs of `cas/tprcas.py`) | `--pvgui 'tprca:<prefix>'` |
 | `cas/pvatable.py` | `/gui/pvatable` | simhsd (the PVs of `cas/hsdpvs.py`) | `--pvgui 'pvatable:--bases B... --fields PV.field...'` |
+| `cas/hsdpva.py` | `/gui/hsdpva` | simhsd (every monitoring field its own value) | `--pvgui 'hsdpva:<base> [<base> ...]'` |
+| `cas/dtica.py` | `/gui/dtica` | simdti (the PVs of `cas/dticas.py`, slots 3-7) | `--pvgui 'dtica:<prefix>'` |
+| `slurm/daqstat.py` | `/gui/daqstat` | simslurm (daqmgr's Slurm commands answered from a job state file; no Slurm command runs) | `--daqstat-cnf F.py --daqstat-slurm STATE [--daqstat-interval S]` |
+| `cas/datadev_monitor.py` | `/gui/datadev_monitor` | simdatadev (the program's node names as local simulated nodes; no ssh) | `--datadev-sim ROOT` |
+| `trigger/detector_protection_monitor.py` | `/gui/detector_protection_monitor` | simdetprot (BLOCKED, NPIX, NPIX_OT, ADU over loopback Channel Access) | `--dpm '-b <base> -d <detector>'` |
+| `seq/seqplot.py` | `/gui/seqplot` | the program's own sequence engine on the tree's sequence scripts | `--seqplot '--seq 0:10k.py ... --time T0 T1' [--seq-dir D]` |
+| `seq/seq_epixhr.py` | `/gui/seq_epixhr` | the program's own code with `--test --plot` (nothing written to an XPM) | `--seq-epixhr '--test --plot ...'` |
 
 `cas/partca-sum.py` and `cas/xpmca.py` are `no-window`: run as written, each raises `TypeError` in its own setup
-(the old three-argument `PvLabel`) before any window shows.
+(the old three-argument `PvLabel`) before any window shows; `cas/tdmpva.py` too: it imports `psdaq.pytdm`, which the
+tree does not have (`ModuleNotFoundError` at `cas/tdmpva.py:8`).
+
+The walk refuses every remote shell (ssh, scp, ...) to any host and every Slurm command a walked program starts
+(`qt_walk.guard_subprocess`, recorded as `refused:subprocess`): `datadev_monitor`'s Refresh All ssh-es to 80 DAQ
+nodes and `daqstat`'s daqmgr Runner queries Slurm.  pyqtgraph plot panels (a `PlotItem` made by `addPlot`, a
+`PlotWidget`, an `ImageView`) are rows of kind `plot`; their curves are what the walk records and the tests compare.
 
 The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
 `data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,

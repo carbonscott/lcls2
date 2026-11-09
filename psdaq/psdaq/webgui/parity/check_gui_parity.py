@@ -221,8 +221,9 @@ def run_walks(src, specs, files, sim_dir, d, only=None, python=sys.executable, l
 
 def walk_params(sim_dir, wdir):
     """The placeholders of a spec's walk argv, device args and env: qt_walk.sim_params plus {walkdir}."""
+    import psdaq
     from psdaq.webgui.parity.qt_walk import sim_params
-    return dict(sim_params(sim_dir), walkdir=wdir)
+    return dict(sim_params(sim_dir), walkdir=wdir, psdaq=os.path.dirname(os.path.realpath(psdaq.__file__)))
 
 
 def start_devices(spec, sim_dir, env, python, log, wdir=None):

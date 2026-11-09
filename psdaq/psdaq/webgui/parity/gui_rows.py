@@ -40,6 +40,8 @@ Flags (enumerator side, from source), which check_parity uses for not-applicable
   inert      a display the source never writes (no setText/append/setHtml/setPlainText on its
              binding in the own files) or a button whose clicked/toggled signal the source never
              connects
+pyqtgraph: a plot panel (a PlotItem that GraphicsLayout.addPlot makes, a PlotWidget, an ImageView) is a row of kind
+plot (qualifier: its left-axis label); its curves are what it shows, not rows of their own.
 reconcile(rows, walk) says 'agree' when the walk saw what the flag says (0 instances and the line
 never ran; no object of that name; display empty at the end and never written, receivers 0), and
 built(rows, walk) when the row's site has an instance (or the slot's object exists) and the line ran.
@@ -56,7 +58,8 @@ from psdaq.webgui.parity import qapps
 COUNTED_QT = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox',
               'QSpinBox', 'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser',
               'QLabel', 'QTableWidget', 'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget',
-              'QProgressBar', 'QMessageBox')
+              'QProgressBar', 'QMessageBox',
+              'addPlot', 'PlotWidget', 'ImageView')       # pyqtgraph plot panels (GraphicsLayout.addPlot makes a PlotItem)
 STATIC_MSG = ('about', 'critical', 'warning', 'information', 'question', 'aboutQt')
 WRITE_METHODS = ('setText', 'append', 'setHtml', 'setPlainText', 'insertPlainText', 'insertHtml', 'setValue')
 CONNECT_SIGNALS = ('clicked', 'toggled', 'pressed', 'released', 'stateChanged', 'currentIndexChanged',
@@ -119,8 +122,10 @@ def own_and_libs(src, target):
         f = _mod_file(src, m)
         if f is None or f == target or f in own or f in libs:
             continue
-        users = [r for r, ms in graph.items() if r != target and any(_mod_file(src, x) == f for x in ms
-                                                                       if x.startswith('psdaq.'))]
+        # a module another psdaq program imports is a library; the web copies and the parity tools (webgui/) import
+        # a GUI's modules to reuse its code (plots_api runs seqplot's), which does not make them a library
+        users = [r for r, ms in graph.items() if r != target and not r.startswith('webgui/') and
+                 any(_mod_file(src, x) == f for x in ms if x.startswith('psdaq.'))]
         (libs if users else own).append(f)
     return own, libs
 
@@ -427,7 +432,8 @@ def files_digest(src, files):
 QT_KIND = {'QPushButton': 'button', 'QToolButton': 'button', 'QRadioButton': 'checkbox', 'QCheckBox': 'checkbox',
            'QLineEdit': 'text', 'QComboBox': 'combo', 'QSpinBox': 'text', 'QDoubleSpinBox': 'text',
            'QSlider': 'combo', 'QTextEdit': 'text', 'QPlainTextEdit': 'text', 'QTextBrowser': 'value',
-           'QLabel': 'value', 'QProgressBar': 'value', 'QMessageBox': 'message', 'QListWidget': 'combo'}
+           'QLabel': 'value', 'QProgressBar': 'value', 'QMessageBox': 'message', 'QListWidget': 'combo',
+           'PlotItem': 'plot', 'PlotWidget': 'plot', 'ImageView': 'plot', 'addPlot': 'plot'}
 
 
 def _built_at(x):

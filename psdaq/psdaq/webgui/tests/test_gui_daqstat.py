@@ -179,11 +179,16 @@ def test_cell_click_opens_console_logfile_and_restarts(page, ds):
     new = [j for j in after if j['job_id'] > jobs[uid]['job_id']]
     assert old['state'] == 'CANCELLED' and len(new) == 1 and new[0]['submitted_by'] == 'sbatch' and \
         new[0]['comment'] == old['comment'], after                     # Runner.restart: scancel, then sbatch
-    t0 = time.time()
-    while time.time() - t0 < 20 and page.locator('#procRows tr[data-id="%s"] td[data-col="1"]' % uid).text_content() \
-            != 'RUNNING':
-        time.sleep(0.3)
-    assert _states(ds)[uid] == 'RUNNING'
+    cell = page.locator('#procRows tr[data-id="%s"] td[data-col="1"]' % uid)
+    seen, t0 = [], time.time()
+    while time.time() - t0 < 30:                       # the new job: PENDING, then RUNNING (simslurm: after 3 s)
+        t = cell.text_content()
+        if not seen or seen[-1] != t:
+            seen.append(t)
+        if 'PENDING' in seen and t == 'RUNNING' and _states(ds)[uid] == 'RUNNING':
+            break
+        time.sleep(0.2)
+    assert 'PENDING' in seen and seen[-1] == 'RUNNING' and _states(ds)[uid] == 'RUNNING', (seen, _states(ds))
     page.screenshot(path=str(H.SHOTS / 'daqstat-restart.png'))
 
 

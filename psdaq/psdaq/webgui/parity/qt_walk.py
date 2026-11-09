@@ -810,6 +810,7 @@ GUI_WALK_VERSION = 1
 GUI_COUNTED = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox', 'QSpinBox',
                'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser', 'QLabel', 'QTableWidget',
                'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget', 'QProgressBar', 'QMessageBox')
+PG_COUNTED = ('PlotItem', 'PlotWidget', 'ImageView')       # pyqtgraph: a plot panel (axes, curves, pan / zoom)
 GUI_SIGNALS = ('clicked', 'toggled', 'stateChanged', 'currentIndexChanged', 'activated', 'editingFinished',
                'returnPressed', 'textChanged', 'cellClicked', 'currentCellChanged', 'currentChanged')
 
@@ -949,6 +950,9 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
     own_abs = {os.path.realpath(os.path.join(src, f)): f for f in own}
     params = sim_params(sim_dir) if sim_dir else {}
     params['walkdir'] = W.get('walkdir') or workdir             # check_gui_parity.run_walks sets it per spec
+    params['psdaq'] = src                                       # this tree's psdaq package dir
+    if W.get('cwd'):                                            # e.g. seqplot: --seq paths relative to psdaq/seq
+        os.chdir(str(W['cwd']).format(**params))
     argv = [str(a).format(**params) for a in W.get('argv', [])]
     OUT = {'version': GUI_WALK_VERSION, 'kind': 'gui', 'file': target, 'src': src, 'own': own, 'libs': libs,
            'src_digest': gui_rows.files_digest(src, own), 'argv': argv, 'sim_daq': sim_dir, 'params': params,
@@ -1071,6 +1075,30 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
         return rec_cls[0]
     for n in GUI_COUNTED:
         setattr(QtWidgets, n, make_rec(n, ORIG[n]))
+    PG = {}
+    try:                                      # pyqtgraph plots (seqplot, seq_epixhr): PlotItem (GraphicsLayout.addPlot),
+        import pyqtgraph as _pg               # PlotWidget, ImageView, recorded where they are made
+        for n in PG_COUNTED:
+            cls = getattr(_pg, n, None)
+            if cls is None:
+                continue
+            PG[n] = cls
+
+            def pg_init(self, *a, _orig=cls.__init__, _n=n, **k):
+                _orig(self, *a, **k)
+                if getattr(self, '_pw_seq', None) is not None:
+                    return
+                f = sys._getframe(1)                 # the PlotItem a PlotWidget / ImageView makes is part of it
+                while f is not None:
+                    o = f.f_locals.get('self')
+                    if f.f_code.co_name == '__init__' and o is not self and any(
+                            isinstance(o, PG[m]) for m in PG if m != 'PlotItem'):
+                        return
+                    f = f.f_back
+                record(self, _n)
+            cls.__init__ = pg_init
+    except ImportError:
+        pass
 
     # per-GUI stand-ins for calls the walk must not make for real (an xterm, a process restart)
     for spec_call in W.get('record_calls', []):        # 'module:Class.attr' or 'module:attr'
@@ -1130,15 +1158,39 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                     pass
         return None
 
+    def plot_info(x):
+        """A pyqtgraph plot: its left-axis label (the 'text'), title, x / y ranges, x link and every curve's data."""
+        pi = x.getPlotItem() if hasattr(x, 'getPlotItem') else (x.getView() if hasattr(x, 'getView') else x)
+        out = {'text': None, 'title': None, 'curves': []}
+        try:
+            out['text'] = pi.getAxis('left').labelText or None
+            out['title'] = pi.titleLabel.text or None
+            vr = pi.viewRange()
+            out['x_range'], out['y_range'] = [float(v) for v in vr[0]], [float(v) for v in vr[1]]
+            link = pi.getViewBox().linkedView(0)
+            out['x_linked'] = link is not None
+            for c in pi.listDataItems():
+                xd, yd = c.getData()
+                out['curves'].append({'x': [float(v) for v in (xd if xd is not None else [])][:5000],
+                                      'y': [float(v) for v in (yd if yd is not None else [])][:5000],
+                                      'n': 0 if xd is None else len(xd), 'symbol': c.opts.get('symbol'),
+                                      'pen': str(c.opts.get('pen'))[:60]})
+        except Exception as ex:
+            out['plot_error'] = repr(ex)
+        return out
+
     def collect():
         OUT['instances'] = []
         for x in list(LIVE):
             try:
                 if sip.isdeleted(x):
                     continue
+                win = x.window() if not (x._pw_base in PG and hasattr(x, 'scene')) else None
+                if win is None and x._pw_base in PG and x.scene() is not None and x.scene().views():
+                    win = x.scene().views()[0].window()
                 rec = {'seq': x._pw_seq, 'cls': type(x).__name__, 'base': x._pw_base, 'site': x._pw_site,
                        'chain': x._pw_chain, 'pv': find_pv(x), 'text': text_of(x), 'enabled': x.isEnabled(),
-                       'visible': x.isVisible(), 'window_visible': x.window().isVisible(),
+                       'visible': x.isVisible(), 'window_visible': bool(win is not None and win.isVisible()),
                        'writes': x._pw_writes, 'receivers': signals(x), 'object_name': x.objectName()}
                 if isinstance(x, QtWidgets.QAbstractButton):
                     rec['checkable'] = x.isCheckable()
@@ -1158,6 +1210,8 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                     rec['cells'] = [[(x.item(r, c).text() if x.item(r, c) else None) for c in range(x.columnCount())]
                                     for r in range(min(x.rowCount(), 40))]
                     rec['edit_triggers'] = int(x.editTriggers())
+                if x._pw_base in PG:
+                    rec.update(plot_info(x))
                 rec['texts'] = getattr(x, '_pw_texts', [])
                 OUT['instances'].append(rec)
             except Exception as ex:

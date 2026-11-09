@@ -37,7 +37,8 @@ from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_lo
 # register(app, get_routes, post_routes): get_routes maps a path to
 # fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
 EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api',
-               'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api', 'psdaq.webgui.daqstat_api')
+               'psdaq.webgui.dpm_api', 'psdaq.webgui.datadev_api', 'psdaq.webgui.daqstat_api',
+               'psdaq.webgui.plots_api')
 
 
 def load_extensions(app, names=EXT_MODULES):
@@ -480,6 +481,12 @@ def build_parser():
                    help="/gui/detector_protection_monitor: web copy of trigger/detector_protection_monitor.py with the "
                         "PyQt program's arguments, e.g. '-b DAQ:SIM:JF16M:BLOCKER -d Jungfrau' (Channel Access, "
                         "loopback EPICS_CA_* env only)")
+    p.add_argument('--seqplot', default=None, metavar='ARGS',
+                   help="/gui/seqplot: web copy of seq/seqplot.py with the PyQt program's arguments, e.g. "
+                        "'--seq 0:10k.py --time 0 0.0001'")
+    p.add_argument('--seq-epixhr', default=None, metavar='ARGS',
+                   help="/gui/seq_epixhr: web copy of seq/seq_epixhr.py --plot (with --test: no XPM write)")
+    p.add_argument('--seq-dir', default=None, help='where relative --seq scripts are read (default psdaq/seq)')
     p.add_argument('--daqstat-cnf', default=None, help='/gui/daqstat: the daqmgr .cnf whose jobs it shows (as daqstat <cnf>)')
     p.add_argument('--daqstat-slurm', default=None, metavar='STATE',
                    help='/gui/daqstat: the psdaq.sim.simslurm state file that answers its Slurm commands (required)')
