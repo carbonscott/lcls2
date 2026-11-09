@@ -344,7 +344,9 @@ Python 3.9 or later works: `PYTHONPATH=psdaq python -m psdaq.sim.coverage` from 
 - `RUN`: the row ran in a hardware-free run.
 - `STAND-IN`: a simulated program ran in its place. The entry names it (`stand_in`) and the
   interface it serves (`interface`), as simxpm serves pyxpm's PVs.
-- `N/A`: a hardware diagnostic or firmware tool with no role in a run. The entry gives a one-line `reason`.
+- `N/A`: a hardware diagnostic or firmware tool with no role in a run, or (R7) a program the tree itself cannot
+  build or import (its build commented out in meson, or classes it needs absent from the tree: `xpmPVs`,
+  `hsd64PVs`). The entry gives a one-line `reason`, for R7 with the file and line and the failing command.
 
 A row with no entry is UNPROVEN. An entry for a row that the enumeration does not find is an error.
 
@@ -439,7 +441,7 @@ A record proves a row only if all of these hold, and the row's line names the fi
   - a GUI on a device stand-in (R4; hsdpva and pvatable on simhsd, tprca on simtpr, dtica on simdti,
     with `up --gui --pvservers`; xpmpva on simxpm, the XPM stand-in on the node's own PVA ports,
     which serves the `PAddr`, `Us:RxAlign` and `SFPSTATUS` it reads at start and pulse IDs in
-    `PATT:GROUPS`): its `programs` entry names the stand-in (`stand_in`) and holds one
+    `PATT:GROUPS`; deadca on simxpm, below): its `programs` entry names the stand-in (`stand_in`) and holds one
     read per widget; one widget must show, after its first text (which may be the text the widget
     was built with: tprca's fields show `0` before their PV's value), 2 or more distinct values
     (texts with a digit: dtica shows `928.6154kHz`) of a PV under a prefix the stand-in serves,
@@ -449,10 +451,16 @@ A record proves a row only if all of these hold, and the row's line names the fi
     part. The walk names a widget's PV by a `pv` on it or its parents, or (the witness's walks
     only, `bind_holders`: the parity check's rows stay as they were) by the object that holds the
     widget in its `fields` or `widgets` list and has a `pv` (pvatable's `PvBase`, which calls its
-    `PvField` labels back; `PvDblArray`, which sets its labels). Not witnessed yet, so
-    UNPROVEN: deadca (its only values are the partition's `DeadFLnk` per link, and simxpm posts
-    them only when a link is dead, so a healthy run shows 0 throughout:
-    `gui_witness.SERVER_GUI_BLOCKERS`).
+    `PvField` labels back; `PvDblArray`, which sets its labels). deadca's only values are the
+    partition's `DeadFLnk`, one per link: the share of each second a real XPM held the group's
+    L0s back because that link asserted full (its DRP past its pause threshold; pyxpm
+    `pvstats.py` `GroupStats`). A healthy run has none, so while the walks run the cycle has
+    fakecam_0's link assert full for 0.3 of every 1.3 s (`gui_witness.LINK_FULL`; simxpm's
+    `SIM:LinkFull`, a sim-only PV, 0 by default), as a DRP whose readout stalls would, and puts it
+    back to 0 after them. simxpm then holds the group's L0s back as an XPM does (they count in
+    `NumL0Inp`, not `NumL0Acc`; fewer L1Accepts are recorded; transitions go through) and posts
+    each second's held share in `DeadFLnk`, which differs from second to second because 1.3 s is
+    not a whole second. The entry's `stimulus` says which link, its share and when.
   - a GUI that reads no PV (R5; daqstat, the Slurm job of each process of a daqmgr config): `up
     --gui` has simslurm hold a job for each process of `daq_sim.cnf` and answer daqstat's Slurm
     commands (shims first on the procmgr daqstat's PATH; in the walk, `psdaq.slurm.utils`'s
@@ -1030,7 +1038,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   process showed `NO CONNECT`).
 - **GUI witnesses.** The witness of groupca, partca, pvant and procstat is a second instance of each GUI,
   run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
-  `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. xpmpva is
+  `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. The
+  deadtime deadca shows is deadtime the cycle causes on purpose (simxpm `SIM:LinkFull`, §3d): no
+  DRP of these runs stalls by itself. xpmpva is
   not run: at startup it reads `<xpm>:Us:RxAlign` and `<xpm>:Cu:RxAlign`, which this simxpm does
   not serve, and exits on the timeout.
 - **PVA servers.** A unicast PVA search reaches only one of the sockets bound to the node's
