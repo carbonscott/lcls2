@@ -778,15 +778,16 @@ checks the plan. It has not run on two nodes. To run it:
 
 ## 3k. The whole matrix, one command: `daq_sim matrix`
 
-`daq_sim matrix` runs, unattended, a cycle of every detector type, the system features and the
-coverage check, and exits 0 only if every assertion passes. Run it in one `srun` step on the
-node (it takes about an hour; a shell that cuts commands off needs `nohup` and a log, §1):
+`daq_sim matrix` runs, unattended, a cycle of every detector type, one run of the programs (§3h),
+the system features and the coverage check, and exits 0 only if every assertion passes. Run it in
+one `srun` step on the node (it takes about an hour; a shell that cuts commands off needs `nohup`
+and a log, §1; AMI as in §3h, from `--ami-src DIR` or `$DAQ_SIM_AMI_SRC`):
 
 ```bash
 # one srun step on the node (JOB, ROOT and WD as in §1 and §2)
 srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=16 --mem=32G bash -c "
   cd $ROOT/lcls2 && source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh &&
-  daq_sim matrix -w $WD/matrix; echo MATRIX_EXIT=\$?"
+  daq_sim matrix -w $WD/matrix --ami-src <AMI source tree>; echo MATRIX_EXIT=\$?"
 ```
 
 It brings up one DAQ at a time, each in its own work dir under `-w`, and always takes it down:
@@ -794,6 +795,7 @@ It brings up one DAQ at a time, each in its own work dir under `-w`, and always 
 | section | what runs, in `<WD>/...` | assertions (each named, each PASS or FAIL) |
 |---|---|---|
 | `types` | for each detector type: `daq_sim up --det <T> --detach`, one recorded `daq_sim cycle --events 1000`, `daq_sim down`, in `types/<T>` | `types/<T>/up`; `.../transitions` (every state read back as requested, no error message, back to the start state); `.../drp-alive` (the DRP `up` started is still alive after the run); `.../counts` (simxpm's L1Accepts == `TEB_WrtCt` == psana2's events == psana2's events with `<T>`'s data, all >= 1000); `.../per-event` (`xtc2_check` compared every event's data, through the type's own psana interface, with what the simulated device was set to send); `.../evidence` (the cycle wrote a record for `det:drp:<T>` that coverage accepts); `.../down` (`down: clean`) |
+| `programs` | `daq_sim up --ami --pva --epics --udp --gui --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter: §3h), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
 | `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature that `psdaq.sim.feature` does not run yet (c: the MEB with AMI; d: two nodes) is `NOT AVAILABLE`, a failed assertion |
 | `coverage` | `daq_sim coverage` (§3d), after the runs above wrote their evidence | `coverage` (PASS: every row RUN, STAND-IN or N/A with valid evidence at HEAD) |
 
@@ -806,7 +808,8 @@ prints the line the coverage goal asks for:
 TYPE epix100      node sdfmilan048 job 43839059 run <WD>/matrix/types/epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1018 psana2 1018 with-data 1018 per-event PASS PASS
 ```
 
-The end is a summary: the type lines, one line per feature, coverage's counts, every assertion with
+The programs run prints the same line, `PROGRAMS fakecam ...`. The end is a summary: the type
+lines, the programs line, one line per feature, coverage's counts, every assertion with
 its detail, the failed ones again as `FAILED <name>: <why>`, and `MATRIX PASS` (exit 0) or
 `MATRIX FAIL (k of n assertions failed)` (exit 1). The same is written as JSON to
 `<WD>/matrix/matrix-summary.json` (`--summary FILE`): the per-type and per-feature results,
@@ -815,7 +818,8 @@ coverage's counts, every assertion and the runs.
 | option | effect |
 |---|---|
 | `-w DIR` | Work dir of the whole matrix (each type's and feature's DAQ in a subdirectory, replaced by its next run). |
-| `--only types\|features\|coverage` | Run only these sections (repeatable, or comma-separated). |
+| `--only types\|programs\|features\|coverage` | Run only these sections (repeatable, or comma-separated). |
+| `--ami-src DIR` | The AMI source tree of the programs run (default: `daq_sim up`'s, `$DAQ_SIM_AMI_SRC`, else `ami-*` on PATH). |
 | `--types T,T` | Only these detector types (any of `up --det`). |
 | `--features x,x` | Only these features. |
 | `--events N` | L1Accepts of each type's cycle; default 1000. |

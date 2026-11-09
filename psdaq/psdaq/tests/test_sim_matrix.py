@@ -80,10 +80,10 @@ def record(**kw):
     return rec
 
 
-def checks(rec, out=EVIDENCE, det='fakecam', wd='/nonexistent', events=1000):
+def checks(rec, out=EVIDENCE, det='fakecam', wd='/nonexistent', events=1000, programs=False):
     res, got = {'cycle exit': 0}, {}
     matrix.type_checks(res, det, wd, rec, out, events,
-                       lambda what, ok, detail: got.__setitem__(what, (ok, detail)))
+                       lambda what, ok, detail: got.__setitem__(what, (ok, detail)), programs=programs)
     return res, got
 
 
@@ -143,6 +143,27 @@ def test_evidence_rejected_by_coverage_fails():
     assert not got['evidence'][0] and 'recorded with tracked files modified' in got['evidence'][1]
 
 
+def test_the_programs_run_needs_every_program_check_and_all_its_evidence():
+    counts = dict(COUNTS, **{k: 'PASS' for k in matrix.PROGRAM_CHECKS}, MEB_EvtCt=1018)
+    counts['ami shot'] = 'PASS (viewer showed the run)'
+    res, got = checks(record(counts=counts), programs=True)
+    assert got['checks'][0] and 'ami check: PASS' in got['checks'][1] and 'MEB_EvtCt 1018' in got['checks'][1]
+    assert got['evidence'][0] and 'for 5 rows' in got['evidence'][1]
+    del counts['gui witness']
+    res, got = checks(record(counts=counts), programs=True)
+    assert not got['checks'][0] and 'gui witness: did not run' in got['checks'][1]
+    counts['gui witness'] = 'FAIL groupca read nothing'
+    res, got = checks(record(counts=counts, ok=False), programs=True)
+    assert not got['checks'][0]
+    out = EVIDENCE + ['2026-11-09T05:00:00.000-08:00 evidence 20261109T0500-cycle-abc-1: coverage would reject '
+                      'it for prog:ami-client: its log of ami-client gives no pid']
+    counts['gui witness'] = 'PASS'
+    res, got = checks(record(counts=counts), out=out, programs=True)
+    assert not got['evidence'][0] and 'prog:ami-client' in got['evidence'][1]      # any row, not only det
+    res, got = checks(record(counts=counts), out=out)
+    assert got['evidence'][0]                           # a type's run needs only its det row
+
+
 def test_no_record_fails_every_cycle_assertion():
     res, got = checks(None)
     assert set(got) == {'transitions', 'counts', 'per-event', 'evidence'} and not any(v[0] for v in got.values())
@@ -193,11 +214,13 @@ def result(name, ok, ended='2026-11-09T05:00:00'):
 def test_merge_carries_results_of_the_same_head_only(tmp_path):
     path = str(tmp_path / 's.json')
     first = matrix.merge(path, 'abc', None, {'types': {'fakecam': result('types/fakecam/up', True)},
-                                              'features': {}, 'coverage': None})
+                                              'features': {}, 'coverage': None,
+                                              'programs': result('programs/up', True)})
     json.dump(first, open(path, 'w'))
     again = matrix.merge(path, 'abc', None, {'types': {'epix100': result('types/epix100/up', True)},
                                               'features': {}, 'coverage': None})
     assert again['types']['fakecam']['carried'] and not again['types']['epix100']['carried']
+    assert again['programs']['carried']
     other = matrix.merge(path, 'def', None, {'types': {}, 'features': {}, 'coverage': None})
     assert other['types'] == {}
     broken = matrix.merge(path, 'abc', 'corrupt', {'types': {}, 'features': {}, 'coverage': None})
@@ -207,7 +230,10 @@ def test_merge_carries_results_of_the_same_head_only(tmp_path):
 def test_whole_verdict_needs_every_section_and_a_fresh_coverage():
     s = {'types': {'fakecam': result('types/fakecam/up', True, '2026-11-09T05:00:00')},
          'features': {x: result(f'features/{x}', True) for x in matrix.FEATURES},
-         'coverage': dict(result('coverage', True), started='2026-11-09T06:00:00')}
+         'programs': None, 'coverage': dict(result('coverage', True), started='2026-11-09T06:00:00')}
+    w = matrix.whole_verdict(s, ['fakecam'], [])
+    assert not w['pass'] and w['missing'] == ['programs']
+    s['programs'] = result('programs/up', True)
     assert matrix.whole_verdict(s, ['fakecam'], [])['pass']
     w = matrix.whole_verdict(s, ['fakecam', 'epix100'], [])
     assert not w['pass'] and w['missing'] == ['types/epix100']
@@ -221,7 +247,8 @@ def test_whole_verdict_needs_every_section_and_a_fresh_coverage():
 
 
 def test_summary_exit_names_the_failed_assertion(capsys):
-    results = {'types': {}, 'features': {'c': dict(result('features/c', False), verdict='NOT AVAILABLE')},
+    results = {'types': {}, 'programs': None,
+               'features': {'c': dict(result('features/c', False), verdict='NOT AVAILABLE')},
                'coverage': {'assertions': [{'name': 'coverage', 'ok': True, 'detail': '78 rows'}]}, 'extra': []}
     rc = matrix.print_summary('abc', 0, 't0', results, '/s.json', None, None, '')
     out = capsys.readouterr().out

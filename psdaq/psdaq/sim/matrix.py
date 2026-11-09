@@ -1,8 +1,8 @@
 """daq_sim matrix: the whole hardware-free matrix, unattended; its exit code is the verdict.
 
-    daq_sim matrix [-w WORKDIR] [-p PLATFORM] [--only types|features|coverage]...
+    daq_sim matrix [-w WORKDIR] [-p PLATFORM] [--only types|programs|features|coverage]...
                    [--types T,T,..] [--features x,x,..] [--events N] [--lock FILE]
-                   [--summary FILE] [--repo DIR] [--status FILE] [--evidence DIR] [-v]
+                   [--ami-src DIR] [--summary FILE] [--repo DIR] [--status FILE] [--evidence DIR] [-v]
     daq_sim matrix -w WORKDIR --break register|kill-drp|corrupt [--types T] [--fault PATH]
 
 Sections, in this order (--only picks some, repeated or comma-separated):
@@ -25,6 +25,13 @@ Sections, in this order (--only picks some, repeated or comma-separated):
             A RUN row that daq_sim up --det cannot run fails as types/<T>/runnable.
             Each type gets one line: type, node, job, run file, the DAQ's recorded count
             (TEB_WrtCt), psana2's events, events with data, the per-event verdict, its verdict.
+  programs  one DAQ with every program option of daq_sim up (PROGRAM_OPTIONS: the MEB, AMI, drp_pva,
+            epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs; RUNBOOK 3h), in
+            <WORKDIR>/programs: up, one recorded cycle with --ami-shot, down.  Assertions
+            programs/<what>: those of a type for fakecam_0, and 'checks' (the cycle's checks of
+            the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all
+            PASS); its 'evidence' needs every row of the record accepted.  AMI comes from
+            --ami-src, else daq_sim up's default ($DAQ_SIM_AMI_SRC, else ami-* on PATH).
   features  daq_sim feature <x> (psdaq.sim.feature: up, its run, its checks, down) for x = a..e,
             in <WORKDIR>/features/<x>; assertions features/<x> (FEATURE <x> PASS, exit 0) and
             features/<x>/down.  A feature psdaq.sim.feature does not provide yet is NOT AVAILABLE,
@@ -72,7 +79,10 @@ import time
 from psdaq.sim import coverage
 from psdaq.sim import daq_sim as ds
 
-SECTIONS = ('types', 'features', 'coverage')
+SECTIONS = ('types', 'programs', 'features', 'coverage')
+# The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3h)
+PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--rate', '100')
+PROGRAM_CHECKS = ('system DRP checks', 'ami check', 'gui witness', 'ami shot')
 FEATURES = ('a', 'b', 'c', 'd', 'e')             # the contract's system features (a)-(e)
 BREAKS = ('register', 'kill-drp', 'corrupt')
 BREAK_TYPES = {'register': 'epix100', 'kill-drp': 'fakecam', 'corrupt': 'fakecam'}
@@ -109,7 +119,9 @@ def add_arguments(p):
                    help='run only these detector types (default: every RUN row and SIM_TYPES)')
     p.add_argument('--features', action='append', metavar='x,x',
                    help=f'run only these features, of {",".join(FEATURES)} (default: all)')
-    p.add_argument('--events', type=int, default=1000, help='L1Accepts of each type\'s cycle (default %(default)d)')
+    p.add_argument('--events', type=int, default=1000, help='L1Accepts of each cycle (default %(default)d)')
+    p.add_argument('--ami-src', default=None, help='programs: AMI source tree for up --ami (default: up\'s, '
+                   '$DAQ_SIM_AMI_SRC, else ami-* on PATH)')
     p.add_argument('--lock', default=os.environ.get('DAQ_SIM_MATRIX_LOCK'),
                    help='flock(2) this file around each DAQ (default $DAQ_SIM_MATRIX_LOCK, else none)')
     p.add_argument('--lock-timeout', type=int, default=3600, help='s to wait for --lock (default %(default)d)')
@@ -257,30 +269,44 @@ def available_features():
     return tuple(getattr(feature, 'FEATURES', ()))
 
 
-# --- one type ---------------------------------------------------------------------------------
+# --- one DAQ: a type, or the programs run ---------------------------------------------------
 
 def run_type(args, det, wd, env, kill=False):
-    """One type's DAQ: up, cycle, down (holding the lock), then its assertions."""
+    """One type's DAQ: up --det, a recorded cycle, down; assertions types/<det>/<what>."""
+    return run_daq(args, f'types/{det}', det, wd, env, [], [], kill=kill)
+
+
+def run_programs(args, wd, env):
+    """The programs run: up with PROGRAM_OPTIONS (the MEB, AMI, the system DRPs, the GUIs), a
+    recorded cycle with the AMI screenshot, down; assertions programs/<what>."""
+    up = list(PROGRAM_OPTIONS) + (['--ami-src', args.ami_src] if args.ami_src else [])
+    return run_daq(args, 'programs', 'fakecam', wd, env, up, ['--ami-shot', os.path.join(wd, 'ami-shot.png')])
+
+
+def run_daq(args, name, det, wd, env, up_extra, cycle_extra, kill=False):
+    """One DAQ: up, cycle, down (holding the lock), then the assertions <name>/<what>."""
     host, job = socket.gethostname().split('.')[0], os.environ.get('SLURM_JOB_ID')
-    res = {'type': det, 'node': host, 'job': job, 'step': os.environ.get('SLURM_STEP_ID'),
+    res = {'name': name, 'type': det, 'node': host, 'job': job, 'step': os.environ.get('SLURM_STEP_ID'),
            'workdir': wd, 'started': ds.now(), 'assertions': []}
+    tag = name.split('/')[-1]
 
     def check(what, ok, detail):
-        res['assertions'].append({'name': f'types/{det}/{what}', 'ok': bool(ok), 'detail': detail})
+        res['assertions'].append({'name': f'{name}/{what}', 'ok': bool(ok), 'detail': detail})
 
     fresh(wd)
     cycle_out, cycled = [], False
     try:
         with Lock(args.lock, args.lock_timeout):
-            rc, out = run(daq_sim('up', '-w', wd, '--det', det, '--detach', '-p', str(args.platform)),
-                          f'  {det} up| ', 900, env)
+            rc, out = run(daq_sim('up', '-w', wd, '--det', det, '--detach', '-p', str(args.platform), *up_extra),
+                          f'  {tag} up| ', 900, env)
             check('up', rc == 0, f'exit {rc}' + ('' if rc == 0 else ': ' + ' | '.join(
                 [l for l in out if 'FAIL' in l or 'Error' in l][-2:] or out[-2:])))
             if rc == 0:
                 work = ds.Work(wd)
                 pid0, cmd0 = ds.drp_pid(work.load() or {}, f'{det}_0')
-                argv = daq_sim('cycle', '-w', wd, '--events', str(args.events)) + (['--kill-drp'] if kill else [])
-                rc_c, cycle_out = run(argv, f'  {det} cycle| ', 1800, env)
+                argv = daq_sim('cycle', '-w', wd, '--events', str(args.events), *cycle_extra) + \
+                    (['--kill-drp'] if kill else [])
+                rc_c, cycle_out = run(argv, f'  {tag} cycle| ', 1800, env)
                 cycled = True
                 pid1, _ = ds.drp_pid(work.load() or {}, f'{det}_0')
                 alive = pid0 is not None and ds.pid_alive(pid0) and pid1 == pid0
@@ -288,7 +314,7 @@ def run_type(args, det, wd, env, kill=False):
                     'alive after the run' if alive else
                     f'GONE after the run (now {pid1 or "no process"})' if pid0 else 'not found after up'))
                 res['cycle exit'] = rc_c
-            rc_d, out_d = run(daq_sim('down', '-w', wd), f'  {det} down| ', 300, env)
+            rc_d, out_d = run(daq_sim('down', '-w', wd), f'  {tag} down| ', 300, env)
             clean = rc_d == 0 and any(l.rstrip().endswith('down: clean') for l in out_d)
             check('down', clean, f'exit {rc_d}, ' + ('down: clean' if clean else ' | '.join(
                 [l for l in out_d if 'LEFTOVER' in l or 'still in use' in l or 'NOT clean' in l][-2:])))
@@ -296,20 +322,22 @@ def run_type(args, det, wd, env, kill=False):
         check('lock', False, str(e))
     if cycled:
         rec = last_record(os.path.join(wd, 'logs', 'cycle.jsonl'))
-        type_checks(res, det, wd, rec, cycle_out, args.events, check)
-    order = TYPE_CHECKS[:1] + ('lock',) + TYPE_CHECKS[1:]
+        type_checks(res, det, wd, rec, cycle_out, args.events, check, programs=name == 'programs')
+    checks = TYPE_CHECKS + (('checks',) if name == 'programs' else ())
+    order = checks[:1] + ('lock',) + checks[1:]
     res['assertions'].sort(key=lambda a: order.index(a['name'].rsplit('/', 1)[1]))
     res['ended'] = ds.now()
     res['pass'] = all(a['ok'] for a in res['assertions']) and \
-        {a['name'].rsplit('/', 1)[1] for a in res['assertions']} >= set(TYPE_CHECKS)
+        {a['name'].rsplit('/', 1)[1] for a in res['assertions']} >= set(checks)
     print(type_line(res), flush=True)
     return res
 
 
-def type_checks(res, det, wd, rec, cycle_out, events, check):
-    """The assertions read from the cycle's record (logs/cycle.jsonl) and output."""
+def type_checks(res, det, wd, rec, cycle_out, events, check, programs=False):
+    """The assertions read from the cycle's record (logs/cycle.jsonl) and output; for the
+    programs run also 'checks' (every check of its programs) and evidence for all its rows."""
     if rec is None:
-        for what in ('transitions', 'counts', 'per-event', 'evidence'):
+        for what in ('transitions', 'counts', 'per-event', 'evidence') + (('checks',) if programs else ()):
             check(what, False, f'the cycle wrote no record (exit {res.get("cycle exit")})')
         return
     c = rec.get('counts', {})
@@ -344,15 +372,22 @@ def type_checks(res, det, wd, rec, cycle_out, events, check):
     pe = c.get('psana2 checks')
     check('per-event', pe == 'PASS', f'xtc2_check --det {det}: {pe if pe is not None else "did not run"}')
 
+    if programs:                        # the checks of the MEB, AMI, the system DRPs, the GUIs
+        keys = [k for k in PROGRAM_CHECKS if k in c]
+        ok = bool(rec.get('ok')) and keys == list(PROGRAM_CHECKS) and \
+            all(str(c[k]).startswith('PASS') for k in keys)
+        check('checks', ok, '; '.join(f'{k}: {str(c.get(k, "did not run"))[:200]}' for k in PROGRAM_CHECKS) +
+              f'; MEB_EvtCt {c.get("MEB_EvtCt")}')
+
     ev_lines = [l for l in cycle_out if re.search(r' evidence \S+: ', l)]
     rows = [l for l in ev_lines if 'would reject' not in l]
     rejects = [l.split('coverage would reject it for ', 1)[1] for l in ev_lines if 'would reject' in l]
     mine = [l for l in rows if f'det:drp:{det}' in l.split(': ', 1)[-1].split()]
-    rejected = [r for r in rejects if r.startswith(f'det:drp:{det}:')]
+    rejected = rejects if programs else [r for r in rejects if r.startswith(f'det:drp:{det}:')]
     eid = re.search(r' evidence (\S+): ', mine[-1]).group(1) if mine else None
     ok = bool(mine) and not rejected
-    detail = f'record {eid}' if mine else 'no evidence record for det:drp:' + det + (
-        ' (the cycle failed)' if not rec.get('ok') else '')
+    detail = (f'record {eid}' + (f' for {len(mine[-1].split(": ", 1)[-1].split())} rows' if programs else '')
+              if mine else 'no evidence record for det:drp:' + det + (' (the cycle failed)' if not rec.get('ok') else ''))
     if rejects:
         detail += '; coverage would reject it for ' + '; '.join(r[:200] for r in rejects[:3])
     res['evidence'] = eid
@@ -364,7 +399,7 @@ def type_checks(res, det, wd, rec, cycle_out, events, check):
 
 def type_line(r):
     """Item 2's line: type, node, job, run file, the DAQ's count, psana2's, with data, verdicts."""
-    return (f'TYPE {r["type"]:<12} node {r["node"]} job {r["job"]} run {r.get("run_file")} '
+    return (f'{"PROGRAMS" if r.get("name") == "programs" else "TYPE"} {r["type"]:<12} node {r["node"]} job {r["job"]} run {r.get("run_file")} '
             f'DAQ {r.get("daq")} psana2 {r.get("psana2")} with-data {r.get("with_data")} '
             f'per-event {r.get("per_event", "not run")} {"PASS" if r.get("pass") else "FAIL"}')
 
@@ -437,17 +472,20 @@ def merge(path, sha, brk, now_res):
     """The summary to write: this run's results over the ones the file holds for the same HEAD
     and break (those 'carried')."""
     old = last_record_json(path)
-    out = {'sha': sha, 'break': brk, 'types': {}, 'features': {}, 'coverage': None, 'runs': []}
+    out = {'sha': sha, 'break': brk, 'types': {}, 'programs': None, 'features': {}, 'coverage': None,
+           'runs': []}
     if old and old.get('sha') == sha and old.get('break') == brk:
         for k in ('types', 'features'):
             out[k] = {n: dict(v, carried=True) for n, v in (old.get(k) or {}).items()}
-        out['coverage'] = dict(old['coverage'], carried=True) if old.get('coverage') else None
+        for k in ('programs', 'coverage'):
+            out[k] = dict(old[k], carried=True) if old.get(k) else None
         out['runs'] = old.get('runs', [])
     for k in ('types', 'features'):
         for n, v in now_res[k].items():
             out[k][n] = dict(v, carried=False)
-    if now_res['coverage'] is not None:
-        out['coverage'] = dict(now_res['coverage'], carried=False)
+    for k in ('programs', 'coverage'):
+        if now_res.get(k) is not None:
+            out[k] = dict(now_res[k], carried=False)
     return out
 
 
@@ -463,27 +501,35 @@ def whole_verdict(summary, all_types, cannot):
     """The verdict over every section at this HEAD, carried results included."""
     missing = [f'types/{t}' for t in all_types if t not in summary['types']]
     missing += [f'features/{x}' for x in FEATURES if x not in summary['features']]
-    if summary['coverage'] is None:
-        missing.append('coverage')
+    missing += [k for k in ('programs', 'coverage') if summary.get(k) is None]
     stale = None
     cov = summary['coverage']
+    runs = [v for k in ('types', 'features') for v in summary[k].values()] + \
+        ([summary['programs']] if summary.get('programs') else [])
     if cov is not None:
-        newest = max([v.get('ended') or '' for k in ('types', 'features') for v in summary[k].values()] or [''])
+        newest = max([v.get('ended') or '' for v in runs] or [''])
         if newest > (cov.get('started') or ''):
             stale = f'coverage ran at {cov.get("started")}, before the run that ended {newest}'
-    failed = [a['name'] for k in ('types', 'features') for v in summary[k].values()
-              for a in v['assertions'] if not a['ok']]
+    failed = [a['name'] for v in runs for a in v['assertions'] if not a['ok']]
     failed += [a['name'] for a in (cov or {}).get('assertions', []) if not a['ok']]
     failed += [f'types/{r}/runnable' for r in cannot]
     return {'pass': not missing and not stale and not failed, 'missing': missing, 'stale': stale,
             'failed': failed}
 
 
-def print_summary(sha, dirty, started, results, summary_path, whole, brk, env_note):
-    asserts = [a for k in ('types', 'features') for v in results[k].values() for a in v['assertions']]
-    asserts += results['extra']
+def all_assertions(results):
+    """This run's assertions, in section order."""
+    out = [a for v in results['types'].values() for a in v['assertions']] + results['extra']
+    if results.get('programs') is not None:
+        out += results['programs']['assertions']
+    out += [a for v in results['features'].values() for a in v['assertions']]
     if results['coverage'] is not None:
-        asserts += results['coverage']['assertions']
+        out += results['coverage']['assertions']
+    return out
+
+
+def print_summary(sha, dirty, started, results, summary_path, whole, brk, env_note):
+    asserts = all_assertions(results)
     failed = [a for a in asserts if not a['ok']]
     print(f'==== MATRIX SUMMARY at HEAD {sha} (tracked files modified: {dirty}), host '
           f'{socket.gethostname().split(".")[0]}, job {os.environ.get("SLURM_JOB_ID")} step '
@@ -494,6 +540,9 @@ def print_summary(sha, dirty, started, results, summary_path, whole, brk, env_no
         print(f'types ({len(results["types"])}):', flush=True)
         for r in results['types'].values():
             print(type_line(r), flush=True)
+    if results.get('programs') is not None:
+        print('programs:', flush=True)
+        print(type_line(results['programs']), flush=True)
     if results['features']:
         print('features:', flush=True)
         for x, r in results['features'].items():
@@ -536,7 +585,7 @@ def cmd_matrix(args, argv=()):
     wd = os.path.abspath(args.workdir)
     if args.breakage:
         wd = os.path.join(wd, f'break-{args.breakage}')
-    if 'types' in sections or 'features' in sections:
+    if set(sections) & {'types', 'programs', 'features'}:
         ds.ensure_env(list(argv))                # the DAQ env (re-executes through sim_env.sh)
     os.makedirs(wd, exist_ok=True)
     summary_path = os.path.abspath(args.summary or os.path.join(wd, 'matrix-summary.json'))
@@ -571,7 +620,7 @@ def cmd_matrix(args, argv=()):
     if note:
         say(f'deliberate break: {note}')
 
-    results = {'types': {}, 'features': {}, 'coverage': None, 'extra': []}
+    results = {'types': {}, 'programs': None, 'features': {}, 'coverage': None, 'extra': []}
     if 'types' in sections:
         if not args.breakage and not args.types:
             for r in cannot:
@@ -582,6 +631,9 @@ def cmd_matrix(args, argv=()):
             say(f'---- type {t} ({types.index(t) + 1} of {len(types)})')
             results['types'][t] = run_type(args, t, os.path.join(wd, 'types', t), env,
                                            kill=args.breakage == 'kill-drp')
+    if 'programs' in sections:
+        say('---- programs')
+        results['programs'] = run_programs(args, os.path.join(wd, 'programs'), env)
     if 'features' in sections:
         feats = csv(args.features) or list(FEATURES)
         bad = [x for x in feats if x not in FEATURES]
@@ -599,14 +651,12 @@ def cmd_matrix(args, argv=()):
     run_info = {'started': started, 'ended': ds.now(), 'host': socket.gethostname(),
                 'job': os.environ.get('SLURM_JOB_ID'), 'step': os.environ.get('SLURM_STEP_ID'),
                 'argv': list(argv), 'sections': sections, 'types': list(results['types']),
+                'programs': results['programs'] is not None,
                 'features': list(results['features']), 'break': args.breakage, 'break_env': note or None}
     rc = print_summary(sha, dirty, started, results, summary_path, whole, args.breakage, note)
     run_info['exit'] = rc
     summary['runs'] = summary['runs'][-19:] + [run_info]
-    summary.update(dirty=dirty, updated=ds.now(), whole=whole, exit=rc,
-                   assertions=[a for k in ('types', 'features') for v in results[k].values()
-                               for a in v['assertions']] + results['extra'] +
-                   (results['coverage']['assertions'] if results['coverage'] else []))
+    summary.update(dirty=dirty, updated=ds.now(), whole=whole, exit=rc, assertions=all_assertions(results))
     tmp = summary_path + '.tmp'
     with open(tmp, 'w') as f:
         json.dump(summary, f, indent=1)
