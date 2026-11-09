@@ -416,7 +416,7 @@ namespace Pds {
     const MebParams&                    _prms;
     EbLfClient                          _mrqTransport;
     ZmqSocket                           _inprocSend;
-    bool                                _unconfigured; // Built an Unconfigure since the last Configure
+    bool                                _unconfigured; // Built an Unconfigure since configure() last ran
   };
 };
 
@@ -565,6 +565,9 @@ int Meb::connect(const std::shared_ptr<MetricExporter> exporter)
 
 int Meb::configure()
 {
+  // From here until this cycle's Unconfigure is built, a lost DRP link is an error (see run())
+  _unconfigured = false;
+
   // Create pool for transferring events to MyXtcMonitorServer
   unsigned entries = std::bitset<64>(_prms.contributors).count();
   size_t   size    = sizeof(Dgram) + entries * sizeof(Dgram*);
@@ -732,8 +735,7 @@ void Meb::process(EbEvent* event)
     }
   }
 
-  if      (dg->service() == TransitionId::Unconfigure)  _unconfigured = true;
-  else if (dg->service() == TransitionId::Configure)    _unconfigured = false;
+  if (dg->service() == TransitionId::Unconfigure)  _unconfigured = true;
 
   if (!dgram->isEvent() || (dgram->pulseId() - _latPid > 13000000/14)) {
     _latency = latency<us_t>(dgram->time);
@@ -944,7 +946,9 @@ void MebApp::handlePhase1(const json& msg)
   {
     // Handle a "queued" Unconfigure, if any
     // Unconfigure if previous transition was Unconfigure and when Configure is being retried
-    if (_unconfigFlag || (_lastKey == key))
+    // or the previous MEB thread has not been joined (it ends by itself when a DRP disconnects
+    // after Unconfigure, see Meb::run())
+    if (_unconfigFlag || (_lastKey == key) || _appThread.joinable())
       _unconfigure();
 
     int rc = _configure(msg);
