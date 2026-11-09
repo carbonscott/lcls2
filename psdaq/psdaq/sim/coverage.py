@@ -17,12 +17,16 @@ A row with no entry is UNPROVEN.  An entry for a row the enumeration does not fi
 
 Every RUN and STAND-IN row needs an evidence record: a JSON file in the evidence dir
 ($DAQ_SIM_EVIDENCE, else <repo>/.daq_sim/evidence), written by record_evidence() when a run
-passes, whose sha is this checkout's HEAD and whose files all exist.  Records made at any
-other commit are rejected, and the row's line says so.
+passes.  A record is valid only if its sha is this checkout's HEAD, it was made with no
+tracked file modified (only the commit's own code counts), it names the run (run_id), and
+every file it lists exists and is non-empty; an .xtc2 file must also be a whole chain of
+xtc2 datagrams that starts with a Configure (xtc2_problem).  Any other record is rejected,
+and the row's line says why.
 
-Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven', then
-PASS (exit 0) if U == 0 and every RUN/STAND-IN row has valid evidence, else FAIL (exit 1)
-and the failing rows.
+Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
+claimed without valid evidence', where R and S count only rows with valid evidence at HEAD,
+then what the status file claims, then PASS (exit 0) if U == 0 and X == 0, else FAIL
+(exit 1) and the failing rows.
 """
 
 import argparse
@@ -35,6 +39,7 @@ import os
 import re
 import shlex
 import socket
+import struct
 import subprocess
 import sys
 import time
@@ -51,6 +56,12 @@ STATUSES = ('RUN', 'STAND-IN', 'N/A')
 REQUIRED = {'RUN': (), 'STAND-IN': ('interface', 'stand_in'), 'N/A': ('reason',)}
 OPTIONAL = ('note',)
 RECORD_KEYS = ('sha', 'rows', 'kind', 'files')       # an evidence record must have these
+# xtc2 datagram header (xtcdata/xtc/Dgram.hh, Xtc.hh): TimeStamp (8 B), env (4 B), then the
+# root Xtc: src (4 B), damage (2 B), contains (2 B, TypeId), extent (4 B, counts the Xtc header)
+DGRAM = struct.Struct('<QI IHHI')
+TRANSITION_SIZE = 12                    # TimeStamp + env: the bytes before the root Xtc
+XTC_SIZE = 12
+CONFIGURE, L1ACCEPT, UNUSED_11 = 2, 12, 11       # xtcdata/xtc/TransitionId.hh
 
 
 class CoverageError(Exception):
@@ -455,16 +466,63 @@ def load_evidence(d):
     return out
 
 
+def xtc2_problem(path):
+    """Why `path` is not an xtc2 file, or None: it must be a chain of whole datagrams, the
+    first a Configure, each a known transition whose root Xtc is a Parent, the last ending
+    exactly at the end of the file (as psana2's reader walks it)."""
+    size = os.path.getsize(path)
+    off = n = 0
+    with open(path, 'rb') as f:
+        while off < size:
+            f.seek(off)
+            hdr = f.read(DGRAM.size)
+            if len(hdr) < DGRAM.size:
+                return f'datagram {n} at byte {off}: header cut off at the end of the file'
+            _, env, _, _, contains, extent = DGRAM.unpack(hdr)
+            service = (env >> 24) & 0xf
+            if n == 0 and service != CONFIGURE:
+                return f'first datagram is transition {service}, not a Configure'
+            if service > L1ACCEPT or service == UNUSED_11:
+                return f'datagram {n} at byte {off}: no transition has id {service}'
+            if contains & 0xfff != 0:
+                return f'datagram {n} at byte {off}: root Xtc is TypeId {contains & 0xfff}, not Parent'
+            if extent < XTC_SIZE or off + TRANSITION_SIZE + extent > size:
+                return f'datagram {n} at byte {off}: extent {extent} does not fit the file ({size} B)'
+            off += TRANSITION_SIZE + extent
+            n += 1
+    return None if n else 'no datagrams'
+
+
+def file_problem(path):
+    """Why one evidence file does not count, or None."""
+    path = str(path)
+    if not os.path.isfile(path):
+        return 'missing'
+    if os.path.getsize(path) == 0:
+        return 'empty'
+    if path.endswith('.xtc2'):
+        p = xtc2_problem(path)
+        if p:
+            return f'not an xtc2 file ({p})'
+    return None
+
+
 def record_problem(rec, sha):
     """Why a record does not prove its rows at `sha`, or None if it does."""
     if rec['sha'] != sha:
         return f'recorded at {str(rec["sha"])[:9]}, not at HEAD {sha[:9]}'
+    if rec.get('dirty') is not False:
+        return ('recorded with tracked files modified' if rec.get('dirty') else
+                'does not say the tree was clean') + ', so not by the commit\'s own code'
+    if not str(rec.get('run_id') or '').strip():
+        return 'names no run (run_id)'
     files = rec['files']
     if not isinstance(files, list) or not files:
         return 'lists no files'
-    missing = [f for f in files if not os.path.exists(str(f))]
-    if missing:
-        return f'{len(missing)} of {len(files)} files missing, e.g. {missing[0]}'
+    bad = [(f, p) for f, p in ((f, file_problem(f)) for f in files) if p]
+    if bad:
+        kinds = sorted({p.split(' ')[0] for f, p in bad})
+        return f'{len(bad)} of {len(files)} files {"/".join(kinds)}, e.g. {bad[0][0]}: {bad[0][1]}'
     return None
 
 
@@ -524,10 +582,15 @@ def check(repo, status_path=None, evidence_path=None):
             row['text'] = text
         out.append(row)
 
-    count = {s: sum(r['status'] == s for r in out) for s in STATUSES + ('UNPROVEN',)}
+    # R and S count rows whose evidence is valid at HEAD; what the status file says is 'claimed'
+    count = {s: sum(r['status'] == s and r['ok'] for r in out) for s in STATUSES}
+    count['UNPROVEN'] = sum(r['status'] == 'UNPROVEN' for r in out)
+    count['INVALID'] = sum(r['status'] in ('RUN', 'STAND-IN') and not r['ok'] for r in out)
+    claimed = {s: sum(r['status'] == s for r in out) for s in STATUSES}
     return {'repo': repo, 'sha': sha, 'dirty': dirty(repo), 'status_file': status_path,
             'evidence_dir': edir, 'records': len(records), 'problems': problems, 'rows': out,
-            'count': count, 'pass': not problems and all(r['ok'] for r in out)}
+            'count': count, 'claimed': claimed,
+            'pass': not problems and all(r['ok'] for r in out)}
 
 
 def report(res, verbose=False, file=sys.stdout):
@@ -549,9 +612,11 @@ def report(res, verbose=False, file=sys.stdout):
         p(f'{r["row"]:<30} {r["status"]:<9} {r["text"]}')
         if verbose:
             p(f'{"":<30} {"":<9} {r["where"]}')
-    c = res['count']
+    c, cl = res['count'], res['claimed']
     p(f'{len(rows)} rows, {c["RUN"]} run, {c["STAND-IN"]} stand-in, {c["N/A"]} N/A, '
-      f'{c["UNPROVEN"]} unproven')
+      f'{c["UNPROVEN"]} unproven, {c["INVALID"]} claimed without valid evidence')
+    p(f'status file claims (not counted above unless proven): {cl["RUN"]} RUN, '
+      f'{cl["STAND-IN"]} STAND-IN, {cl["N/A"]} N/A')
     if res['pass']:
         p('PASS')
         return

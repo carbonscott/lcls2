@@ -1,0 +1,642 @@
+"""
+psdaq.sim.rogue_dev -- run a BEB detector's own psdaq/configdb/<type>_config.py,
+unmodified, against an in-process simulated device.
+
+A BEB detector's config script builds real firmware roots (pyrogue + the
+firmware packages under $SUBMODULEDIR) on top of two rogue hardware
+transports: rogue.hardware.axi.AxiMemMap (the PCIe BAR) and
+rogue.hardware.axi.AxiStreamDma (DMA lanes; the register lane carries SRPv3
+to the front-end board).  install('sim://...') replaces those two
+constructors, before the config module builds its roots, with:
+
+  SimMemMap     a memory slave over a sparse in-process register store
+  SimStreamDma  a stream endpoint that answers SRPv3 requests from its own
+                register store (and drops anything else, like a null stream)
+
+Everything above the transports -- pyrogue, the firmware device trees,
+rogue's SrpV3 protocol, the config script -- is the real code.  Registers
+read back what was last written (0 if never written), except:
+
+  seeds   a JSON file {"<register path>": value, ...} (psdaq/sim/seeds/
+          <type>.json by default) presets status registers the config
+          script polls (FW version, lock bits, clock counters...).  Each
+          path is applied when the root that owns it starts; a path that
+          is not a RemoteVariable in the tree raises (no auto-vivifying).
+  fault   PSDAQ_SIM_ROGUE_FAULT='<register path>[=<value>]': that register
+          reads back <value> (default all ones) whatever is written, so
+          rogue's write-verify, or the config script's own check, fails
+          and names it.
+
+Two more parts of the device that some config scripts reach without rogue:
+
+  /proc   the driver's /proc/<device> text (PgpMonitor.detect_version reads
+          its 'Build String' for the board type and PGP version): the seed
+          file's "_proc" lines are what open('/proc/<sim device name>') reads.
+  PVs     a type configured through its front-end's rogue IOC over Channel
+          Access (wave8, wave8he: psdaq/configdb/wave8_common.py, pyepics
+          epics.PV) gets epics.PV replaced by SimPV, in process, on a table of
+          the IOC's PVs: seed keys "pv:<name>", where {prefix} in <name> is the
+          drp's -k epics_prefix.  A PV in the table reads back what was last
+          put; one not in it reads None and its put does nothing, as pyepics
+          does for a PV no IOC serves, and is listed in missing_pvs.  No CA
+          traffic leaves the process.  A fault 'pv:<name>[=<value>]' makes that
+          PV read back <value> (default 0).
+
+Every register write is recorded (WRITES, and one JSON line per write to
+$PSDAQ_SIM_ROGUE_LOG if set) with the register paths it covers.
+
+Nothing here runs unless the device string starts with 'sim://'.
+"""
+
+import builtins
+import io
+import json
+import logging
+import os
+import queue
+import struct
+import sys
+import threading
+
+import rogue
+import rogue.hardware.axi
+import rogue.interfaces.memory as rim
+import rogue.interfaces.stream as ris
+import pyrogue as pr
+
+SIM_PREFIX = 'sim://'
+ENV_SEEDS = 'PSDAQ_SIM_ROGUE_SEEDS'
+ENV_FAULT = 'PSDAQ_SIM_ROGUE_FAULT'
+ENV_LOG = 'PSDAQ_SIM_ROGUE_LOG'
+SEED_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'seeds')
+
+log = logging.getLogger('psdaq.sim.rogue_dev')
+
+
+def _say(msg):
+    """Report what a config script must not miss (a fault, a PV the IOC lacks) whatever
+    logging level the script sets (wave8_init sets the root logger to ERROR)."""
+    print('rogue_dev: ' + msg, file=sys.stderr, flush=True)
+
+
+def is_sim(dev):
+    return isinstance(dev, str) and dev.startswith(SIM_PREFIX)
+
+
+class SimDeviceError(RuntimeError):
+    pass
+
+
+def _int(v):
+    return int(v, 0) if isinstance(v, str) else int(v)
+
+
+def _put_bits(buf, base, var_addr, offsets, sizes, value):
+    """Insert value into buf (holding bytes base..base+len) at a variable's bits."""
+    shift = 0
+    for off, size in zip(offsets, sizes):
+        chunk = (value >> shift) & ((1 << size) - 1)
+        shift += size
+        first = (var_addr - base) * 8 + off
+        for b in range(size):
+            bit = first + b
+            if 0 <= bit < len(buf) * 8:
+                if (chunk >> b) & 1:
+                    buf[bit >> 3] |= 1 << (bit & 7)
+                else:
+                    buf[bit >> 3] &= ~(1 << (bit & 7)) & 0xff
+
+
+def _get_bits(buf, base, var_addr, offsets, sizes):
+    """Inverse of _put_bits; None if the variable is not wholly inside buf."""
+    value, shift = 0, 0
+    for off, size in zip(offsets, sizes):
+        first = (var_addr - base) * 8 + off
+        if first < 0 or first + size > len(buf) * 8:
+            return None
+        for b in range(size):
+            bit = first + b
+            value |= ((buf[bit >> 3] >> (bit & 7)) & 1) << (shift + b)
+        shift += size
+    return value
+
+
+class Store(object):
+    """Sparse little-endian register space; unwritten bytes read as 0."""
+    PAGE = 4096
+
+    def __init__(self, name):
+        self.name = name
+        self.ntrans = 0
+        self.last = None
+        self._pages = {}
+        self._lock = threading.Lock()
+        self._faults = []       # (var_addr, offsets, sizes, value, path)
+        self._vars = {}         # word address -> [(path, var_addr, offsets, sizes)]
+
+    def _span(self, addr, size):
+        while size > 0:
+            page, off = divmod(addr, self.PAGE)
+            n = min(size, self.PAGE - off)
+            yield page, off, n
+            addr += n
+            size -= n
+
+    def raw_read(self, addr, size):
+        out = bytearray()
+        for page, off, n in self._span(addr, size):
+            p = self._pages.get(page)
+            out += p[off:off + n] if p is not None else bytes(n)
+        return out
+
+    def raw_write(self, addr, data):
+        pos = 0
+        for page, off, n in self._span(addr, len(data)):
+            p = self._pages.setdefault(page, bytearray(self.PAGE))
+            p[off:off + n] = data[pos:pos + n]
+            pos += n
+
+    def read(self, addr, size):
+        with self._lock:
+            self.ntrans += 1
+            self.last = ('R', addr, size)
+            buf = self.raw_read(addr, size)
+            for (vaddr, offs, sizes, value, path) in self._faults:
+                _put_bits(buf, addr, vaddr, offs, sizes, value)
+            return buf
+
+    def write(self, addr, data):
+        with self._lock:
+            self.ntrans += 1
+            self.last = ('W', addr, len(data))
+            old = self.raw_read(addr, len(data))
+            self.raw_write(addr, data)
+        _SIM.record(self, addr, old, data)
+
+    def poke(self, var_addr, offsets, sizes, value):
+        nbytes = (max(o + s for o, s in zip(offsets, sizes)) + 7) // 8
+        with self._lock:
+            buf = self.raw_read(var_addr, nbytes)
+            _put_bits(buf, var_addr, var_addr, offsets, sizes, value)
+            self.raw_write(var_addr, buf)
+
+    def add_fault(self, var_addr, offsets, sizes, value, path):
+        with self._lock:
+            self._faults.append((var_addr, offsets, sizes, value, path))
+
+    def changes(self, addr, old, new):
+        """['path=value', ...] for the registers a write changed (all it covers
+        when it changed none), and how many registers it covers."""
+        changed, covered = [], []
+        for a in range(addr - (addr % 4), addr + len(new), 4):
+            for (path, vaddr, offs, sizes) in self._vars.get(a, []):
+                v1 = _get_bits(new, addr, vaddr, offs, sizes)
+                if v1 is None:
+                    continue
+                item = '%s=0x%x' % (path, v1)
+                covered.append(item)
+                if _get_bits(old, addr, vaddr, offs, sizes) != v1:
+                    changed.append(item)
+        return (changed or covered), len(covered)
+
+
+class SimMemMap(rim.Slave):
+    """Stands in for rogue.hardware.axi.AxiMemMap(path)."""
+
+    def __init__(self, path):
+        rim.Slave.__init__(self, 4, 4)
+        self.store = Store('AxiMemMap(%s)' % path)
+        self._name = self.store.name
+
+    def setName(self, name):
+        self._name = name
+
+    def _checkRange(self, address, size):
+        return 0
+
+    def _doMinAccess(self):
+        return 4
+
+    def _doMaxAccess(self):
+        return 0x100000
+
+    def _doTransaction(self, tran):
+        addr, size, typ = tran.address(), tran.size(), tran.type()
+        try:
+            if typ == rim.Write or typ == rim.Post:
+                ba = bytearray(size)
+                tran.getData(ba, 0)
+                self.store.write(addr, ba)
+            else:
+                tran.setData(self.store.read(addr, size), 0)
+            tran.done()
+        except Exception as e:      # never leave a transaction hanging
+            tran.error('%s: %r' % (self._name, e))
+
+
+class SimStreamDma(ris.Master, ris.Slave):
+    """Stands in for rogue.hardware.axi.AxiStreamDma(path, dest, ssi).
+
+    SRPv3 requests are answered from this lane's register store on a worker
+    thread (rogue's SrpV3 holds the transaction lock while it sends, so a
+    synchronous reply could deadlock).  Other frames are dropped and counted.
+    """
+
+    def __init__(self, path, dest, ssi=True):
+        ris.Master.__init__(self)
+        ris.Slave.__init__(self)
+        self.dest = dest
+        self.store = Store('AxiStreamDma(%s,0x%x)' % (path, dest))
+        self.dropped = 0
+        self._q = queue.Queue()
+        self._thread = threading.Thread(target=self._run, daemon=True,
+                                        name='sim-srp-0x%x' % dest)
+        self._thread.start()
+
+    def _acceptFrame(self, frame):
+        with frame.lock():
+            ba = bytearray(frame.getPayload())
+            frame.read(ba, 0)
+        self._q.put(ba)
+
+    def _run(self):
+        while True:
+            ba = self._q.get()
+            if ba is None:
+                return
+            try:
+                resp = self._srpv3(ba)
+            except Exception:
+                log.exception('%s: bad request', self.store.name)
+                continue
+            if resp is not None:
+                frame = self._reqFrame(len(resp), True)
+                frame.write(resp, 0)
+                self._sendFrame(frame)
+
+    def _srpv3(self, ba):
+        # Request: 5 words {ver|opcode<<8|..|timeout<<24, tid, addrLo, addrHi, size-1}
+        # then write data.  Reply: the same header, the data (read or echoed
+        # write), and a status word (0 = ok).  Posted writes get no reply.
+        if len(ba) < 20 or (ba[0] != 0x03):
+            self.dropped += 1
+            return None
+        hdr = struct.unpack_from('<5I', ba, 0)
+        opcode = (hdr[0] >> 8) & 0x3
+        addr = hdr[2] | (hdr[3] << 32)
+        size = hdr[4] + 1
+        status = 0
+        if opcode == 0:                         # non-posted read
+            data = self.store.read(addr, size)
+        elif opcode in (1, 2):                  # non-posted / posted write
+            data = ba[20:20 + size]
+            if len(data) != size:
+                status = 0x400                  # frame error
+            else:
+                self.store.write(addr, data)
+            if opcode == 2:
+                return None
+        else:                                   # null
+            data = bytearray(size)
+        return bytes(ba[:20]) + bytes(data) + struct.pack('<I', status)
+
+    def setDriverDebug(self, level):
+        pass
+
+    def _stop(self):
+        self._q.put(None)
+
+
+PV_PREFIX = 'pv:'
+
+
+class SimPV(object):
+    """Stands in for epics.PV(pvname) of the simulated device's IOC."""
+
+    def __init__(self, pvname, *args, **kwargs):
+        self.pvname = pvname
+
+    @property
+    def connected(self):
+        return self.pvname in _SIM.pvs
+
+    def wait_for_connection(self, timeout=None):
+        return self.connected
+
+    def get(self, *args, **kwargs):
+        return _SIM.pv_get(self.pvname)
+
+    @property
+    def value(self):
+        return self.get()
+
+    def put(self, value, *args, **kwargs):
+        return _SIM.pv_put(self.pvname, value)
+
+
+class _Sim(object):
+    def __init__(self):
+        self.dev = None
+        self.pvs = {}           # PV name -> value (the simulated IOC)
+        self.pv_fault = None    # (name, value)
+        self.missing_pvs = []   # names asked for that the IOC does not serve, in order
+        self.proc = None        # the driver's /proc/<device> text
+        self.stores = []
+        self.seeds = {}         # path -> value, not yet applied
+        self.applied = {}       # path -> (store, addr, value)
+        self.fault = None       # (path, value)
+        self.fault_applied = None
+        self.roots = []
+        self.writes = []
+        self._logf = None
+        self._orig = None
+
+    # ---- transports -------------------------------------------------------
+    def _check_path(self, path):
+        if path != self.dev:
+            raise SimDeviceError('rogue_dev: %r is not the simulated device %r; '
+                                 'refusing to open hardware' % (path, self.dev))
+
+    def mem_map(self, path, *args, **kwargs):
+        self._check_path(path)
+        m = SimMemMap(path)
+        self.stores.append(m.store)
+        log.info('AxiMemMap(%s) -> SimMemMap', path)
+        return m
+
+    def stream_dma(self, path, dest, ssi=True, *args, **kwargs):
+        self._check_path(path)
+        s = SimStreamDma(path, dest, ssi)
+        self.stores.append(s.store)
+        log.info('AxiStreamDma(%s, 0x%x) -> SimStreamDma (SRPv3 responder)', path, dest)
+        return s
+
+    # ---- write log --------------------------------------------------------
+    def record(self, store, addr, old, data):
+        regs, ncovered = store.changes(addr, old, data)
+        rec = {'store': store.name, 'addr': '0x%x' % addr, 'size': len(data),
+               'regs': regs[:8], 'nregs': ncovered}
+        self.writes.append(rec)
+        if self._logf:
+            self._logf.write(json.dumps(rec) + '\n')
+            self._logf.flush()
+
+    # ---- seeds / fault ----------------------------------------------------
+    def _var_addr(self, var):
+        return var.parent.address + var.offset
+
+    def _locate(self, var):
+        """Which store serves var: read it once and see which store answered."""
+        before = [s.ntrans for s in self.stores]
+        var.get(read=True)
+        hit = [s for s, n in zip(self.stores, before) if s.ntrans != n]
+        if len(hit) != 1:
+            raise SimDeviceError('rogue_dev: cannot tell which simulated transport serves %s '
+                                 '(%d answered)' % (var.path, len(hit)))
+        return hit[0]
+
+    def _resolve(self, root, path, what):
+        node = root.getNode(path)
+        if node is None:
+            raise SimDeviceError('rogue_dev: %s path %r is not in the %s tree' %
+                                 (what, path, root.name))
+        if not isinstance(node, pr.RemoteVariable):
+            deps = [d.path for d in getattr(node, 'dependencies', []) or []]
+            raise SimDeviceError('rogue_dev: %s path %r is a %s, not a register%s' %
+                                 (what, path, type(node).__name__,
+                                  ('; set its dependencies %s' % deps) if deps else ''))
+        return node
+
+    def _index_paths(self, root):
+        """addr -> register paths, for the write log (one probe per top-level device)."""
+        for dev in root.deviceList:
+            if dev.parent is not root:
+                continue
+            rvars = [v for v in dev.variableList
+                     if isinstance(v, pr.RemoteVariable) and v.mode != 'WO']
+            if not rvars:
+                continue
+            try:
+                store = self._locate(rvars[0])
+            except Exception as e:
+                log.warning('%s', e)
+                continue
+            for v in dev.variableList:
+                if isinstance(v, pr.RemoteVariable):
+                    a = self._var_addr(v)
+                    store._vars.setdefault(a - (a % 4), []).append(
+                        (v.path, a, list(v.bitOffset), list(v.bitSize)))
+
+    def _on_sim(self, root):
+        """True if some register of root is served by a simulated transport."""
+        for v in root.variableList:
+            if isinstance(v, pr.RemoteVariable) and v.mode != 'WO':
+                before = [s.ntrans for s in self.stores]
+                v.get(read=True)
+                return any(s.ntrans != n for s, n in zip(self.stores, before))
+        return False
+
+    def attach(self, root):
+        if not self._on_sim(root):
+            log.info('rogue_dev: root %s is not on a simulated transport; left alone', root.path)
+            return
+        self.roots.append(root)
+        self._index_paths(root)
+        pfx = root.path + '.'
+        for path in [p for p in self.seeds if p.startswith(pfx)]:
+            var = self._resolve(root, path, 'seed')
+            value = self.seeds.pop(path)
+            store = self._locate(var)
+            addr = self._var_addr(var)
+            store.poke(addr, var.bitOffset, var.bitSize, value)
+            got = var.get(read=True)
+            self.applied[path] = (store.name, addr, value)
+            log.info('seed %s @%s+0x%x = 0x%x (reads %r)', path, store.name, addr, value, got)
+        if self.fault and self.fault[0].startswith(pfx):
+            path, value = self.fault
+            var = self._resolve(root, path, 'fault')
+            store = self._locate(var)
+            addr = self._var_addr(var)
+            if value is None:
+                value = (1 << sum(var.bitSize)) - 1
+            store.add_fault(addr, var.bitOffset, var.bitSize, value, path)
+            self.fault_applied = (path, store.name, addr, value)
+            log.warning('FAULT %s @%s+0x%x reads back 0x%x', path, store.name, addr, value)
+            _say('FAULT %s @%s+0x%x reads back 0x%x' % (path, store.name, addr, value))
+
+    def pending(self):
+        out = sorted(self.seeds)
+        if self.fault and not self.fault_applied:
+            out.append(self.fault[0])
+        return out
+
+    # ---- the IOC's PVs ----------------------------------------------------
+    def pv_get(self, name):
+        if self.pv_fault and name == self.pv_fault[0]:
+            return self.pv_fault[1]
+        if name not in self.pvs:
+            if name not in self.missing_pvs:
+                self.missing_pvs.append(name)
+                _say('the simulated IOC serves no PV %s (reads None)' % name)
+            return None
+        return self.pvs[name]
+
+    def pv_put(self, name, value):
+        if name not in self.pvs:
+            if name not in self.missing_pvs:
+                self.missing_pvs.append(name)
+                _say('the simulated IOC serves no PV %s (put ignored)' % name)
+            return None
+        old, self.pvs[name] = self.pvs[name], value
+        rec = {'store': 'pv', 'pv': name, 'value': value, 'old': old}
+        self.writes.append(rec)
+        if self._logf:
+            self._logf.write(json.dumps(rec, default=str) + '\n')
+            self._logf.flush()
+        return 1
+
+
+_SIM = _Sim()
+
+
+def _seed_value(k, v):
+    if k.startswith(PV_PREFIX) and not isinstance(v, str):
+        return v                    # PV values keep their JSON type (float, list...)
+    return _int(v)
+
+
+def load_seeds(det_type=None, path=None, extra=False):
+    """{path: value} from the type's seed file (keys starting with '_' are comments);
+    with extra=True also its "_proc" text (or None)."""
+    path = path or os.environ.get(ENV_SEEDS) or (
+        os.path.join(SEED_DIR, '%s.json' % det_type) if det_type else None)
+    if not path:
+        return ({}, None, None) if extra else ({}, None)
+    with open(path) as f:
+        d = json.load(f)
+    seeds = {k: _seed_value(k, v) for k, v in d.items() if not k.startswith('_')}
+    proc = d.get('_proc')
+    proc = '\n'.join(proc) + '\n' if isinstance(proc, list) else proc
+    return (seeds, path, proc) if extra else (seeds, path)
+
+
+def parse_fault(s):
+    if not s:
+        return None
+    path, _, value = s.partition('=')
+    value = value.strip()
+    if path.strip().startswith(PV_PREFIX) and value:
+        try:
+            return path.strip(), _int(value)
+        except ValueError:
+            return path.strip(), float(value)
+    return path.strip(), (_int(value) if value else None)
+
+
+def proc_path(dev):
+    """The /proc file a datadev driver has for device dev (PgpMonitor.detect_version)."""
+    return '/proc/' + dev.split('/')[-1]
+
+
+def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=None):
+    """Replace rogue's hardware transports with simulated ones for device dev, and, when the
+    seeds name PVs or /proc text, the device's IOC (epics.PV) and its /proc file.
+
+    Must run before the config module builds its firmware roots.  Returns the
+    simulation state.  Raises if dev is not a 'sim://' device.
+    """
+    if not is_sim(dev):
+        raise SimDeviceError('rogue_dev.install: %r is not a sim:// device' % dev)
+    if _SIM.dev is not None:
+        if _SIM.dev != dev:
+            raise SimDeviceError('rogue_dev: already installed for %r' % _SIM.dev)
+        return _SIM
+    _SIM.dev = dev
+    if seeds is None:
+        seeds, spath, sproc = load_seeds(det_type, extra=True)
+        proc = proc if proc is not None else sproc
+        log.info('rogue_dev: %d seeds from %s', len(seeds), spath)
+    pvs = {k[len(PV_PREFIX):]: v for k, v in seeds.items() if k.startswith(PV_PREFIX)}
+    _SIM.seeds = {k: v for k, v in seeds.items() if not k.startswith(PV_PREFIX)}
+    _SIM.fault = parse_fault(fault if fault is not None else os.environ.get(ENV_FAULT))
+    if os.environ.get(ENV_LOG):
+        _SIM._logf = open(os.environ[ENV_LOG], 'a')
+
+    axi = rogue.hardware.axi
+    _SIM._orig = (axi.AxiMemMap, axi.AxiStreamDma, pr.Device._start,
+                  pr.interfaces.ZmqServer.__init__)
+    axi.AxiMemMap = _SIM.mem_map
+    axi.AxiStreamDma = _SIM.stream_dma
+
+    if pvs or (_SIM.fault and _SIM.fault[0].startswith(PV_PREFIX)):
+        if any('{prefix}' in n for n in pvs) and not epics_prefix:
+            raise SimDeviceError('rogue_dev: the %s PVs need the drp\'s -k epics_prefix' % det_type)
+        _SIM.pvs = {n.replace('{prefix}', epics_prefix or ''): v for n, v in pvs.items()}
+        if _SIM.fault and _SIM.fault[0].startswith(PV_PREFIX):
+            name = _SIM.fault[0][len(PV_PREFIX):].replace('{prefix}', epics_prefix or '')
+            if name not in _SIM.pvs:
+                raise SimDeviceError('rogue_dev: fault PV %r is not served by the simulated '
+                                     'IOC' % name)
+            _SIM.pv_fault = (name, 0 if _SIM.fault[1] is None else _SIM.fault[1])
+            _SIM.fault_applied = (_SIM.fault[0], 'pv', name, _SIM.pv_fault[1])
+            _say('FAULT PV %s reads back %r' % (name, _SIM.pv_fault[1]))
+        import epics
+        _SIM._orig_pv = epics.PV
+        epics.PV = SimPV
+        log.info('rogue_dev: epics.PV -> SimPV, %d PVs (prefix %s)', len(_SIM.pvs), epics_prefix)
+
+    if proc is not None:
+        _SIM.proc = proc
+        real_open, ppath = builtins.open, proc_path(dev)
+        _SIM._orig_open = real_open
+
+        def _open(file, mode='r', *args, **kwargs):
+            if file == ppath and 'r' in mode and 'b' not in mode:
+                return io.StringIO(_SIM.proc)
+            return real_open(file, mode, *args, **kwargs)
+        builtins.open = _open
+        log.info('rogue_dev: %s reads the simulated driver text', ppath)
+
+    # Seeds go in once a root has built its blocks, before its devices'
+    # _start() hooks and its initial read (pyrogue Root.start calls
+    # pr.Device._start(root) in between).
+    dev_start = pr.Device._start
+
+    def _start(self, *args, **kwargs):
+        if isinstance(self, pr.Root):
+            _SIM.attach(self)
+        return dev_start(self, *args, **kwargs)
+    pr.Device._start = _start
+
+    # Firmware roots open a ZMQ server on a fixed port on all interfaces; a
+    # simulated one stays on loopback and takes a free port.
+    zmq_init = pr.interfaces.ZmqServer.__init__
+
+    def zmq(self, *, root, addr, port, **kwargs):
+        zmq_init(self, root=root, addr='127.0.0.1', port=0, **kwargs)
+    pr.interfaces.ZmqServer.__init__ = zmq
+
+    log.info('rogue_dev: installed for %s (fault=%s)', dev, _SIM.fault)
+    return _SIM
+
+
+def state():
+    return _SIM
+
+
+def uninstall():
+    """Undo install(): rogue's own transports and hooks come back and the state starts fresh.
+    For tests; a DRP installs once per process and never uninstalls."""
+    global _SIM
+    if _SIM._orig:
+        axi = rogue.hardware.axi
+        (axi.AxiMemMap, axi.AxiStreamDma, pr.Device._start,
+         pr.interfaces.ZmqServer.__init__) = _SIM._orig
+    if getattr(_SIM, '_orig_pv', None):
+        import epics
+        epics.PV = _SIM._orig_pv
+    if getattr(_SIM, '_orig_open', None):
+        builtins.open = _SIM._orig_open
+    if _SIM._logf:
+        _SIM._logf.close()
+    _SIM = _Sim()

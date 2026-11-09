@@ -3,6 +3,18 @@
     "status": "RUN",
     "note": "daq_sim cycle: drp -D fakecam -d sim:// records a run that psana2 reads back"
   },
+  "det:drp:epix100": {
+    "status": "RUN",
+    "note": "daq_sim up --det epix100 + cycle: epix100_config.py against psdaq.sim.rogue_dev, every pixel checked by psana2"
+  },
+  "det:drp:wave8": {
+    "status": "RUN",
+    "note": "daq_sim up --det wave8 + cycle: wave8_config.py against rogue_dev (KCU and the IOC PVs in process), every sample and fex value checked"
+  },
+  "det:drp:wave8he": {
+    "status": "RUN",
+    "note": "daq_sim up --det wave8he + cycle: wave8he_config.py against rogue_dev, every sample and fex value checked"
+  },
   "prog:control": {
     "status": "RUN",
     "note": "daq_sim cycle: control.py in normal mode, started by procmgr"
