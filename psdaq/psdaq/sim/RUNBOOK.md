@@ -428,8 +428,8 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
 `wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), `epixquad1kfps`,
-`epixUHR` (§3i), the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f), and the
-digitizer `hsd` (§3i).
+`epixUHR` (§3i), `jungfrau` (§3j), the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`,
+`ts` (§3f), and the digitizer `hsd` (§3i).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -493,12 +493,6 @@ failure with its traceback, which is how a type's seeds are found.
   `SUBMODULEDIR` for hardware, so `tt_init` fails there too; the fix is an lcls2-timetool release
   built on a surf that matches rogue 6. `tt_config.py` also has no `tt_connectionInfo` (it has
   `tt_connect(cl)`), which `BEBDetector::connectionInfo` calls.
-- **jungfrau:** its DRP drives the modules through `sls::Detector` (the slsDetector control
-  protocol to each module's server at `slsHosts`). The env has slsdetlib 9.0.0's client and
-  receiver (`sls_detector_get`, `slsReceiver`) but no virtual detector server
-  (`jungfrauDetectorServer_virtual` is built only from slsDetectorPackage's source with its
-  simulator option), and there is no stand-in for that server; the module data arrives over UDP
-  (`jungfrauSim` generates such packets, not the control protocol).
 - **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3i), and
   `epixuhr3x2_init` returns with `seeds/epixuhr3x2.json`: its C1100 card's management (axipcie
   `CmsProxy`) sits behind a surf `AxiLiteMasterProxy`, a firmware AXI-Lite master the host drives
@@ -740,6 +734,73 @@ Fault runs that fail Configure and name the register: hsd `DrpPgpIlv.PcieControl
 `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`, epixUHR
 `Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`.
 
+## 3j. Jungfrau: `daq_sim up --det jungfrau`
+
+```bash
+# as §3e, with --det jungfrau; each event is a 1 MiB frame, so 100 Hz is plenty
+nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim up -w $WD --det jungfrau --rate 100" > $ROOT/daq_sim_up.log 2>&1 &
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
+     bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
+```
+`drp -D jungfrau -d sim://` configures two devices, each through its own code, unmodified:
+- **the card:** `jungfrau_config.py` builds `lcls2_udp_pcie_apps.DevRoot` on `rogue_dev`, as in
+  §3e. `seeds/jungfrau.json` gives the timing clock (`GtRxAlignCheck[1].TxClkFreqRaw`, 185.714
+  MHz, so `check_i2c_clk` does not reprogram the Si570), lane 0's `EthPhy.phyReady`, `RxId`,
+  `FpgaVersion` and `BuildStamp`.
+- **the module:** `Drp::Jungfrau` drives it through `sls::Detector`, the env's slsDetectorPackage
+  9.0.0 client, at `-k slsHosts`. `daq_sim up` starts **simsls** (`psdaq/psdaq/sim/simsls.py`) in
+  its place, on loopback, before procmgr. simsls serves that client's protocol for the calls the
+  DRP makes, and it reports the 9.0.0 Jungfrau server's version, so the client's version check
+  passes. The env has only the package's client and receiver: its virtual server
+  (`jungfrauDetectorServer_virtual`) is built only from source, with `SLS_USE_SIMULATOR`.
+
+| DRP step | what `Drp::Jungfrau` asks the module (`sls::Detector`) | what simsls answers |
+|---|---|---|
+| start | `setHostname(127.0.0.1:<+4>)`: detector type, server version (control and stop servers), initial checks, interfaces, position | Jungfrau, `9.0.0 0x241121`, virtual (1) |
+| Alloc | module id, serial number, firmware version, server version | 0x2a0, 0x1e3, 0x230920, 9.0.0: the segment's id is built from the board id, because simsls has no ARP entry or telnet server to read a MAC from |
+| Configure | stop; trigger mode, 2^63-1 triggers, 1 frame; for the module: UDP destination port, IP and MAC, source IP and MAC, then validate; 8 DACs; chip power; readout speed; trigger delay, period, exposure time, high voltage, settings and gain mode, each set and read back | keeps each value. It refuses what the module refuses, with the 9.0.0 server's messages (DAC above 4095, high voltage not 0 or 60-200, settings other than gain0/highgain0). It also refuses a data destination outside 127.x |
+| BeginRun | next frame number 1 | |
+| Enable | start; status must be RUNNING or WAITING | WAITING: armed for triggers |
+| Disable | stop; status must be IDLE or STOPPED | IDLE |
+
+**The data, per L1Accept.**
+1. MemPoolSim (the card's side, `UdpFront` in `MemPoolSim.cc`) sends a datagram to simsls's
+   trigger input (UDP `127.0.0.1:<+4>`).
+2. simsls sends frame n (n = 1, 2, ... from BeginRun) as 128 packets. Each packet is a 48 B
+   `sls_detector_header` and 8192 B of pixels. It sends them to the destination the DRP
+   programmed: the config's `user.kcu_ip:user.port`.
+3. MemPoolSim takes the packets on `127.0.0.1:<sim_udp_port>`. It writes them as the card's
+   UDP batcher does, as subframe 2: an EventBatcher of one subframe per packet.
+4. `Jungfrau::_event` puts the frame together by packet number. It checks the frame number
+   against its L1Accept count, and the module id.
+
+Pixel i of the panel (psana2's raw, flattened) is `pattern(seed, n, i, 16)`: 14 data bits and 2
+gain bits. `xtc2_check` checks, for every event:
+- every pixel of `jungfrau_raw_0_2_0.raw`,
+- `frame_cnt == n`,
+- the module timestamp rises,
+- `numHotPixels` equals the count recomputed from the pixels.
+
+**Ports.**
+- `+4`: simsls control (TCP) and its trigger input (UDP).
+- `+5`: simsls stop server (TCP).
+- `+6`: the module's data destination (UDP).
+
+**Config DB.** The entry is `jungfrau_config_store`'s config with
+`configdb_seed --set user.kcu_ip=127.0.0.1 --set user.jungfrau_ip=127.0.0.1 --set
+user.port=<+6>`. The store's own values (10.0.0.10, port 8192) would send the module data off the
+node, and simsls refuses them: `udp_dstip 10.0.0.10 refused`.
+
+**Shared memory.** `SLSDETNAME=daq_sim_p<platform>` names the DRP's `sls::Detector` shared
+memory (`/dev/shm/slsDetectorPackage_detector_1_daq_sim_p5...`). The DRP frees it when it exits,
+and `daq_sim down` removes any that is left.
+
+**Fault.** `PSDAQ_SIM_SLS_FAULT=<setting>[=<value>]` in `up`'s environment makes that setting read
+back `<value>` (default: what was set, plus 1). `exptime=20000` makes Configure fail with
+`<E> Failed readback check of exposure time for module 0: 0.000020 [0.000010]`. A DAC fault
+(e.g. `vb_ds`) is only logged: `Drp::Jungfrau` ignores `_configueDAC`'s result.
+
 ## 4. Read the file back with psana2
 ```bash
 F=$WD/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2      # run 1; see the fileReport line of cycle
@@ -828,6 +889,13 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   samples (what `hsd_config_store`'s default gate gives) and a fex stream of 2 peaks. `simhsdioc`
   acts on a `CONFIG` put only as far as `hsd_config` reads it back (`READY`, the readout group
   and L0 delay in `MONTIMING`); it does not model buffers, prescales or deadtime.
+- **jungfrau.** One module (lane mask 0x1). simsls answers the calls `Drp::Jungfrau` makes and a
+  few getters (the table `simsls.F`). Any other call gets the 9.0.0 server's
+  "Unrecognized Function enum" reply. simsls keeps values and refuses out-of-range ones, but runs
+  no detector logic, and it sends frames only on a trigger. The card's `UdpFrameReorg` remap is
+  not emulated: the packets arrive in order on loopback, and MemPoolSim places them by packet
+  number. The hot pixel count is checked, but the detector protection trip is not (there is no
+  IOC).
 - **XpmDetector types.** `xpmdet_config` runs against registers that keep what is written; the
   timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
   the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and

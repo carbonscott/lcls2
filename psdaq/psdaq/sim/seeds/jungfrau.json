@@ -1,0 +1,11 @@
+{
+ "_comment": "The simulated KCU1500/C1100 of a Jungfrau DRP for psdaq.sim.rogue_dev: the lcls2_udp_pcie_apps DevRoot that psdaq/configdb/jungfrau_config.py builds on the card's PCIe map (the card's UDP engines take the modules' packets; the modules themselves are psdaq.sim.simsls). Keys are pyrogue register paths; values are what the hardware reports.",
+ "DevRoot.DevPcie.Hsio.TimingRx.GtRxAlignCheck[1].TxClkFreqRaw": 185714286,
+ "_TxClkFreqRaw": "TxClkFreq is 1e-6 x this, in MHz: 185.714 MHz, the 186M timebase's 1300/7 MHz, so check_i2c_clk does not reprogram the Si570",
+ "DevRoot.DevPcie.Hsio.UdpLane[0].EthPhy.phyReady": 1,
+ "_phyReady": "lane 0's 10GbE link to its module is up (jungfrau_config raises 'PGP Link Down for lane' otherwise)",
+ "DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id as XPM 0 port 0 reports it; the DRP takes the link id simxpm assigns, not this one",
+ "DevRoot.DevPcie.AxiPcieCore.AxiVersion.FpgaVersion": "0x01000000",
+ "DevRoot.DevPcie.AxiPcieCore.AxiVersion.BuildStamp": {"string": "Lcls2UdpPcieApps: (sim) psdaq.sim.rogue_dev"}
+}

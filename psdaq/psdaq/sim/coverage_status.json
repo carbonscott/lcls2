@@ -47,6 +47,10 @@
     "status": "RUN",
     "note": "daq_sim up --det epixhremu + cycle: xpmdet_config.py against rogue_dev; the emulator replays the frame daq_sim writes from the seed, every pixel checked"
   },
+  "det:drp:jungfrau": {
+    "status": "RUN",
+    "note": "daq_sim up --det jungfrau + cycle: jungfrau_config.py against rogue_dev and Drp::Jungfrau's sls::Detector calls against simsls (the module's slsDetector servers, sls 9.0.0 protocol, loopback); the module's 128 UDP packets per frame, every pixel checked"
+  },
   "det:drp:jungfrauemu": {
     "status": "RUN",
     "note": "daq_sim up --det jungfrauemu + cycle: xpmdet_config.py against rogue_dev; one 512 x 1024 panel of TDet words per event, every word checked"

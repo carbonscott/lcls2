@@ -130,6 +130,7 @@ int main(int argc, char* argv[])
             if (kwargs.first == "sim_seed")      continue;  // XpmDetector
             if (kwargs.first == "sim_dma_count") continue;  // MemPoolSim
             if (kwargs.first == "sim_dma_size")  continue;  // MemPoolSim
+            if (kwargs.first == "sim_udp_port")  continue;  // MemPoolSim (jungfrau's module data)
         }
         if (kwargs.first == "timebase")          continue;  // XpmDetector
         if (kwargs.first == "xpmpv")             continue;  // BEBDetector

@@ -962,8 +962,10 @@ std::string Jungfrau::_buildDetId(uint64_t sensor_id,
 
     // most Jungfrau modules have a dummy board_id of 0xff,
     // so lookup the mac addr of the board to use instead
+    // a module stand-in on loopback (-d sim://, psdaq/psdaq/sim/simsls.py) has no ARP entry or
+    // telnet server to read a MAC from, so its board id stands in for one
     JungfrauId detid;
-    if (m_idLookup.has(hostname)) {
+    if (!m_sim && m_idLookup.has(hostname)) {
         detid = JungfrauId(m_idLookup[hostname], sensor_id);
     } else {
         detid = JungfrauId(board_id, sensor_id);
