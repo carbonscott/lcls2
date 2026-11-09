@@ -673,10 +673,13 @@ The pulseId of each fakecam/epixuhremu event is the one, of the few ticks simxpm
 timestamp's, whose first words match; it must rise.
 
 Fault runs: fakecam and epixuhremu configure nothing at Configure (as the XpmDetector types of
-§3f), so the first write the fault hook breaks is at Connect:
+§3f). `TDetSemi.Length_0` is written only at Connect (`xpmdet_connect`), so
 `PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0` makes Connect fail, and the
-drp_gpu log names it (`Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 ...
-Got: 0xff, Exp: 0x00`, `**** python error`). epixuhrsim has no registers.
+drp_gpu log names it (`rogue_dev: FAULT ...TDetSemi.Length_0`, then `Verify error for block
+DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 ... Got: 0xff, Exp: 0x00` for epixuhremu, `Exp: 0x40`
+for fakecam, `**** python error`). A register that `xpmdet_connectionInfo` writes fails earlier:
+a fault on `TDetSemi.Enable_0` fails Allocate. rogue's verify error names the 32-bit block, which
+`Enable_0` shares with `Length_0`. epixuhrsim has no registers.
 
 **Not running yet:**
 - **epixuhr3x2:** `Gpu::EpixUHR3x2` configures through `Drp::EpixUHR3x2`, whose constructor
