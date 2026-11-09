@@ -420,16 +420,34 @@ A record proves a row only if all of these hold, and the row's line names the fi
     the ami-client processes that served the check`, `its log of ami-client gives no pid`). The
     program's own log is required too. The procmgr `ami-client` loads no graph, so it holds none
     of AMI's ports; the ami-client row is proven by the one `cycle --ami-shot` runs.
-  - a GUI or monitor whose log does not name the run (R2; groupca, partca, pvant, procstat, epics_exporter): a
-    `gui_witness` (`logs/gui_witness.json`) whose `programs` entry for it passed, whose `start`
-    and `end` (EPICS-epoch seconds, the walk's process) lie between the run file's first and last
-    L1Accept (`read from ... to ..., not within the run's L1Accepts`), and that shows at least one
-    PV under the witness's `partition` prefix with 2 or more distinct numbers (a placeholder such
-    as `-` is none) (`shows groupca read no live value under DAQ:SIM:XPM:0:PART:5`); plus the
-    GUI's own log with its `# CMDLINE:`. procstat shows no PV but procmgr's table of the
-    partition's processes (ID, status): its entry (`"kind": "procmgr"`) must show RUNNING every
-    process whose procmgr log (`# ID:`) in the record names the run (`shows procstat did not list
-    fakecam_0 RUNNING`).
+  - a GUI whose log does not name the run (R2; groupca, partca, pvant): a `gui_witness`
+    (`logs/gui_witness.json`) whose `programs` entry for it passed, whose `start` and `end`
+    (EPICS-epoch seconds, the walk's process) lie between the run file's first and last L1Accept
+    (`read from ... to ..., not within the run's L1Accepts`), and that shows at least one PV under
+    the witness's `partition` prefix with 2 or more distinct numbers (a placeholder such as `-` is
+    none) (`shows groupca read no live value under DAQ:SIM:XPM:0:PART:5`); plus the GUI's own log
+    with its `# CMDLINE:`. Every rule below also needs the program's own log and the passing entry
+    read within the run's L1Accepts.
+  - procstat (R2b) shows no PV but procmgr's table of the partition's processes (ID, status): its
+    entry (`"kind": "procmgr"`) must show RUNNING every process whose procmgr log (`# ID:`) in the
+    record names the run (`shows procstat did not list fakecam_0 RUNNING`).
+  - a PV monitor that is not a GUI (R2c; epics_exporter, procmgr id `pvrtmon_0`): its entry holds
+    the Prometheus gauges cycle scraped from it once a second, each named by the partition PV it
+    exports (`DAQ:SIM:XPM:0:PART:5:RunTime`); one gauge under the partition must take 2 or more
+    distinct values (`shows epics_exporter read no live value under DAQ:SIM:XPM:0:PART:5`).
+  - a GUI on a device stand-in (R4; hsdpva on simhsd, tprca on simtpr, dtica on simdti, with
+    `up --gui --pvservers`): its `programs` entry names the stand-in (`stand_in`) and holds one
+    read per widget; one widget must show, after its first text (which may be the text the widget
+    was built with: tprca's fields show `0` before their PV's value), 2 or more distinct values
+    (texts with a digit: dtica shows `928.6154kHz`) of a PV under a prefix the stand-in serves,
+    which is the `-P` of the stand-in's own log, listed by the same record
+    (`its hsdpva entry reads the PVs of simhsd, but the record lists no log of simhsd`, `shows
+    hsdpva read no live value of a PV simhsd serves (under ...)`). The partition prefix plays no
+    part. Not witnessed yet, so UNPROVEN: pvatable and deadca (their value widgets hold no PV the
+    walk can name: pvatable's `PvField` labels are called back by a `PvManager` that holds the PV,
+    deadca's `PvDblArrayW` labels are set by a `PvDblArray` object that holds it), daqstat (it reads no PV: its rows are Slurm job states, which
+    `simslurm` answers) and xpmpva (it reads `<xpm>:Us:RxAlign` at start, which simxpm does not
+    serve, and exits) (`gui_witness.SERVER_GUI_BLOCKERS`).
   - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the witness's
     `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs while the run
     ran; a `programs` entry does not count): it passed, ran within the run's L1Accepts, read a
@@ -437,7 +455,8 @@ A record proves a row only if all of these hold, and the row's line names the fi
     row's program gives `defined`, the PV names the program's source defines (more than 0), and
     `missing`, those the stand-in does not serve, empty (`simhsd does not serve 2 of the 40 PVs
     hsdpvs defines, e.g. ...`).
-  `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these and checks the row's line says why.
+  `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R4) and
+  checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
@@ -655,7 +674,7 @@ its evidence record lists their logs.
 | `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every recorded image is `camera_image(seed, seq)` with fakecam's seq of the same L1Accept, and drp_pva's `drp_match_count` equals the L1Accepts that have an image |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIoc -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (CA, 1234.5); simxpm's `DAQ:SIM:XPM:0:PART:<p>:NumL0Acc` (PVA) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` and `sim_l0acc` never decrease, `sim_l0acc` stays within the run's L1Accepts |
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
-| `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B` and `simtpr -P DAQ:SIM:TPR`, each on PVA ports of its own (31300 + 10 p + 0..3: simxpm stays the only server on the node's search port) | the stand-ins of `hsdpvs` and `tprcas` (R3) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the table `tprcas.main()` builds) and reads its monitoring counters (`MONTIMING`, `EVTCNT`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs` and `prog:tprcas` from |
+| `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `simtpr -P DAQ:SIM:TPR` and `simdti -P DAQ:SIM:DTI`, each on PVA ports of its own (31300 + 10 p + 0..5: simxpm stays the only server on the node's search port); with `--gui` also the GUIs on them (R4): `hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `tprca DAQ:SIM:TPR` and `python -m psdaq.cas.dtica DAQ:SIM:DTI` (no `dtica` command; lab3-cam.cnf runs `launch_py <bins>/dtica.py`), offscreen, each with `EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_BROADCAST_PORT=<its stand-in's search port>` | the stand-ins of `hsdpvs`, `tprcas` and `dticas` (R3) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the tables `tprcas.main()` and `dticas.main()` build) and reads its monitoring counters (`MONTIMING`, `EVTCNT`, `3:TimFrRate`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs` and `prog:tprcas` from (no config starts `dticas`, so it has no row). It walks hsdpva, tprca and dtica offscreen once more, each searching only its stand-in, and keeps each PV-bound widget's texts (one read per widget): their `programs` entries name the stand-in (R4) |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime` | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`

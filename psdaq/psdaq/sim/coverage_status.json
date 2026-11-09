@@ -167,6 +167,18 @@
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2, a PV monitor): procmgr runs epics_exporter -H tst -I xpm-0 -M <prom> -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime (as neh-base.cnf's pvrtmon-0, on simxpm's PVs); while the run is Running cycle scrapes its Prometheus gauges once a second and logs/gui_witness.json names the run and the partition's gauges it served, NumL0Acc changing, within the run's L1Accepts"
   },
+  "prog:hsdpva": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B offscreen (test-hsd.cnf: hsdpva <pvlist>), its PVA client searching only simhsd's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simhsd and, widget by widget, the MONTIMING (and other) fields it showed changing, read within the run's L1Accepts; the record lists simhsd's log, whose -P serves those PVs"
+  },
+  "prog:tprca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs tprca DAQ:SIM:TPR offscreen (xcs.cnf: tprca DAQ:XCS:TPR), its PVA client searching only simtpr's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simtpr and the TPR PVs it showed changing (EVTCNT, ...), read within the run's L1Accepts; the record lists simtpr's log, whose -P serves those PVs"
+  },
+  "prog:dtica": {
+    "status": "RUN",
+    "note": "daq_sim up --gui --pvservers + cycle (R4, a GUI on a device stand-in): procmgr runs python -m psdaq.cas.dtica DAQ:SIM:DTI offscreen (lab3-cam.cnf: launch_py <bins>/dtica.py DAQ:LAB2:DTI:<shelf>; psdaq installs no dtica command), its PVA client searching only simdti's ports; while the run is Running cycle runs its main() once more offscreen through qt_walk and logs/gui_witness.json names the run, the stand-in simdti and the DTI statistics it showed changing, read within the run's L1Accepts; the record lists simdti's log, whose -P serves those PVs"
+  },
   "prog:procstat": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2): procmgr runs procstat -p <platform> -i 1 <workdir>/daq_sim.cnf offscreen; while the run is Running cycle runs its main() once more offscreen through qt_walk, and logs/gui_witness.json names the run and the table it showed, every process whose procmgr log names the run (teb0, fakecam_0, ...) RUNNING, read within the run's L1Accepts"
