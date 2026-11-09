@@ -21,6 +21,13 @@ one matched, ami_count is that number and ami_pixsum equals psana2's sum of the 
 subset of the events (whatever its buffers hold when AMI asks), so the counts differ from the
 DAQ's; the check is per event, not a total.
 
+What the cycle writes (daq_sim, logs/ami_check.json) is the check's witness of the run for
+'daq_sim coverage' (psdaq.sim.coverage): {"witness": "ami_check", "run_id", "xtc2", "matches":
+[[timestamp, seq, pixel], ...] (every event AMI kept that psana2 read the same), "served_by":
+[{pid, cmdline, ancestors}] (served_by(): the processes that held a TCP socket on one of AMI's
+ports while the result was fetched, i.e. the AMI processes that computed it, and the ones of
+the ami-client that ami_shot ran while the run was Running), "pass", ...}.
+
 The AMI source tree must be importable (PYTHONPATH, or --ami-src); psana2's calibration DB lookup
 is off (skip_calib_load='all') and LCLS_CALIB_HTTP points at a dead loopback port unless set.
 """
@@ -115,6 +122,71 @@ def fetch(addr):
             'count': None if count is None else int(count)}
 
 
+def _socket_inodes(ports):
+    """{inode} of the TCP sockets (IPv4 and IPv6) whose local or remote port is in ports."""
+    out = set()
+    for table in ('/proc/net/tcp', '/proc/net/tcp6'):
+        try:
+            with open(table) as f:
+                lines = f.read().splitlines()[1:]
+        except OSError:
+            continue
+        for line in lines:
+            f_ = line.split()
+            if len(f_) < 10:
+                continue
+            local, remote = int(f_[1].rsplit(':', 1)[1], 16), int(f_[2].rsplit(':', 1)[1], 16)
+            if (local in ports or remote in ports) and f_[9] != '0':
+                out.add(f_[9])
+    return out
+
+
+def _cmdline(pid):
+    with open(f'/proc/{pid}/cmdline', 'rb') as f:
+        return f.read().rstrip(b'\0').replace(b'\0', b' ').decode('utf-8', 'replace')
+
+
+def _ppid(pid):
+    with open(f'/proc/{pid}/stat') as f:
+        return int(f.read().rsplit(')', 1)[1].split()[1])
+
+
+def ancestors(pid, depth=6):
+    """[{'pid', 'cmdline'}] of a process's parent, its parent's parent, ... (up to depth, or until one
+    is not readable or is pid 1): an AMI GUI's windows are processes it forked, which rename
+    themselves (setproctitle 'ami editor'), so the program is the ancestor."""
+    out = []
+    try:
+        pid = _ppid(pid)
+        while pid > 1 and len(out) < depth:
+            out.append({'pid': pid, 'cmdline': _cmdline(pid)})
+            pid = _ppid(pid)
+    except (OSError, ValueError, IndexError):
+        pass
+    return out
+
+
+def served_by(ports, exclude=()):
+    """[{'pid', 'cmdline', 'ancestors'}] of this user's processes that hold a TCP socket on one of
+    `ports` (AMI's ports, ami.comm.Ports), sorted by pid, each with its ancestors(); the pids in
+    exclude (e.g. the checker itself) are left out.  Read from /proc: the sockets of
+    /proc/net/tcp{,6} and each process's fd links."""
+    inodes = {f'socket:[{i}]' for i in _socket_inodes(set(ports))}
+    out = []
+    for d in os.listdir('/proc'):
+        if not d.isdigit() or int(d) in exclude:
+            continue
+        try:
+            fds = os.listdir(f'/proc/{d}/fd')
+            if not any(os.readlink(f'/proc/{d}/fd/{fd}') in inodes for fd in fds):
+                continue
+            cmd = _cmdline(d)
+        except OSError:
+            continue                    # gone, or not ours
+        out.append({'pid': int(d), 'cmdline': cmd, 'ancestors': ancestors(int(d))})
+    return sorted(out, key=lambda p: p['pid'])
+
+
 def psana_events(path, det='fakecam'):
     """{timestamp: (seq, pixel)} for every L1Accept of an xtc2 file, read with psana2; None if the
     file (one stream of the run) has no detector det."""
@@ -152,7 +224,7 @@ def check(ami, paths, det='fakecam', minimum=100, events=None):
             problems.append(f'AMI rows disagree for timestamp {ts:#x}: {seen[ts]} and {(seq, pix)}')
         seen.setdefault(ts, (seq, pix))
     rows = [(ts, seq, pix) for ts, (seq, pix) in sorted(seen.items())]
-    matched, psum = 0, 0
+    matched, psum, matches = 0, 0, []
     for ts, seq, pix in rows:
         want = events.get(ts)
         if want is None:
@@ -163,6 +235,7 @@ def check(ami, paths, det='fakecam', minimum=100, events=None):
         else:
             matched += 1
             psum += pix
+            matches.append([ts, seq, pix])
     if len(rows) < minimum:
         problems.append(f'AMI kept {len(rows)} events, fewer than {minimum}')
     if ami.get('count') != len(rows):
@@ -175,7 +248,7 @@ def check(ami, paths, det='fakecam', minimum=100, events=None):
             'ami pixsum': ami.get('pixsum'), 'psana2 pixsum (same events)': psum,
             'ami seq range': f'{seqs[0]}..{seqs[-1]}' if seqs else None,
             'problems': problems[:5] + ([f'... {len(problems) - 5} more'] if len(problems) > 5 else []),
-            'pass': not problems}
+            'matches': matches, 'pass': not problems}
 
 
 def main(argv=None):
