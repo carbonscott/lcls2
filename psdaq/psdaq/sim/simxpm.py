@@ -620,6 +620,7 @@ def main():
     sim = SimXpm(args.P, args.x, args.frames, args.rate, pull)
     with Server(providers=[sim.provider], conf=conf, useenv=False) as server:
         logging.info('serving %d PVs under %s; server conf %s', len(sim.pvs), sim.prefix, server.conf())
+        print('simxpm: ready, %d PVs under %s, pid %d' % (len(sim.pvs), sim.prefix, os.getpid()), flush=True)
         try:
             sim.run()
         except KeyboardInterrupt:

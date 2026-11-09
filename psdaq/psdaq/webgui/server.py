@@ -486,6 +486,9 @@ def build_parser():
                         "'--seq 0:10k.py --time 0 0.0001'")
     p.add_argument('--seq-epixhr', default=None, metavar='ARGS',
                    help="/gui/seq_epixhr: web copy of seq/seq_epixhr.py --plot (with --test: no XPM write)")
+    p.add_argument('--hsdps', default=None, metavar='ARGS',
+                   help="/gui/hsdPs: web copy of cas/hsdPs.py (its phase scan, against loopback PVs only: simhsd and a "
+                        "simxpm) with the PyQt program's arguments, e.g. \"--base DAQ:SIM:HSD:1_PS:A --xpm DAQ:SIM:XPM:7\"")
     p.add_argument('--seq-dir', default=None, help='where relative --seq scripts are read (default psdaq/seq)')
     p.add_argument('--daqstat-cnf', default=None, help='/gui/daqstat: the daqmgr .cnf whose jobs it shows (as daqstat <cnf>)')
     p.add_argument('--daqstat-slurm', default=None, metavar='STATE',
@@ -507,6 +510,8 @@ def configure(args):
     if args.procstat_cnf:
         from psdaq.webgui.procstat_api import require_loopback_cnf
         require_loopback_cnf(args.procstat_cnf, args.procstat_platform)    # every process's host is loopback
+    if args.hsdps:
+        require_loopback_pva_env(os.environ, '--hsdps')                    # its PVs are simhsd's and simxpm's
     if args.emulate:
         backend = EmulatorBackend(fail_transition=args.emulate_fail, l1_rate=args.emulate_rate,
                                   slow_transition_time=args.emulate_slow)
