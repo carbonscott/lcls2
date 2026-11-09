@@ -1,0 +1,7 @@
+{
+ "_comment": "The simulated HPS crate of hpsBldServer (psdaq.sim.simhps): the status registers hps_init reads (psdaq/psdaq/pyhpsbld/pyhpsbld.py) in HpsRoot's tree (pyhpsbld/hpsbld/_Top.py). Keys are pyrogue register paths; values are what the crate reports. Everything else reads back what was last written (0 if never written).",
+ "HpsRoot.Top.UsTiming.RxLinkUp": 1,
+ "HpsRoot.Top.AmcCarrierBsa.BldControl.diagnClkFreq": 185714286,
+ "HpsRoot.Top.AmcCarrierBsa.BldControl.diagnStrobeRate": 928571,
+ "HpsRoot.Top.AmcCarrierBsa.BldControl.eventSel0Rate": 102
+}

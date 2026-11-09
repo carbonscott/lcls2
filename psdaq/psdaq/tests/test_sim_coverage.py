@@ -4,6 +4,7 @@ They run on the checkout that holds this file: the rows are enumerated from its 
 the evidence must carry its HEAD.  Status files and evidence go to tmp dirs.
 """
 
+import copy
 import hashlib
 import io
 import json
@@ -1503,3 +1504,145 @@ def test_bld_expected_follows_lclsBldServer_s_source():
     assert coverage.tpr_expected('lclsBldServer', ['-i', 'lo', '-b', 'gmd', '-e', '40']) == (
         {'channel': 1, 'control': 7, 'evtSel': (1 << 30) | (2 << 11) | 40},
         [{'trigger': 0, 'control': 1 | (1 << 16) | (1 << 31), 'delay': 0, 'width': 1, 'delayTap': 0}])
+
+
+# R9: the HPS BLD chain of lab3-bld.cnf (daq_sim up --hps): hpsBldServer on its crate's stand-in psdaq.sim.simhps,
+# hpsBldCopy on hpsBldServer's packets, both on the groups bldcas serves
+HPS_CAS_CMD = 'bldcas -P DAQ:SIM -A 239.254.34.0 --port 31452 HPSEX HPSCPA'
+HPS_CMDS = {'hpsBldServer': 'hpsBldServer -i lo -n DAQ:SIM:HPSEX -p 0x1e0 -a 127.0.0.1 -r 31450 -d 31451',
+            'hpsBldCopy': 'hpsBldCopy -i lo -I DAQ:SIM:HPSEX -O DAQ:SIM:HPSCPA -o 0'}
+HPS_PIDS = {'hpsBldServer': 4401, 'hpsBldCopy': 4402}
+HPS_PORTS = {'hpsBldServer': 11001, 'hpsBldCopy': 40000}
+HPS_MASK = 0x8000
+
+
+def hps_packets(t0, t1, mask=HPS_MASK):
+    """The packets hpsBldServer sends for the diagnostic bus simhps sends between EPICS-epoch times t0 and t1, and
+    those hpsBldCopy sends for them, as gui_witness.hps_entry keeps them."""
+    from psdaq.sim import simhps, tprframes
+    svc, cpa = [], []
+    n = (int(t0 * 1e9) * 13 // 14000 // 9100 + 1) * 9100
+    while True:
+        sec, ns = tprframes.pulse_time(n)
+        if sec + ns * 1e-9 > t1:
+            break
+        _, evs = simhps.diag_packet(n, mask)
+        t = round(sec + ns * 1e-9 + 0.001, 6)
+        svc.append([t, HPS_PORTS['hpsBldServer'], mask, [[pid, ts, [mask, 0]] for pid, ts in evs]])
+        cpa.append([t + 0.0005, HPS_PORTS['hpsBldCopy'], 0,
+                    [[evs[0][1] + pid - evs[0][0], 0, [mask, 0]] for pid, ts in evs]])
+        n += 9100
+    return svc, cpa
+
+
+def hps_run(tmp_path, row='prog:hpsBldServer', cas=HPS_CAS_CMD, pids=None, mutate=None):
+    """(exit code, line) of a record for prog:hpsBldServer and prog:hpsBldCopy: the run's xtc2 file, the logs of bldcas,
+    hpsBldServer and hpsBldCopy (procServ's line with each one's pid) and a gui_witness whose 'hps' entries hold the
+    packets received on each one's group during the run with their source ports' pids, and hpsBldServer's PVs."""
+    d = tmp_path / 'wd'
+    pids = dict(HPS_PIDS, **(pids or {}))
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    logs = ([write_log(d / 'cas.log', cas, 'addr [effe2200]')] if cas else []) + [
+        write_log(d / f'{p}.log', HPS_CMDS[p], f'@@@ The PID of new child "{p}" is: {pids[p]}\r',
+                  'Using interface lo (127.0.0.1)') for p in HPS_CMDS]
+    svc, cpa = hps_packets(L1_FIRST + 1, L1_FIRST + 5)
+    w = gui_witness(xtc, list(HPS_CMDS))
+    for p, pk, group in (('hpsBldServer', svc, '239.254.34.0'), ('hpsBldCopy', cpa, '239.254.34.1')):
+        w['programs'][p] = {'kind': 'hps', 'id': p, 'group': group, 'port': 31452, 'mask': HPS_MASK,
+                            'start': L1_FIRST + 1, 'end': L1_FIRST + 5, 'packets': pk, 'count': len(pk),
+                            'owners': {str(HPS_PORTS[p]): [HPS_PIDS[p]]}, 'problems': [], 'pass': True,
+                            'live': [f'{group}:31452']}
+    w['programs']['hpsBldServer']['pvs'] = {
+        'DAQ:SIM:HPSEX:HPS:FIELDNAMES': "['pid00', 'pid01']", 'DAQ:SIM:HPSEX:HPS:FIELDTYPES': '[105, 105]',
+        'DAQ:SIM:HPSEX:HPS:FIELDMASK': 'Wed Dec 31 16:00:00 1969 32768',
+        'DAQ:SIM:HPSEX:PAYLOAD': "32768 {'valid': 0, 'pid0f': 0}"}
+    if mutate:
+        mutate(w, w['programs'][row.split(':', 1)[1]])
+    files = [xtc] + logs + [write_witness(d / 'gui_witness.json', w)]
+    status = write_status(tmp_path / 'status.json', {r: {'status': 'RUN'} for r in ('prog:hpsBldServer', 'prog:hpsBldCopy')})
+    record(['prog:hpsBldServer', 'prog:hpsBldCopy'], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+@pytest.mark.parametrize('row', ['prog:hpsBldServer', 'prog:hpsBldCopy'])
+def test_the_hps_chain_is_run_when_its_packets_hold_the_run_s_timing(tmp_path, row):
+    """hpsBldServer: 10 or more packets on the group bldcas serves for its -n, from its own pid's socket, each event at
+    simxpm's pulse ID for its time within the run, the packets' ID and every event's valid word its FIELDMASK, every PV
+    of its source served; hpsBldCopy: as many on its -O's group, from its pid, carrying hpsBldServer's events' times."""
+    code, line = hps_run(tmp_path, row)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+def _hps_ev(e, k, j=0, d=0, ts=0):
+    e['packets'][k][3][j][0] += d
+    e['packets'][k][3][j][1] += ts
+
+
+# name: (hps_run arguments, what the row's line says)
+HPS_FORGERIES = {
+    'no-registry': (dict(cas=None), 'lists no bldcas log that serves hpsBldServer\'s output service DAQ:SIM:HPSEX'),
+    'other-group': (dict(cas=HPS_CAS_CMD.replace('239.254.34.0', '239.254.35.0')),
+                    'received on 239.254.34.0:31452, but bldcas serves DAQ:SIM:HPSEX on 239.254.35.0:31452'),
+    'other-port': (dict(cas=HPS_CAS_CMD.replace('--port 31452', '--port 31453')), 'on 239.254.34.0:31453'),
+    'few-packets': (dict(mutate=lambda w, e: e.update(packets=e['packets'][:9], count=9)), 'received 9 packet(s)'),
+    'other-pid': (dict(pids={'hpsBldServer': 4499}), 'not the pid its log of hpsBldServer gives (4499)'),
+    'unowned': (dict(mutate=lambda w, e: e.update(owners={})), 'held by pids None'),
+    'after-run': (dict(mutate=lambda w, e: _hps_ev(e, -1, ts=(int(L1_LAST - L1_FIRST) + 2) << 32)),
+                  'not within the run\'s L1Accepts'),
+    'other-pulse-id': (dict(mutate=lambda w, e: _hps_ev(e, 3, d=1)), 'simxpm\'s timing gives another pulse ID'),
+    'other-id': (dict(mutate=lambda w, e: e['packets'][2].__setitem__(2, 0)), 'has ID 0x0, not the channel mask'),
+    'other-valid': (dict(mutate=lambda w, e: e['packets'][2][3][1][2].__setitem__(0, 0x8001)),
+                    'valid word is not the mask 0x8000'),
+    'out-of-order': (dict(mutate=lambda w, e: (e['packets'].insert(5, copy.deepcopy(e['packets'][2])),
+                                               e.update(count=e['count'] + 1))),
+                     'does not come after the one before'),
+    'kept-more': (dict(mutate=lambda w, e: e.update(count=e['count'] - 1)), 'but says it received'),
+    'missing-pv': (dict(mutate=lambda w, e: e['pvs'].pop('DAQ:SIM:HPSEX:HPS:FIELDTYPES')),
+                   'does not show hpsBldServer serve HPS:FIELDTYPES'),
+    'payload-id': (dict(mutate=lambda w, e: e['pvs'].update({'DAQ:SIM:HPSEX:PAYLOAD': "32769 {}"})),
+                   'is not the mask 32768 of its packets'),
+    'no-mask': (dict(mutate=lambda w, e: e.update(mask=0)), 'gives no channel mask'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['received 0 packet(s)']})),
+               'says hpsBldServer failed'),
+}
+HPS_COPY_FORGERIES = {
+    'copy-other-pid': (dict(row='prog:hpsBldCopy', pids={'hpsBldCopy': 4498}),
+                       'not the pid its log of hpsBldCopy gives (4498)'),
+    'copy-other-times': (dict(row='prog:hpsBldCopy', mutate=lambda w, e: [_hps_ev(e, k, j, d=1 << 33)
+                                                                           for k in range(len(e['packets']))
+                                                                           for j in range(4)]),
+                         'do not carry the time of an event hpsBldServer sent'),
+    'copy-no-server': (dict(row='prog:hpsBldCopy', mutate=lambda w, e: w['programs'].pop('hpsBldServer')),
+                       'has no hpsBldServer entry'),
+    'copy-other-group': (dict(row='prog:hpsBldCopy', mutate=lambda w, e: e.update(group='239.254.34.0')),
+                         'but bldcas serves DAQ:SIM:HPSCPA on 239.254.34.1:31452'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(HPS_FORGERIES) + sorted(HPS_COPY_FORGERIES))
+def test_hps_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = HPS_FORGERIES.get(case) or HPS_COPY_FORGERIES[case]
+    code, line = hps_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_simhps_packets_are_what_hpsEventIterator_reads():
+    """simhps's diagnostic-bus packet: HpsEventIterator's size check (first event 4 * (8 + n) bytes, each next 16
+    fewer), the beam word of a BLD packet, each next event's pulse ID delta and time delta (ns) in its first word."""
+    import struct
+    from psdaq.sim import simhps, tprframes
+    n0 = 9100 * 123456789
+    b, evs = simhps.diag_packet(n0, 0x8001)
+    w = struct.unpack(f'<{len(b) // 4}I', b)
+    first, nxt = 4 * (8 + 2), 4 * (4 + 2)
+    assert (len(b) - first) % nxt == 0 and len(evs) == simhps.EVENTS
+    assert (w[1] << 32 | w[0], w[3] << 32 | w[2], w[4]) == (evs[0][1], evs[0][0], 0x8001)
+    assert w[5] >> 24 and not w[5] >> 31 and w[6:8] == (simhps.channel_value(evs[0][0], 0), simhps.channel_value(evs[0][0], 15))
+    sec0, ns0 = tprframes.pulse_time(n0)
+    for k in range(1, simhps.EVENTS):
+        d = w[first // 4 + (k - 1) * nxt // 4]
+        sec, ns = tprframes.pulse_time(n0 + k * simhps.EVENT_STEP)
+        assert d >> 20 == evs[k][0] - evs[0][0] and d & 0xfffff == (sec - sec0) * 10**9 + ns - ns0
+        assert evs[k][0] == tprframes.stamp_pid(sec, ns)

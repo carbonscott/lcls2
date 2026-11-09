@@ -278,6 +278,192 @@ def tpr_entry(name, card, t0, t1, reads):
     return e
 
 
+
+# --hps: the HPS BLD chain of lab3-bld.cnf ('kind': 'hps'), each under procmgr as the config starts it: bldcas, the BLD
+# registry (bldcas -P DAQ:LAB2 <services>), here serving HPSEX and HPSCPA on a group and port off the production
+# network (-A HPS_GROUP_BASE, --port: an option this branch adds); hpsBldServer (hpsBldServer -i eno2 -n DAQ:LAB2:HPSEX
+# -p 0x1e0 -a 10.0.3.105) on the loopback interface, its crate psdaq.sim.simhps on 127.0.0.1 (-a) and on ports of
+# its own (-r, -d: options this branch adds; without them 8193 and 8198 as before); hpsBldCopy (hpsBldCopy -i eno2
+# -I DAQ:LAB2:HPSEX -O DAQ:LAB2:<cp> -o 0) on the loopback interface.  bldcas and hpsBldServer's own PVA server
+# (pyhpsbld.PVCtrls) share one search port of their own (pvxs answers a search on a shared port from every
+# server), which every client of the chain searches.  While the run is Running the cycle receives the packets on
+# each program's output group and port (from bldcas's command line) with their source, the socket of a process
+# (udp_owner), and gets every PV name hpsBldServer's source defines under its -n (hpsbld_names).
+HPS_GROUP_BASE = '239.254.34.0'
+HPS_MIN_PACKETS = 10                    # packets an 'hps' entry needs within the run
+HPS_KEEP = 400                          # packets an 'hps' entry keeps (all are counted)
+HPS_PROGRAMS = {
+    'bldcas': {'id': 'hpsbldcas', 'env': {'EPICS_PVAS_SERVER_PORT': '{bldcas}', 'EPICS_PVAS_BROADCAST_PORT': '{search}'},
+               'argv': ['-P', '{pvbase}', '-A', HPS_GROUP_BASE, '--port', '{bld}', 'HPSEX', 'HPSCPA']},
+    'hpsBldServer': {'id': 'hpsbldsvc', 'out': 'HPSEX',
+                     'env': {'EPICS_PVA_BROADCAST_PORT': '{search}', 'EPICS_PVAS_SERVER_PORT': '{svc}',
+                             'EPICS_PVAS_BROADCAST_PORT': '{search}'},
+                     'argv': ['-i', 'lo', '-n', '{pvbase}:HPSEX', '-p', '0x1e0', '-a', '127.0.0.1', '-r', '{reg}',
+                              '-d', '{diag}']},
+    'hpsBldCopy': {'id': 'hpsbldcpa', 'out': 'HPSCPA', 'env': {'EPICS_PVA_BROADCAST_PORT': '{search}'},
+                   'argv': ['-i', 'lo', '-I', '{pvbase}:HPSEX', '-O', '{pvbase}:HPSCPA', '-o', '0']},
+}
+
+
+def hps_env(name, ports):
+    return {k: v.format(**ports) for k, v in HPS_PROGRAMS[name]['env'].items()}
+
+
+def hps_argv(name, pvbase, ports):
+    return [a.format(pvbase=pvbase, **ports) for a in HPS_PROGRAMS[name]['argv']]
+
+
+def hps_group(service, pvbase=None, ports=None, args=None):
+    """(group, port) bldcas serves for `service`: its -A plus the service's place among its services, its --port."""
+    import argparse as _ap
+    import ipaddress
+    args = args if args is not None else hps_argv('bldcas', pvbase, ports)
+    p = _ap.ArgumentParser(add_help=False)
+    p.add_argument('services', nargs='+')
+    p.add_argument('-P')
+    p.add_argument('-A', default='239.255.128.1')
+    p.add_argument('--port', type=int, default=11001)
+    p.add_argument('-v', action='store_true')
+    o = p.parse_args(list(args))
+    return str(ipaddress.ip_address(o.A) + o.services.index(service)), o.port
+
+
+def hpsbld_names(prefix):
+    """The PV names hpsBldServer -n <prefix> serves: psdaq/psdaq/pyhpsbld/pyhpsbld.py's PVCtrls.run adds them to its
+    StaticProvider, here one that only keeps the names (its update(), which programs the crate, on a stand-in)."""
+    import contextlib
+    import io
+    from psdaq.pyhpsbld import pyhpsbld
+
+    class Names:
+        def __init__(self, *a):
+            self.names = []
+
+        def add(self, name, pv):
+            self.names.append(name)
+
+        def remove(self, name):
+            self.names.remove(name)
+
+    class Var:
+        def set(self, value):
+            pass
+
+    class App:
+        Enable, channelMask = Var(), Var()
+
+    class Srv:
+        @staticmethod
+        def forever(*a, **k):
+            pass
+    orig = pyhpsbld.StaticProvider, pyhpsbld.Server
+    try:
+        pyhpsbld.StaticProvider, pyhpsbld.Server = Names, Srv
+        with contextlib.redirect_stdout(io.StringIO()):     # it prints what it hosts
+            c = pyhpsbld.PVCtrls(prefix, App())
+            c.run()
+    finally:
+        pyhpsbld.StaticProvider, pyhpsbld.Server = orig
+    return sorted(c.provider.names)
+
+
+def udp_owner(ip, port):
+    """The pids (this user's processes) holding a UDP socket bound to ip:port (/proc/net/udp, /proc/<pid>/fd)."""
+    import socket
+    import struct
+    want = '%08X:%04X' % (struct.unpack('<I', socket.inet_aton(ip))[0], port)
+    inodes = set()
+    with open('/proc/net/udp') as f:
+        for line in f.readlines()[1:]:
+            w = line.split()
+            if len(w) > 9 and w[1] == want:
+                inodes.add(f'socket:[{w[9]}]')
+    pids = set()
+    for d in os.listdir('/proc'):
+        if not d.isdigit():
+            continue
+        try:
+            fds = os.listdir(f'/proc/{d}/fd')
+        except OSError:
+            continue
+        for fd in fds:
+            try:
+                if os.readlink(f'/proc/{d}/fd/{fd}') in inodes:
+                    pids.add(int(d))
+            except OSError:
+                pass
+    return sorted(pids)
+
+
+def hps_receive(group, port, seconds, iface='127.0.0.1'):
+    """As bld_receive, with each packet's source: (Unix start, Unix end, [(EPICS-epoch time, source ip, source port,
+    bytes)]) and {source port: the pids holding it (udp_owner)}, looked up while the senders run."""
+    import socket
+    if not bld_group_ok(group):
+        raise ValueError(f'{group}: a BLD receiver joins only a group in 239.0.0.0/8 outside 239.255.0.0/16')
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    out, owners = [], {}
+    try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind((group, port))
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(group) + socket.inet_aton(iface))
+        s.settimeout(0.2)
+        t0 = time.time()
+        while time.time() < t0 + seconds:
+            try:
+                b, src = s.recvfrom(9000)
+            except socket.timeout:
+                continue
+            out.append((round(time.time() - EPICS_EPOCH, 6), src[0], src[1], b))
+            if src[1] not in owners:
+                owners[src[1]] = udp_owner(src[0], src[1])
+        return t0, time.time(), out, owners
+    finally:
+        s.close()
+
+
+def hps_packet(b, nwords):
+    """Pds::Bld::Server's packet (psdaq/psdaq/bld/Server.cc, Header.hh) of a payload of `nwords` words: the first
+    event [u64 pulseId, u64 timeStamp, u32 id, 8 B, payload], each next one [u32 (pulseId - first's) << 20 |
+    (timeStamp - first's) & 0xfffff, 8 B, payload]: (id, [[pulseId, timeStamp, payload words], ...]), or None if
+    its size is not that of such events."""
+    import struct
+    first, nxt = 28 + 4 * nwords, 12 + 4 * nwords
+    if nwords < 1 or len(b) < first or (len(b) - first) % nxt:
+        return None
+    pid, ts, ident = struct.unpack_from('<QQI', b)
+    evs = [[pid, ts, list(struct.unpack_from(f'<{nwords}I', b, 28))]]
+    for off in range(first, len(b), nxt):
+        d, = struct.unpack_from('<I', b, off)
+        evs.append([pid + (d >> 20), ts + (d & 0xfffff), list(struct.unpack_from(f'<{nwords}I', b, off + 12))])
+    return ident, evs
+
+
+def hps_entry(name, group, port, t0, t1, packets, owners, mask, pvs=None):
+    """The witness entry of a program of the HPS chain ('kind': 'hps'): the packets received on its output group and
+    port while the run ran, each [receive time, source port, id, [[pulseId, timeStamp, payload], ...]] (payload words
+    1 + the channels of `mask`, the FIELDMASK hpsBldServer served), the pids holding each source port, and for
+    hpsBldServer the PVs it served ({name: text}).  Coverage checks them against the command lines of its logs."""
+    nw = 1 + bin(mask or 0).count('1')
+    e = {'kind': 'hps', 'id': HPS_PROGRAMS[name]['id'], 'group': group, 'port': port, 'mask': mask,
+         'start': round(t0 - EPICS_EPOCH, 3), 'end': round(t1 - EPICS_EPOCH, 3), 'packets': [], 'count': 0,
+         'owners': {str(k): v for k, v in owners.items()}, 'problems': []}
+    if pvs is not None:
+        e['pvs'] = pvs
+    for t, sip, sport, b in packets:
+        p = hps_packet(b, nw) if mask else None
+        if p is None:
+            e['problems'].append(f'a packet of {len(b)} B is not one of Pds::Bld::Server events of {nw} words')
+            continue
+        e['count'] += 1
+        if len(e['packets']) < HPS_KEEP:
+            e['packets'].append([t, sport, p[0], p[1]])
+    if e['count'] < HPS_MIN_PACKETS:
+        e['problems'].append(f'received {e["count"]} packet(s) on {group}:{port} ({HPS_MIN_PACKETS} or more needed)')
+    e['live'] = [f'{group}:{port}'] if e['count'] else []
+    e['pass'] = not e['problems']
+    return e
+
 # PV-server stand-ins (R3) daq_sim up --pvservers starts, each on PVA ports of its own (so simxpm stays the
 # only server on the node's search port): what the cycle reads of each while Running (a PV and a field that
 # changes once a second) and the programs it stands in for, each with the PV names that program's own source

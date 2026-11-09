@@ -85,7 +85,7 @@ from psdaq.sim import daq_sim as ds
 
 SECTIONS = ('types', 'programs', 'features', 'coverage')
 # The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3h)
-PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--tpr', '--rate', '100')
+PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--tpr', '--hps', '--rate', '100')
 PROGRAM_CHECKS = ('system DRP checks', 'ami check', 'gui witness', 'ami shot')
 FEATURES = ('a', 'b', 'c', 'd', 'e')             # the contract's system features (a)-(e)
 BREAKS = ('register', 'kill-drp', 'corrupt')

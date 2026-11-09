@@ -71,7 +71,17 @@ listed .xtc2 files.  Rows that need one:
                      from psdaq.sim.tprframes), that and BLD_MIN_PACKETS or more packets received
                      on the group and port its command line sends to (bld_expected), every one
                      timed within the run's L1Accepts, at the rate and with the words its source
-                     sends for its -b type, from the pid its log gives (bld_problem)
+                     sends for its -b type, from the pid its log gives (bld_problem); for a
+                     program of the HPS BLD chain ('kind': 'hps', R9: hpsBldServer, its crate the
+                     stand-in psdaq.sim.simhps, and hpsBldCopy), HPS_MIN_PACKETS or more packets on
+                     the group and port bldcas serves for its output service (the command line of
+                     a bldcas log in the record), every one sent from a socket of the process whose
+                     pid its own log gives, each event's 'valid' word the FIELDMASK hpsBldServer
+                     served; hpsBldServer's events at the pulse IDs simxpm gives their times, timed
+                     within the run's L1Accepts, its packets' ID that mask, and every PV of its
+                     source (PVCtrls) served, PAYLOAD's type ID the mask; hpsBldCopy's events
+                     carrying the times of hpsBldServer's events, as its Client gives them
+                     (hps_problem)
 Any other record is rejected for the row, and the row's line says why.
 
 Output: every row on its own line, then 'N rows, R run, S stand-in, K N/A, U unproven, X
@@ -878,6 +888,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         return tpr_problem(prog, e, logs, w.get('partition'), lo, hi)
     if e.get('kind') == 'bld':                              # R8 + its packets: a BLD server on a simulated TPR card
         return tpr_problem(prog, e, logs, w.get('partition'), lo, hi) or bld_problem(prog, e, logs, lo, hi)
+    if e.get('kind') == 'hps':                              # R9: the HPS BLD chain, hpsBldServer's crate a stand-in
+        return hps_problem(prog, e, logs, lo, hi, w)
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -1093,6 +1105,125 @@ def bld_problem(prog, e, logs, lo, hi):
     if not any(p is not None and (p & 0xffffff) == (src & 0xffffff) for p in pids):
         return (f'its packets carry pid {src & 0xffffff}, but its log of {prog} gives pid '
                 f'{", ".join(str(p) for p in pids if p is not None) or "none"}')
+    return None
+
+
+HPS_MIN_PACKETS = 10
+HPS_PVS = ('HPS:FIELDNAMES', 'HPS:FIELDTYPES', 'HPS:FIELDMASK', 'PAYLOAD')     # pyhpsbld.PVCtrls.run, under -n
+
+
+def _opt(args, flag):
+    """The word after `flag` in args, or None."""
+    args = list(args)
+    return args[args.index(flag) + 1] if flag in args and args.index(flag) + 1 < len(args) else None
+
+
+def hps_registry(logs, name):
+    """(group, port) a bldcas of the record (its log's command line) serves for BLD service `name`
+    (<prefix>:<service>): -A plus the service's place among its services, --port (11001 by default); None if none."""
+    import ipaddress
+    prefix, _, service = name.rpartition(':')
+    for (prog, args), _text in logs:
+        if prog != 'bldcas':
+            continue
+        args, rest, k = list(args), [], 0
+        opts = {'-A': '239.255.128.1', '--port': '11001', '-P': None}
+        while k < len(args):
+            if args[k] in opts and k + 1 < len(args):
+                opts[args[k]] = args[k + 1]
+                k += 2
+            elif args[k].startswith('-'):
+                k += 1
+            else:
+                rest.append(args[k])
+                k += 1
+        if opts['-P'] == prefix and service in rest:
+            try:
+                return str(ipaddress.ip_address(opts['-A']) + rest.index(service)), int(opts['--port'])
+            except ValueError:
+                return None
+    return None
+
+
+def hps_problem(prog, e, logs, lo, hi, w=None):
+    """R9: why an 'hps' witness entry does not show program prog of the HPS BLD chain send what its command line
+    says while the run ran (lo..hi, EPICS-epoch seconds), or None (module doc).  w: the witness, whose hpsBldServer
+    entry hpsBldCopy's events are checked against."""
+    from psdaq.sim.tprframes import stamp_pid
+    mine = [(args, text) for (name, args), text in logs if name == prog]
+    if not mine:
+        return f'lists no log of {prog}'
+    args = mine[0][0]
+    out = _opt(args, '-n' if prog == 'hpsBldServer' else '-O')
+    want = hps_registry(logs, out) if out else None
+    if want is None:
+        return f'lists no bldcas log that serves {prog}\'s output service {out}'
+    if (e.get('group'), e.get('port')) != want:
+        return f'received on {e.get("group")}:{e.get("port")}, but bldcas serves {out} on {want[0]}:{want[1]}'
+    pk = [p for p in e.get('packets') or [] if isinstance(p, list) and len(p) == 4 and isinstance(p[3], list)]
+    if len(pk) < HPS_MIN_PACKETS:
+        return f'received {len(pk)} packet(s) of {prog} on {want[0]}:{want[1]} ({HPS_MIN_PACKETS} or more needed)'
+    if not isinstance(e.get('count'), int) or e['count'] < len(pk):
+        return f'keeps {len(pk)} packets of {prog} but says it received {e.get("count")}'
+    pids = {log_pid(text) for _, text in mine} - {None}
+    owners = e.get('owners') if isinstance(e.get('owners'), dict) else {}
+    for p in pk:
+        held = owners.get(str(p[1]))
+        if not (isinstance(held, list) and pids & set(held)):
+            return (f'its packets come from port {p[1]}, held by pids {held}, not the pid its log of {prog} gives '
+                    f'({", ".join(str(x) for x in sorted(pids)) or "none"})')
+    mask = e.get('mask')
+    if not isinstance(mask, int) or not mask & 0x7fffffff:
+        return f'gives no channel mask of hpsBldServer\'s FIELDMASK ({mask!r})'
+    nw = 1 + bin(mask).count('1')
+    last = None
+    for t, sport, ident, evs in pk:
+        if not evs or not all(isinstance(v, list) and len(v) == 3 and isinstance(v[2], list) and len(v[2]) == nw
+                              and v[2][0] == mask for v in evs):
+            return f'its packet received at {t} holds events whose valid word is not the mask {mask:#x}: {str(evs)[:120]}'
+        if prog == 'hpsBldServer':
+            pid, ts = evs[0][0], evs[0][1]
+            sec, ns = ts >> 32, ts & 0xffffffff
+            when = sec + ns * 1e-9
+            if not lo <= when <= hi:
+                return f'its event of pulseId {pid:#x} is timed {when:.6f}, not within the run\'s L1Accepts ({lo:.3f} to {hi:.3f})'
+            if ns >= 10**9 or pid != stamp_pid(sec, ns):
+                return f'its event of pulseId {pid:#x} is timed {sec}.{ns:09d}, to which simxpm\'s timing gives another pulse ID'
+            if ident != mask:
+                return f'its packet of pulseId {pid:#x} has ID {ident:#x}, not the channel mask {mask:#x} of its payload'
+            if any(not 0 <= v[0] - pid <= 0xfff for v in evs):
+                return f'its packet of pulseId {pid:#x} holds an event more than 4095 pulses after it'
+            if last is not None and pid <= last:
+                return f'its packet of pulseId {pid:#x} does not come after the one before ({last:#x})'
+            last = evs[-1][0]
+    if prog == 'hpsBldServer':
+        pvs = e.get('pvs') if isinstance(e.get('pvs'), dict) else {}
+        missing = [n for n in HPS_PVS if not isinstance(pvs.get(f'{out}:{n}'), str) or pvs[f'{out}:{n}'].startswith('error')]
+        if missing:
+            return f'does not show {prog} serve {", ".join(missing)} under {out} (the PVs its source defines)'
+        if pvs[f'{out}:HPS:FIELDMASK'].split()[-1:] != [str(mask)] or not \
+                re.match(r'%da? ' % mask, pvs[f'{out}:PAYLOAD']):
+            return (f'its FIELDMASK {pvs[f"{out}:HPS:FIELDMASK"][-20:]!r} or PAYLOAD type ID '
+                    f'{pvs[f"{out}:PAYLOAD"][:20]!r} is not the mask {mask} of its packets')
+        return None
+    svc = (w or {}).get('programs', {}).get('hpsBldServer') if isinstance(w, dict) else None
+    firsts = sorted({p[3][0][1] for p in (svc or {}).get('packets') or [] if isinstance(p, list) and len(p) == 4
+                     and p[3] and isinstance(p[3][0], list) and isinstance(p[3][0][1], int)})
+    if not firsts:
+        return f'has no hpsBldServer entry whose events {prog}\'s carry'
+    import bisect
+    evs = [v for p in pk for v in p[3]]
+    hit = 0
+    for v in evs:
+        k = bisect.bisect_right(firsts, v[0]) - 1
+        hit += k >= 0 and v[0] - firsts[k] <= 0xfff
+    if 2 * hit < len(evs) or not hit:
+        return (f'{len(evs) - hit} of its {len(evs)} events do not carry the time of an event hpsBldServer sent '
+                f'(hpsBldCopy publishes its Client\'s pulseId, the time of hpsBldServer\'s event)')
+    for v in evs:
+        when = (v[0] >> 32) + (v[0] & 0xffffffff) * 1e-9
+        if not lo - 1 <= when <= hi + 1:
+            return f'its event of {v[0]:#x} carries the time {when:.6f}, not within the run\'s L1Accepts ({lo:.3f} to {hi:.3f})'
     return None
 
 
