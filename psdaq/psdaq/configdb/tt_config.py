@@ -112,9 +112,27 @@ def user_to_expert(cl, cfg, full=False):
 
     update_config_entry(cfg,ocfg,d)
 
+# The camera's ROI[i] and SAD[i] under the names tt_config_store wrote before 149eb4dee renamed
+# them ROI0, ROI1, SAD0, SAD1, SAD2 (an XtcData::Name may not hold '[' or ']', 2b0873c2c)
+old_uart_names = {'ROI[0]':'ROI0', 'ROI[1]':'ROI1', 'SAD[0]':'SAD0', 'SAD[1]':'SAD1', 'SAD[2]':'SAD2'}
+
 def config_expert(cl,cfg):
     global lane
     global chan
+
+    #  Refuse an entry with the old names before anything is set: ROI[0], SAD[0] and SAD[1] send
+    #  no serial command, so cl_poll would wait for a reply forever, and the drp could not
+    #  record those names anyway
+    try:
+        uart_cfg = cfg['expert']['ClinkFeb']['ClinkTop']['ClinkCh']['UartPiranha4']
+    except (KeyError, TypeError):
+        uart_cfg = {}
+    old = [k for k in uart_cfg if k in old_uart_names]
+    if old:
+        raise ValueError('tt_config: the config DB entry has expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.'
+                         '{:}, which tt_config_store now writes as {:} (an XtcData::Name may not hold '
+                         '"[" or "]"): write the entry again with tt_config_store.py, or rename those keys'
+                         .format(', '.join(old), ', '.join(old_uart_names[k] for k in old)))
 
     rogue_translate = {'ClinkFeb'          :'ClinkFeb[%d]'%lane,
                        'ClinkCh'           :'Ch[%d]'%chan,
