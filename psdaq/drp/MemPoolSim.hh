@@ -100,6 +100,8 @@ public:
     virtual int fd() const override { return m_efd; }
     virtual int setMaskBytes(uint8_t laneMask, unsigned virtChan) override;
 public:                                 // For XpmDetector
+    MemPoolSim* sim() override { return this; }
+    bool batched() const { return m_batcher != nullptr; }    // EventBatcher framing (fillBatcher)
     unsigned paddr();                   // (xpm << 16) | link, once simxpm has answered
     void connect(unsigned readoutGroup, unsigned length);
     void disconnect();

@@ -12,6 +12,7 @@
 #include <nvtx3/nvtx3.hpp>
 
 #include "drp/drp.hh"
+#include "drp/MemPoolSim.hh"          // The source behind a simulated device (-d sim://)
 
 // NVTX provides the ability to annotate code and structures for the purpose of
 // making traces in the Nsight Systems profiler more easily identifiable.  It
@@ -184,7 +185,8 @@ struct DetPanel
   uint8_t**             dmaBuffers_d;   // Device array of dmaCount dptrs
   std::string           name;
 
-  DetPanel(std::string& device) : datadev(device.c_str()), name(device) {}
+  DetPanel(const std::string& device) : datadev(device.c_str()), name(device) {}
+  DetPanel(const std::string& path, const std::string& device) : datadev(path.c_str()), name(device) {}
 };
 
 class MemPoolGpu : public Drp::MemPool
@@ -196,6 +198,10 @@ public:
 public:   // Virtuals
   int fd() const override { return m_panel->datadev.fd(); }
   int setMaskBytes(uint8_t laneMask, unsigned virtChan) override;
+  // With a simulated device (-d sim://<simxpm>), the drp's MemPoolSim receives simxpm's
+  // timing frames and lays each one out as the type's firmware would; _simFeeder() copies
+  // them into the GPU's DMA buffers as GpuAsyncCore would DMA them.  nullptr with hardware.
+  Drp::MemPoolSim* sim() override { return m_sim.get(); }
 private:  // Virtuals
   ssize_t _freeDma(unsigned count, uint32_t* indices) override { return 0; /* Nothing to do */ }
 public:
@@ -282,9 +288,13 @@ public:
 private:
   int  _gpuMapFpgaMem(int fd, CUdeviceptr& buffer, uint64_t offset, size_t size, int write);
   void _gpuUnmapFpgaMem(CUdeviceptr& buffer);
+  void _simFeeder();
 private:
   CudaContext                  m_context;
   std::shared_ptr<DetPanel>    m_panel;
+  std::unique_ptr<Drp::MemPoolSim> m_sim;            // -d sim:// only
+  std::thread                  m_simThread;          // Runs _simFeeder()
+  std::atomic<bool>            m_simTerminate{false};
   bool                         m_setMaskBytesDone;
   size_t                       m_hostWrtBufsSize;
   uint32_t*                    m_hostWrtBufs;        // [nBuffers * nElements]

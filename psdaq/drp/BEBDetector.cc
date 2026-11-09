@@ -105,7 +105,7 @@ BEBDetector::BEBDetector(Parameters* para, MemPool* pool) :
     m_module      (0),
     m_configScanner (0),
     m_debatch     (false),
-    m_sim         (MemPoolSim::isSimDevice(para->device) ? pool->getAs<MemPoolSim>() : nullptr)
+    m_sim         (pool->sim())
 {
     virtChan = 1;
 }

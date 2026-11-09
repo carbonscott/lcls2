@@ -110,11 +110,16 @@ private:
     unsigned m_nL1Buffers;
 };
 
+class MemPoolSim;
+
 class MemPool
 {
 public:
     MemPool(const Parameters& para);
     virtual ~MemPool() {};
+    // The software DMA and timing source behind a simulated device (-d sim://), or nullptr
+    // with hardware: the pool itself in drp, the one MemPoolGpu feeds from in drp_gpu
+    virtual MemPoolSim* sim() { return nullptr; }
     Pebble pebble;
     std::vector<PGPEvent> pgpEvents;
     std::vector<Pds::EbDgram*> transitionDgrams;

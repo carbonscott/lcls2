@@ -84,6 +84,7 @@ cuda_inc_dir = include_directories([
       cuda_dep,
       psalg_utils_dep,
       xtcdata_dep,
+      threads_dep,                      # MemPoolGpu's simulated-device thread
     ],
   )
 

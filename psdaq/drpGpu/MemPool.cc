@@ -4,6 +4,7 @@
 #include "psdaq/service/range.hh"
 #include "psdaq/service/Affinity.hh"   // logCpuAllocation, logDeviceLocality
 #include "psdaq/service/EbDgram.hh"     // For TimingHeader
+#include "xtcdata/xtc/TransitionId.hh"
 #include "psdaq/aes-stream-drivers/DmaDest.h"
 #include "psdaq/aes-stream-drivers/GpuAsyncUser.h"
 
@@ -15,6 +16,7 @@
 #include <linux/capability.h>           // For CAP_SYS_ADMIN (no libcap needed)
 #include <sys/prctl.h>                  // For PR_CAP_AMBIENT
 #include <sys/syscall.h>                // For SYS_capget, SYS_capset
+#include <poll.h>                       // For poll, in _simFeeder()
 
 using logging = psalg::SysLog;
 using namespace Pds;
@@ -305,8 +307,10 @@ MemPoolGpu::MemPoolGpu(Parameters& para) :
 
   void* fpgaRegs{nullptr};
 
-  // Check for normal DAQ mode (datadev device) or simulator mode (null device)
-  if (para.device != "/dev/null") {
+  // Check for normal DAQ mode (datadev device) or simulator mode (null device), or a
+  // simulated device (sim://), which is the simulator mode's memory fed from simxpm
+  const bool simDevice{MemPoolSim::isSimDevice(para.device)};
+  if (para.device != "/dev/null" && !simDevice) {
     m_panel = make_shared<DetPanel>(para.device);
     logging::info("PGP device '%s' opened", m_panel->name.c_str());
     const auto fd = m_panel->datadev.fd();
@@ -392,7 +396,9 @@ MemPoolGpu::MemPoolGpu(Parameters& para) :
                     i, (uint8_t*)fpgaRegs + m_panel->coreRegs.freeListOffset(0) + i*4);
     }
   } else {                              // Simulator mode
-    m_panel = std::make_shared<DetPanel>(para.device);
+    // A sim:// device has no file: the panel's ioctls go to /dev/null, as in simulator mode
+    m_panel = std::make_shared<DetPanel>(simDevice ? std::string("/dev/null") : para.device,
+                                         para.device);
     logging::info("NULL PGP device '%s' opened", para.device.c_str());
 
     uint8_t* ptr{nullptr};
@@ -431,6 +437,23 @@ MemPoolGpu::MemPoolGpu(Parameters& para) :
 
     // No need to call setMaskBytes, so fake done
     m_setMaskBytesDone = true;
+
+    if (simDevice) {
+      // The drp's simulated device: simxpm's timing frames, laid out as the type's firmware
+      // would (psdaq/drp/MemPoolSim.hh), in host buffers of its own.  Its pebble is never
+      // used, so the GPU DRP's pebble sizing must not constrain it.
+      Parameters simPara{para};
+      simPara.kwargs.erase("pebbleBufCount");
+      simPara.kwargs.erase("pebbleBufSize");
+      m_sim = std::make_unique<MemPoolSim>(simPara);
+      if (m_sim->dmaSize() + dmaHeaderSize > m_dmaSize) {
+        logging::critical("MemPoolGpu: sim_dma_size %u B plus the %u B DMA frame does not fit "
+                          "dmaBufSize %u B", m_sim->dmaSize(), dmaHeaderSize, m_dmaSize);
+        abort();
+      }
+      logging::info("MemPoolGpu: simulated device %s feeds %u GPU DMA buffers of %u B",
+                    para.device.c_str(), m_dmaCount, m_dmaSize);
+    }
   }
 
   logging::debug("Done with device mem alloc for %s, FPGA regs %p\n",
@@ -452,11 +475,99 @@ MemPoolGpu::MemPoolGpu(Parameters& para) :
   chkMemory          ( m_reduceBuffers_d,    nbuffers(),  sizeof(*m_reduceBuffers_d), "reduceBuffers");
   chkError(cudaMemset( m_reduceBuffers_d, 0, nbuffers() * sizeof(*m_reduceBuffers_d)));
 
+  // With a simulated device, start "DMAing" what simxpm sends into the GPU's buffers
+  if (m_sim)  m_simThread = std::thread(&MemPoolGpu::_simFeeder, this);
+
   logging::debug("Done with setting up memory\n");
+}
+
+// What GpuAsyncCore does with a simulated device's buffers: for each buffer the drp's
+// MemPoolSim has filled from a simxpm frame (a TimingHeader and the type's payload, as its
+// firmware lays them out), wait until the GPU has re-armed the next DMA buffer in turn
+// (its free-list register is non-zero again), copy the frame into it after the DmaDsc's
+// frame, and ring the doorbell by writing the size into the DmaDsc, as SimDetector does.
+// The Reader takes the DMA buffers in order from index 0 after each Configure, so the
+// index restarts at the Configure frame.  The MemPoolSim buffer is handed back once the
+// copy is done, which is what grants simxpm credit for another frame.
+void MemPoolGpu::_simFeeder()
+{
+  logging::info("Simulated DMA thread is starting with process ID %lu", syscall(SYS_gettid));
+  if (prctl(PR_SET_NAME, "drp_gpu/SimDma", 0, 0, 0) == -1) {
+    perror("prctl");
+  }
+  chkError(cudaSetDevice(m_context.deviceNo()));
+  chkError(cuCtxSetCurrent(m_context.context()));
+  cudaStream_t stream;
+  chkFatal(cudaStreamCreateWithFlags(&stream, cudaStreamNonBlocking));
+
+  auto&          coreRegs  = m_panel->coreRegs;
+  const auto     frameSize = coreRegs.dmaDataBytes();
+  const unsigned thOffset  = m_sim->batched() ? 8 : 0; // After the batcher's header line
+  const unsigned mask      = m_dmaCount - 1;           // A power of 2 (checked above)
+  constexpr unsigned MaxRead{64};
+  int32_t        sizes[MaxRead];
+  uint32_t       indices[MaxRead];
+  uint32_t       dests[MaxRead];
+  unsigned       dmaIdx{0};
+  uint64_t       nFed{0};
+  pollfd         pfd{m_sim->fd(), POLLIN, 0};
+  while (!m_simTerminate.load(std::memory_order_acquire)) {
+    auto n = m_sim->readDma(MaxRead, sizes, indices, nullptr, nullptr, dests);
+    if (n <= 0) {
+      poll(&pfd, 1, 10);                // ms; readable while frames are ready
+      continue;
+    }
+    unsigned done{0};
+    for (; done < unsigned(n); ++done) {
+      auto const buffer = (const uint8_t*)m_sim->dmaBuffers[indices[done]];
+      auto const size   = uint32_t(sizes[done]);
+      uint64_t   pidCtl;
+      memcpy(&pidCtl, buffer + thOffset, sizeof(pidCtl));
+      auto const tid    = XtcData::TransitionId::Value((pidCtl >> 56) & 0xf);
+      if (tid == XtcData::TransitionId::Configure)  dmaIdx = 0;
+
+      // Wait for the GPU to hand this DMA buffer back
+      volatile uint32_t* const wrEn{(volatile uint32_t*)(coreRegs.registers() +
+                                                         coreRegs.freeListOffset(dmaIdx))};
+      unsigned spins{0};
+      while (*wrEn == 0) {
+        if (m_simTerminate.load(std::memory_order_acquire))  break;
+        if (++spins > 1000)  usleep(10);
+      }
+      if (*wrEn == 0)  break;           // Terminating
+      asm volatile("mfence" ::: "memory");
+      *wrEn = 0;                        // Disable "DMAs" to this buffer
+
+      // The whole frame must have landed before the size word says so: the Reader polls
+      // that word from a kernel that is already running, outside this stream's ordering,
+      // and with the two copies merely queued in order it was seen to calibrate events
+      // whose last tens of kB were still zero
+      auto const dmaBuffer = m_panel->dmaBuffers[dmaIdx];
+      DmaDsc const dmaDsc{0x02000000, size};      // SOF and no error, as GpuAsyncCore writes
+      // Fatal, as for the hardware: an error here is the context's (a kernel's fault), and
+      // nothing more would reach the GPU
+      chkFatal(cudaMemcpyAsync(dmaBuffer + frameSize, buffer, size, cudaMemcpyHostToDevice, stream));
+      chkFatal(cudaStreamSynchronize(stream));
+      chkFatal(cudaMemcpyAsync(dmaBuffer, &dmaDsc, sizeof(dmaDsc), cudaMemcpyHostToDevice, stream));
+      chkFatal(cudaStreamSynchronize(stream));    // The buffer and dmaDsc may now be reused
+      dmaIdx = (dmaIdx + 1) & mask;
+      ++nFed;
+    }
+    if (done)  m_sim->freeDma(done, indices);
+    if (done < unsigned(n))  m_sim->retDma(n - done, &indices[done]);
+  }
+
+  chkError(cudaStreamDestroy(stream));
+  logging::info("Simulated DMA thread is exiting after %lu buffers", nFed);
 }
 
 MemPoolGpu::~MemPoolGpu()
 {
+  // Stop feeding the DMA buffers before they go away
+  m_simTerminate.store(true, std::memory_order_release);
+  if (m_simThread.joinable())  m_simThread.join();
+  m_sim.reset();
+
   // Release the memory held by the driver
   if ((gpuRemNvidiaMemory(m_panel->datadev.fd())) < 0)
     logging::error("gpuRemNvidiaMemory failed: %m");
