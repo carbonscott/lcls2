@@ -5,6 +5,7 @@ the tests walk it as BEBDetector does (psdaq/drp/EventBatcher.hh) and check its 
 pixels against psdaq.sim.pattern, with the type's readout order written out here on its own.
 """
 
+import os
 import shutil
 import struct
 import subprocess
@@ -278,3 +279,67 @@ def test_tb_event_timing_message_layout():
     pid, rates, slot, beam = struct.unpack_from('<QHBB', etm, 0)
     assert (pid, rates, slot, beam) == (PID, p(2, 16), p(3, 3), p(4, 8))
     assert list(struct.unpack_from('<18H', etm, 12)) == [p(5 + i, 16) for i in range(18)]
+
+
+# --- PSDAQ_SIM_CORRUPT_SEQ: one inverted payload byte (daq_sim matrix --break corrupt) --------
+
+CORRUPT = 'PSDAQ_SIM_CORRUPT_SEQ'
+
+
+def corrupted(det, seq, bad, *more):
+    env = dict(os.environ, **{CORRUPT: str(bad)})
+    return subprocess.run([EXE, det, str(seq), hex(SEED)] + list(more), capture_output=True, check=True,
+                          timeout=60, env=env).stdout
+
+
+def diff_at(a, b):
+    assert len(a) == len(b)
+    return [i for i in range(len(a)) if a[i] != b[i]]
+
+
+def test_corrupt_inverts_one_image_byte_of_that_event_only():
+    """epix100: the byte is in the image subframe (tdest 3), never in a tail, the TimingHeader
+    or its copy, so the DRP still builds the event and only the per-pixel compare sees it."""
+    good = frame('epix100', 7)
+    assert corrupted('epix100', 8, 7) == frame('epix100', 8)          # another event: untouched
+    bad = corrupted('epix100', 7, 7)
+    at = diff_at(good, bad)
+    assert len(at) == 1 and bad[at[0]] == good[at[0]] ^ 0xff
+    data, order = subframes(bad)                        # the tails still tile the buffer
+    assert order == [0, 2, 3] and data[0] == timing_header(7) and data[2] == data[0]
+    readout = np.frombuffer(data[3], dtype=np.uint16, offset=32, count=704 * 768).reshape(704, 768)
+    image = np.empty_like(readout)
+    image[epix100_readout_rows()] = readout
+    differ = np.argwhere(image != pattern.image(SEED, 7, (704, 768), 14))
+    assert len(differ) == 1                             # the per-pixel check names one pixel
+
+
+@pytest.mark.parametrize('det', ['wave8', 'tb', 'hrencoder', 'opal'])
+def test_corrupt_stays_inside_a_data_subframe(det):
+    good, bad = frame(det, 3), corrupted(det, 3, 3)
+    at = diff_at(good, bad)
+    assert len(at) == 1
+    gd, order = subframes(good)
+    bd, border = subframes(bad)
+    assert border == order and bd[0] == gd[0]
+    changed = [t for t in order if bd[t] != gd[t]]
+    assert len(changed) == 1 and changed[0] != 0 and gd[changed[0]] != gd[0]     # not a timing copy
+
+
+def test_corrupt_tdet_words_and_message():
+    """fakecam (TDetSemi words, drp_sim_frame's <words>) and ts (the TDet message): the middle
+    byte of what follows the TimingHeader, a word fakecam's check compares (w32 of 64)."""
+    good, bad = frame_words('fakecam', 5, 64), corrupted('fakecam', 5, 5, '64')
+    at = diff_at(good, bad)
+    assert at == [32 + 4 * 32]
+    w = np.frombuffer(bad, dtype=np.uint32, offset=32)
+    k = np.arange(4, 64, dtype=np.uint64)
+    want = (np.uint64(SEED) + np.uint64(int(w[0])) + k) & np.uint64(0xffffffff)
+    assert list(np.flatnonzero(w[4:] != want) + 4) == [32]
+    good, bad = frame('ts', 5), corrupted('ts', 5, 5)
+    assert diff_at(good, bad) == [32 + 153 // 2]
+
+
+def frame_words(det, seq, words):
+    return subprocess.run([EXE, det, str(seq), hex(SEED), str(words)], capture_output=True, check=True,
+                          timeout=60).stdout

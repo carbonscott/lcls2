@@ -442,7 +442,14 @@ def check(path, det_name='fakecam', seed=None, expect=None, max_report=5, offset
             if same:
                 r['pattern_ok'] += 1
             elif len(r['problems']) < max_report:
-                r['problems'].append(f'event {r["events"]}: payload pattern broken')
+                bad = np.argwhere(w[:, 4:] != want)
+                if len(bad):                # name the first word that differs
+                    lane, k = int(bad[0][0]), int(bad[0][1])
+                    detail = (f': {len(bad)} of {want.size} payload words differ, first lane {lane} '
+                              f'w{k + 4} {int(w[lane, k + 4]):#x} != {int(want[lane, k]):#x}')
+                else:
+                    detail = ': w0-w3 differ between lanes'
+                r['problems'].append(f'event {r["events"]}: payload pattern broken{detail}')
             pid = int(w[0, 0]) | (int(w[0, 1]) << 32)
             clock = _pulse_id_from_time(evt.timestamp)
             r['pulseid_checked'] += 1

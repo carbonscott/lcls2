@@ -94,6 +94,14 @@ public:
                        unsigned lane, unsigned length, uint32_t seed);
     static size_t fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f,
                               uint32_t evtCounter, bool l1, uint32_t seed);
+    // A deliberate fault, for showing that the per-event check catches a corrupted payload
+    // (daq_sim matrix --break corrupt): with CorruptEnv=<seq> in the DRP's environment, the
+    // L1Accept with that seq gets one byte inverted.  corrupt() inverts the middle byte of the
+    // largest data subframe of an EventBatcher buffer (not subframe 0, the TimingHeader, nor a
+    // copy of it), or of what follows the TimingHeader otherwise (TDetSemi words, a TDet
+    // message); it returns that byte's offset in the buffer, 0 if the buffer has no payload.
+    static constexpr const char* CorruptEnv = "PSDAQ_SIM_CORRUPT_SEQ";
+    static size_t corrupt(uint8_t* buffer, size_t size, bool batcher);
 public:
     MemPoolSim(const Parameters& para);
     virtual ~MemPoolSim();
@@ -141,6 +149,7 @@ private:
     uint32_t                m_evtCounter;       // Receiver thread only
     unsigned                m_credit;           // Granted, not yet used; receiver thread only
     uint64_t                m_nOverruns;
+    uint32_t                m_corruptSeq;       // CorruptEnv's seq, 0 if unset
 };
 
 }

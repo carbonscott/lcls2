@@ -478,6 +478,38 @@ size_t MemPoolSim::fillBatcher(uint8_t* buffer, const Batcher& b, const Frame& f
     return out.pos;
 }
 
+size_t MemPoolSim::corrupt(uint8_t* buffer, size_t size, bool batcher)
+{
+    size_t start = sizeof(Pds::TimingHeader);
+    size_t bytes = size > start ? size - start : 0;
+    if (batcher) {                      // walk the tails from the end, as EvtBatcherIterator does
+        const size_t lw = EvtBatcherHeader::lineWidth(2);
+        bytes = 0;
+        size_t pos = size;              // end of the next subframe's tail
+        while (pos >= 2 * lw) {
+            size_t   tail = pos - lw;
+            uint32_t sub;
+            memcpy(&sub, buffer + tail, sizeof(sub));
+            uint8_t  tdest  = buffer[tail + 4];
+            size_t   padded = (size_t(sub) + lw - 1) & ~(lw - 1);
+            if (padded + lw > tail)  break;     // would start before the header line
+            size_t   at     = tail - padded;
+            bool     copy   = sub == sizeof(Pds::TimingHeader) &&
+                              memcmp(buffer + at, buffer + lw, sub) == 0;
+            if (tdest != 0 && !copy && sub > bytes) {
+                start = at;
+                bytes = sub;
+            }
+            if (at == lw)  break;
+            pos = at;
+        }
+    }
+    if (bytes == 0)  return 0;
+    size_t at = start + bytes / 2;
+    buffer[at] ^= 0xff;
+    return at;
+}
+
 MemPoolSim::MemPoolSim(const Parameters& para) :
     MemPool     (para),
     m_alias     (para.alias),
@@ -498,7 +530,8 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
     m_paddr     (0),
     m_evtCounter(0),
     m_credit    (0),
-    m_nOverruns (0)
+    m_nOverruns (0),
+    m_corruptSeq(0)
 {
     std::string rest = para.device.substr(sizeof(SimPrefix) - 1);
     m_endpoint = rest.find("://") == std::string::npos ? "tcp://" + rest : rest;
@@ -548,6 +581,11 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
     }
     logging::info("Simulated PGP device '%s': timing frames from %s",
                   para.device.c_str(), m_endpoint.c_str());
+    if (const char* v = getenv(CorruptEnv)) {
+        m_corruptSeq = strtoul(v, nullptr, 0);
+        logging::warning("MemPoolSim: %s=%u: L1Accept seq %u gets one payload byte inverted (a deliberate fault)",
+                         CorruptEnv, m_corruptSeq, m_corruptSeq);
+    }
 
     _initialize(para);
 
@@ -699,6 +737,11 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
             if (m_tdetMsg && tid == TransitionId::L1Accept) {
                 m_tdetMsg->data((uint8_t*)dmaBuffers[idx] + sz, f, seed);
                 sz += m_tdetMsg->bytes;
+            }
+            if (m_corruptSeq && tid == TransitionId::L1Accept && f.seq == m_corruptSeq) [[unlikely]] {
+                size_t at = corrupt((uint8_t*)dmaBuffers[idx], sz, m_batcher != nullptr);
+                logging::warning("MemPoolSim: %s=%u: L1Accept seq %u lane %u: byte %zu of %zu inverted",
+                                 CorruptEnv, m_corruptSeq, f.seq, lane, at, size_t(sz));
             }
             m_ready.push_back({int32_t(sz), idx, (lane << 8) | m_virtChan});
             ++nReady;
