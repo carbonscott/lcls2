@@ -54,6 +54,11 @@ Two more parts of the device that some config scripts reach without rogue:
           traffic leaves the process.  A fault 'pv:<name>[=<value>]' makes that
           PV read back <value> (default 0).
 
+  proxy   a firmware AXI-Lite master the host drives through registers (surf AxiLiteMasterProxy:
+          Addr, Data, Rnw, then poll Done) does the access on a register store of its own; behind
+          one, a C1100 card's management (axipcie CmsSubsystem) answers its mailbox's requests
+          (CmsFirmware).
+
   UART    a camera behind a camera link FEB (cameralink_gateway: Opal, Piranha4) answers
           its serial commands, one character per 32-bit word on the lane's VC2 stream (surf
           ClinkSerialTx/ClinkSerialRx): the seed file's "_uart" {"dests": [stream dests],
@@ -168,6 +173,7 @@ class Store(object):
         self._counters = []     # (var_addr, offsets, sizes, hz, t0): free-running counters
         self._vars = {}         # word address -> [(path, var_addr, offsets, sizes)]
         self._hooks = {}        # word address -> fn(store): what a write there makes the device do
+        self._read_hooks = {}   # word address -> fn(store): run, under the lock, before a read there
         self.proxy_of = None    # the store whose AXI-Lite master proxy this one is behind
 
     def _span(self, addr, size):
@@ -196,6 +202,9 @@ class Store(object):
         with self._lock:
             self.ntrans += 1
             self.last = ('R', addr, size)
+            for a in range(addr - (addr % 4), addr + size, 4):
+                if a in self._read_hooks:
+                    self._read_hooks[a](self)
             buf = self.raw_read(addr, size)
             if self._counters:
                 now = time.monotonic()
@@ -422,6 +431,77 @@ class SimXvc(object):
         pass
 
 
+class CmsFirmware(object):
+    """The card management firmware (AMD CMS, pg348) behind an axipcie CmsSubsystem, as the host
+    uses its mailbox (axipcie _CmsProxy._Mailbox): the host writes a request into MAILBOX and sets
+    CONTROL_REG[5]; the firmware answers in MAILBOX, sets HOST_MSG_ERR_REG (0: no error) and clears
+    CONTROL_REG[5].  The bit clears at the host's second read after the request: the first is
+    pyrogue's write-verify of the bit the host just set, which the card's MicroBlaze, slower than
+    one register access, has not cleared yet.  Each cage's module (a QSFP) keeps its low-speed IO
+    register and its I2C bytes: a read answers what was last written, 0 if never.  A request
+    whose opcode this does not model is answered with HOST_MSG_ERR_REG 1."""
+
+    LOW_SPEED_READ, LOW_SPEED_WRITE = 0x0D, 0x0E
+    I2C_BYTE_READ, I2C_BYTE_WRITE = 0x0F, 0x10
+    CARD_INFO = 0x04
+
+    def __init__(self, sim, cms):
+        mb = cms.Mailbox
+        ctrl = mb.nodes['CONTROL_REG[5]']
+        self.path = cms.path
+        self.store = sim._locate(ctrl, wait=0)      # the AXI-Lite bus the CMS is on
+        a = sim._var_addr(ctrl)
+        self.ctrl, self.bit = a - (a % 4), 1 << ((a % 4) * 8 + ctrl.bitOffset[0])
+        self.err = sim._var_addr(mb.HOST_MSG_ERR_REG)
+        self.box = sim._var_addr(mb.MAILBOX)
+        self.busy, self.reads = False, 0
+        self.requests = {}                          # opcode -> how many
+        self.low_speed = {}                         # cage -> low-speed IO register
+        self.i2c = {}                               # (cage, page, byte) -> value
+        self.store._hooks[self.ctrl] = self._on_write
+        self.store._read_hooks[self.ctrl] = self._on_read
+        log.info('rogue_dev: %s is a CMS mailbox on %s (CONTROL_REG @0x%x)', self.path,
+                 self.store.name, self.ctrl)
+
+    def _word(self, st, a):
+        return int.from_bytes(st.raw_read(a, 4), 'little')
+
+    def _put(self, st, a, v):
+        st.raw_write(a, (v & 0xffffffff).to_bytes(4, 'little'))
+
+    def _on_write(self, st):
+        with st._lock:
+            if self.busy or not self._word(st, self.ctrl) & self.bit:
+                return
+            self.busy, self.reads = True, 1
+            box = [self._word(st, self.box + 4 * i) for i in range(6)]
+            op = (box[0] >> 24) & 0xff
+            self.requests[op] = self.requests.get(op, 0) + 1
+            err = 0
+            if op == self.LOW_SPEED_READ:
+                self._put(st, self.box + 8, self.low_speed.get(box[1], 0))
+            elif op == self.LOW_SPEED_WRITE:
+                self.low_speed[box[1]] = box[2]
+            elif op == self.I2C_BYTE_READ:
+                self._put(st, self.box + 0x14, self.i2c.get((box[1], box[2], box[4]), 0))
+            elif op == self.I2C_BYTE_WRITE:
+                self.i2c[(box[1], box[2], box[4])] = box[5] & 0xff
+            elif op == self.CARD_INFO:
+                self._put(st, self.box, self.CARD_INFO << 24)    # an empty card information list
+            else:
+                err = 1
+            self._put(st, self.err, err)
+
+    def _on_read(self, st):         # under the store's lock
+        if not self.busy:
+            return
+        if self.reads:
+            self.reads -= 1
+            return
+        self._put(st, self.ctrl, self._word(st, self.ctrl) & ~self.bit)
+        self.busy = False
+
+
 PV_PREFIX = 'pv:'
 
 
@@ -465,6 +545,7 @@ class _Sim(object):
         self.writes = []
         self.uart = None        # {"dests": [...], "replies": {...}, "default": ...} or None
         self.uarts = []
+        self.cms = []           # CmsFirmware: the card management firmware of each CmsSubsystem
         self._logf = None
         self._orig = None
 
@@ -583,6 +664,9 @@ class _Sim(object):
         for dev in root.deviceList:
             if type(dev).__module__.endswith('_AxiLiteMasterProxy') and type(dev).__name__ == '_Regs':
                 self._axil_proxy(dev)
+        for dev in root.deviceList:     # after the proxies: a CMS is behind one
+            if type(dev).__module__.endswith('_CmsProxy') and type(dev).__name__ == 'CmsSubsystem':
+                self.cms.append(CmsFirmware(self, dev))
         pfx = root.path + '.'
         for path in [p for p in self.seeds if p.startswith(pfx)]:
             var = self._resolve(root, path, 'seed')

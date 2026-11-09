@@ -71,6 +71,10 @@
     "status": "RUN",
     "note": "daq_sim up --det epixhr2x2 + cycle, with PSDAQ_SIM_PYTHONPATH naming lcls2-epix-hr-pcie and epix-hr-single-10k of the release: epixhr2x2_config.py against rogue_dev (DevRoot, the ePixHr10kT camera board over SRPv3), every pixel of raw (288, 384) checked through epixhr2x2_raw_2_0_1, and the epixhr2x2hw configuration detector"
   },
+  "det:drp:epixuhr3x2": {
+    "status": "RUN",
+    "note": "daq_sim up --det epixuhr3x2 + cycle: epixuhr3x2_config.py against rogue_dev (the C1100 card, its AXI-Lite proxy and CMS mailbox, the front-end board over SRPv3), its store's files from psdaq.sim.epixuhr_files; every pixel of the 336 x 576 panel checked through epixuhr3x2 raw()"
+  },
   "det:drp:hsd": {
     "status": "RUN",
     "note": "daq_sim up --det hsd + cycle: hsd_config.py against rogue_dev (l2si_drp DrpPgpIlvRoot) and, over PVA, simhsdioc (hsdpvs's PVs and what hsd134PVs does with them); every raw sample and fex peak checked through hsd_raw_3_0_0"

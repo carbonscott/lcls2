@@ -1,6 +1,7 @@
 #include "EpixUHR3x2.hh"
 
 #include "BEBDetector.hh"
+#include "MemPoolSim.hh"
 #include "PythonConfigScanner.hh"
 #include "XpmInfo.hh"
 
@@ -104,6 +105,8 @@ namespace Drp {
 
     const std::string module_name {"psdaq.configdb." + detType + "_config"};
 
+    _simInstall();      // Nothing without a simulated device (-d sim://)
+
     m_module = _check(PyImport_ImportModule(module_name.c_str()));
 
     PyObject* func_dict = _check(PyModule_GetDict(m_module));
@@ -183,6 +186,10 @@ namespace Drp {
     m_paddr = PyLong_AsLong(PyDict_GetItemString(mbytes, "paddr"));
     printf("*** EpixUHR3x2: paddr is %08x = %u\n", m_paddr, m_paddr);
 
+    if (m_sim) {                        // The timing link is simxpm's, not the emulated RxId
+      m_paddr = m_sim->paddr();
+      logging::info("EpixUHR3x2: simulated device, link id 0x%x from simxpm", m_paddr);
+    }
     // there is currently a failure mode where the register reads
     // back as zero or 0xffffffff (incorrectly). This is not the best
     // longterm fix, but throw here to highlight the problem. the
@@ -190,7 +197,7 @@ namespace Drp {
     // so that an automated software solution would know which
     // xpm TxLink's to reset (a chicken-and-egg problem) - cpo
     // Also, register is corrupted when port number > 15 - Ric
-    if (!m_paddr || m_paddr==0xffffffff || (m_paddr & 0xff) > 15) {
+    else if (!m_paddr || m_paddr==0xffffffff || (m_paddr & 0xff) > 15) {
       logging::critical("XPM Remote link id register illegal value: 0x%x. Try XPM TxLink reset.",m_paddr);
       abort();
     }

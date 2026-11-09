@@ -428,7 +428,7 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
 ```
 `--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
 `wave8he`, `hrencoder`, `epixm320`, `opal`, `piranha4`, `tb`, `epixquad` (§3g), `epixquad1kfps`,
-`epixUHR` (§3i), `jungfrau` (§3j), `epixhr2x2` (§3k), `tt` (§3l), the XpmDetector types
+`epixUHR`, `epixuhr3x2` (§3i), `jungfrau` (§3j), `epixhr2x2` (§3k), `tt` (§3l), the XpmDetector types
 `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f), and the digitizer `hsd` (§3i).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
@@ -508,18 +508,6 @@ that `BEBDetector::connectionInfo` calls at Alloc. For tt, the one-argument `tt_
 has not matched the DRP's two-argument call since 3b829abf4, and d6b1e7552 renamed that call
 to `<det>_connectionInfo`. For epixhr2x2, d6b1e7552 did add `epixhr2x2_connectionInfo`, and
 668cb79e1 renamed it back to a one-argument `epixhr2x2_connect(base)`.
-
-**Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
-- **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3i), and
-  `epixuhr3x2_init` returns with `seeds/epixuhr3x2.json`: its C1100 card's management (axipcie
-  `CmsProxy`) sits behind a surf `AxiLiteMasterProxy`, a firmware AXI-Lite master the host drives
-  through `Addr`/`Data`/`Rnw` and polls `Done` on, which `rogue_dev` emulates (any root with one:
-  the access goes to a register store of its own and `Done` is set), and the seeds give the
-  mailbox's ready and map id and make `CONTROL_REG[5]` answer at once. `epixuhr3x2_connectionInfo`
-  then fails in `manager.ReadAll()`: the root reads every QSFP register of the card's two cages,
-  each a mailbox request through the proxy, about 9500 in a row on one worker thread, and the
-  last ones pass rogue's 1 s transaction timeout (`Timeout waiting for register transaction ...
-  QsfpLowSpeedIo[0].QSFP_INT_L`). Its data framer and psana check are not written.
 
 ## 3f. XpmDetector types: fakecam, cspad, epixhremu, jungfrauemu, ts
 
@@ -697,16 +685,17 @@ hardware drp_gpu rejects them, as before, so `drp_gpu -D jungfrau` cannot be giv
 `slsHosts` that `Drp::Jungfrau` requires. That defect is not fixed here.
 
 **Not running yet:**
-- **epixuhr3x2:** `Gpu::EpixUHR3x2` configures through `Drp::EpixUHR3x2`, whose constructor
-  builds its rogue root itself (`_init_data_path_or_emu()`) instead of through
-  `BEBDetector::_init()`, so `rogue_dev` is never installed and `epixuhr3x2_init` opens the device
-  file: `rogue.GeneralError: AxiStreamDma::openShared: General Error: Failed to open device
-  file: sim://127.0.0.1:31099` (drp_gpu started by hand on that device). Past that it needs
-  what `drp -D epixuhr3x2` needs (§3e).
+- **epixuhr3x2:** not run under drp_gpu here. `Gpu::EpixUHR3x2` configures through
+  `Drp::EpixUHR3x2`, whose constructor builds its rogue root itself (`_init_data_path_or_emu()`)
+  instead of through `BEBDetector::_init()`, so until bdba77fec `rogue_dev` was never installed
+  and `epixuhr3x2_init` opened the device file: `rogue.GeneralError: AxiStreamDma::openShared:
+  General Error: Failed to open device file: sim://127.0.0.1:31099` (drp_gpu started by hand on
+  that device). bdba77fec makes that constructor install `rogue_dev` under a `sim://` device, as
+  `drp -D epixuhr3x2` needs (§3i); `drp_gpu -D epixuhr3x2` has not been run since.
 
-## 3i. The digitizer, the ePixQuad 1 kfps and the ePixUHR: hsd, epixquad1kfps, epixUHR
+## 3i. The digitizer, the ePixQuad 1 kfps and the ePixUHRs: hsd, epixquad1kfps, epixUHR, epixuhr3x2
 
-`daq_sim up --det hsd|epixquad1kfps|epixUHR`, then `daq_sim cycle` as in §3e.
+`daq_sim up --det hsd|epixquad1kfps|epixUHR|epixuhr3x2`, then `daq_sim cycle` as in §3e.
 
 - **hsd.** Its DRP class (`Digitizer`) is not a BEBDetector; with a `sim://` device it installs
   `rogue_dev` the same way before importing `hsd_config.py`, joins simxpm's readout group at
@@ -741,17 +730,38 @@ hardware drp_gpu rejects them, as before, so `drp_gpu -D jungfrau` cannot be giv
   simulated ones (`psdaq.sim.epixuhr_files`: Si5345 tables of a few registers, all-zero 168 x 192
   pixel maps) under the work dir and points it there. `seeds/epixUHR.json` is the PgpMonitor KCU
   (as epixm320's) and the camera's `RxId`, which `epixUHR_init` waits for.
+- **epixuhr3x2.** Its DRP class (`EpixUHR3x2`) runs its own init instead of BEBDetector's; with a
+  `sim://` device it installs `rogue_dev` the same way before importing `epixuhr3x2_config.py`, and
+  takes its timing link from simxpm (`EpixUHR3x2: simulated device, link id 0x... from simxpm`).
+  `epixuhr3x2_init` builds `epixuhr_3x2_readout_testing.Root`: the data C1100 card on the PCIe map
+  and the front-end board behind SRPv3 (`seeds/epixuhr3x2.json`: the card's hardware type, the
+  board's `RxId`). The card's management (axipcie `CmsSubsystem`, which `connectionInfo`'s `ReadAll`
+  reaches) sits behind a surf `AxiLiteMasterProxy`, a firmware AXI-Lite master the host drives
+  through `Addr`/`Data`/`Rnw` and polls `Done` on; `rogue_dev` emulates any such proxy (the access
+  goes to a register store of its own and `Done` is set) and, behind it, the CMS firmware
+  (`CmsFirmware`): a request the host writes into the mailbox and flags with `CONTROL_REG[5]` is
+  answered in the mailbox with `HOST_MSG_ERR_REG` 0, and the bit clears at the host's second read
+  after the request (the first is pyrogue's write-verify of the bit, which the card's MicroBlaze,
+  slower than one register access, has not cleared yet); each QSFP cage's low-speed IO and I2C
+  bytes keep what is written. The seeds give the mailbox's ready bit and map id. The config DB
+  entry is `epixuhr3x2_config_store.beam_cdict()` (files from `psdaq.sim.epixuhr_files`, as
+  epixUHR's) with `user.asic_enable` 0x3f: the panel's six ASICs. The store's own default, 0xf
+  (its `numAsics` 4), fails at Configure with this firmware tree: `setup_bypasses_for_disabled_asics`
+  writes 24 into `EventSeqMux[1].Bypass`, a 4-bit register (`EventFrameSequencerMux` with 4
+  slaves), and rogue raises `Value range error for Bypass`.
 
 | type | config entry points run | emulated device / stand-in | DRP data | psana check |
 |---|---|---|---|---|
 | hsd | `hsd_init` (`DrpPgpIlvRoot`, `hsd_unconfig` of A and B), `hsd_connect` (clock, QPLL, `TxLinkId`, `FEXOOR` age, `PADDR_U`, `MONPGP.remlinkid`), `hsd_config` (PGP resets, `READY`/`CONFIG` handshake twice, `MONTIMING`, buffers, `KEEPROWS`, `RESET.jesdclear`, `FWVERSION`), `hsd_unconfig` | `DrpPgpIlvRoot` seeds; `simhsdioc` | the TimingHeader's opaque words as the hsd event header (raw and fex streams, JESD ok), then a raw stream of 1160 12-bit samples and a fex stream of 44 words: 3 skip groups around 2 peaks | `hsd_raw_3_0_0` `waveforms()` every sample, `peaks()` every peak's start and samples |
 | epixquad1kfps | `epixquad1kfps_init` (`DevRoot`, `ePixQuad.Top` with its PROM), `_connectionInfo`, `_config`, `_enable`, `_disable`, `_unconfig` | as epixquad, plus `Top.AxiPcieCore` image name and `FpgaVersion`, and the PROM's status byte | as epixquad | `epix10ka_raw_3_0_1` raw (4, 352, 384), every pixel, 14 bit |
 | epixUHR | `epixUHR_init` (PgpMonitor, the camera `Root`, `ConfigLclsTimingV2`, the `RxId` wait), `_connectionInfo`, `_config` (PLL, ASIC gains, batchers), `_enable`, `_disable`, `_unconfig` | PgpMonitor KCU, `RxId` | 1: timing copy; 2-5: ASICs 0-3, each 168 x 192 12-bit pixels packed as the ASIC's 8 serial lanes send them (psana's descrambler run backwards) | `epixuhr_raw_*` raw (4, 168, 192) through its descrambler, every pixel, 12 bit |
+| epixuhr3x2 | `epixuhr3x2_init` (the readout system's `Root`: PLL check, `ConfigLclsTimingV2`, power-up), `_connectionInfo` (`TxId`/`RxId`, `Stop`, `ReadAll` through the CMS mailbox, serial number), `_config` (power, bypasses, waveforms, ASICs, descramblers, gains, charge injection, trigger registers), `_enable`, `_disable`, `_unconfig` | C1100 hardware type, the AXI-Lite proxy and the CMS firmware, `RxId` | 2: timing copy; 3: the panel, 336 x 576 uint16 in row order | `epixuhr3x2_raw_1_0_0` raw (1, 336, 576), every pixel, 12 bit |
 
 Fault runs that fail Configure and name the register: hsd `DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset`
 (rogue's write-verify when `hsd_config` pulses the QPLL reset), epixquad1kfps
 `DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`, epixUHR
-`Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`.
+`Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`, epixuhr3x2
+`Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay`.
 
 ## 3j. Jungfrau: `daq_sim up --det jungfrau`
 

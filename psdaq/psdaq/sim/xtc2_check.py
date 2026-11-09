@@ -52,7 +52,8 @@ import sys
 IMAGE_TYPES = {'epix100': ((704, 768), 14), 'epixm320': ((4, 192, 384), 15),
                'opal': ((1024, 1024), 12), 'piranha4': ((2048,), 12),
                'epixquad': ((4, 352, 384), 14), 'epixquad1kfps': ((4, 352, 384), 14),
-               'epixUHR': ((4, 168, 192), 12), 'epixhr2x2': ((288, 384), 16)}
+               'epixUHR': ((4, 168, 192), 12), 'epixhr2x2': ((288, 384), 16),
+               'epixuhr3x2': ((1, 336, 576), 12)}
 # BEB types whose config code records, besides the type's segment, a detector of the whole
 # device's configuration with no event data: {type: (its name, its config interface)}
 CONFIG_DETECTORS = {'epixhr2x2': ('epixhr2x2hw', 'epixhr2x2hw_config_2_0_0')}

@@ -668,6 +668,21 @@ size_t UdpFront::frame(uint8_t* dst)
     return in.pos;
 }
 
+// epixuhr3x2 (EpixUHR3x2::_event): the panel subframe (tdest 3), 336 x 576 uint16 in row order, as
+// the firmware (v5.0.0 on) assembles the six ASICs (disabled ones zero-filled; user.asic_enable
+// enables all six here); psana's epixuhr3x2 raw() (raw alg 1.0.0) keeps each word's low 12 bits
+// (gain bit 0, 11 data bits).  Pixel i of the panel is pattern(seed, seq, i, 12).  Tdest 2 (the
+// detailed timing frame, unused by the DRP) carries a copy of the timing frame.
+static const unsigned Uhr3x2Rows = 336, Uhr3x2Cols = 576, Uhr3x2Bytes = 2 * Uhr3x2Rows * Uhr3x2Cols;
+
+static void epixuhr3x2Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const PixelMap pixels(Uhr3x2Rows * Uhr3x2Cols, 12, [](size_t j) { return uint32_t(j); });
+    out.timingCopy(2);
+    pixels.fill(reinterpret_cast<uint16_t*>(out.data()), seed, f.seq);
+    out.tail(Uhr3x2Bytes, 3);
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
@@ -686,6 +701,7 @@ static const MemPoolSim::Batcher Batchers[] = {
     { "epixhr2x2", 16 + 2 * _padded(Hr2NestedBytes), epixhr2x2Data, true },
     // its data comes from the module's UDP stream (UdpFront above), not from a framer
     { "jungfrau", _padded(32) + _padded(UdpFront::DataBytes), nullptr },
+    { "epixuhr3x2", _padded(32) + _padded(Uhr3x2Bytes), epixuhr3x2Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)

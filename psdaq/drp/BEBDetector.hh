@@ -56,6 +56,7 @@ protected:  // This is the sub class interface
                                       std::vector< XtcData::Array<uint8_t> >&) {}
 protected:
     void _init(const char*);  // Must call from subclass constructor
+    void _simInstall();       // With -d sim://: rogue_dev before the config module is imported
     void _init_feb();         // Must call from subclass constructor
     // Helper functions
     std::vector< XtcData::Array<uint8_t> > _subframes(void* buffer, unsigned length);
