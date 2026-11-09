@@ -592,8 +592,43 @@ A record proves a row only if all of these hold, and the row's line names the fi
     its four PVs served with PAYLOAD's type ID the mask; for hpsBldCopy most of its events
     carrying the time of an hpsBldServer event (plus the pulse delta, as its Client gives it),
     within the run. As everywhere (COV-LIMIT), a witness rewritten and re-hashed would pass.
+  - wave8pvs (R6b: another site env, its board simulated): lab3-wave8.cnf starts `wave8pvs --l 0`,
+    which imports `rogue.hardware.pgp` (the DAQ env's rogue, 6.1.3, has none) and the wave8 package
+    (in no env; the site keeps its source tarballs). `up --wave8pvs` runs it under procmgr as
+    `<env>/bin/python -m psdaq.cas.wave8pvs --l 0 --dev sim://wave8pvs --base DAQ:SIM:WAVE8`, the
+    env the one `$PSDAQ_SIM_WAVE8PVS_ENV` names (the entry's `env:` gives its `PATH`,
+    `LD_LIBRARY_PATH` and a `PYTHONPATH` of the wave8 package's python and its submodules', which
+    `up` unpacks from the tarball `$PSDAQ_SIM_WAVE8PVS_SRC` under `<workdir>/wave8pvs`, and this
+    psdaq). Without both variables `up --wave8pvs` refuses, and `daq_sim matrix` leaves it out.
+    On S3DF:
+    `PSDAQ_SIM_WAVE8PVS_ENV=/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/ps-4.5.16` (rogue 5.9.3) and
+    `PSDAQ_SIM_WAVE8PVS_SRC=/sdf/group/lcls/ds/ana/sw/source_files/wave8-1.0.1.tar.gz`. No other
+    pair runs: wave8-1.0.0's `RawBuffers.py` declares `OvflCntBuff[i]` a 32-bit `pr.Bool`, which
+    pyrogue rejects (`The bitSize param of Model Bool must be 1`) in every site env whose rogue
+    has `rogue.hardware.pgp` (5.9.3 in ps-4.5.16, 5.14.0 in ps-4.5.17 to 4.5.24, 5.16.0 in
+    ps-4.5.26), and wave8-1.0.1's surf calls `get(read)` positionally, which 5.14.0 and 5.16.0
+    reject (their `get` takes keywords only), so it needs 5.9.3. Its board is
+    `psdaq.sim.rogue_dev`, installed in its process by `--dev sim://` (seeds `seeds/wave8pvs.json`:
+    1.0.1's `Top.start` raises unless `AxiVersion.FpgaVersion` is its `FwVersionLock`); rogue_dev
+    now writes its replies as a bytearray (rogue 5.9.3 takes no bytes there) and replaces Xilinx's
+    Xvc only where rogue has one (5.9.3 has none). wave8pvs itself needed production fixes, each for
+    hardware too (base `b6f370d9f` against this branch, no simulated device,
+    `work/tail3/basehead-w8*.log`): it called `Top.start(pollEn=..., initRead=..., timeout=...)`,
+    which no rogue since 5 takes (a Root takes them when it is made; `start()` takes nothing), so
+    with any site rogue it could not start once its board answered; and it passed `dataCapture`,
+    which wave8 1.0.1's `Top` does not take (`TypeError` at `wave8pvs.py:66` at base with 1.0.1;
+    with 1.0.0 both fail opening `/dev/datadev_0`, as before). `up` waits for its PV list. While
+    the run is Running the cycle (`gui_witness.wave8pvs_entry`) gets every PV its log lists
+    (pyrogue's `EpicsPvServer.dump()`, `<pv> -> <register path>`; 972 at 1.0.1) from it on its own
+    PVA ports, finds the pids holding its PVA TCP port, and puts `Top:AxiVersion:ScratchPad` to
+    0x5a5a and back, reading it back; its board logs each register write by path
+    (`logs/wave8pvs-writes.jsonl`). Coverage (`coverage.pvs_problem`) needs a simulated device in
+    its command line, every PV its own log lists under its `--base` served, its PVA port held by
+    the pid its procmgr log gives, the put PV one its log lists with that register path, read
+    back as 2 or more distinct numbers, each after the first one its board logged written to the
+    register.
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R3b, R4,
-  R5, R8, the BLD server, the HPS chain) and checks the row's line says why.
+  R5, R8, the BLD server, the HPS chain, wave8pvs) and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
@@ -814,6 +849,7 @@ its evidence record lists their logs.
 | `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `simtpr -P DAQ:SIM:TPR` and `simdti -P DAQ:SIM:DTI`, each on PVA ports of its own (31300 + 10 p + 0..5: simxpm stays the only server on the node's search port); under procmgr the tree's own PV servers `bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX` and `hpsdbuscas -P DAQ:SIM:HPSCPA` (lab3-bld.cnf), on ports 31300 + 10 p + 6..9 (it serves the address, it sends nothing); with `--gui` also the GUIs on them (R4): `hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `tprca DAQ:SIM:TPR` and `python -m psdaq.cas.dtica DAQ:SIM:DTI` (no `dtica` command; lab3-cam.cnf runs `launch_py <bins>/dtica.py`), offscreen, each with `EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_BROADCAST_PORT=<its stand-in's search port>`, and `pvatable --bases DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B --fields MONTIMING.trigcntsum ... MONRAWBUF.freeevt` (test-hsd.cnf) on simhsd the same way and `xpmpva DAQ:SIM:XPM:0` on simxpm | the stand-ins of `hsdpvs`, `hsd134PVs`, `tprcas`, `tprioc` and `dticas` (R3); bldcas and hpsdbuscas themselves (R3b) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the tables `tprcas.main()` and `dticas.main()` build) and reads its monitoring counters (`MONTIMING`, `EVTCNT`, `3:TimFrRate`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs`, `prog:hsd134PVs` and `prog:tprioc` (their names read from their C++ sources) and `prog:tprcas` from (no config starts `dticas`, so it has no row). From bldcas and hpsdbuscas it gets every name their source defines and puts one PV to a new value and back, reading it back (R3b). It walks hsdpva, pvatable, tprca, dtica and xpmpva offscreen once more, each searching only its stand-in (xpmpva: simxpm's own ports), and keeps each PV-bound widget's texts (one read per widget): their `programs` entries name the stand-in (R4) |
 | `--tpr` | `tprtrig`: `tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <p>` (srcf-rix.cnf, flags `sp`); `enc_trig`: `tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <p> -u enc_trig` (rix.py's `mono_enc_trig`, a `tpr` level process of the partition); `lclsbldsvc`: `lclsBldServer -i lo -r 4 -b ebeam -a 239.254.33.0 -p <31240 + p>` (lab3-bld.cnf:52 with the `-b` its source requires, on loopback, off the production network), each with `PSDAQ_SIM_TPR=<workdir>/tpr/<id>`; and the service `tprframes` (`python -m psdaq.sim.tprframes <workdir>/tpr/lclsbldsvc/tpra`) | a simulated TPR card each: `tpr::Client` maps `<workdir>/tpr/<id>/tpra`, a file, instead of `/dev/tpra` (§3d, R8); tprframes delivers the timing frames of lclsBldServer's card at the fixed rate its channel selects | while the run is Running, `psdaq.sim.gui_witness` reads each card's channel and trigger registers once a second and receives lclsBldServer's packets on 239.254.33.0 (loopback); coverage checks the registers against what each program's command line programs, and lclsBldServer's packets against its command line and the run |
 | `--hps` | `hpsbldcas`: `bldcas -P DAQ:SIM -A 239.254.34.0 --port <31402 + 10 p> HPSEX HPSCPA`; `hpsbldsvc`: `hpsBldServer -i lo -n DAQ:SIM:HPSEX -p 0x1e0 -a 127.0.0.1 -r <31400 + 10 p> -d <31401 + 10 p>`; `hpsbldcpa`: `hpsBldCopy -i lo -I DAQ:SIM:HPSEX -O DAQ:SIM:HPSCPA -o 0` (lab3-bld.cnf, on loopback, off the production network); and the service `simhps` | hpsBldServer's crate, `psdaq.sim.simhps` (§3d, R9): an RSSI/SRPv3 register server and a diagnostic bus timed by simxpm's pulses | while the run is Running, `psdaq.sim.gui_witness` receives both programs' packets on 239.254.34.0 and .1 (loopback) with the pids that sent them and reads hpsBldServer's PVs; coverage checks them against the programs' command lines and the run |
+| `--wave8pvs` | `wave8pvs`: `<$PSDAQ_SIM_WAVE8PVS_ENV>/bin/python -m psdaq.cas.wave8pvs --l 0 --dev sim://wave8pvs --base DAQ:SIM:WAVE8` (lab3-wave8.cnf, in a site conda env of its own, R6b), the wave8 package from `$PSDAQ_SIM_WAVE8PVS_SRC` unpacked under `<workdir>/wave8pvs`; PVA ports 31406 + 10 p and 31407 + 10 p | its board, `psdaq.sim.rogue_dev` in its process (§3d) | while the run is Running, `psdaq.sim.gui_witness` gets every PV its log lists and puts `Top:AxiVersion:ScratchPad` and back; coverage checks them against its log and its board's writes |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; `daqstat -i 1 <WD>/slurm/daqstat.py` (mfx.py: `daqstat -i 5`), offscreen, with `<WD>/slurm/bin` (simslurm's shims for squeue, sacct, scontrol, sinfo, sbatch, scancel) first on its PATH and `HOME=<WD>/slurm/home`; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime`; and the service `simslurm`, a Slurm job for each process of `daq_sim.cnf` (`<WD>/slurm/daqstat.py`, daqmgr's config of them; state in `<WD>/slurm/state.json`) | control's status messages; simxpm's PVs; simslurm's jobs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing. daqstat's walk has its Slurm commands answered by simslurm and records each refresh of its table, while the cycle reads squeue from simslurm itself every 0.5 s (R5, §3d) |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
