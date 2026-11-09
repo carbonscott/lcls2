@@ -167,6 +167,14 @@
     "status": "N/A",
     "reason": "no source in the tree: srcf-tmo.cnf:174 runs 'python tmo_acr_opal_feedback.py -P TMO:ACR' from the hutch's working dir; no file of that name exists in the tree"
   },
+  "prog:xpmPVs": {
+    "status": "N/A",
+    "reason": "R7, not built by the tree: lab3-xtpg.cnf:28 runs 'xpmPVs -a 10.0.3.104 -P DAQ:LAB2', but psdaq/psdaq/meson.build:18 comments its directory out (#subdir('xpm'); psdaq/psdaq/CMakeLists.txt:10 #add_subdirectory(xpm)) and psdaq/psdaq/xpm/meson.build:31 builds only xpm_simple (xpmPVs is only in xpm/CMakeLists.txt:44): 'meson compile -C builddir xpmPVs' fails with \"ERROR: Can't invoke target `xpmPVs`: target not found\""
+  },
+  "prog:hsd64PVs": {
+    "status": "N/A",
+    "reason": "R7, classes absent from the tree: lab3-hsd64.cnf:31 (also lab3-hsd64_cg.cnf:32, lab3-simvalid.cnf:40) runs 'hsd64PVs -P DAQ:LAB2:HSD:DEV06_3E -d /dev/pcie_adc_3e -I', but psdaq/psdaq/hsd/src/hsd64PVs.cc:11,13,14 include Module64.hh, PV64Stats.hh and PV64Ctrls.hh, which the tree does not have (git ls-files lists none), and psdaq/psdaq/hsd/meson.build builds no hsd64PVs: 'meson compile -C builddir hsd64PVs' fails with \"target not found\" and compiling hsd64PVs.cc fails with \"fatal error: psdaq/hsd/src/Module64.hh: No such file or directory\""
+  },
   "prog:epics_exporter": {
     "status": "RUN",
     "note": "daq_sim up --gui + cycle (R2, a PV monitor): procmgr runs epics_exporter -H tst -I xpm-0 -M <prom> -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime (as neh-base.cnf's pvrtmon-0, on simxpm's PVs); while the run is Running cycle scrapes its Prometheus gauges once a second and logs/gui_witness.json names the run and the partition's gauges it served, NumL0Acc changing, within the run's L1Accepts"
