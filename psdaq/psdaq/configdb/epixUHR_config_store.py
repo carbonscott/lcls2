@@ -18,6 +18,14 @@ elemCols = 192
 
 import os
 
+# epixUHR_cdict() reads the PLL register tables (pll/) and the pixel bit maps (pixelBitMaps_prod/)
+# from this directory; the EPIXUHR_CONFIG_DIR environment variable names another one.
+EPIXUHR_CONFIG_DIR = '/cds/home/p/psrel/EpixUHR'
+
+
+def epixuhr_config_dir():
+    return os.environ.get('EPIXUHR_CONFIG_DIR', EPIXUHR_CONFIG_DIR)
+
 
 def epixUHR_cdict():
 
@@ -77,7 +85,7 @@ def epixUHR_cdict():
         top.set(f"expert.App.BatcherEventBuilder{n}.Timeout",			0	,   'UINT32'   )
         
     conv = functools.partial(int, base=16)
-    pathPll='/cds/home/p/psrel/EpixUHR/pll/'
+    pathPll=epixuhr_config_dir()+'/pll/'
 
     base = 'expert.Pll.'
     conv = functools.partial(int, base=16)
@@ -88,7 +96,7 @@ def epixUHR_cdict():
     top.set(base+'_2_3_9',      np.loadtxt(pathPll+'Si5345-B-156MHZ-out2-3-9.csv',                   dtype='uint16', delimiter=',', skiprows=1, converters=conv))
     top.set(base+'_0_5_7_v2',   np.loadtxt(pathPll+'Si5345-B-156MHZ-out-0-5-and-7-v2-Registers.csv', dtype='uint16', delimiter=',', skiprows=1, converters=conv))
             
-    pathpix='/cds/home/p/psrel/EpixUHR/pixelBitMaps_prod/'
+    pathpix=epixuhr_config_dir()+'/pixelBitMaps_prod/'
     #pixelBitMapDic = {'_FL_FM_FH':0, '_FL_FM_FH_InjOff':1, '_allConfigs':2, '_allPx_52':3, '_allPx_AutoHGLG_InjOff':4, '_allPx_AutoHGLG_InjOn':5, '_allPx_AutoMGLG_InjOff':6, '_allPx_AutoMGLG_InjOn':7, '_allPx_FixedHG_InjOff':8, '_allPx_FixedHG_InjOn':9, '_allPx_FixedLG_InjOff':10, '_allPx_FixedLG_InjOn':11, '_allPx_FixedMG_InjOff':12, '_allPx_FixedMG_InjOn':13, '_crilin':14, '_crilin_epixuhr100k':15, '_defaults':16, '_injection_corners':17, '_injection_corners_px1':18, '_management':19, '_management_epixuhr100k':20, '_management_inj':21, '_maskedCSA':22, '_truck':23, '_truck_epixuhr100k':24, '_xtalk_hole':25}
     pixelBitMapDic = {'_0_default':0, '_1_injection_truck':1, '_2_injection_corners_FHG':2, '_3_injection_corners_AHGLG1':3, '_4_extra_config':4, '_5_extra_config':5, '_6_truck2':6, '_7_on_the_fly':7}
     top.define_enum('pixelMapEnum', pixelBitMapDic)
