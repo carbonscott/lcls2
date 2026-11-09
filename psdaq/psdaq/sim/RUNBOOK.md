@@ -924,8 +924,18 @@ expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.` at Configure), 
 cannot be in the xtc. The store now writes `ROI0`, `ROI1`, `SAD0`, `SAD1`, `SAD2`, `tt_config`
 maps them to the camera's `ROI[i]` and `SAD[i]` (as it maps `PllConfig0` to `PllConfig[0]`), and
 `TimeTool::_configure` reads `expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI0` and `ROI1`.
-Config DB entries written by the old store keep the old names and still abort at Configure;
-they must be written again.
+Config DB entries written by the old store keep the old names and must be written again
+(`tt_config_store.py`). With 149eb4dee alone such an entry hung Configure instead of aborting:
+`config_expert` set the camera's `ROI[0]` under rogue's own name, which sends no serial
+command, and waited for a reply (`sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]`
+in the drp's log; control's `tt_0 did not respond to configure`, then to disconnect).
+690b84618 makes `config_expert` refuse such an entry before it sets anything: the drp's log has
+`ValueError: tt_config: the config DB entry has
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0], ROI[1], SAD[0], SAD[1], SAD[2], which
+tt_config_store now writes as ROI0, ROI1, SAD0, SAD1, SAD2 (...): write the entry again with
+tt_config_store.py, or rename those keys`, then `**** python error` and signal 6, as soon as
+Configure reaches the DRP. Control still reports `tt_0 did not respond to configure` when its
+60 s wait ends, as for any DRP that stops at Configure.
 
 **Not fixed: the timetool's processing settings are skipped, on hardware as here.** The store
 writes them under `expert.TimeToolKcu1500.Application.AppLane`: the raw-data and background
