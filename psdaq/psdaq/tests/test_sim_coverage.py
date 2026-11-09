@@ -1184,6 +1184,132 @@ def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
     assert code == 1 and 'shows simxpm read no live value under DAQ:SIM:HSD' in line
 
 
+def own_server_entry(w, e, missing=(), prefix='DAQ:SIM:HPSEX'):
+    """Make a 'programs'-shaped entry the 'servers' entry of bldcas serving its own PVs (R3b): marked as the
+    program's, its own prefix and interface, and the PORT it put and read back."""
+    e.update(program=True, prefix=prefix, reads=[{'name': prefix + ':PORT', 'values': ['11001', '11002', '11001']}],
+             interfaces={'bldcas': {'defined': 2, 'served': 2 - len(missing), 'missing': list(missing)}})
+    w['servers'] = w.pop('programs')
+
+
+BLDCAS = dict(row='prog:bldcas', cmd='bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX')
+
+
+def test_a_pv_server_of_the_tree_is_run_with_a_witness_of_its_own_pvs(tmp_path):
+    """R3b: a RUN row whose program is itself a PV server (bldcas, hpsdbuscas) and never names the run is
+    proven by a 'servers' entry keyed by the program and marked "program": true: read within the run's
+    L1Accepts, every name its source defines served, a PV under its prefix with 2 or more numbers, and the
+    prefix under the -P of the program's own listed log."""
+    code, line = witness_run(tmp_path, mutate=own_server_entry, **BLDCAS)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+R3B_FORGERIES = {
+    'unmarked': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.pop('program'))),
+                 'has no programs entry for bldcas'),
+    'other-prefix': (dict(mutate=lambda w, e: own_server_entry(w, e, prefix='DAQ:LAB2:HPSEX')),
+                     'its bldcas entry reads under DAQ:LAB2:HPSEX, which no listed log of bldcas serves (its -P: DAQ:SIM)'),
+    'other-program-log': (dict(cmd='hpsdbuscas -P DAQ:SIM:HPSCPA'), 'lists no log of bldcas'),
+    'missing-name': (dict(mutate=lambda w, e: own_server_entry(w, e, ['DAQ:SIM:HPSEX:ADDR'])),
+                     'bldcas does not serve 1 of the 2 PVs bldcas defines, e.g. DAQ:SIM:HPSEX:ADDR'),
+    'no-interface': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.pop('interfaces'))),
+                     'its bldcas entry shows no interface of bldcas'),
+    'not-live': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update(
+        reads=[{'name': 'DAQ:SIM:HPSEX:PORT', 'values': ['11001', '11001']}]))),
+        'shows bldcas read no live value under DAQ:SIM:HPSEX'),
+    'after-the-run': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update(end=L1_LAST + 0.5))),
+                      'not within the run\'s L1Accepts'),
+    'failed': (dict(mutate=lambda w, e: (own_server_entry(w, e), e.update({'pass': False, 'problems': ['put']}))),
+               'says bldcas failed'),
+    'other-run': (dict(mutate=lambda w, e: (own_server_entry(w, e), w.update(run_id='tstx00001/r0002'))),
+                  'names run tstx00001/r0002, the record says tstx00001/r0001'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R3B_FORGERIES))
+def test_r3b_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R3B_FORGERIES[case]
+    code, line = witness_run(tmp_path, **dict(BLDCAS, **kw))
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def slurm_entry(w, e, refreshes=None, squeue=None):
+    """Make a 'programs'-shaped entry daqstat's (R5): its table at each refresh and the cycle's squeue reads of
+    simslurm, every job RUNNING; 2 refreshes within the run's L1Accepts, each 0.2 s from a read."""
+    rows = [['control', 'RUNNING'], ['teb0', 'RUNNING'], ['fakecam_0', 'RUNNING']]
+    jobs = {f'x0_p5_s0_{i}': 'RUNNING' for i, _ in rows}
+    e.update(kind='slurm', comment_prefix='x0_p5_s0', reads=[],
+             refreshes=refreshes if refreshes is not None else [{'t': L1_FIRST + 2, 'rows': rows},
+                                                                 {'t': L1_FIRST + 3, 'rows': rows}],
+             squeue=squeue if squeue is not None else [{'t': L1_FIRST + 2.2, 'jobs': jobs},
+                                                       {'t': L1_FIRST + 3.2, 'jobs': jobs}])
+
+
+DAQSTAT = dict(row='prog:daqstat', cmd='daqstat -i 1 /w/slurm/daqstat.py')
+ROWS3 = [['control', 'RUNNING'], ['teb0', 'RUNNING'], ['fakecam_0', 'RUNNING']]
+
+
+def test_daqstat_is_run_when_its_refreshes_showed_what_squeue_said(tmp_path):
+    """R5: a GUI that reads no PV (daqstat: Slurm job states) is RUN when its walk recorded 2 or more refreshes
+    within the run's L1Accepts whose table shows, for every row, the state the nearest independent squeue read
+    (by the cycle, within 1.5 s) gave that process's job."""
+    code, line = witness_run(tmp_path, mutate=slurm_entry, **DAQSTAT)
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (witness_run arguments, what the row's line says)
+R5_FORGERIES = {
+    'one-refresh': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': ROWS3}])),
+                    'shows daqstat refreshed 1 time(s) during the run'),
+    'same-refresh-twice': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': ROWS3}] * 2)),
+                           'shows daqstat refreshed 1 time(s) during the run'),
+    'stale-table': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[
+        {'t': L1_FIRST + 2, 'rows': ROWS3}, {'t': L1_FIRST + 3, 'rows': [['control', 'PENDING']] + ROWS3[1:]}])),
+        'the refresh at {:.3f} shows control PENDING, squeue said RUNNING'.format(L1_FIRST + 3)),
+    'no-read-near': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[{'t': L1_FIRST + 0.1, 'jobs': {
+        f'x0_p5_s0_{i}': 'RUNNING' for i, _ in ROWS3}}])), 'no squeue read within 1.5 s of the refresh'),
+    'no-squeue': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[])), 'it lists no squeue read'),
+    'other-jobs': (dict(mutate=lambda w, e: slurm_entry(w, e, squeue=[{'t': L1_FIRST + 2.2, 'jobs': {'x9_p1_s0_x': 'RUNNING'}},
+                                                                     {'t': L1_FIRST + 3.2, 'jobs': {'x9_p1_s0_x': 'RUNNING'}}])),
+                   'shows control RUNNING, squeue said COMPLETED'),
+    'empty-table': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST + 2, 'rows': []},
+                                                                          {'t': L1_FIRST + 3, 'rows': []}])),
+                    'shows no job squeue listed'),
+    'before-the-run': (dict(mutate=lambda w, e: slurm_entry(w, e, refreshes=[{'t': L1_FIRST - 3, 'rows': ROWS3},
+                                                                             {'t': L1_FIRST + 3, 'rows': ROWS3}])),
+                       'is not within the run\'s L1Accepts'),
+    'no-prefix': (dict(mutate=lambda w, e: (slurm_entry(w, e), e.pop('comment_prefix'))), 'it gives no job comment prefix'),
+    'walk-outside-the-run': (dict(mutate=lambda w, e: (slurm_entry(w, e), e.update(end=L1_LAST + 1))),
+                             'not within the run\'s L1Accepts'),
+    'no-daqstat-log': (dict(cmd='procstat -p 5 -i 1 /w/daq_sim.cnf'), 'lists no log of daqstat'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R5_FORGERIES))
+def test_r5_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R5_FORGERIES[case]
+    code, line = witness_run(tmp_path, **dict(DAQSTAT, **kw))
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_r5_daqstat_must_list_the_runs_processes(tmp_path):
+    """With procmgr logs (# ID:) naming the run in the record, a matched refresh must list each of them."""
+    entry = {'kind': 'slurm', 'comment_prefix': 'x0_p5_s0', 'pass': True, 'start': 1.0, 'end': 2.0,
+             'refreshes': [{'t': 1.0, 'rows': [['control', 'RUNNING']]}, {'t': 2.0, 'rows': [['control', 'RUNNING']]}],
+             'squeue': [{'t': 1.1, 'jobs': {'x0_p5_s0_control': 'RUNNING'}}, {'t': 2.1, 'jobs': {'x0_p5_s0_control': 'RUNNING'}}]}
+    ok, why = coverage.slurm_matched(entry, 0.5, 2.5)
+    assert len(ok) == 2 and why is None
+    w = {'run_id': RUN_ID, 'xtc2': ['/f.xtc2'], 'programs': {'daqstat': entry}}
+    runs = {'/f.xtc2': {'l1_first': 1 << 32, 'l1_last': 3 << 32}}
+    assert coverage.entry_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control'}) is None
+    why = coverage.entry_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control', 'fakecam_0'})
+    assert why == 'shows daqstat listed no job of fakecam_0 (processes whose logs name the run)'
+    # as every GUI's, daqstat's row also needs procmgr's own instance of it through the run (procmgr_span_problem)
+    why = coverage.live_witness_problem('daqstat', w, RUN_ID, ['/f.xtc2'], runs, 'programs', {'control'})
+    assert why.startswith('the record lists no procmgr log (# ID:) of daqstat')
+
+
 def test_a_monitor_is_run_when_a_gauge_of_the_partition_changed_during_the_run(tmp_path):
     """R2c: a PV monitor (epics_exporter, procmgr id pvrtmon_0) has a 'programs' entry like a GUI's: the
     gauges it served, named by the PV they export; one under the partition must take 2 or more values."""
@@ -1357,3 +1483,87 @@ def test_commands_return_the_verdict(tmp_path, argv):
     os.remove(files[0])
     r = subprocess.run(cmd, capture_output=True, text=True, env=env, timeout=300)
     assert r.returncode == 1 and 'FAIL' in r.stdout
+
+
+CARD = '/w/tpr/tprtrig/tpra'
+TPRTRIG_CMD = 'tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p 5'
+
+
+def tpr_regs(control=7, evtsel=(1 << 30) | (3 << 11) | 5, trig=(1 << 31, 2, 10, 0), t=L1_FIRST + 2):
+    """One read of a TPR card as gui_witness.tpr_reads keeps it: channel 0 and trigger 0 as given, the rest 0."""
+    chans = [{'control': 0, 'evtSel': 0} for _ in range(14)]
+    chans[0] = {'control': control, 'evtSel': evtsel}
+    trigs = [{'control': 0, 'delay': 0, 'width': 0, 'delayTap': 0} for _ in range(12)]
+    trigs[0] = dict(zip(('control', 'delay', 'width', 'delayTap'), trig))
+    return {'t': t, 'channels': chans, 'triggers': trigs}
+
+
+def r8_run(tmp_path, row='prog:tprtrig', cmd=TPRTRIG_CMD, card_line=f'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is {CARD}',
+           mutate=None):
+    """(exit code, line) of a record for an R8 row (a TPR program on a simulated TPR card): the run's xtc2 file, the
+    program's own log (saying which card tpr::Client mapped) and a gui_witness whose 'tpr' entry holds the card's
+    register reads during the run."""
+    d = tmp_path / 'wd'
+    xtc = write_run(d / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    lines = [card_line, 'Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra0 is /w/tpr/tprtrig/tpra0'] if card_line else []
+    log = write_log(d / 'prog.log', cmd, *lines, 'Configuring channel 0 outputs 0x1 for Partition 5')
+    prog = row.split(':', 1)[1]
+    w = gui_witness(xtc, [prog], kind='tpr', id='tprtrig', card=CARD, reads=[tpr_regs(t=L1_FIRST + 2),
+                                                                            tpr_regs(t=L1_FIRST + 3)], live=['trigger0'])
+    if mutate:
+        mutate(w, w['programs'][prog])
+    files = [xtc, log, write_witness(d / 'gui_witness.json', w)]
+    status = write_status(tmp_path / 'status.json', {row: {'status': 'RUN'}})
+    record([row], files, tmp_path / 'evidence')
+    code, out = run_check(status, tmp_path / 'evidence')
+    print(line_of(out, row))
+    return code, line_of(out, row)
+
+
+def test_a_tpr_program_is_run_when_its_card_held_what_its_command_line_programs(tmp_path):
+    """R8: tprtrig's own log (saying tpr::Client mapped the card) and 2 reads of the card within the run, each with
+    channel 0 started on partition 5 (procmgr's -p) and trigger 0 from channel 0, delay 2, width 10; tpr_trigger's
+    channel follows the partition's readout group."""
+    code, line = r8_run(tmp_path / 'a')
+    assert 'evidence ' in line and 'NO VALID' not in line
+    code, line = r8_run(tmp_path / 'b', row='prog:tpr_trigger',
+                        cmd='tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p 5 -u enc_trig')
+    assert 'evidence ' in line and 'NO VALID' not in line
+
+
+# name: (r8_run arguments, what the row's line says)
+R8_FORGERIES = {
+    'no-card-line': (dict(card_line=None), 'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-card': (dict(card_line='Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is /w/tpr/other/tpra'),
+                   'no listed log of tprtrig says tpr::Client mapped it'),
+    'other-delay': (dict(cmd=TPRTRIG_CMD.replace('-d 2', '-d 3')), 'with trigger0.delay 0x2, not the 0x3'),
+    'other-partition': (dict(cmd=TPRTRIG_CMD.replace('-p 5', '-p 4')), 'with channel0.evtSel 0x40001805, not the 0x40001804'),
+    'never-started': (dict(cmd=TPRTRIG_CMD.replace(' -p 5', '')), 'with channel0.control 0x7, not the 0x0'),
+    'refused-argv': (dict(cmd=TPRTRIG_CMD + ' -e 40'), 'gives a command line tprtrig refuses'),
+    'one-read': (dict(mutate=lambda w, e: e.update(reads=e['reads'][:1])), '1 time(s) within the run'),
+    'read-after-run': (dict(mutate=lambda w, e: e['reads'][1].update(t=L1_LAST + 1)), '1 time(s) within the run'),
+    'trigger-off': (dict(mutate=lambda w, e: e['reads'][1]['triggers'][0].update(control=0)),
+                    'with trigger0.control 0x0, not the 0x80000000'),
+    'failed': (dict(mutate=lambda w, e: e.update({'pass': False, 'problems': ['read the card 0 time(s)']})),
+               'says tprtrig failed'),
+}
+
+
+@pytest.mark.parametrize('case', sorted(R8_FORGERIES))
+def test_r8_forgeries_are_rejected_naming_why(tmp_path, case):
+    kw, why = R8_FORGERIES[case]
+    code, line = r8_run(tmp_path, **kw)
+    assert code == 1 and 'NO VALID EVIDENCE' in line and why in line
+
+
+def test_tpr_expected_follows_the_programs_getopt():
+    assert coverage.tpr_expected('tprtrig', ['-r', '4', '-o', '0x5', '-c', '3', '-P', '1']) == (
+        {'channel': 3, 'control': 7, 'evtSel': (1 << 30) | 4},
+        [{'trigger': i, 'control': 3 | (1 << 16) | (1 << 31), 'delay': 0, 'width': 1, 'delayTap': 0} for i in (0, 2)])
+    assert coverage.tpr_expected('tprtrig', ['-e', '40']) == ({'channel': 10, 'control': 7,
+                                                             'evtSel': (1 << 30) | (2 << 11) | 40}, [])
+    assert coverage.tpr_expected('tprtrig', ['-p', "'5'"])[0]['evtSel'] == (1 << 30) | (3 << 11) | 5   # procmgr's repr
+    assert coverage.tpr_expected('tpr_trigger', ['-p', '5', '-u', 'x', '-o', '1'], group=2)[0]['evtSel'] == \
+        (1 << 30) | (3 << 11) | 2
+    assert coverage.tpr_expected('tpr_trigger', ['-o', '1']) is None            # no readout group
+    assert coverage.tpr_expected('tprtrig', ['-x']) is None and coverage.tpr_expected('tprtrig', ['extra']) is None

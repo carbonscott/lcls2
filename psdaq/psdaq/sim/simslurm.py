@@ -16,6 +16,9 @@ daqmgr .cnf as `daqmgr start` would have submitted it (comment x<xpm>_p<platform
 psdaq.slurm.main.Runner's own parsing of CNF), every third PENDING and the rest RUNNING, each with a log file under
 DIR; then, once a second, a job PENDING for 3 s starts RUNNING and every RUNNING job's log gets a line.  It prints a
 'ready' line and stays up until terminated; its pid is in the state file.
+
+As one command (python -m psdaq.sim.simslurm cmd STATE squeue -u USER ...) it answers that command from STATE and
+exits with its code; write_shims() makes a directory of such commands to put first on a program's PATH.
 """
 
 import argparse
@@ -178,7 +181,32 @@ class ProcStandIn:
         return rc
 
 
+SHIMS = ('squeue', 'sacct', 'scontrol', 'sinfo', 'sbatch', 'scancel')
+
+
+def write_shims(bindir, state, python=None):
+    """Write <bindir>/<command> for each Slurm command daqmgr runs: a script that has simslurm answer it from
+    `state` (python -m psdaq.sim.simslurm cmd STATE <command> ARGS...), so a program started with bindir first on
+    its PATH (daq_sim up --gui's daqstat) gets simslurm's answers, never a Slurm controller's."""
+    os.makedirs(bindir, exist_ok=True)
+    for c in SHIMS:
+        path = os.path.join(bindir, c)
+        with open(path, 'w') as f:
+            f.write('#!/bin/sh\n# simslurm shim (psdaq.sim.simslurm.write_shims): %s answered from %s\n'
+                    'exec %s -m psdaq.sim.simslurm cmd %s %s "$@"\n' % (c, state, python or sys.executable, state, c))
+        os.chmod(path, 0o755)
+    return [os.path.join(bindir, c) for c in SHIMS]
+
+
 def main():
+    if sys.argv[1:2] == ['cmd']:        # one Slurm command answered from a state file: cmd STATE COMMAND ARGS...
+        if len(sys.argv) < 4:
+            sys.stderr.write('usage: python -m psdaq.sim.simslurm cmd STATE COMMAND [ARGS...]\n')
+            return 2
+        rc, out, err = run(sys.argv[3:], sys.argv[2])
+        sys.stdout.write(out)
+        sys.stderr.write(err)
+        return rc
     ap = argparse.ArgumentParser(description='a Slurm stand-in for daqmgr / daqstat (no Slurm controller)')
     ap.add_argument('--state', required=True, help='job state file (made)')
     ap.add_argument('--cnf', required=True, help='the daqmgr config (.py) whose processes get jobs, or a procmgr .cnf, '

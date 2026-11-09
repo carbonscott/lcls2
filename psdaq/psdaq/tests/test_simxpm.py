@@ -249,3 +249,68 @@ def test_ts_config_pvs_and_link_ready():
     finally:
         sim.stop.set()
         t.join(2)
+
+
+def test_pattern_stats_and_xpmpva_start_pvs():
+    """PATT:GROUPS: Sum, the low 20 bits of the first and last L0Accept's pulse IDs of the second, the least and most
+    pulse IDs between two, all ones for a group with none; and the PVs xpmpva reads at start (PAddr, Us:RxAlign,
+    SFPSTATUS) are served."""
+    sim = SimXpm('SIMTEST', 3, f'tcp://127.0.0.1:{_free_port()}', rate=100.)
+    try:
+        sim.patt = {5: [0x1234567, 0x1240000, 9285, 9290]}
+        sim.num_l0acc[5], sim._last_acc = 100, [0] * 8          # run() starts _last_acc
+        sim._post_patt()
+        rows = sim.pvs['SIMTEST:XPM:3:PATT:GROUPS'][0].current().todict()['value']
+        assert (rows['Sum'][5], rows['First'][5], rows['Last'][5], rows['MinIntv'][5], rows['MaxIntv'][5]) == \
+            (100, 0x34567, 0x40000, 9285, 9290)
+        assert (rows['First'][0], rows['MinIntv'][0], rows['MaxIntv'][0]) == ((1 << 20) - 1, (1 << 20) - 1, 0)
+        assert sim.patt == {}
+        for name in ('PAddr', 'Us:RxAlign', 'Cu:RxAlign', 'SFPSTATUS'):
+            assert f'SIMTEST:XPM:3:{name}' in sim.pvs, name
+    finally:
+        sim.stop.set()
+
+
+def test_link_full_holds_back_l0s_and_varies_deadflnk():
+    """SIM:LinkFull: link 1 asserts full for its share of every FULL_PERIOD, so its group's L0s are held back (both DRPs
+    in lockstep, NumL0Inp > NumL0Acc), transitions are not, and DeadFLnk[1] is posted each second with the share it
+    held, varying from second to second (FULL_PERIOD is not a whole second) while link 0's stays 0; off by default."""
+    from psdaq.sim.simxpm import FULL_PERIOD, NUM_LINKS
+    endpoint = f'tcp://127.0.0.1:{_free_port()}'
+    sim = SimXpm('SIMTEST', 4, endpoint, rate=200.)
+    X = 'SIMTEST:XPM:4'
+    assert list(_value(sim, f'{X}:SIM:LinkFull')) == [0.] * NUM_LINKS and FULL_PERIOD % 1
+    posted = []
+    post = sim._post
+
+    def spy(name, value):
+        if name == f'{X}:PART:0:DeadFLnk':
+            posted.append(list(value))
+        post(name, value)
+    sim._post = spy
+    t = threading.Thread(target=sim.run, daemon=True)
+    t.start()
+    ctx = zmq.Context.instance()
+    try:
+        a, wa = _drp(ctx, endpoint, 'cam_0', credit=100000)
+        b, wb = _drp(ctx, endpoint, 'cam_1', credit=100000)
+        assert (wa['link'], wb['link']) == (0, 1)
+        time.sleep(0.2)
+        _transition(sim, TransitionId.Configure)
+        sim.command('linkfull', None, [0., 0.4])
+        sim.command('l0enable', None, 1)
+        time.sleep(4.2)
+        _transition(sim, TransitionId.Disable, hdr=0x180 | TransitionId.Disable)
+        sim.command('l0disable', None, 1)
+        time.sleep(0.2)
+        fa, fb = _frames(a), _frames(b)
+        assert [f['pulseId'] for f in fa] == [f['pulseId'] for f in fb], 'DRPs not in lockstep'
+        assert [f['tid'] for f in fa][0] == TransitionId.Configure and fa[-1]['tid'] == TransitionId.Disable
+        inp, acc = sim.num_l0inp[0], sim.num_l0acc[0]
+        assert 0.25 < (inp - acc) / inp < 0.55, (inp, acc)          # 0.4 of the time full
+        shares = [p[1] for p in posted if p[1]]
+        assert len(set(shares)) >= 2 and all(0 < s <= 1 for s in shares), posted
+        assert all(p[0] == 0 for p in posted), posted
+    finally:
+        sim.stop.set()
+        t.join(2)

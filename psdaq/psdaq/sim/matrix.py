@@ -28,7 +28,8 @@ Sections, in this order (--only picks some, repeated or comma-separated):
             (TEB_WrtCt), psana2's events, events with data, the per-event verdict, its verdict.
   programs  one DAQ with every program option of daq_sim up (PROGRAM_OPTIONS: the MEB, AMI, drp_pva,
             epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs, the PV-server stand-ins
-            simhsd, simtpr and simdti and the GUIs on them; RUNBOOK 3h), in
+            simhsd, simtpr and simdti and the GUIs on them, tprtrig and tpr_trigger on simulated
+            TPR cards; RUNBOOK 3h), in
             <WORKDIR>/programs: up, one recorded cycle with --ami-shot, down.  Assertions
             programs/<what>: those of a type for fakecam_0, and 'checks' (the cycle's checks of
             the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all
@@ -84,7 +85,7 @@ from psdaq.sim import daq_sim as ds
 
 SECTIONS = ('types', 'programs', 'features', 'coverage')
 # The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3h)
-PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--rate', '100')
+PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--tpr', '--rate', '100')
 PROGRAM_CHECKS = ('system DRP checks', 'ami check', 'gui witness', 'ami shot')
 FEATURES = ('a', 'b', 'c', 'd', 'e')             # the contract's system features (a)-(e)
 BREAKS = ('register', 'kill-drp', 'corrupt')

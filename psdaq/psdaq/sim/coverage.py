@@ -64,9 +64,13 @@ listed .xtc2 files.  Rows that need one:
                      (gui_witness keeps a read per widget), 2 or more distinct values after the
                      widget's first text (which may be the text it was built with) of a PV under
                      a prefix the stand-in serves (the -P of the stand-in's own log, which the
-                     record must list)
-                     Every 'programs' entry (a GUI or monitor) also needs procmgr's own instance of
-                     the program to have run through the run: the record must list its procmgr logs
+                     record must list); for a TPR program ('kind': 'tpr', R8: tprtrig and
+                     tpr_trigger on a simulated TPR card, tpr::Client with PSDAQ_SIM_TPR), 2 or
+                     more reads of the card's registers within the run, each showing what the
+                     program's own command line programs (tpr_expected; tpr_trigger's channel on
+                     the partition's readout group), of the card its own log says it mapped
+                     Every 'programs' entry of a GUI or monitor (not a TPR program) also needs
+                     procmgr's own instance of the program to have run through the run: the record must list its procmgr logs
                      ('# ID:'; daq_sim lists every one of the id since 'up'), which between them name
                      one child pid ('The PID of new child': a procmgr or procstat restart starts a
                      new log with another) and never say the child ended ('Received a sigChild');
@@ -75,8 +79,9 @@ listed .xtc2 files.  Rows that need one:
                      while Running and in its table 'after' (read after the run's EndRun), and the
                      'before' and 'after' tables' 'procmgr_pids' (what 'procmgr status' gave right
                      after each walk) must give the id that same child pid.
-                     The values a GUI, monitor or client read are checked against what the PVs'
-                     servers logged they served (psdaq.sim.served_log, logs the stand-ins write
+                     The values a GUI, monitor or client read (not procstat's statuses, daqstat's
+                     Slurm states, a TPR card's registers or an R3b program's own PVs) are checked
+                     against what the PVs' servers logged they served (psdaq.sim.served_log, logs the stand-ins write
                      and the record lists; a served-value log counts only at <service>.served.jsonl
                      next to a listed <service>.log that runs the program its first line names, with
                      the pid its first line gives as that log's '# PID: N'): a read of a PV no such
@@ -907,19 +912,22 @@ def pv_prefixes(args):
 def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=(), own=(),
                          served=None, caps=None):
     """Why a gui_witness does not show prog read live values of the run, or None: entry_problem, then, for a
-    'programs' entry (a GUI or monitor), procmgr_span_problem (own: the texts of prog's logs in the record), and
-    for an entry with PV values, served_problem (served: served_logs of the record)."""
+    'programs' entry of a GUI or monitor (not a TPR program, R8), procmgr_span_problem (own: the texts of prog's
+    logs in the record), and for an entry with PV values a stand-in served (not procstat, daqstat (R5), a TPR
+    program (R8) or a program's own PVs (R3b)), served_problem (served: served_logs of the record; caps: their
+    size caps)."""
     p = entry_problem(prog, w, run_id, mine, runs, section, run_ids, row_prog, logs)
     if p:
         return p
     e = w[section][prog]
-    if section == 'programs':
+    if section == 'programs' and e.get('kind') != 'tpr':        # a GUI or monitor, not a TPR program (R8)
         p = procmgr_span_problem(prog, w, own, runs, mine)
         if p:
             return p
-    if e.get('kind') != 'procmgr':
-        return served_problem(prog, e, section, served or {}, w.get('partition'), caps)
-    return None
+    if e.get('kind') in ('procmgr', 'slurm', 'tpr') or (section == 'servers' and prog == row_prog):
+        return None     # procstat's statuses, daqstat's Slurm states (R5), a TPR card's registers (R8), a program's
+                        # own PVs (R3b): no stand-in served them
+    return served_problem(prog, e, section, served or {}, w.get('partition'), caps)
 
 
 def procmgr_span_problem(prog, w, own, runs, mine):
@@ -1180,6 +1188,17 @@ def entry_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=Non
     if not lo <= start <= end <= hi:
         return (f'{prog} read from {start:.3f} to {end:.3f}, not within the run\'s L1Accepts '
                 f'({lo:.3f} to {hi:.3f}, EPICS-epoch seconds)')
+    if e.get('kind') == 'slurm':                            # R5: a GUI that shows Slurm job states (daqstat)
+        ok, why = slurm_matched(e, lo, hi)
+        if len(ok) < 2:
+            return (f'shows {prog} refreshed {len(ok)} time(s) during the run with what an independent squeue read '
+                    f'gave (2 or more needed)' + (f': {why}' if why else ''))
+        missing = sorted(set(run_ids) - {r[0] for f in ok for r in f['rows']})
+        if missing:
+            return f'shows {prog} listed no job of {", ".join(missing)} (processes whose logs name the run)'
+        return None
+    if e.get('kind') == 'tpr':                              # R8: a TPR program on a simulated TPR card
+        return tpr_problem(prog, e, logs, w.get('partition'), lo, hi)
     if e.get('kind') == 'procmgr':
         if not run_ids:
             return 'the record lists no procmgr log (# ID:) that names the run, for its table to show'
@@ -1221,11 +1240,161 @@ def entry_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=Non
                     f'e.g. {", ".join(map(str, missing[:3]))}')
     if not (isinstance(prefix, str) and prefix):
         return 'gives no partition prefix' if section != 'servers' else f'its {prog} entry gives no prefix'
+    if section == 'servers' and prog == row_prog:          # R3b: the program serves its PVs itself
+        served = sorted({p for (name, args), _ in logs if name == prog for p in pv_prefixes(args)})
+        if not any(prefix == p or prefix.startswith(p + ':') for p in served):
+            return (f'its {prog} entry reads under {prefix}, which no listed log of {prog} serves '
+                    f'(its -P: {", ".join(served) or "none"})')
     live = [r for r in e.get('reads') or [] if isinstance(r, dict) and str(r.get('name', '')).startswith(prefix)
             and isinstance(r.get('values'), list) and len(numbers(r['values'])) >= 2]
     if not live:
         return f'shows {prog} read no live value under {prefix} (2 or more distinct numbers of one name)'
     return None
+
+
+TPR_CARD = re.compile(r'Tpr::Client: simulated TPR \(PSDAQ_SIM_TPR\): (\S+) is (\S+)')
+# getopt strings of the TPR programs (psdaq/psdaq/app/tprtrig.cc, psdaq/drp/TprTrigger.cc), '?' left out
+TPR_GETOPT = {'tprtrig': 'c:d:D:m:w:o:t:r:e:p:zC:L:M:P:h', 'tpr_trigger': 'p:C:u:k:H:c:d:D:w:o:t:K:L:M:P:hv'}
+
+
+def _strtoul(text):
+    """C's strtoul(text, NULL, 0) for a whole argument (0x hex, leading-0 octal, decimal; quotes procmgr's repr adds
+    to -p dropped); None if it is not one."""
+    t = str(text).strip().strip('\'"')
+    try:
+        return int(t, 16) if t.lower().startswith('0x') else int(t, 8) if len(t) > 1 and t.startswith('0') else int(t)
+    except ValueError:
+        return None
+
+
+def tpr_expected(prog, args, group=None):
+    """R8: what TPR program `prog` (tprtrig, tpr_trigger) with command line `args` writes to its TPR card's registers,
+    as its source does through tpr::Client (TprBase::setupChannel and setupTrigger, psdaq/psdaq/tpr/Module.cc):
+    ({'channel': i, 'control': c, 'evtSel': s or None}, [{'trigger': i, 'control', 'delay', 'width', 'delayTap'}]),
+    tpr_trigger's channel on readout group `group` (control's, at Connect); None for an argv the program refuses."""
+    import getopt
+    try:
+        opts, rest = getopt.getopt(list(args), TPR_GETOPT[prog])
+    except (getopt.GetoptError, KeyError):
+        return None
+    if rest:
+        return None
+    v = {'c': 10, 'o': 0, 'd': 0, 'w': 1, 'D': 0, 'P': 0}
+    mode = rate = None
+    for o, a in opts:
+        o = o[1:]
+        if o in v:
+            v[o] = _strtoul(a)
+        elif prog == 'tprtrig' and o in 'erp':
+            if mode is not None:
+                return None             # only one rate selection mode
+            mode, rate = 'erp'.index(o), _strtoul(a)
+    if None in v.values() or (mode is not None and rate is None):
+        return None
+    if prog == 'tpr_trigger':
+        if group is None:
+            return None
+        mode, rate = 2, group
+    m32 = 0xffffffff
+    if mode is None:                    # tprtrig without -e/-r/-p: the channel is stopped, never started
+        chan = {'channel': v['c'], 'control': 0, 'evtSel': None}
+    else:
+        sel = ((1 << 30) | (2 << 11) | (rate & 0x3ff), (1 << 30) | rate, (1 << 30) | (3 << 11) | (rate & 0xf))[mode]
+        chan = {'channel': v['c'], 'control': 7, 'evtSel': sel & m32}
+    trigs = [{'trigger': i, 'control': ((v['c'] & 0xffff) | ((1 << 16) if v['P'] else 0) | (1 << 31)) & m32,
+              'delay': v['d'] & m32, 'width': v['w'] & m32, 'delayTap': v['D'] & m32}
+             for i in range(32) if v['o'] >> i & 1]
+    return chan, trigs
+
+
+def tpr_problem(prog, e, logs, partition, lo, hi):
+    """R8: why a 'tpr' witness entry does not show TPR program prog's card programmed as its command line says
+    while the run ran (lo..hi, EPICS-epoch seconds), or None.  The card is the file the program's own log says
+    tpr::Client mapped (TPR_CARD); tpr_trigger's readout group is the partition's (<...>:PART:<group>)."""
+    card = e.get('card')
+    mine = [(args, text) for (name, args), text in logs if name == prog]
+    named = [(args, m.group(1)) for args, text in mine for m in TPR_CARD.finditer(text) if isinstance(card, str)
+             and (m.group(2) == card or os.path.realpath(m.group(2)) == os.path.realpath(card))]
+    if not named:
+        return (f'its {prog} entry reads the card {card}, but no listed log of {prog} says tpr::Client mapped it '
+                f'(PSDAQ_SIM_TPR)')
+    m = re.search(r':PART:(\d+)$', str(partition or ''))
+    group = int(m.group(1)) if m else None
+    exp = tpr_expected(prog, named[0][0], group)
+    if exp is None:
+        return f'its log of {prog} gives a command line {prog} refuses, or no readout group for it: {named[0][0]}'
+    chan, trigs = exp
+    reads = [r for r in e.get('reads') or [] if isinstance(r, dict) and isinstance(r.get('t'), (int, float))
+             and lo <= r['t'] <= hi and isinstance(r.get('channels'), list) and isinstance(r.get('triggers'), list)]
+    if len(reads) < 2:
+        return f'read {prog}\'s card {len(reads)} time(s) within the run\'s L1Accepts (2 or more needed)'
+    for r in reads:
+        try:
+            c = r['channels'][chan['channel']]
+            got = [(k, c.get(k), chan[k]) for k in ('control', 'evtSel') if chan[k] is not None and c.get(k) != chan[k]]
+            for t in trigs:
+                tr = r['triggers'][t['trigger']]
+                got += [(f'trigger{t["trigger"]}.{k}', tr.get(k), t[k]) for k in ('control', 'delay', 'width', 'delayTap')
+                        if tr.get(k) != t[k]]
+        except (IndexError, AttributeError, TypeError):
+            return f'its {prog} entry has a read at {r["t"]:.3f} without the channel or trigger its command line programs'
+        if got:
+            k, have, want = got[0]
+            where = k if k.startswith('trigger') else f'channel{chan["channel"]}.{k}'
+            return (f'shows {prog}\'s card at {r["t"]:.3f} with {where} '
+                    f'{hex(have) if isinstance(have, int) else have}, not the {hex(want)} its command line programs')
+    return None
+
+
+SLURM_SKEW = 1.5                        # s: R5, a refresh matches the squeue read nearest it if this close
+
+
+def slurm_matched(e, lo=None, hi=None):
+    """R5: (the refreshes of a 'slurm' entry, within [lo, hi] (EPICS-epoch seconds) if given, whose table shows for
+    every row the state the squeue read nearest in time (within SLURM_SKEW) gave the job of that process (comment
+    <comment_prefix>_<ID>; COMPLETED when squeue lists none, as daqstat shows a job that ended), with one job
+    squeue listed at least; why the first other refresh does not count, or None)."""
+    prefix = e.get('comment_prefix')
+    if not (isinstance(prefix, str) and prefix):
+        return [], 'it gives no job comment prefix'
+    reads = [r for r in e.get('squeue') or [] if isinstance(r, dict) and isinstance(r.get('t'), (int, float))
+             and isinstance(r.get('jobs'), dict)]
+    if not reads:
+        return [], 'it lists no squeue read'
+    ok, why, seen = [], None, set()
+    for f in e.get('refreshes') or []:
+        if not (isinstance(f, dict) and isinstance(f.get('t'), (int, float)) and isinstance(f.get('rows'), list)):
+            continue
+        t = f['t']
+        if lo is not None and not lo <= t <= hi:
+            why = why or f'the refresh at {t:.3f} is not within the run\'s L1Accepts'
+            continue
+        rows = [r for r in f['rows'] if isinstance(r, list) and len(r) == 2]
+        near = min(reads, key=lambda r: abs(r['t'] - t))
+        want = {str(i): near['jobs'].get(f'{prefix}_{i}', 'COMPLETED') for i, _ in rows}
+        bad = [(i, st) for i, st in rows if st != want[str(i)]]
+        if abs(near['t'] - t) > SLURM_SKEW:
+            why = why or f'no squeue read within {SLURM_SKEW} s of the refresh at {t:.3f}'
+        elif bad:
+            why = why or f'the refresh at {t:.3f} shows {bad[0][0]} {bad[0][1]}, squeue said {want[str(bad[0][0])]}'
+        elif not any(f'{prefix}_{i}' in near['jobs'] for i, _ in rows):
+            why = why or f'the refresh at {t:.3f} shows no job squeue listed'
+        elif t not in seen:
+            seen.add(t)
+            ok.append(f)
+    return ok, why
+
+
+def witness_section(entry, prog, w):
+    """The gui_witness section that proves prog: 'servers' for a STAND-IN row (R3), and for a RUN row whose
+    program is a PV server of the tree's own (R3b: a 'servers' entry keyed by the program and marked
+    "program": true, and no 'programs' entry; it then needs the program's own interface served, under a prefix
+    its own log's -P serves); 'programs' otherwise."""
+    if entry.get('status') == 'STAND-IN':
+        return 'servers'
+    e = (w.get('servers') or {}).get(prog)
+    own = isinstance(e, dict) and e.get('program') is True and prog not in (w.get('programs') or {})
+    return 'servers' if own else 'programs'
 
 
 def changed_texts(values):
@@ -1370,7 +1539,6 @@ def row_problem(rid, entry, rec, cache=None):
         return None
     else:
         kind = 'gui_witness'
-        section = 'servers' if entry.get('status') == 'STAND-IN' else 'programs'
         run_ids = {m.group(1) for m in (LOG_ID.search(t) for t in texts if names_run(t, mine)) if m}
         served, caps, ignored = {}, {}, []
         listed = {f: t for (f, size), t in zip(named, texts) if f.endswith('.log')}
@@ -1389,8 +1557,8 @@ def row_problem(rid, entry, rec, cache=None):
         for pvs in served.values():
             for posts in pvs.values():
                 posts.sort(key=lambda p: p[0])
-        why = [live_witness_problem(prog, w, run_id, mine, runs, section, run_ids, rid.split(':', 1)[1], logs,
-                                    ran, served, caps)
+        why = [live_witness_problem(prog, w, run_id, mine, runs, witness_section(entry, prog, w), run_ids,
+                                    rid.split(':', 1)[1], logs, ran, served, caps)
                for w in witnesses if w['witness'] == kind]
         if ignored and why and None not in why:
             why = [f'{y} (served-value logs not counted: {"; ".join(ignored[:2])})' for y in why]

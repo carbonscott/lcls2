@@ -4,8 +4,9 @@ It serves, under one prefix, the PVs psdaq/psdaq/cas/tprcas.py serves (the soft 
 tprca): the input PVs ACCSEL, LINKSTATE, LINKLATCH, RXERRS, RXPOL, FRAMERATE, RXCLKRATE, IRQENA, EVTCNT and, for
 channels CH0..CH13, MODE, DSTSEL, DESTNS, RSEL, FRATE, ARATE, ATS, SEQIDX, SEQBIT, XPART, BSTART, BWIDTH, RATE, plus
 DELAY, WIDTH and POL for CH0..CH11 (tprcas serves none of these three for CH12 and CH13), with tprcas's types and
-initial values.  Writes are stored, as in tprcas.  Unlike tprcas, the link is up (LINKSTATE 1) and, once a second,
-FRAMERATE / RXCLKRATE / EVTCNT post a locked LCLS-II timing link (928571.4 Hz frames, 185.7 MHz, EVTCNT += frames)
+initial values; and the names tprioc (psdaq/psdaq/app/tprca.cc, the C++ TPR IOC xcs.cnf also starts) adds to those:
+DELAY, WIDTH and POL for CH12 and CH13, RXERRSCL, VSNERR, FRAMEVSN and TXCLKRATE.  Writes are stored, as in tprcas.  Unlike tprcas, the link is up (LINKSTATE 1) and, once a second,
+FRAMERATE / RXCLKRATE / TXCLKRATE / EVTCNT post a locked LCLS-II timing link (928571.4 Hz frames, 185.7 MHz, EVTCNT += frames)
 and each enabled channel's RATE the frame rate of its fixed-rate selection (MODE != 0, RSEL 0: FRATE index into
 psdaq.configdb.tsdef.fixedRates).  <prefix>:SIM:PID is this process's pid (simtpr only: a client can tell the
 simulator from a TPR).  EVTCNT starts at a random count, so its values differ from run to run, and every value it
@@ -51,6 +52,16 @@ def tprcas_pvdb():
     return db
 
 
+def tprioc_extra():
+    """{suffix: (type, initial)} of the PVs tprioc names that tprcas does not serve (tprca.cc: TprControl's
+    RXERRSCL, VSNERR, FRAMEVSN, TXCLKRATE; ChannelControl's DELAY, WIDTH, POL for every channel)."""
+    db = {':RXERRSCL': ('i', 0), ':VSNERR': ('i', 0), ':FRAMEVSN': ('i', 0), ':TXCLKRATE': ('d', 0.)}
+    for i in range(NTRIG, NCHAN):
+        p = ':CH%u' % i
+        db.update({p + ':DELAY': ('d', 0.), p + ':WIDTH': ('d', 5.4e-9), p + ':POL': ('i', 0)})
+    return db
+
+
 class _Store:
     def __init__(self, sim, name):
         self.sim, self.name = sim, name
@@ -73,7 +84,7 @@ class SimTpr:
         self.lock = threading.Lock()
         self.stop = threading.Event()
         self.served = ServedLog('simtpr')
-        for suffix, (t, v) in tprcas_pvdb().items():
+        for suffix, (t, v) in dict(tprcas_pvdb(), **tprioc_extra()).items():
             self._add(prefix + suffix, t, v)
         self._add(prefix + ':SIM:PID', 'i', os.getpid())
 
@@ -102,6 +113,7 @@ class SimTpr:
             evt += int(FRAME_RATE)
             self.post(P + ':FRAMERATE', round(FRAME_RATE, 1))
             self.post(P + ':RXCLKRATE', RXCLK_MHZ)
+            self.post(P + ':TXCLKRATE', RXCLK_MHZ)
             self.post(P + ':EVTCNT', evt & 0x7fffffff)
             for i in range(NCHAN):
                 c = '%s:CH%u' % (P, i)
