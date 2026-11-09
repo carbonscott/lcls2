@@ -6,10 +6,15 @@ CONFIG, READY, PGPCONFIG, FWBUILD, FWVERSION, PADDR, PADDR_U, PLINK, KEEPROWS, F
 MONRAWBUF, MONFEXBUF, MONRAWDET, MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD, MONJESDTTL, RESET.  Unlike hsdpvs,
 once a second MONTIMING counts a locked timing link and a 1 kHz trigger (timframecnt += 928571, trigcntsum += 1000,
 trigcntrate = 1000), MONPGP counts frames on its 4 lanes (txcnt / rxcnt = 1000, txcntsum / rxcntsum += 1000), and
-MONRAWBUF / MONFEXBUF report free buffers (freesz 2048 - n, freeevt 16 - n for a slowly varying n).  At start every
-field of the other monitoring structures (MONTRIG, MONRAWDET, MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD and the rest
-of MONTIMING / MONPGP) gets its own value, pattern(chip, field, element), so a display of the wrong field or element
-shows a wrong number (float32 fields get values float32 cannot hold exactly).
+MONRAWBUF / MONFEXBUF report free buffers (freesz 2048 - n, freeevt 16 - n for a slowly varying n), and MONTRIG counts
+the triggers of cas/hsdPs.py's phase scan ('trigger at 70 kHz', 'MONTRIG counters are 20 bits'): once a second
+ontime / early / late grow by montrig_split(phase) (70000 in all, split by the ADC/TIM clock phase, RESET.mmcmphase, a
+fixed integer split per phase, so early / total is exact), phase is mmcmphase, and a put to RESET (hsdPs sets each
+phase with one) starts the counts again from 0 and posts them at once.  A real HSD counts only while its readout
+group's L0 is enabled; simhsd counts always.  At start every field of the other monitoring structures (MONRAWDET,
+MONFEXDET, MONFLOW, MONENV, MONADC, MONJESD and the rest of MONTIMING / MONPGP / MONTRIG) gets its own value,
+pattern(chip, field, element), so a display of the wrong field or element shows a wrong number (float32 fields get
+values float32 cannot hold exactly).
 <prefix>:SIM:PID is this process's pid (simhsd only: a client can tell the simulator from an HSD).
 
 The PVA server binds the loopback interface unless told otherwise (--bind, --allow-remote), like simxpm.
@@ -19,6 +24,7 @@ The PVA server binds the loopback interface unless told otherwise (--bind, --all
 
 import argparse
 import logging
+import math
 import os
 import threading
 import time
@@ -29,6 +35,18 @@ from p4p.server.thread import SharedPV
 
 FRAMES_PER_S = 928571
 TRIG_HZ = 1000
+PS_TRIG_HZ = 70000                      # hsdPs: 'Setup is trigger at 70 kHz'
+MONTRIG_MAX = (1 << 20) - 1             # hsdPs: 'MONTRIG counters are 20 bits'
+PS_PHASES = 56                          # hsdPs --range default (0, 56, 8): mmcmphase 0..55
+
+
+def montrig_split(phase):
+    """(ontime, early, late) of one second of 70 kHz triggers at ADC/TIM clock phase `phase`: early and late come
+    and go as the phase moves across a clock (integers, so their ratios are the same at every count)."""
+    c = math.cos(2 * math.pi * (phase % PS_PHASES) / PS_PHASES)
+    early = int(round(PS_TRIG_HZ * 0.45 * (1 + c) / 2))
+    late = int(round(PS_TRIG_HZ * 0.45 * (1 - c) / 2))
+    return PS_TRIG_HZ - early - late, early, late
 
 
 MON_PATTERNED = ('monTiming', 'monTrig', 'monPgp', 'monRawBuf', 'monFexBuf', 'monRawDet', 'monFexDet', 'monFlow',
@@ -42,11 +60,29 @@ def pattern(chip, field, element, floating):
     return (chip + 1) * 1000 + field * 16 + element + 1
 
 
+def _chip_class():
+    from psdaq.cas.hsdpvs import ChipServer
+
+    class SimChip(ChipServer):
+        """hsdpvs's ChipServer whose RESET put (hsdPs: one per phase) restarts the MONTRIG counts."""
+        sim = None
+
+        def updateDaqReset(self, value):
+            if self.sim is not None:
+                self.sim.reset_trig(self, value)
+    return SimChip
+
+
 class SimHsd:
     def __init__(self, prefixes, start=True):
-        from psdaq.cas.hsdpvs import ChipServer
+        SimChip = _chip_class()
         self.provider = StaticProvider('simhsd')
-        self.chips = [ChipServer(self.provider, p, start) for p in prefixes]
+        self.lock = threading.Lock()
+        self.chips = []
+        for p in prefixes:
+            c = SimChip(self.provider, p, start)
+            c.sim, c.trig, c.phase = self, [0, 0, 0], 0
+            self.chips.append(c)
         self.prefixes = list(prefixes)
         self.pids = []
         for p in prefixes:
@@ -54,6 +90,27 @@ class SimHsd:
             self.provider.add(p + ':SIM:PID', pv)
             self.pids.append(pv)
         self.stop = threading.Event()
+
+    def post_trig(self, c):
+        v = c.monTrig.current()
+        v['ontime'], v['early'], v['late'] = c.trig
+        v['phase'] = c.phase
+        c.monTrig.post(v)
+
+    def reset_trig(self, c, value):
+        with self.lock:
+            try:
+                c.phase = int(value['mmcmphase'])
+            except (KeyError, TypeError, ValueError):
+                pass
+            c.trig = [0, 0, 0]
+            self.post_trig(c)
+
+    def count_trig(self):
+        with self.lock:
+            for c in self.chips:
+                c.trig = [min(MONTRIG_MAX, a + b) for a, b in zip(c.trig, montrig_split(c.phase))]
+                self.post_trig(c)
 
     def seed(self):
         for ci, c in enumerate(self.chips):
@@ -95,6 +152,7 @@ class SimHsd:
                     v['freesz'] = 2048 - (n % 8)
                     v['freeevt'] = 16 - (n % 4)
                     b.post(v)
+            self.count_trig()
 
 
 def main():

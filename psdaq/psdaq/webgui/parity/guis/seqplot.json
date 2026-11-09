@@ -6,27 +6,412 @@
  "walk": {
   "argv": [
    "--seq",
-   "0:10k.py",
-   "1:burst.py",
+   "0:33k_35k.py",
+   "1:10k.py",
    "--time",
    "0",
-   "0.0002"
+   "0.01"
   ],
   "cwd": "{psdaq}/seq",
   "pump": 3,
-  "timeout": 120,
+  "timeout": 400,
   "drive": [
-   "pump:1"
+   "pump:1",
+   "pg-options:720x180"
   ]
  },
  "mapping": {
+  "PatternWaveform.add.q0[33k_35k.py]": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py]\"]",
+   "test": "test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.linkCombo\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.autoPercentSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.autoRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.manualRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.minText\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.maxText\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.invertCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.mouseCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].xaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].xaxis.autoPanCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_xaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.linkCombo\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.autoPercentSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.autoRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.manualRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.minText\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.maxText\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.invertCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.mouseCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].yaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].yaxis.autoPanCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_yaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.logXCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.logXCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_logXCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_logYCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.fftCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.fftCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_fftCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.derivativeCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.derivativeCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_derivativeCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.phasemapCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.phasemapCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_phasemapCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.downsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.downsampleCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_downsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.autoDownsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.autoDownsampleCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_autoDownsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.downsampleSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.downsampleSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_downsampleSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.subsampleRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.subsampleRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_subsampleRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.meanRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.meanRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_meanRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.peakRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.peakRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_peakRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.clipToViewCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.clipToViewCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_clipToViewCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.maxTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.maxTracesCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_maxTracesCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.maxTracesSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.maxTracesSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_maxTracesSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.averageGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.averageGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_averageGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.avgParamList": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.avgParamList\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_avgParamList[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.alphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.alphaSlider\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_alphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.alphaGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.alphaGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_alphaGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.autoAlphaCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.autoAlphaCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_autoAlphaCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.xGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.xGridCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_xGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.yGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.yGridCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_yGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.gridAlphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.gridAlphaSlider\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_gridAlphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_label[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.pointsGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.pointsGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_pointsGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.autoPointsCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.autoPointsCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_autoPointsCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[33k_35k.py].ctrl.forgetTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[33k_35k.py].ctrl.forgetTracesCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_0_ctrl_forgetTracesCheck[chromium]"
+  },
   "PatternWaveform.add.q0[10k.py]": {
    "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py]\"]",
    "test": "test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]"
   },
-  "PatternWaveform.add.q0[burst.py]": {
-   "web": "[data-parity~=\"PatternWaveform.add.q0[burst.py]\"]",
-   "test": "test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]"
+  "PatternWaveform.add.q0[10k.py].xaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.linkCombo\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.autoPercentSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.autoRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.manualRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.minText\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.maxText\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.invertCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.mouseCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].xaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].xaxis.autoPanCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_xaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_label[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.linkCombo": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.linkCombo\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_linkCombo[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.autoPercentSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_autoPercentSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.autoRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.autoRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_autoRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.manualRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.manualRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_manualRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.minText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.minText\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_minText[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.maxText": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.maxText\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_maxText[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.invertCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.invertCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_invertCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.mouseCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.mouseCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_mouseCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_visibleOnlyCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].yaxis.autoPanCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].yaxis.autoPanCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_yaxis_autoPanCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.logXCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.logXCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_logXCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.logYCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.logYCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_logYCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.fftCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.fftCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_fftCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.derivativeCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.derivativeCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_derivativeCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.phasemapCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.phasemapCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_phasemapCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.downsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.downsampleCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_downsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.autoDownsampleCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.autoDownsampleCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_autoDownsampleCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.downsampleSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.downsampleSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_downsampleSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.subsampleRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.subsampleRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_subsampleRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.meanRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.meanRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_meanRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.peakRadio": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.peakRadio\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_peakRadio[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.clipToViewCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.clipToViewCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_clipToViewCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.maxTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.maxTracesCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_maxTracesCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.maxTracesSpin": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.maxTracesSpin\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_maxTracesSpin[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.averageGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.averageGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_averageGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.avgParamList": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.avgParamList\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_avgParamList[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.alphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.alphaSlider\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_alphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.alphaGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.alphaGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_alphaGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.autoAlphaCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.autoAlphaCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_autoAlphaCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.xGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.xGridCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_xGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.yGridCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.yGridCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_yGridCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.gridAlphaSlider": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.gridAlphaSlider\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_gridAlphaSlider[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.label": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.label\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_label[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.pointsGroup": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.pointsGroup\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_pointsGroup[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.autoPointsCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.autoPointsCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_autoPointsCheck[chromium]"
+  },
+  "PatternWaveform.add.q0[10k.py].ctrl.forgetTracesCheck": {
+   "web": "[data-parity~=\"PatternWaveform.add.q0[10k.py].ctrl.forgetTracesCheck\"]",
+   "test": "test_gui_seqplot.py::test_menu_1_ctrl_forgetTracesCheck[chromium]"
   }
  }
 }

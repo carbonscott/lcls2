@@ -161,9 +161,10 @@ class _Put:
 
 
 class SimXpm:
-    def __init__(self, pvbase, xpm, endpoint, rate, pull=None):
+    def __init__(self, pvbase, xpm, endpoint, rate, pull=None, fwbuild=FW_BUILD):
         self.pvbase = pvbase
         self.xpm = xpm
+        self.fwbuild = fwbuild          # FwBuild: xpmpva builds AMC / QSFP and Cu / Us tabs by what it says
         self.prefix = f'{pvbase}:XPM:{xpm}'
         self.endpoint = endpoint
         self.pull = pull                # control.py -X endpoint to bind, or None
@@ -221,7 +222,7 @@ class SimXpm:
         # Stand-ins for the pyxpm PVs the XPM GUIs read (groupca: xpmTree, XpmDeadTime): stored values only.
         # RemoteLinkId stays 0 (no remote id, so groupca never resolves a host name); LinkGroupMask<n> is
         # 1 << group while the DRP of link n is in a readout group (pyxpm pvctrls LinkGroupMask).
-        self._add(f'{X}:FwBuild', 's', FW_BUILD)
+        self._add(f'{X}:FwBuild', 's', self.fwbuild)
         for n in range(NUM_LINKS):
             self._add(f'{X}:RemoteLinkId{n}', 'I', 0)
             self._add(f'{X}:LinkGroupMask{n}', 'I', 0)
@@ -275,6 +276,60 @@ class SimXpm:
                 self._add(f'{X}:{label}{n}', 'I', 0)
             for label in ('LinkTxReady', 'LinkRxReady', 'LinkRxErr', 'LinkRxErrI', 'LinkRxIsXpm'):
                 self._add(f'{X}:{label}{n}', 'I', 0)
+
+        self._make_xpmpva_pvs()
+
+    def _make_xpmpva_pvs(self):
+        """Stand-ins for the other pyxpm PVs cas/xpmpva.py reads and writes (names and types as pyxpm pvstats,
+        pvctrls and pvxtpg serve them), stored values only, except that a counter of the timing receivers and the
+        clocks hold fixed plausible values.  Not served, as pyxpm does not serve them either: ModuleInit,
+        Inhibit, TagStream, XTPG:CuDelay_ns and LinkIsXpm<n> (xpmpva's widgets on those never connect)."""
+        X = self.prefix
+        self._add(f'{X}:PAddr', 'I', 0xffffffff)            # the top of the timing tree (no parent XPM): 'XTPG'
+        self._add(f'{X}:UsRxEnable', 'I', 1)
+        self._add(f'{X}:CuRxEnable', 'I', 0)
+        for label, v in (('RecClk', 185.71), ('FbClk', 185.71), ('BpClk', 185.71), ('PhyClk', 185.71)):
+            self._add(f'{X}:{label}', 'f', v)
+        for tim in ('Us', 'Cu'):                            # pvstats TimingStatus: counters as floats
+            for label in ('RxClks', 'TxClks', 'RxRsts', 'CrcErrs', 'RxDecErrs', 'RxDspErrs', 'BypassRsts',
+                          'BypassDones', 'RxLinkUp', 'FIDs', 'SOFs', 'EOFs'):
+                self._add(f'{X}:{tim}:{label}', 'f', {'RxClks': 185.71, 'RxLinkUp': 1., 'FIDs': 929000.}.get(label, 0.))
+            self._add(f'{X}:{tim}:RxAlign', 'aI', [20] + [(k * 7) % 31 for k in range(64)])
+            for label in ('RxReset', 'RxCountReset'):
+                self._add(f'{X}:{tim}:{label}', 'I', 0)
+        T = f'{X}:XTPG'                                      # pvctrls CuGenCtrls, pvstats / pvxtpg
+        for label in ('CuInput', 'CuBeamCode', 'CuDelay', 'FiducialIntv', 'FiducialErr', 'ClearErr'):
+            self._add(f'{T}:{label}', 'I', {'CuBeamCode': 140, 'CuDelay': 200, 'FiducialIntv': 1300}.get(label, 0))
+        self._add(f'{T}:PulseId', 'L', 0)
+        self._add(f'{T}:TimeStamp', 'L', 0)
+        for i in range(4):                                  # pvxtpg PVMmcm: [locked | busy | steps | edge] + steps
+            self._add(f'{T}:MMCM{i}', 'aI', [(1 << 31) | (64 << 16) | (20 + 8 * i)] + [(k * 5 + i) % 64 for k in range(64)])
+            self._add(f'{T}:ResetMmcm{i}', 'I', 0)
+        for n in range(NUM_PORTS):                          # pvctrls LinkCtrls, pvstats LinkStatus
+            for label in ('RxLinkDump', 'LinkTxResetDone', 'LinkRxResetDone', 'LinkRxRcv'):
+                self._add(f'{X}:{label}{n}', 'I', 0)
+        for c in range(2):                                  # pvstats PLL status of each AMC
+            for label in ('PLL_LOS', 'PLL_LOSCNT', 'PLL_LOL', 'PLL_LOLCNT'):
+                self._add(f'{X}:{label}{c}', 'I', 0)
+        ncodes = 32                                         # pvctrls seqCodes (the last 32 event codes)
+        self._add_table(f'{X}:SEQCODES', [('EventCode', 'i'), ('Description', 's'), ('Rate', 'i'), ('Enabled', '?')],
+                        [{'EventCode': 288 - ncodes + k, 'Description': '', 'Rate': 0, 'Enabled': False}
+                         for k in range(ncodes)])
+        for i in range(ncodes // 4):                        # pvseq PVSeq engines
+            for label in ('ENABLE', 'DUMP'):
+                self._add(f'{X}:SEQENG:{i}:{label}', 'I', 0)
+        self._add_table(f'{X}:SFPSTATUS', [('LossOfSignal', 'i'), ('ModuleAbsent', 'i'), ('TxPower', 'f'),
+                                          ('RxPower', 'f')],
+                        [{'LossOfSignal': 0, 'ModuleAbsent': 0, 'TxPower': 0.5, 'RxPower': 0.25} for _ in range(14)])
+        self._add_table(f'{X}:QSFPSTATUS', [('TxPower', 'f'), ('RxPower', 'f')],
+                        [{'TxPower': 0.5, 'RxPower': 0.25} for _ in range(8)])
+        for g in range(NUM_GROUPS):                         # pvstats PathTimer
+            self._add(f'{X}:PART:{g}:PATH_TIME:Latched', 'I', 0)
+            self._add(f'{X}:PART:{g}:PATH_TIME:Array', 'ai', [0] * NUM_PORTS)
+            self._add(f'{X}:PART:{g}:PATH_TIME:Update', 'I', 0)
+        for label in ('L0Select', 'L0Select_FixedRate', 'L0Select_ACRate', 'L0Select_ACTimeslot',
+                      'L0Select_EventCode', 'L0Select_Sequence', 'L0Select_SeqBit'):
+            self._add(f'{X}:PATT:{label}', 'I', 0)          # pvctrls RateSetup(name+':PATT')
 
     def _post(self, name, value):
         pv, nt = self.pvs[name]
@@ -501,9 +556,17 @@ class SimXpm:
         for l in self.links.values():
             l.blocked = 0
         self._post_patt()
+        self._post_sfp()
         self._last_acc = list(self.num_l0acc)
         self._last_inp = list(self.num_l0inp)
         self._post_counts()
+
+    def _post_sfp(self):
+        """pyxpm SFPStatus / QSFPStatus post their table each time their update has visited every link (xpmpva shows
+        a table once a post comes after its window is built): the same fixed values, once a second."""
+        self._post(f'{self.prefix}:SFPSTATUS', [{'LossOfSignal': 0, 'ModuleAbsent': 0, 'TxPower': 0.5, 'RxPower': 0.25}
+                                                for _ in range(14)])
+        self._post(f'{self.prefix}:QSFPSTATUS', [{'TxPower': 0.5, 'RxPower': 0.25} for _ in range(8)])
 
     def _post_patt(self):
         rows = [{c: 0 for c in PATT_STATS} for _ in range(NUM_GROUPS)]
@@ -601,6 +664,8 @@ def main():
                         "tcp://127.0.0.1:<xpm_pull_port>, as pyxpm does on all interfaces; 'none' disables")
     parser.add_argument('--bind', default='127.0.0.1', help='PVA server interface (default %(default)s)')
     parser.add_argument('--allow-remote', action='store_true', help='allow non-loopback --frames/--bind/--pull')
+    parser.add_argument('--fwbuild', default=FW_BUILD,
+                        help="FwBuild string (xpmpva: 'Kcu1500' or 'C1100' in it -> QSFP tabs, 'xtpg' -> CuTiming)")
     parser.add_argument('-v', action='store_true', help='be verbose')
     args = parser.parse_args()
 
@@ -617,9 +682,10 @@ def main():
         if value:
             conf[f'EPICS_PVAS_{key}'] = value
 
-    sim = SimXpm(args.P, args.x, args.frames, args.rate, pull)
+    sim = SimXpm(args.P, args.x, args.frames, args.rate, pull, args.fwbuild)
     with Server(providers=[sim.provider], conf=conf, useenv=False) as server:
         logging.info('serving %d PVs under %s; server conf %s', len(sim.pvs), sim.prefix, server.conf())
+        print('simxpm: ready, %d PVs under %s, pid %d' % (len(sim.pvs), sim.prefix, os.getpid()), flush=True)
         try:
             sim.run()
         except KeyboardInterrupt:

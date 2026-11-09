@@ -14,8 +14,8 @@ Any other command is refused (exit 127).  Nothing here talks to a Slurm controll
 As a device (python -m psdaq.sim.simslurm --state FILE --cnf CNF --logdir DIR) it seeds one job per process of the
 daqmgr .cnf as `daqmgr start` would have submitted it (comment x<xpm>_p<platform>_s<station>_<id>, from
 psdaq.slurm.main.Runner's own parsing of CNF), every third PENDING and the rest RUNNING, each with a log file under
-DIR; then, once a second, a job PENDING for 3 s starts RUNNING and every RUNNING job's log gets a line.  It prints a
-'ready' line and stays up until terminated; its pid is in the state file.
+DIR; then, once a second, a job PENDING for 3 s (--pending) starts RUNNING and every RUNNING job's log gets a line.  It
+prints a 'ready' line and stays up until terminated; its pid is in the state file.
 """
 
 import argparse
@@ -125,10 +125,10 @@ def seed(state, cnf, logdir):
         return [j['job_name'] for j in st['jobs']]
 
 
-def tick(state, n):
+def tick(state, n, pending=3.0):
     with locked(state) as st:
         for j in st['jobs']:
-            if j['state'] == 'PENDING' and time.time() - j['since'] > 3:
+            if j['state'] == 'PENDING' and time.time() - j['since'] > pending:
                 j['state'], j['since'] = 'RUNNING', time.time()
             if j['state'] == 'RUNNING' and j.get('logfile'):
                 with open(j['logfile'], 'a') as f:
@@ -185,6 +185,7 @@ def main():
                                                  'converted to --py by daqmgr\'s own psdaq.slurm.cnftopy')
     ap.add_argument('--py', help='where to write the daqmgr config converted from a .cnf (default: next to --state)')
     ap.add_argument('--logdir', required=True, help='directory for the job log files')
+    ap.add_argument('--pending', type=float, default=3.0, help='seconds a PENDING job waits to run (default 3)')
     a = ap.parse_args()
     cnf = a.cnf
     if cnf.endswith('.cnf'):
@@ -199,7 +200,7 @@ def main():
     while True:
         time.sleep(1.0)
         n += 1
-        tick(a.state, n)
+        tick(a.state, n, a.pending)
 
 
 if __name__ == '__main__':

@@ -294,10 +294,13 @@ def run_server_cmd(args, timeout=30):
 
 class DeviceSim:
     """A campaign device simulator (python -m psdaq.sim.<module> args) started by a test, e.g. simtpr; the test
-    server's backend becomes 'sim-device:<module>' only if check_device_source finds the page's PVs served by it."""
+    server's backend becomes 'sim-device:<module>' only if check_device_source finds the page's PVs served by it.
+    It starts after this session's walks (gui_walks): a walk starts its own simulators on the same ports and PV names
+    (e.g. configdb_GUI's stand-in on 47321), which must not meet a test's (when only some test files run)."""
 
     def __init__(self, module, args, timeout=30):
         from psdaq.webgui.parity.check_gui_parity import wait_ready
+        gui_walks()
         self.module, self.args = module, list(args)
         self.p = subprocess.Popen([SERVER_PYTHON, '-m', 'psdaq.sim.' + module] + self.args, env=server_env(),
                                   stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)

@@ -23,7 +23,8 @@ signal receivers, texts written after construction, table columns and tab texts.
 Rows (one per affordance of the running GUI).  Each instance is attributed to the innermost frame
 of its construction stack in an own file, i.e. to a site.  A site with instances gives one row per
 instance, id `<scope>.<binding>` plus `[<PV>]`, `[<text>]` and `#<n>` qualifiers as needed to keep ids
-unique (QTableWidget: one row per column `.col[<header>]` and one `.cellClicked` row when connected;
+unique (QTableWidget / QTreeWidget: one row per column `.col[<header>]`, one `.cellClicked` row when connected and,
+for a tree whose itemSelectionChanged is connected, one `.select` row;
 QTabWidget: one row per tab `.tab[<text>]`; QMessageBox: one row for all its instances, a dialog built anew
 each time it is shown).  An instance that is a QLabel with no text written after
 construction is decoration and gives no row, unless the walk saw another label of the same site built by
@@ -41,7 +42,10 @@ Flags (enumerator side, from source), which check_parity uses for not-applicable
              binding in the own files) or a button whose clicked/toggled signal the source never
              connects
 pyqtgraph: a plot panel (a PlotItem that GraphicsLayout.addPlot makes, a PlotWidget, an ImageView) is a row of kind
-plot (qualifier: its left-axis label); its curves are what it shows, not rows of their own.
+plot (qualifier: its left-axis label); its curves are what it shows, not rows of their own.  The widgets of its
+context menu (pg_options: the ViewBox's X / Y axis panels and the PlotItem's Plot Options, which the walk marks with
+their plot) are rows '<plot row id>.<xaxis|yaxis|ctrl>.<name>' (a checkable QGroupBox is a checkbox row; the
+pyqtgraph labels its retranslateUi writes are value rows).
 reconcile(rows, walk) says 'agree' when the walk saw what the flag says (0 instances and the line
 never ran; no object of that name; display empty at the end and never written, receivers 0), and
 built(rows, walk) when the row's site has an instance (or the slot's object exists) and the line ran.
@@ -246,6 +250,8 @@ class _SiteScan(ast.NodeVisitor):
             name = ('local', tgt.id)
         elif isinstance(tgt, ast.Subscript):
             v = tgt.value
+            while isinstance(v, ast.Subscript):     # self.codesText['master'][i] = QLabel(...) (xpmpva)
+                v = v.value
             if isinstance(v, ast.Attribute) and isinstance(v.value, ast.Name) and v.value.id == 'self':
                 name = ('self', v.attr)
             elif isinstance(v, ast.Name):
@@ -456,6 +462,8 @@ def _instance_kind(x, written=()):
     base = x['base']
     if base in ('QTableWidget', 'QTableView', 'QTreeWidget', 'QTabWidget'):
         return base
+    if base == 'QGroupBox':                     # a group box is a frame; a checkable one is a check box
+        return ('checkbox' if x.get('enabled', True) else 'value') if x.get('checkable') else None
     k = QT_KIND.get(base)
     if k in ('button', 'checkbox', 'combo') and not x.get('enabled', True):
         return 'value'
@@ -494,9 +502,13 @@ def make_rows(srcinfo, walk):
     inst = {}
     walk_only = []
     written = written_lines(walk)
+    pg_menu = []                                # pyqtgraph menu widgets: named after their plot's row, below
     for x in (walk or {}).get('instances', []):
         site = x.get('site')
         if not site:
+            continue
+        if x.get('pg'):
+            pg_menu.append(x)
             continue
         cands = [s for s in by_file.get(site[0], []) if s['line'] <= site[1] <= s['end_line']]
         if cands:
@@ -572,6 +584,9 @@ def make_rows(srcinfo, walk):
                     out.append(('column', '%s.col[%s]' % (stem, c), c, x))
                 if x.get('receivers', {}).get('cellClicked'):
                     out.append(('click', '%s.cellClicked' % stem, 'cell click', x))
+                if k == 'QTreeWidget' and x.get('receivers', {}).get('itemSelectionChanged'):   # a tree whose selection
+                    #                                                                                 the program uses
+                    out.append(('click', '%s.select' % stem, 'item selection', x))
                 continue
             out.append((k, None, None if k == 'message' else _qual(x), x))   # a dialog's text is what it says now
         # ids for plain instances: stem, + [qual] when needed, + #n when still ambiguous
@@ -611,10 +626,24 @@ def make_rows(srcinfo, walk):
                      'reach': '' if exists else 'no-object', 'hidden': False, 'inert': False,
                      'guard': None if exists else 'def %s (%s)' % (sl['name'], loc), 'site': None,
                      'evidence': ['connectSlotsByName slot for object %r' % sl['object']]})
-    for x in walk_only:
+    plot_ids = {r['instance']: r['id'] for r in rows if r.get('kind') == 'plot' and r.get('instance') is not None}
+    for x in sorted(pg_menu, key=lambda x: x['seq']):
+        k = _instance_kind(x, written)
+        if k is None:
+            continue
+        owner, group, name = x['pg']
+        loc = '%s:%s' % tuple(x['site'][:2])
+        rows.append({'id': '%s.%s.%s' % (plot_ids.get(owner, 'pg-plot#%s' % owner), group, name), 'kind': k,
+                     'label': _qual(x) or x['cls'], 'file': x['site'][0], 'line': x['site'][1], 'loc': loc,
+                     'widget': x['cls'], 'reachable': True, 'reach': '', 'hidden': False, 'inert': False,
+                     'guard': None, 'site': x['site'], 'instance': x['seq'], 'pv': None, 'pg': x['pg'],
+                     'evidence': ['pyqtgraph %s %s of the plot built at %s (walk instance #%d)' % (
+                         group, name, loc, x['seq'])]})
+    for x in walk_only:                         # an instance the walk saw at a line with no site (a class in a variable:
         rows.append({'id': 'walk-only:%s:%s' % (x['site'][0], x['site'][1]) + ('[%s]' % _qual(x) if _qual(x) else ''),
                      'kind': _instance_kind(x, written) or 'value', 'label': x['cls'], 'file': x['site'][0],
                      'line': x['site'][1], 'loc': '%s:%s' % tuple(x['site'][:2]), 'widget': x['cls'],
+                     'instance': x['seq'], 'pv': x.get('pv'),   # xpmpva's h[1](pvname, label)): a built row
                      'reachable': True, 'reach': '', 'hidden': False, 'inert': False, 'guard': None, 'site': x['site'],
                      'evidence': ['walk saw a %s built at %s:%s, a line the source scan has no site for' % (
                          x['cls'], x['site'][0], x['site'][1])]})

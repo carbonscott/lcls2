@@ -809,10 +809,12 @@ def run_walk(out_path, workdir):
 GUI_WALK_VERSION = 1
 GUI_COUNTED = ('QPushButton', 'QToolButton', 'QCheckBox', 'QRadioButton', 'QLineEdit', 'QComboBox', 'QSpinBox',
                'QDoubleSpinBox', 'QSlider', 'QTextEdit', 'QPlainTextEdit', 'QTextBrowser', 'QLabel', 'QTableWidget',
-               'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget', 'QProgressBar', 'QMessageBox')
+               'QTableView', 'QTreeWidget', 'QListWidget', 'QTabWidget', 'QProgressBar', 'QMessageBox',
+               'QGroupBox')                             # a checkable QGroupBox is a control (pyqtgraph's Plot Options)
 PG_COUNTED = ('PlotItem', 'PlotWidget', 'ImageView')       # pyqtgraph: a plot panel (axes, curves, pan / zoom)
 GUI_SIGNALS = ('clicked', 'toggled', 'stateChanged', 'currentIndexChanged', 'activated', 'editingFinished',
-               'returnPressed', 'textChanged', 'cellClicked', 'currentCellChanged', 'currentChanged')
+               'returnPressed', 'textChanged', 'cellClicked', 'currentCellChanged', 'currentChanged',
+               'itemSelectionChanged')
 
 
 def sim_params(sim_dir):
@@ -975,12 +977,15 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
         hits[fn].add(frame.f_lineno)
         return local
 
+    CHILD = {'path': None, 'walks': []}         # a GUI whose QApplication is made in a multiprocessing child
+
     def finish(code):
         sys.settrace(None)
         threading.settrace(None)
         OUT['lines'] = {}
         for fn, ls in sorted(hits.items()):
             OUT['lines'][own_abs.get(os.path.realpath(fn), fn)] = _ranges(ls)
+        merge_children()
         OUT['elapsed'] = round(time.time() - t0, 1)
         try:
             import PyQt5.QtCore as QC
@@ -989,10 +994,12 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
             pass
         OUT['python'] = sys.version.split()[0]
         OUT['exit'] = code
-        with open(out_path, 'w') as f:
+        path = CHILD['path'] or out_path
+        with open(path, 'w') as f:
             json.dump(OUT, f, indent=0, sort_keys=True, default=str)
-        print('qt_walk --gui %s: %d instances, %d calls, exit %d, elapsed %.1f s -> %s' % (
-            target, len(OUT['instances']), len(OUT['calls']), code, OUT['elapsed'], out_path))
+        print('qt_walk --gui %s%s: %d instances, %d calls, exit %d, elapsed %.1f s -> %s' % (
+            target, ' (child process %d)' % os.getpid() if CHILD['path'] else '', len(OUT['instances']),
+            len(OUT['calls']), code, OUT['elapsed'], path))
         sys.stdout.flush()
         os._exit(code)
 
@@ -1069,12 +1076,23 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                                          'args': [str(x)[:120] for x in a[1:3]]})
                     return ORIG['QMessageBox'].Ok
                 ns[m] = staticmethod(st)
-            ns['exec_'] = lambda self: (OUT['calls'].append({'opener': 'QMessageBox.exec_', 'site': self._pw_site}),
+            ns['exec_'] = lambda self: (OUT['calls'].append({'opener': 'QMessageBox.exec_', 'site': self._pw_site,
+                                                             'args': [self.text()[:200]]}),
                                         ORIG['QMessageBox'].Ok)[1]
+            ns['exec'] = ns['exec_']                  # configdb_GUI calls dialog.exec() when it exists
         rec_cls.append(type(name, (base,), ns))
         return rec_cls[0]
     for n in GUI_COUNTED:
         setattr(QtWidgets, n, make_rec(n, ORIG[n]))
+    if W.get('dialog') in ('accept', 'reject'):     # a QDialog's exec (configdb_GUI's ConfirmDialog): recorded and
+        answer = W['dialog']                       # answered as the spec says, without a modal event loop
+
+        def dialog_exec(self, _a=answer):
+            s_, ch = construction_site()
+            OUT['calls'].append({'opener': 'QDialog.exec', 'site': s_, 'chain': ch, 'args': [type(self).__name__, _a]})
+            return QtWidgets.QDialog.Accepted if _a == 'accept' else QtWidgets.QDialog.Rejected
+        QtWidgets.QDialog.exec_ = dialog_exec
+        QtWidgets.QDialog.exec = dialog_exec
     PG = {}
     try:                                      # pyqtgraph plots (seqplot, seq_epixhr): PlotItem (GraphicsLayout.addPlot),
         import pyqtgraph as _pg               # PlotWidget, ImageView, recorded where they are made
@@ -1096,6 +1114,10 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                         return
                     f = f.f_back
                 record(self, _n)
+                pi = self if _n == 'PlotItem' else (self.getPlotItem() if hasattr(self, 'getPlotItem') else None)
+                if pi is not None and hasattr(pi, 'ctrl') and hasattr(pi, 'vb'):
+                    from psdaq.webgui.parity import pg_walk
+                    pg_walk.tag(pi, self._pw_seq)      # its context menu's widgets: rows of this plot
             cls.__init__ = pg_init
     except ImportError:
         pass
@@ -1149,7 +1171,7 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
         return None
 
     def text_of(x):
-        for m in ('text', 'toPlainText', 'currentText', 'windowTitle'):
+        for m in ('text', 'toPlainText', 'currentText', 'title', 'windowTitle'):
             f = getattr(x, m, None)
             if f is not None:
                 try:
@@ -1169,6 +1191,7 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
             out['x_range'], out['y_range'] = [float(v) for v in vr[0]], [float(v) for v in vr[1]]
             link = pi.getViewBox().linkedView(0)
             out['x_linked'] = link is not None
+            out['vb_size'] = [float(pi.getViewBox().width()), float(pi.getViewBox().height())]
             for c in pi.listDataItems():
                 xd, yd = c.getData()
                 out['curves'].append({'x': [float(v) for v in (xd if xd is not None else [])][:5000],
@@ -1192,9 +1215,13 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                        'chain': x._pw_chain, 'pv': find_pv(x), 'text': text_of(x), 'enabled': x.isEnabled(),
                        'visible': x.isVisible(), 'window_visible': bool(win is not None and win.isVisible()),
                        'writes': x._pw_writes, 'receivers': signals(x), 'object_name': x.objectName()}
-                if isinstance(x, QtWidgets.QAbstractButton):
+                if isinstance(x, (QtWidgets.QAbstractButton, ORIG['QGroupBox'])):
                     rec['checkable'] = x.isCheckable()
                     rec['checked'] = x.isChecked()
+                if getattr(x, '_pw_pg', None):
+                    rec['pg'] = list(x._pw_pg)                 # [plot seq, 'ctrl' | 'xaxis' | 'yaxis', name]
+                if isinstance(x, ORIG['QListWidget']):
+                    rec['items'] = [x.item(i).text() for i in range(x.count())]
                 if isinstance(x, (ORIG['QLineEdit'], ORIG['QTextEdit'], ORIG['QPlainTextEdit'])):
                     rec['readonly'] = x.isReadOnly()
                 if isinstance(x, (ORIG['QTextEdit'], ORIG['QPlainTextEdit'])):
@@ -1203,6 +1230,11 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                     rec['choices'] = [x.itemText(i) for i in range(x.count())]
                 if isinstance(x, ORIG['QTabWidget']):
                     rec['tabs'] = [x.tabText(i) for i in range(x.count())]
+                if isinstance(x, ORIG['QTreeWidget']):
+                    h = x.headerItem()
+                    rec['columns'] = [h.text(i) for i in range(x.columnCount())] if h is not None else []
+                    rec['top_items'] = [x.topLevelItem(i).text(0) for i in range(min(x.topLevelItemCount(), 60))]
+                    rec['selected'] = [it.text(0) for it in x.selectedItems()][:40]
                 if isinstance(x, ORIG['QTableWidget']):
                     rec['columns'] = [(x.horizontalHeaderItem(i).text() if x.horizontalHeaderItem(i) else str(i))
                                       for i in range(x.columnCount())]
@@ -1268,6 +1300,53 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                         pump(0.1)
                 elif step.startswith('pump:'):
                     pump(float(step.split(':', 1)[1]))
+                elif step.startswith('pg-options'):       # pyqtgraph's menu controls, each set and recorded
+                    from psdaq.webgui.parity import pg_walk
+                    size = [float(v) for v in step.split(':', 1)[1].split('x')] if ':' in step else None
+                    plots = [x for x in LIVE if not sip.isdeleted(x) and x._pw_base == 'PlotItem']
+                    plots.sort(key=lambda x: x._pw_seq)
+                    res = pg_walk.run(plots, pump, OUT, size, log=lambda m: OUT['notes'].append(m))
+                    res['plots'] = [x._pw_seq for x in plots]
+                elif step.startswith(('tree-select:', 'tree-select-many:')):
+                    # tree-select:<k>:<item text>/<child text>/...   select one item of the k-th QTreeWidget (by
+                    # construction order); tree-select-many:<k>:<a>,<b>  select top-level items a, then b (Ctrl+click)
+                    kind, k, path = step.split(':', 2)
+                    trees = sorted([x for x in LIVE if isinstance(x, ORIG['QTreeWidget']) and not sip.isdeleted(x)],
+                                   key=lambda x: x._pw_seq)
+                    tw = trees[int(k)]
+                    if kind == 'tree-select':
+                        parts, item = path.split('/'), None
+                        level = [tw.topLevelItem(i) for i in range(tw.topLevelItemCount())]
+                        for part in parts:
+                            item = next(it for it in level if it.text(0) == part)
+                            item.setExpanded(True)
+                            level = [item.child(i) for i in range(item.childCount())]
+                        tw.setCurrentItem(item)
+                    else:
+                        tw.clearSelection()
+                        for name in path.split(','):
+                            it = next(tw.topLevelItem(i) for i in range(tw.topLevelItemCount())
+                                      if tw.topLevelItem(i).text(0) == name)
+                            it.setSelected(True)
+                            pump(0.05)
+                    pump(0.2)
+                elif step.startswith('text:'):            # text:<k>:<value>  type into the k-th QLineEdit
+                    _, k, val = step.split(':', 2)
+                    edits = sorted([x for x in LIVE if isinstance(x, ORIG['QLineEdit']) and not sip.isdeleted(x)],
+                                   key=lambda x: x._pw_seq)
+                    edits[int(k)].setText(val)
+                    pump(0.1)
+                elif step.startswith('check:'):           # check:<text>:on|off  a QCheckBox (as a click would)
+                    _, want, state = step.split(':', 2)
+                    for x in [x for x in list(LIVE) if isinstance(x, ORIG['QCheckBox']) and not sip.isdeleted(x)]:
+                        if x.text() == want and x.isEnabled() and x.isChecked() != (state == 'on'):
+                            x.click()
+                            pump(0.2)
+                elif step == 'close':                     # close the program's main window (its closeEvent)
+                    for top in app.topLevelWidgets():
+                        if isinstance(top, QtWidgets.QMainWindow) and top.isVisible():
+                            top.close()
+                            pump(0.2)
                 elif step.startswith('click:'):           # click every enabled QPushButton with this text
                     want = step.split(':', 1)[1]
                     for x in [x for x in list(LIVE) if isinstance(x, ORIG['QPushButton']) and not sip.isdeleted(x)]:
@@ -1279,6 +1358,106 @@ def run_gui_walk(spec_path, out_path, workdir, sim_dir):
                 OUT['notes'].append('drive %s: %s' % (step, traceback.format_exc()[-600:]))
         collect()
         finish(0)
+
+    # A program that builds its window in a multiprocessing child (hsdPs: Process(target=analyze), whose
+    # QApplication and plot live in the child and which never calls exec_): the walk follows the child.  A child
+    # whose target is in the program's own files runs, forked, with this walk's recording (Qt classes, line trace):
+    # when the parent joins it (the program's work is done), the walk sends the target's queue a stop word, the
+    # child's q.get raises, and the child runs the spec's drive steps on its own window (pump, pg-options), then
+    # writes its walk to <out>.child<k>.json and exits; the parent merges it (instances, lines, calls, notes, the
+    # option walk) into its own.
+    import multiprocessing.process as _mpp
+    orig_start, orig_join = _mpp.BaseProcess.start, _mpp.BaseProcess.join
+    STOP = '__qt_walk_stop__'
+
+    class _ChildStop(Exception):
+        pass
+
+    def mp_start(self):
+        tgt = getattr(self, '_target', None)
+        code = getattr(tgt, '__code__', None)
+        if code is None or os.path.realpath(code.co_filename) not in own_abs:
+            return orig_start(self)
+        qs = [a for a in self._args if hasattr(a, 'put') and hasattr(a, 'get')]
+        cpath = '%s.child%d.json' % (out_path, len(CHILD['walks']))
+        CHILD['walks'].append(cpath)
+
+        def child_main(*a, **k):
+            CHILD['path'] = cpath
+            OUT['child'] = {'pid': os.getpid(), 'ppid': os.getppid(), 'target': '%s:%d %s' % (
+                own_abs[os.path.realpath(code.co_filename)], code.co_firstlineno, code.co_name)}
+            for q in qs:
+                def get(*ga, _og=q.get, **gk):
+                    v = _og(*ga, **gk)
+                    if isinstance(v, str) and v == STOP:
+                        # the drive steps run here, inside the target (its window is a local of the target's frame,
+                        # which an exception would unwind and delete); drive ends the child (finish)
+                        OUT['notes'].append('child: the parent joined (its work done); drive steps run at the '
+                                            "target's q.get")
+                        app_ = QtWidgets.QApplication.instance()
+                        if app_ is not None:
+                            drive(app_)
+                        raise _ChildStop()
+                    return v
+                q.get = get
+            try:
+                tgt(*a, **k)
+                OUT['notes'].append('child: target returned')
+            except _ChildStop:
+                OUT['notes'].append('child: the target stopped at q.get (no QApplication)')
+            except Exception:
+                OUT['notes'].append('child: target failed: %s' % traceback.format_exc()[-1200:])
+            app = QtWidgets.QApplication.instance()
+            if app is not None:
+                drive(app)                      # pump, the spec's drive steps, collect, finish -> the child walk
+            collect()
+            finish(5)
+        self._target = child_main
+        self._pw_child = (cpath, qs)
+        OUT['calls'].append({'opener': 'multiprocessing.Process.start (followed)', 'args': [cpath]})
+        return orig_start(self)
+
+    def mp_join(self, timeout=None):
+        info = getattr(self, '_pw_child', None)
+        if info is None:
+            return orig_join(self, timeout)
+        for q in info[1]:
+            q.put(STOP)
+        orig_join(self, float(W.get('child_timeout', 300)))
+        if self.is_alive():
+            OUT['notes'].append('child %s did not finish in %s s: terminated' % (self.pid, W.get('child_timeout', 300)))
+            self.terminate()
+            orig_join(self, 10)
+        OUT['notes'].append('child %s exit %s' % (self.pid, self.exitcode))
+    _mpp.BaseProcess.start = mp_start
+    _mpp.BaseProcess.join = mp_join
+
+    def merge_children():
+        """(parent) the child walks: their instances, lines, calls, names and option walk join this walk."""
+        if CHILD['path']:
+            return
+        for cp in CHILD['walks']:
+            if not os.path.isfile(cp):
+                OUT['notes'].append('child walk %s missing' % cp)
+                continue
+            with open(cp) as f:
+                cw = json.load(f)
+            seqs = {x['seq'] for x in OUT['instances']}
+            new = [x for x in cw.get('instances', []) if x['seq'] not in seqs]
+            OUT['instances'] += [dict(x, child=cw.get('child', {}).get('pid')) for x in new]
+            for rel, rngs in cw.get('lines', {}).items():
+                cur = set()
+                for a_, b_ in OUT['lines'].get(rel, []) + rngs:
+                    cur.update(range(a_, b_ + 1))
+                OUT['lines'][rel] = _ranges(cur)
+            OUT['calls'] += [dict(c, child=True) for c in cw.get('calls', [])]
+            OUT['object_names'] = sorted(set(OUT.get('object_names', [])) | set(cw.get('object_names', [])))
+            OUT['notes'] += ['child: %s' % n for n in cw.get('notes', [])]
+            OUT['phase_log'] += [['child'] + list(p_) for p_ in cw.get('phase_log', [])]
+            OUT.setdefault('children', []).append(dict(cw.get('child', {}), exit=cw.get('exit'), walk=cp,
+                                                        instances=len(new)))
+            if cw.get('pg_options'):
+                OUT['pg_options'] = cw['pg_options']
 
     sys.settrace(glob)
     threading.settrace(glob)

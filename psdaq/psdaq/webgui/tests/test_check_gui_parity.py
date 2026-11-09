@@ -3,6 +3,7 @@ tree: the tests that need one take the walks webgui_harness.gui_walks() runs onc
 --run-walks, PyQt5 offscreen, against the simulated DAQ of WEBGUI_SIM_DAQ), and skip without a simulated DAQ."""
 
 import copy
+import importlib
 import json
 import os
 import xml.etree.ElementTree as ET
@@ -44,7 +45,8 @@ def test_no_walk_is_kept_in_the_tree():
 
 
 @pytest.mark.parametrize('name', ['procstat', 'groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable',
-                                  'hsdpva', 'dtica', 'daqstat', 'datadev_monitor', 'detector_protection_monitor'])
+                                  'hsdpva', 'dtica', 'daqstat', 'datadev_monitor', 'detector_protection_monitor',
+                                  'seqplot', 'seq_epixhr', 'hsdPs', 'configdb_GUI', 'xpmpva'])
 def test_walk_is_of_this_source_and_every_row_has_one_entry(walks, name):
     spec = _spec(name)
     with open(C.walk_path(spec, walks)) as f:
@@ -94,6 +96,54 @@ def test_check_passes_and_fails_when_a_mapping_or_the_backend_goes(tmp_path, wal
     rep = _check(spec, _junit(tmp_path, spec, drop_backend_for=emu), walks)
     assert not rep['ok'] and 'PvGroupStats.runb' in [r['id'] for r, _, _ in rep['failing']]
     assert 'backend emulator, not sim-daq' in [st for _, _, st in rep['failing']]
+
+
+def test_pv_compare_counts_the_same_pv_and_names_another():
+    rows = [{'id': k, 'pv': pv} for k, pv in [('a', 'X:A'), ('b', 'X:B'), ('c', None), ('d', 'X:D'), ('e', 'X:E'),
+                                              ('f', 'X:F')]]
+    mapping = {k: {'web': '[data-parity~="%s"]' % k, 'test': 'test_x.py::test_x[chromium]'} for k in 'abcde'}
+    mapping['f'] = {'na': 'not applicable'}
+    nodes = {'a': {'pv': 'X:A'}, 'b': {'pv': 'X:B2'}, 'c': {'pv': 'X:C'}, 'd': {'type': 'tab'}, 'f': {'pv': 'X:G'}}
+    assert C.pv_compare(rows, mapping, nodes) == {'same': 1, 'differ': [('b', 'X:B', 'X:B2')], 'walk_no_pv': 1,
+                                                   'page_no_pv': 1, 'no_node': 1}
+
+
+PVGUI = ['groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable', 'hsdpva', 'dtica', 'xpmpva']
+NO_PV_IN_WALK = {'deadca', 'pvatable'}     # their widgets (PvDblArrayW, PvField) carry no .pv: nothing to compare
+
+
+@pytest.mark.parametrize('name', PVGUI)
+def test_each_page_widget_has_the_pv_of_its_pyqt_widget(tmp_path, walks, monkeypatch, name):
+    """The page built with the walk's argv gives every mapped row whose PyQt widget had a PV in the walk a node with
+    that PV; one node given another PV takes its row out of M and fails the check, naming both PVs."""
+    spec = _spec(name)
+    junit = check_parity.load_junit([_junit(tmp_path, spec, backend=spec.get('backend', 'sim-daq'))])
+    e = next(x for x in qapps.scan(SRC) if x['file'] == spec['file'])
+    rep, _, _, rows = C.check_gui(SRC, e, spec, junit, walks)
+    pv = rep['pv']
+    assert rep['ok'] and pv['differ'] == [] and pv['error'] is None, C.pv_line(pv) + '\n' + check_parity.render(rep)
+    if name in NO_PV_IN_WALK:
+        assert pv['same'] == 0 and pv['walk_no_pv'] > 0, C.pv_line(pv)
+        return
+    assert pv['same'] > 0, C.pv_line(pv)
+    mod = importlib.import_module('psdaq.webgui.pvgui.' + name)
+    build, hit = mod.build, []
+
+    def other_pv(*a, **k):
+        page = build(*a, **k)
+        for r in rows:
+            n = page.nodes.get(r['id'])
+            if r.get('pv') and n and n.get('pv') == r['pv'] and 'test' in spec['mapping'].get(r['id'], {}):
+                page.nodes[r['id']] = dict(n, pv=n['pv'] + 'X')
+                hit.append((r['id'], r['pv']))
+                break
+        return page
+    monkeypatch.setattr(mod, 'build', other_pv)
+    bad, _, _, _ = C.check_gui(SRC, e, spec, junit, walks)
+    rid, wpv = hit[0]
+    assert not bad['ok'] and bad['M'] == rep['M'] - 1 and bad['pv']['differ'] == [(rid, wpv, wpv + 'X')]
+    assert (rid, 'the page widget has PV %sX, the PyQt widget %s (walk)' % (wpv, wpv)) in bad['invalid']
+    assert rid in check_parity.render(bad).splitlines()[-1]
 
 
 def test_check_fails_without_a_walk_or_with_a_walk_of_other_source(tmp_path, walks):
@@ -218,4 +268,102 @@ def test_walk_records_pyqtgraph_plot_panels_and_their_curves(walks, name, plots)
                                                                                          for x in p]
     rows = gui_rows.make_rows(gui_rows.source_sites(SRC, spec['file']), walk)
     assert sorted(r['id'] for r in rows if r['kind'] == 'plot') == sorted(
-        rid for rid in spec['mapping'] if rid.startswith('PatternWaveform.add.q0['))
+        rid for rid in spec['mapping'] if rid.startswith('PatternWaveform.add.q0[') and rid.endswith(']'))
+
+
+# ---------------- pyqtgraph's menu controls, the walk that follows a child process, trees and dialogs ----------------
+
+def test_pyqtgraph_menu_widgets_are_rows_of_their_plot():
+    info = {'sites': [_site(30, 'addPlot', 'q0')], 'slots': [], 'writes': {}, 'connects': {}}
+    plot = dict(_inst(5, 'PlotItem', 30, 30), text='10k.py')
+    box = dict(_inst(2, 'QCheckBox', 30, 30, text='Log Y'), pg=[5, 'ctrl', 'logYCheck'])
+    group = dict(_inst(3, 'QGroupBox', 30, 30, text='Alpha'), pg=[5, 'ctrl', 'alphaGroup'], checkable=True)
+    frame = dict(_inst(4, 'QGroupBox', 30, 30, text=''), pg=[5, 'ctrl', 'decimateGroup'], checkable=False)
+    edit = dict(_inst(1, 'QLineEdit', 30, 30, text='0'), pg=[5, 'xaxis', 'minText'])
+    rows = gui_rows.make_rows(info, {'instances': [edit, box, group, frame, plot]})
+    assert [(r['id'], r['kind']) for r in rows] == [
+        ('S.q0[10k.py]', 'plot'), ('S.q0[10k.py].xaxis.minText', 'text'), ('S.q0[10k.py].ctrl.logYCheck', 'checkbox'),
+        ('S.q0[10k.py].ctrl.alphaGroup', 'checkbox')], rows          # a group box that is not checkable is a frame
+
+
+def test_pg_option_table_has_one_option_per_control():
+    from psdaq.webgui.parity import pg_options as O
+    assert sorted(o['row'] for o in O.OPTIONS) == sorted(O.CONTROLS) and len(O.CONTROLS) == 48
+    for o in O.OPTIONS:                              # the control's own action comes last
+        assert not o['actions'] or o['actions'][-1][1] == o['row'] or o['row'].endswith(('label', 'avgParamList'))
+    assert O.compare({'a': [1.0, None, True]}, {'a': [1.0 + 1e-9, float('nan'), True]}) == []
+    assert O.compare({'a': [1.0]}, {'a': [1.1]}) == [('.a[0]', 1.0, 1.1)]
+    assert O.compare({'a': True}, {'a': 1}) == [('.a', True, 1)]
+
+
+def test_tree_selection_and_columns_are_rows():
+    info = {'sites': [_site(40, 'QTreeWidget', 'device_list', self_attr=True)], 'slots': [], 'writes': {},
+            'connects': {}}
+    tree = dict(_inst(1, 'QTreeWidget', 40, 40), columns=['detector'], receivers={'itemSelectionChanged': 2})
+    rows = gui_rows.make_rows(info, {'instances': [tree]})
+    assert [(r['id'], r['kind']) for r in rows] == [('S.device_list.col[detector]', 'column'),
+                                                   ('S.device_list.select', 'click')], rows
+
+
+def test_a_ready_line_is_the_word_ready():
+    import subprocess
+    import sys
+    p = subprocess.Popen([sys.executable, '-c', 'print("INFO configuration fakecam already exists", flush=True);'
+                          'import time; time.sleep(0.5); print("sim: ready, 3 PVs", flush=True)'],
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    try:
+        assert C.wait_ready(p, 20) == 'sim: ready, 3 PVs'
+    finally:
+        p.wait(10)
+
+
+@pytest.mark.parametrize('name, panels', [('seqplot', 2), ('seq_epixhr', 1), ('hsdPs', 1)])
+def test_option_walk_sets_every_menu_control_and_puts_the_panel_back(walks, name, panels):
+    from psdaq.webgui.parity import pg_options as O
+    with open(C.walk_path(_spec(name), walks)) as f:
+        walk = json.load(f)
+    pg = walk['pg_options']
+    assert len(pg['plots']) == panels and len(pg['steps']) == panels * len(O.OPTIONS)
+    assert all(abs(w - h) < 1 for size in pg['size'] for w, h in zip(size, pg['requested_size'])), pg['size']
+    bad = [(s['plot'], s['option'], s['errors'][:1], s['reset_diff'][:1]) for s in pg['steps']
+           if s['errors'] or s['reset_diff'] or None in s['settle']]
+    assert not bad, bad                  # applied, settled, and put back exactly as it was
+    moved = [s for s in pg['steps'] if s['pre'] != s['post']]
+    assert len(moved) >= 0.75 * len(pg['steps']), len(moved)   # most last actions change what the panel shows
+
+
+def test_walk_follows_hsdps_plotter_into_its_child_process(walks):
+    with open(C.walk_path(_spec('hsdPs'), walks)) as f:
+        walk = json.load(f)
+    (child,) = walk['children']
+    assert child['exit'] == 0 and child['target'] == 'cas/hsdPs.py:54 analyze' and child['instances'] >= 49, child
+    (p,) = [x for x in walk['instances'] if x['base'] == 'PlotItem']
+    assert p['title'] == 'VCO Phase (ns)' and [c['n'] for c in p['curves']] == [0, 3, 3], p['curves']
+
+
+def test_configdb_walk_selects_applies_confirms_and_closes(walks):
+    with open(C.walk_path(_spec('configdb_GUI'), walks)) as f:
+        walk = json.load(f)
+    calls = [(c['opener'], c['args'][:1]) for c in walk['calls'] if c['opener'].startswith(('QDialog', 'QMessageBox'))]
+    assert ('QDialog.exec', ['ConfirmDialog']) in calls, calls
+    assert ('QMessageBox.exec_', ['A write is still in progress. Quit anyway?']) in calls, calls
+    assert ('QMessageBox.exec_', ['No password. Set CONFIGDB_AUTH or pass --password.']) in calls, calls
+    trees = [x for x in walk['instances'] if x['base'] == 'QTreeWidget']
+    assert [t['columns'] for t in trees] == [['hutch / alias'], ['detector'], ['fakecam_0', 'type', 'value']], trees
+    assert trees[1]['selected'] == ['fakecam_0', 'fakecam_1'] and trees[2]['selected'] == ['sim_seed']
+
+
+def test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site():
+    sites = gui_rows.source_sites(SRC, 'cas/xpmpva.py')['sites']
+    codes = [(s['line'], s['binding'], s['self_attr']) for s in sites if s['binding'] == 'codesText']
+    assert [c[1:] for c in codes] == [('codesText', True)] * 3, codes      # self.codesText['master'][i] = QLabel(...)
+
+
+def test_an_instance_at_a_line_with_no_site_is_a_built_row():
+    info = {'sites': [], 'slots': [], 'writes': {}, 'connects': {}}
+    x = dict(_inst(7, 'QPushButton', 50, 50, text='3'), pv='X:TxLinkReset3')     # FrontPanelAMC's h[1](pv, label)
+    walk = {'instances': [x], 'lines': {'x.py': [[50, 50]]}}
+    rows = gui_rows.make_rows(info, walk)
+    assert [(r['id'], r['kind']) for r in rows] == [('walk-only:x.py:50[X:TxLinkReset3]', 'button')], rows
+    assert gui_rows.built(rows, walk)[rows[0]['id']][0]
+

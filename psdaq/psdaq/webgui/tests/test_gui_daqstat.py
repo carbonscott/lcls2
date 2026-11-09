@@ -27,6 +27,7 @@ PARITY_ROWS = {
 }
 T = H.UI_TIMEOUT
 COLORS = {'RUNNING': 'rgb(0, 192, 0)', 'PENDING': 'rgb(192, 192, 0)', 'COMPLETED': 'rgb(0, 0, 192)'}
+PENDING_S = 20      # simslurm --pending: a job stays PENDING this long (long enough for the page to show the seeded ones)
 
 
 def check_daqstat_source(dev, state):
@@ -54,7 +55,8 @@ def _start(cnf_py=None, interval=1):
     d = tempfile.mkdtemp(prefix='simslurm-')
     state = os.path.join(d, 'slurm.json')
     dev = H.DeviceSim('simslurm', ['--state', state, '--cnf', os.path.join(st['workdir'], st['cnf']),
-                                   '--py', os.path.join(d, 'daqstat.py'), '--logdir', os.path.join(d, 'logs')])
+                                   '--py', os.path.join(d, 'daqstat.py'), '--logdir', os.path.join(d, 'logs'),
+                                   '--pending', str(PENDING_S)])
     try:
         s = H.gui_server(['--daqstat-cnf', cnf_py or os.path.join(d, 'daqstat.py'), '--daqstat-slurm', state,
                           '--daqstat-interval', str(interval)],
@@ -115,7 +117,7 @@ def test_table_lists_the_jobs_states_live_and_sortable(page, ds):
     _open(page, ds)
     seen_pending = False
     t0 = time.time()
-    while time.time() - t0 < 30:
+    while time.time() - t0 < PENDING_S + 15:
         want = _states(ds)
         got = {r: page.locator('#procRows tr[data-id="%s"] td[data-col="1"]' % r).text_content() for r in want}
         if got == want:
@@ -181,7 +183,7 @@ def test_cell_click_opens_console_logfile_and_restarts(page, ds):
         new[0]['comment'] == old['comment'], after                     # Runner.restart: scancel, then sbatch
     cell = page.locator('#procRows tr[data-id="%s"] td[data-col="1"]' % uid)
     seen, t0 = [], time.time()
-    while time.time() - t0 < 30:                       # the new job: PENDING, then RUNNING (simslurm: after 3 s)
+    while time.time() - t0 < PENDING_S + 15:            # the new job: PENDING, then RUNNING (after PENDING_S)
         t = cell.text_content()
         if not seen or seen[-1] != t:
             seen.append(t)

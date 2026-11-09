@@ -1,0 +1,245 @@
+{
+ "file": "cas/hsdPs.py",
+ "title": "hsdPs (an HSD ADC/TIM clock phase scan; its plot is drawn by a multiprocessing child, which the walk follows)",
+ "web": "/gui/hsdPs",
+ "backend": "sim-device:simhsd",
+ "walk": {
+  "argv": [
+   "--base",
+   "{pvbase}:HSD:1_PS:A",
+   "--xpm",
+   "{pvbase}:XPM:7",
+   "--range",
+   "0",
+   "24",
+   "8"
+  ],
+  "devices": [
+   {
+    "module": "simhsd",
+    "args": [
+     "-P",
+     "{pvbase}:HSD:1_PS:A"
+    ]
+   },
+   {
+    "module": "simxpm",
+    "args": [
+     "-P",
+     "{pvbase}",
+     "-x",
+     "7",
+     "--frames",
+     "tcp://127.0.0.1:31077",
+     "--pull",
+     "none"
+    ]
+   }
+  ],
+  "pump": 2,
+  "timeout": 900,
+  "child_timeout": 700,
+  "drive": [
+   "pump:1",
+   "pg-options:720x180"
+  ]
+ },
+ "mapping": {
+  "analyze.pp": {
+   "web": "[data-parity~=\"analyze.pp\"]",
+   "test": "test_gui_hsdPs.py::test_plot_shows_the_pyqt_curves[chromium]"
+  },
+  "analyze.pp.xaxis.label": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.label\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_label[chromium]"
+  },
+  "analyze.pp.xaxis.linkCombo": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.linkCombo\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_linkCombo[chromium]"
+  },
+  "analyze.pp.xaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.autoPercentSpin\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_autoPercentSpin[chromium]"
+  },
+  "analyze.pp.xaxis.autoRadio": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.autoRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_autoRadio[chromium]"
+  },
+  "analyze.pp.xaxis.manualRadio": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.manualRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_manualRadio[chromium]"
+  },
+  "analyze.pp.xaxis.minText": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.minText\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_minText[chromium]"
+  },
+  "analyze.pp.xaxis.maxText": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.maxText\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_maxText[chromium]"
+  },
+  "analyze.pp.xaxis.invertCheck": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.invertCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_invertCheck[chromium]"
+  },
+  "analyze.pp.xaxis.mouseCheck": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.mouseCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_mouseCheck[chromium]"
+  },
+  "analyze.pp.xaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_visibleOnlyCheck[chromium]"
+  },
+  "analyze.pp.xaxis.autoPanCheck": {
+   "web": "[data-parity~=\"analyze.pp.xaxis.autoPanCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_xaxis_autoPanCheck[chromium]"
+  },
+  "analyze.pp.yaxis.label": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.label\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_label[chromium]"
+  },
+  "analyze.pp.yaxis.linkCombo": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.linkCombo\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_linkCombo[chromium]"
+  },
+  "analyze.pp.yaxis.autoPercentSpin": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.autoPercentSpin\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_autoPercentSpin[chromium]"
+  },
+  "analyze.pp.yaxis.autoRadio": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.autoRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_autoRadio[chromium]"
+  },
+  "analyze.pp.yaxis.manualRadio": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.manualRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_manualRadio[chromium]"
+  },
+  "analyze.pp.yaxis.minText": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.minText\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_minText[chromium]"
+  },
+  "analyze.pp.yaxis.maxText": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.maxText\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_maxText[chromium]"
+  },
+  "analyze.pp.yaxis.invertCheck": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.invertCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_invertCheck[chromium]"
+  },
+  "analyze.pp.yaxis.mouseCheck": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.mouseCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_mouseCheck[chromium]"
+  },
+  "analyze.pp.yaxis.visibleOnlyCheck": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.visibleOnlyCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_visibleOnlyCheck[chromium]"
+  },
+  "analyze.pp.yaxis.autoPanCheck": {
+   "web": "[data-parity~=\"analyze.pp.yaxis.autoPanCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_yaxis_autoPanCheck[chromium]"
+  },
+  "analyze.pp.ctrl.logXCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.logXCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_logXCheck[chromium]"
+  },
+  "analyze.pp.ctrl.logYCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.logYCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_logYCheck[chromium]"
+  },
+  "analyze.pp.ctrl.fftCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.fftCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_fftCheck[chromium]"
+  },
+  "analyze.pp.ctrl.derivativeCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.derivativeCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_derivativeCheck[chromium]"
+  },
+  "analyze.pp.ctrl.phasemapCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.phasemapCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_phasemapCheck[chromium]"
+  },
+  "analyze.pp.ctrl.downsampleCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.downsampleCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_downsampleCheck[chromium]"
+  },
+  "analyze.pp.ctrl.autoDownsampleCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.autoDownsampleCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_autoDownsampleCheck[chromium]"
+  },
+  "analyze.pp.ctrl.downsampleSpin": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.downsampleSpin\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_downsampleSpin[chromium]"
+  },
+  "analyze.pp.ctrl.subsampleRadio": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.subsampleRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_subsampleRadio[chromium]"
+  },
+  "analyze.pp.ctrl.meanRadio": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.meanRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_meanRadio[chromium]"
+  },
+  "analyze.pp.ctrl.peakRadio": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.peakRadio\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_peakRadio[chromium]"
+  },
+  "analyze.pp.ctrl.clipToViewCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.clipToViewCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_clipToViewCheck[chromium]"
+  },
+  "analyze.pp.ctrl.maxTracesCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.maxTracesCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_maxTracesCheck[chromium]"
+  },
+  "analyze.pp.ctrl.maxTracesSpin": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.maxTracesSpin\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_maxTracesSpin[chromium]"
+  },
+  "analyze.pp.ctrl.averageGroup": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.averageGroup\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_averageGroup[chromium]"
+  },
+  "analyze.pp.ctrl.avgParamList": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.avgParamList\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_avgParamList[chromium]"
+  },
+  "analyze.pp.ctrl.alphaSlider": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.alphaSlider\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_alphaSlider[chromium]"
+  },
+  "analyze.pp.ctrl.alphaGroup": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.alphaGroup\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_alphaGroup[chromium]"
+  },
+  "analyze.pp.ctrl.autoAlphaCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.autoAlphaCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_autoAlphaCheck[chromium]"
+  },
+  "analyze.pp.ctrl.xGridCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.xGridCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_xGridCheck[chromium]"
+  },
+  "analyze.pp.ctrl.yGridCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.yGridCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_yGridCheck[chromium]"
+  },
+  "analyze.pp.ctrl.gridAlphaSlider": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.gridAlphaSlider\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_gridAlphaSlider[chromium]"
+  },
+  "analyze.pp.ctrl.label": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.label\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_label[chromium]"
+  },
+  "analyze.pp.ctrl.pointsGroup": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.pointsGroup\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_pointsGroup[chromium]"
+  },
+  "analyze.pp.ctrl.autoPointsCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.autoPointsCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_autoPointsCheck[chromium]"
+  },
+  "analyze.pp.ctrl.forgetTracesCheck": {
+   "web": "[data-parity~=\"analyze.pp.ctrl.forgetTracesCheck\"]",
+   "test": "test_gui_hsdPs.py::test_menu_0_ctrl_forgetTracesCheck[chromium]"
+  }
+ }
+}

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>configdb</title>
+<link rel="stylesheet" href="/static/gui/gui.css">
+<style>
+  .top { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  #target.loud { background: #b00020; color: white; padding: 2px; }
+  .panes { display: grid; grid-template-columns: 160px 160px minmax(300px, 1fr) minmax(240px, 0.8fr); gap: 6px; }
+  .pane { border: 1px solid var(--line); background: var(--panel); min-height: 300px; max-height: 420px; overflow: auto; }
+  .pane table { border-collapse: collapse; width: 100%; }
+  .pane th { position: sticky; top: 0; background: #e6e6e6; cursor: pointer; text-align: left; padding: 2px 4px; user-select: none; }
+  .pane td { padding: 1px 4px; white-space: nowrap; }
+  .pane tr.sel td { background: #c8d8f0; }
+  .pane tr.nosel td { color: #555; }
+  .pane .tw { cursor: pointer; display: inline-block; width: 1.1em; }
+  #log { white-space: pre; font-family: ui-monospace, monospace; font-size: 12px; padding: 4px; }
+  .lvl-ERROR, .lvl-CRITICAL { color: #b00020; } .lvl-WARNING { color: #9a6700; }
+  .bottom { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  #path_label { flex: 2; } #value_box { flex: 1; } #hint { flex: 1; color: #444; }
+  dialog table.grid td { white-space: nowrap; }
+  #closedNote { display: none; }
+</style>
+</head>
+<body data-gui="configdb_GUI">
+<!-- web copy of psdaq/configdb/configdb_GUI.py (psdaq.webgui.configdb_gui_api runs the window's logic with the program's own
+     workers against the config DB stand-in); data-parity = the PyQt row ids -->
+<h1 id="title">configdb</h1>
+<div id="win">
+<div class="top">
+  <span id="target" data-parity="ConfigdbGUI._build_ui.target_label"></span>
+  <label><input type="checkbox" id="write_box" data-parity="ConfigdbGUI._build_ui.write_box"> Read-only</label>
+  <progress id="pbar" data-parity="ConfigdbGUI._build_ui.pbar" max="100" value="0" hidden></progress>
+  <button type="button" id="closeWin">Close window</button>
+</div>
+<div class="panes">
+  <div class="pane" id="hutchPane" data-parity="ConfigdbGUI._build_ui.hutch_tree.select"><table><thead><tr><th data-col="0" data-parity="ConfigdbGUI._build_ui.hutch_tree.col[hutch / alias]">hutch / alias</th></tr></thead><tbody id="hutches"></tbody></table></div>
+  <div class="pane" id="devicePane" data-parity="ConfigdbGUI._build_ui.device_list.select"><table><thead><tr><th data-col="0" data-parity="ConfigdbGUI._build_ui.device_list.col[detector]">detector</th></tr></thead><tbody id="devices"></tbody></table></div>
+  <div class="pane" id="paramPane" data-parity="ConfigdbGUI._build_ui.param_tree.select"><table><thead><tr id="paramHead"></tr></thead><tbody id="params"></tbody></table></div>
+  <div class="pane" id="log" data-parity="ConfigdbGUI._build_ui.log"></div>
+</div>
+<div class="bottom">
+  <span id="path_label" data-parity="ConfigdbGUI._build_ui.path_label"></span>
+  <span id="value_box">
+    <input type="text" id="value_edit" data-parity="ConfigdbGUI._build_ui.value_edit" placeholder="new value, or delta:N to add N">
+    <select id="value_combo" data-parity="ConfigdbGUI._build_ui.value_combo" hidden></select>
+  </span>
+  <span id="hint" data-parity="ConfigdbGUI._build_ui.hint_label"></span>
+  <button type="button" id="apply" data-parity="ConfigdbGUI._build_ui.apply_button" disabled>Apply</button>
+</div>
+<div class="statusbar" id="statusbar"></div>
+</div>
+<p class="closed" id="closedNote">window closed</p>
+<dialog id="confirm"><h2 id="confirmTitle"></h2><p id="confirmHead"></p>
+  <table class="grid"><thead><tr><th data-parity="ConfirmDialog.table.col[detector]">detector</th><th data-parity="ConfirmDialog.table.col[current]">current</th><th data-parity="ConfirmDialog.table.col[new]">new</th></tr></thead><tbody id="confirmRows"></tbody></table>
+  <p id="skippedLabel"></p><textarea id="confirmNote" readonly rows="4" cols="60"></textarea>
+  <p id="confirmFooter"></p>
+  <p><button type="button" id="confirmOk">OK</button> <button type="button" id="confirmCancel">Cancel</button></p></dialog>
+<dialog id="warn" data-parity="ConfigdbGUI._warn.box"><h2>configdb</h2><pre id="warnText"></pre><p><button type="button" id="warnOk">OK</button></p></dialog>
+<dialog id="closeBox" data-parity="ConfigdbGUI.closeEvent.box"><h2>configdb</h2><p id="closeText"></p>
+  <p><button type="button" id="closeOk">OK</button> <button type="button" id="closeCancel">Cancel</button></p></dialog>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+let S = null, sorts = {}, expanded = new Set(), devSel = [];
+async function act(op, extra) {
+  const r = await fetch('/api/cdbgui/act', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                           body: JSON.stringify(Object.assign({ op }, extra || {})) });
+  const j = await r.json();
+  if (!j.ok) $('statusbar').textContent = j.err_info;
+  await poll();
+  return j;
+}
+function sortKey(t) { const n = Number(t); return Number.isFinite(n) && String(t).trim() !== '' ? [0, n, ''] : [1, 0, String(t)]; }
+function cmp(a, b) { const x = sortKey(a), y = sortKey(b); return x[0] - y[0] || x[1] - y[1] || (x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0); }
+function sorted(name, items, key) {                  // database order until a header is clicked (SortedTreeItem)
+  const s = sorts[name]; if (!s) return items;
+  const out = items.slice().sort((a, b) => cmp(key(a, s.col), key(b, s.col)));
+  return s.desc ? out.reverse() : out;
+}
+function header(th, name) {
+  th.addEventListener('click', () => { const c = Number(th.dataset.col), s = sorts[name];
+    sorts[name] = { col: c, desc: s && s.col === c ? !s.desc : false }; render(); });
+}
+function render() {
+  if (!S) return;
+  document.title = S.window_title;
+  $('target').textContent = S.target; $('target').classList.toggle('loud', S.target_loud);
+  $('write_box').checked = S.read_only;
+  $('pbar').hidden = !S.pbar.visible; $('pbar').max = S.pbar.max; $('pbar').value = S.pbar.value;
+  for (const h of S.hutch_expanded) expanded.add('h:' + h);
+  const hb = []; const hs = S.hutch_selected ? S.hutch_selected.join('/') : null;
+  for (const [h, aliases] of sorted('hutches', S.hutches, (x) => x[0])) {
+    const open = expanded.has('h:' + h);
+    hb.push(`<tr class="nosel" data-hutch="${esc(h)}"><td><span class="tw">${open ? '▾' : '▸'}</span>${esc(h)}</td></tr>`);
+    if (open) for (const a of sorted('hutches', aliases.map((x) => [x]), (x) => x[0]))
+      hb.push(`<tr class="${hs === h + '/' + a[0] ? 'sel' : ''}" data-hutch="${esc(h)}" data-alias="${esc(a[0])}"><td>&nbsp;&nbsp;&nbsp;&nbsp;${esc(a[0])}</td></tr>`);
+  }
+  $('hutches').innerHTML = hb.join('');
+  devSel = S.devices_selected.slice();
+  $('devices').innerHTML = sorted('devices', S.devices.map((d) => [d]), (x) => x[0]).map((d) =>
+    `<tr class="${devSel.includes(d[0]) ? 'sel' : ''}" data-device="${esc(d[0])}"><td>${esc(d[0])}</td></tr>`).join('');
+  $('paramHead').innerHTML = S.param_headers.map((h, i) =>
+    `<th data-col="${i}" data-parity="ConfigdbGUI._build_ui.param_tree.col[${esc(h)}]">${esc(h)}</th>`).join('');
+  for (const th of $('paramHead').children) header(th, 'params');
+  const pb = [];
+  const walk = (nodes, depth, prefix) => {
+    for (const n of sorted('params', nodes, (x, c) => [x.text, x.type, x.value][c])) {
+      const id = prefix + '/' + n.text, open = expanded.has('p:' + id), kids = n.children && n.children.length;
+      const cls = n.path ? (S.param_selected === n.path ? 'sel' : '') : 'nosel';
+      pb.push(`<tr class="${cls}" data-node="${esc(id)}"${n.path ? ` data-path="${esc(n.path)}"` : ''} title="${esc(n.tooltip || '')}">` +
+              `<td style="padding-left:${4 + 14 * depth}px">${kids ? `<span class="tw">${open ? '▾' : '▸'}</span>` : '<span class="tw"></span>'}${esc(n.text)}</td>` +
+              `<td>${esc(n.type)}</td><td>${esc(n.value)}</td></tr>`);
+      if (kids && open) walk(n.children, depth + 1, id);
+    }
+  };
+  walk(S.params, 0, '');
+  $('params').innerHTML = pb.join('');
+  $('log').innerHTML = S.log.map(([lvl, t]) => `<div class="lvl-${esc(lvl)}">${esc(t)}</div>`).join('');
+  $('path_label').textContent = S.path_label; $('hint').textContent = S.hint;
+  const combo = S.value_kind === 'combo';
+  $('value_edit').hidden = combo; $('value_combo').hidden = !combo;
+  if (document.activeElement !== $('value_edit')) $('value_edit').value = S.value_text;
+  $('value_combo').innerHTML = S.combo_items.map((t) => `<option>${esc(t)}</option>`).join(''); $('value_combo').value = S.combo_text;
+  $('apply').disabled = !S.apply_enabled; $('apply').title = S.apply_tooltip;
+  $('statusbar').textContent = S.status;
+  const d = S.dialog;
+  for (const id of ['confirm', 'warn', 'closeBox']) if ($(id).open && (!d || ({ confirm: 'confirm', warn: 'warn', close: 'closeBox' })[d.kind] !== id)) $(id).close();
+  if (d && d.kind === 'confirm' && !$('confirm').open) {
+    $('confirmTitle').textContent = d.title; $('confirmHead').innerHTML = d.head;
+    $('confirmRows').innerHTML = d.rows.map((r) => '<tr>' + r.map((c) => `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
+    $('skippedLabel').textContent = d.skipped_label || ''; $('confirmNote').hidden = !d.note;
+    $('confirmNote').value = d.note || ''; $('confirmNote').dataset.parity = 'ConfirmDialog.note[' + (d.note || '') + ']';
+    $('confirmFooter').textContent = d.footer; $('confirm').showModal();
+  }
+  if (d && d.kind === 'warn' && !$('warn').open) { $('warnText').textContent = d.text; $('warn').showModal(); }
+  if (d && d.kind === 'close' && !$('closeBox').open) { $('closeText').textContent = d.text; $('closeBox').showModal(); }
+  $('win').hidden = S.closed; $('closedNote').style.display = S.closed ? 'block' : 'none';
+  document.body.dataset.seq = S.seq; document.body.dataset.busy = S.busy.join(' ');
+}
+async function poll() { const r = await fetch('/api/cdbgui/state'); S = await r.json(); render(); }
+$('hutches').addEventListener('click', (ev) => { const tr = ev.target.closest('tr'); if (!tr) return;
+  if (tr.dataset.alias === undefined) { const k = 'h:' + tr.dataset.hutch; expanded.has(k) ? expanded.delete(k) : expanded.add(k);
+    if (!expanded.has(k)) S.hutch_expanded = S.hutch_expanded.filter((h) => h !== tr.dataset.hutch); render(); return; }
+  act('select_alias', { hutch: tr.dataset.hutch, alias: tr.dataset.alias }); });
+$('devices').addEventListener('click', (ev) => { const tr = ev.target.closest('tr'); if (!tr) return;
+  const d = tr.dataset.device;                                   // ExtendedSelection: click, Ctrl+click toggles
+  let sel = ev.ctrlKey || ev.metaKey ? (devSel.includes(d) ? devSel.filter((x) => x !== d) : devSel.concat([d])) : [d];
+  act('select_devices', { devices: sel }); });
+$('params').addEventListener('click', (ev) => { const tr = ev.target.closest('tr'); if (!tr) return;
+  if (ev.target.classList.contains('tw') || !tr.dataset.path) { const k = 'p:' + tr.dataset.node;
+    expanded.has(k) ? expanded.delete(k) : expanded.add(k); render(); if (!tr.dataset.path) return; }
+  if (tr.dataset.path) act('select_param', { path: tr.dataset.path }); });
+for (const [id, name] of [['hutchPane', 'hutches'], ['devicePane', 'devices']]) header($(id).querySelector('th'), name);
+$('write_box').addEventListener('change', () => act('read_only', { checked: $('write_box').checked }));
+$('value_edit').addEventListener('input', () => act('value', { text: $('value_edit').value }));
+$('value_edit').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') act('apply'); });   // returnPressed -> _apply
+$('value_combo').addEventListener('change', () => act('combo', { text: $('value_combo').value }));
+$('apply').addEventListener('click', () => act('apply'));
+$('confirmOk').addEventListener('click', () => act('dialog', { answer: 'ok' }));
+$('confirmCancel').addEventListener('click', () => act('dialog', { answer: 'cancel' }));
+$('warnOk').addEventListener('click', () => act('dialog', { answer: 'ok' }));
+$('closeOk').addEventListener('click', () => act('dialog', { answer: 'ok' }));
+$('closeCancel').addEventListener('click', () => act('dialog', { answer: 'cancel' }));
+$('closeWin').addEventListener('click', () => act('close'));
+for (const id of ['confirm', 'warn', 'closeBox']) $(id).addEventListener('cancel', (ev) => ev.preventDefault());
+(async () => { await poll(); document.body.dataset.ready = '1'; setInterval(poll, 300); })();
+</script>
+</body>
+</html>
