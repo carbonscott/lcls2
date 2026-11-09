@@ -1,0 +1,12 @@
+Specs of the PyQt GUIs other than control_gui, one per file that constructs a QApplication (qapps.py).
+check_gui_parity.py reads them; see its docstring and ../../README.md ("Parity with the other PyQt GUIs").
+
+  <name>.json         {"file", "web", "backend", "walk": {...}, "mapping": {...}}  or  {"file", "na", "rule"}
+
+Only these hand-written specs live here.  The offscreen walks of the GUIs (qt_walk --gui, against the simulated DAQ)
+and the import probes (qt_walk --probe-import, rule library-demo) are run by check_gui_parity --run-walks
+--sim-daq <daq_sim work dir> each time it checks, into --walks DIR (default a temporary dir), never saved here;
+the check refuses a walk of other source (sha256 of the GUI's own files).
+
+Mapping entries: {"web": "[data-parity~=\"<row id>\"]", "test": "test_gui_<name>.py::<test>[chromium]"} or
+{"na": "<one-line reason citing the guard>"}.  The tests list their rows in PARITY_ROWS (conftest records them).

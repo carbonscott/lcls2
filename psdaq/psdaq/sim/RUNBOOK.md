@@ -171,6 +171,11 @@ What it runs (logs in `$WD/logs/webgui.log`):
   `#edi_evt`) and stays on the page through EndRun, Unconfigure and Reset, until the next
   Configure/BeginRun.
 
+The web copies of the other PyQt GUIs are pages of the same server, at `/gui/<name>`: `/gui/procstat` (with
+`--procstat-cnf $WD/daq_sim.cnf`), `/gui/groupca` (`--pvgui 'groupca:DAQ:SIM 0 5'`) and `/gui/pvant`
+(`--pvgui 'pvant:--bases ... --fields ...'`). `up --webgui` does not pass these; start a `daq_webgui` with them
+(`psdaq/psdaq/webgui/README.md`, "Parity with the other PyQt GUIs").
+
 It listens on 127.0.0.1 of the node only. To open it from your own machine, tunnel to the node
 that holds the job (S3DF lets you ssh to a compute node only while you have a job on it; this
 tunnel was not tested in this campaign):
@@ -308,7 +313,11 @@ the simulated DAQ: bring it up with `daq_sim up -w $WD --segments 2` (two fakeca
 partition table's collapse / expand can be driven), then, in an `srun --overlap` step with
 `setup_env_daq.sh` and `sim_env.sh` sourced, `WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh
 --junitxml=$WD/webgui-sim.xml` and `python -m psdaq.webgui.parity.check_parity --junit $WD/webgui-sim.xml --run-walk`
-(`psdaq/psdaq/webgui/README.md`).
+(`psdaq/psdaq/webgui/README.md`).  The same junit serves the other PyQt GUIs:
+`python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --junit $WD/webgui-sim.xml` lists every
+psdaq file outside `control_gui` that constructs a `QApplication`, runs the offscreen walks of those GUIs against
+the DAQ now, and prints one line per file (`file | web path or N/A reason | N/M/K | PASS|FAIL`); exit 0 only if
+every file passes.
 
 ## 3d. Coverage: `daq_sim coverage` and `daq_sim matrix`
 ```bash
