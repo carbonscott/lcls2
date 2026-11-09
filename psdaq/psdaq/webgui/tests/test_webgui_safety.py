@@ -5,7 +5,10 @@
 - --print-config lists every endpoint and all are loopback;
 - the static page references no remote URL (no CDN);
 - at run time (audit hook on socket.connect / bind / getaddrinfo / urllib.Request) the server only
-  touches 127.0.0.1, while serving the page, the SSE stream, commands and a Prometheus events poll.
+  touches 127.0.0.1, while serving the page, the SSE stream, commands and a Prometheus events poll;
+- /gui/procstat (telnetlib stubbed, so no procServ is contacted): a --procstat-cnf with a process on a host
+  that is not loopback is refused at startup (exit 2) before any connection; the poll opens procServ only at
+  127.0.0.1, also for the processes ProcMgr would reach at the machine's name; its ProcMgr refuses any other host.
 No browser needed; runs in the DAQ env's or the test venv's pytest.
 """
 
@@ -15,6 +18,7 @@ import os
 import pathlib
 import re
 import socket
+import subprocess
 import sys
 import tempfile
 import threading
@@ -22,7 +26,7 @@ import time
 
 import pytest
 
-from webgui_harness import PKG_ROOT, SERVER_PYTHON, ServerProc, run_server_cmd
+from webgui_harness import PKG_ROOT, SERVER_PYTHON, ServerProc, run_server_cmd, server_env
 
 STATIC = PKG_ROOT / 'psdaq' / 'webgui' / 'static'
 
@@ -168,3 +172,119 @@ def test_runtime_contacts_only_loopback(tmp_path):
     assert 'socket.bind' in kinds and 'urllib.Request' in kinds, kinds
     assert bad == [], bad
     assert _Metrics.hits > 0
+
+
+# ---------------- /gui/procstat: the .cnf's hosts (ProcMgr telnets to every process's procServ port) ----------------
+
+TELNET_STUB = r"""
+import json, runpy, sys, telnetlib
+log = open(sys.argv[1], 'a', buffering=1)
+def hook(ev, args):
+    if ev == 'socket.connect':
+        log.write(json.dumps([ev, repr(args[1])]) + '\n')
+sys.addaudithook(hook)
+def _open(self, host, port=0, *a, **k):          # telnetlib stubbed: record the host, connect nothing
+    log.write(json.dumps(['telnet.open', host, str(port)]) + '\n')
+    raise ConnectionRefusedError('telnetlib stub: not contacted')
+telnetlib.Telnet.open = _open
+sys.argv = ['daq_webgui'] + sys.argv[2:]
+runpy.run_module('psdaq.webgui.server', run_name='__main__')
+"""
+
+CNF_REMOTE = """platform = '5'
+procmgr_config = [
+ { id:'here', flags:'s', cmd:'sleep 60' },
+ { host:'192.0.2.1', id:'remote', flags:'s', cmd:'sleep 60' },
+]
+"""
+
+CNF_LOCAL = """platform = '5'
+procmgr_config = [
+ { id:'nohost', flags:'s', cmd:'sleep 60' },
+ { host:'localhost', id:'named_localhost', flags:'s', cmd:'sleep 60' },
+ { host:'127.0.0.1', id:'ipv4_loopback', flags:'s', cmd:'sleep 60' },
+]
+"""
+
+
+def _stub_files(tmp_path, cnf_text):
+    cnf = tmp_path / 'p.cnf'
+    cnf.write_text(cnf_text)
+    wrapper = tmp_path / 'telnet_stub.py'
+    wrapper.write_text(TELNET_STUB)
+    return cnf, wrapper, tmp_path / 'net.jsonl'
+
+
+def _records(log):
+    return [json.loads(l) for l in log.read_text().splitlines()] if log.exists() else []
+
+
+@pytest.fixture
+def conda_prefix(monkeypatch):
+    """ProcMgr reads os.environ['CONDA_PREFIX'] (the DAQ env sets it)."""
+    if not os.environ.get('CONDA_PREFIX'):
+        monkeypatch.setenv('CONDA_PREFIX', str(pathlib.Path(SERVER_PYTHON).resolve().parent.parent))
+
+
+def test_procstat_cnf_naming_a_remote_host_is_refused(tmp_path, conda_prefix):
+    cnf, wrapper, log = _stub_files(tmp_path, CNF_REMOTE)
+    r = subprocess.run([SERVER_PYTHON, str(wrapper), str(log), '--emulate', '--port', '0', '--procstat-cnf', str(cnf)],
+                       env=server_env(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+    print(r.stderr)
+    assert r.returncode == 2, (r.returncode, r.stdout, r.stderr)
+    assert "process 'remote' names host '192.0.2.1'; refusing" in r.stderr, r.stderr
+    assert 'listening' not in r.stdout, r.stdout
+    recs = _records(log)
+    print('telnet.open / socket.connect records:', recs)
+    assert recs == [], recs                  # the dry run read the .cnf without a connection, to 192.0.2.1 or here
+
+
+def test_procstat_poll_opens_only_127_0_0_1(tmp_path, conda_prefix):
+    cnf, wrapper, log = _stub_files(tmp_path, CNF_LOCAL)
+    s = ServerProc(['--emulate', '--procstat-cnf', str(cnf), '--procstat-interval', '0.3'])
+    s.cmd = [SERVER_PYTHON, str(wrapper), str(log)] + s.cmd[3:]    # same args, telnetlib stubbed
+    s.start()
+    try:
+        t0 = time.time()
+        st = s.get('/api/procstat/status')
+        while st['seq'] < 2 and time.time() - t0 < 20:
+            time.sleep(0.2)
+            st = s.get('/api/procstat/status')
+    finally:
+        rc = s.stop()
+    assert rc == 0, '\n'.join(s.lines[-20:])
+    rows = {r['showId']: r['status'] for r in st['rows']}
+    assert rows == {'nohost': 'NOCONNECT', 'named_localhost': 'NOCONNECT', 'ipv4_loopback': 'NOCONNECT'}, st
+    opens = [r for r in _records(log) if r[0] == 'telnet.open']
+    print('telnet.open (host, port):', sorted({(r[1], r[2]) for r in opens}), 'in', len(opens), 'opens')
+    assert opens and {r[1] for r in opens} == {'127.0.0.1'}, opens   # not the machine's name (ProcMgr's HOST)
+    bad = [r for r in _records(log) if r[0] == 'socket.connect' and not any(
+        h in r[1] for h in ("'127.0.0.1'", "'localhost'", "'::1'"))]
+    assert bad == [], bad
+
+
+GUARD = r"""
+import json, sys, telnetlib
+opens = []
+def _open(self, host, port=0, *a, **k):
+    opens.append(host)
+    raise ConnectionRefusedError('telnetlib stub: not contacted')
+telnetlib.Telnet.open = _open
+from psdaq.webgui.procstat_api import loopback_procmgr_class
+pm = loopback_procmgr_class()(sys.argv[1], 5)
+rows = sorted([(r['showId'].decode() if isinstance(r['showId'], bytes) else r['showId'], r['host'], r['status'])
+               for r in pm.getStatus()])
+print(json.dumps({'opens': opens, 'rows': rows}))
+"""
+
+
+def test_procstat_poll_procmgr_refuses_a_remote_host(tmp_path, conda_prefix):
+    """Past the startup check too (a .cnf that changes after it): the poll's ProcMgr never opens a remote host."""
+    cnf, _, _ = _stub_files(tmp_path, CNF_REMOTE)
+    r = subprocess.run([SERVER_PYTHON, '-c', GUARD, str(cnf)], env=server_env(), stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, text=True, timeout=60)
+    assert r.returncode == 0, r.stderr
+    out = json.loads(r.stdout.strip().splitlines()[-1])
+    print(out)
+    assert out['opens'] == ['127.0.0.1'], out                       # 'here' only; 192.0.2.1 never reached telnetlib
+    assert out['rows'] == [['here', 'localhost', 'NOCONNECT'], ['remote', '192.0.2.1', 'NOCONNECT']], out

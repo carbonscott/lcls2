@@ -17,7 +17,9 @@ Open `http://127.0.0.1:8650/` on the same node, or tunnel: `ssh -L 8650:127.0.0.
 
 The server binds loopback only (no override). Every endpoint it may contact must be loopback or it
 exits 2 before opening anything: the control host (`-H`, ZMQ ports from `ControlDef`), `--configdb-url`
-(default: none; the alias list then falls back to NOBEAM/BEAM), `--events-url`.
+(default: none; the alias list then falls back to NOBEAM/BEAM), `--events-url`, and the host of every process
+in `--procstat-cnf` (read with ProcMgr in a dry run; a process with no host is localhost).  `/gui/procstat` then
+opens every procServ port at 127.0.0.1 (::1 for a process at ::1), also where ProcMgr would use the machine's name.
 `--print-config` prints every endpoint as JSON.
 
 Events counter: `--events-source none|emulator|prometheus`; for prometheus give

@@ -485,6 +485,9 @@ def configure(args):
     from psdaq.webgui.backend import RealBackend, EmulatorBackend
     from psdaq.webgui import events as ev
     require_loopback_host(args.bind, '--bind')
+    if args.procstat_cnf:
+        from psdaq.webgui.procstat_api import require_loopback_cnf
+        require_loopback_cnf(args.procstat_cnf, args.procstat_platform)    # every process's host is loopback
     if args.emulate:
         backend = EmulatorBackend(fail_transition=args.emulate_fail, l1_rate=args.emulate_rate,
                                   slow_transition_time=args.emulate_slow)
