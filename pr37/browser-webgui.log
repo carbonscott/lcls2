@@ -1,0 +1,8 @@
+2026-11-09 00:05:03,829 daq_webgui INFO: web GUI webgui-v0 started: backend=daqcontrol state=reset instrument=tst aliases=['BEAM'] (configdb http://127.0.0.1:31050/ws/)
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=pva
+2026-11-09 00:05:19,093 daq_webgui INFO: zmq msg transition:rollcall state:unallocated config:BEAM recording:False
+2026-11-09 00:05:20,517 daq_webgui WARNING: ami NOT supported in absence of MEB
+2026-11-09 00:05:20,520 daq_webgui INFO: zmq msg transition:alloc state:allocated config:BEAM recording:False
+2026-11-09 00:05:20,998 daq_webgui INFO: zmq msg transition:connect state:connected config:BEAM recording:False
+2026-11-09 00:05:22,552 daq_webgui INFO: zmq msg transition:reset state:reset config:BEAM recording:False
+daq_webgui: stopped

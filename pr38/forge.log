@@ -1,0 +1,95 @@
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=263 date=2026-11-09T01:05:49-08:00
+base exit=1
+base proven rows: 14: det:drp:cspad det:drp:epix100 det:drp:epixhremu det:drp:epixm320 det:drp:fakecam det:drp:hrencoder det:drp:jungfrauemu det:drp:ts det:drp:wave8 det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+CASE valid (must drop: -)
+78 rows, 13 run, 1 stand-in, 3 N/A, 61 unproven, 0 claimed without valid evidence
+RESULT valid dropped=[] want=[] OK exit=1
+CASE dirty-true (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: recorded with tracked files modified, so not by the commit's own code
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT dirty-true dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE dirty-absent (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: does not say the tree was clean, so not by the commit's own code
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT dirty-absent dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE runid-null (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: names no run (run_id)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-null dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE runid-blank (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: names no run (run_id)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-blank dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE other-sha (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: recorded at fffffffff, not at HEAD 8ed250b21
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT other-sha dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE xtc2-empty (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files empty, e.g. <root>/logs/covbind/p38b/forged/xtc2-empty-files/tstx00001-r0001-s000-c000.xtc2: empty
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-empty dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE xtc2-random (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-random dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE xtc2-truncated (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-truncated dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE log-missing (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files missing, e.g. <root>/logs/covbind/p38b/wd-wave8he/pmlogs/2026/11/09_01:04:49_sdfmilan120:wave8he_0.log.gone: missing
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT log-missing dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE probe-xtc2-tiny-configure (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/probe-xtc2-tiny-configure-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-xtc2-tiny-configure dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE probe-xtc2-of-other-det (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-xtc2-of-other-det dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE probe-no-xtc2-listed (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: lists no xtc2 file
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-no-xtc2-listed dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE rehashed-xtc2-random (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files not xtc2, e.g. <root>/logs/covbind/p38b/forged/rehashed-xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 0 at byte 0: root Xtc is TypeId 319, not Parent)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-xtc2-random dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE rehashed-xtc2-truncated (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files not xtc2, e.g. <root>/logs/covbind/p38b/forged/rehashed-xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 209 at byte 999310: extent 4418 does not fit the file (1000000 B))
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-xtc2-truncated dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE rehashed-probe-xtc2-tiny-configure (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: no listed xtc2 file has a detector of type epix100 in its Configure (they have: no detector)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-probe-xtc2-tiny-configure dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE rehashed-probe-xtc2-of-other-det (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: no listed xtc2 file has a detector of type wave8he in its Configure (they have: wave8)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-probe-xtc2-of-other-det dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE runid-other-run (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: <root>/logs/covbind/p38b/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2: its BeginRun is run tstx00001/r0001, the record says tstx00001/r0002
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-other-run dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE xtc2-byte-changed (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files changed, e.g. <root>/logs/covbind/p38b/forged/xtc2-byte-changed-files/tstx00001-r0001-s000-c000.xtc2: its first 9004440 B are not the bytes the record hashed (sha256 differs)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-byte-changed dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE det-log-of-other-type (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: no listed log runs drp -D wave8he and names the run of <root>/logs/covbind/p38b/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (its path or BeginRun time 1163063102.506791584)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT det-log-of-other-type dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE no-content-hashes (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: holds no content hashes of its files (content), so they cannot be tied to the run
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT no-content-hashes dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE teb-log-of-another-run (must drop: prog:teb)
+prog:teb                       RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: its log of teb names neither the run's xtc2 file <root>/logs/covbind/p38b/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 nor its BeginRun time 1163062960.310196593; rejected 20261109T010404-cycle-8ed250b21-78579: its log of teb names neither the run's xtc2 file <root>/logs/covbind/p38b/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 nor its BeginRun time 1163063033.365962789; rejected 20261109T010514-cycle-8ed250b21-82109: its log of teb
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT teb-log-of-another-run dropped=[prog:teb] want=[prog:teb] OK exit=1
+CASE no-simxpm-log (must drop: prog:pyxpm)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); rejected 20261109T010404-cycle-8ed250b21-78579: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); rejected 20261109T010514-cycle-8ed250b21-82109: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); and 7 more rejected
+78 rows, 13 run, 0 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT no-simxpm-log dropped=[prog:pyxpm] want=[prog:pyxpm] OK exit=1
+FORGE_DONE

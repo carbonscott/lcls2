@@ -1,0 +1,107 @@
+host=sdfmilan120 job=43843200 step=183 date=2026-11-08T23:07:41-08:00
+head=e5af99c5f17bb30d5adee1187bfee0c5cfb557e0 parents=d06874d703016ba7ce774e45e2263e0ad7b82775 8830147da58f51ccfcc1a2c01db1f4efb67040e4 local changes: 0
+== build
+
+real	0m41.678s
+user	2m11.815s
+sys	0m14.028s
+BUILD_EXIT=0
+24
+Installed 1 package in 336ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq)
+== simxpm PV names
+simxpm PVs: 626 added, 626 distinct names, 626 served; duplicates: none
+  DAQ:SIM:XPM:0:LinkLabel0       served: True
+  DAQ:SIM:XPM:0:PATT:GROUPS      served: True
+  DAQ:SIM:XPM:0:PATT:COINC       served: True
+  DAQ:SIM:XPM:0:PART:5:MsgConfig served: True
+  DAQ:SIM:XPM:0:PART:5:ResetL0   served: True
+  DAQ:SIM:XPM:0:LinkRxReady0     served: True
+  DAQ:SIM:XPM:0:LinkTxReady13    served: True
+  DAQ:SIM:XPM:0:TxLinkReset0     served: True
+  DAQ:SIM:XPM:0:LinkLoopback13   served: True
+  DAQ:SIM:XPM:0:LinkRxIsXpm0     served: True
+  DAQ:SIM:XPM:0:FwBuild          served: True
+  DAQ:SIM:XPM:0:LinkGroupMask31  served: True
+  DAQ:SIM:XPM:0:RemoteLinkId31   served: True
+PVDUP_EXIT=0
+== sim unit tests
+UNIT_EXIT=0
+81 passed in 63.19s (0:01:03)
+listening on 30050 or 15075 before the ts run: 0
+== up --det ts
+UP_EXIT=0
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/users/c/cwang31/proof37/s1/wd-ts --events 1000   or   daq_sim e2e -w /sdf/scratch/users/c/cwang31/proof37/s1/wd-ts
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/users/c/cwang31/proof37/s1/wd-ts
+== cycle
+CYCLE_EXIT=0
+2026-11-08T23:10:12.008-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1885 (wanted >= 1000)
+2026-11-08T23:10:13.063-08:00 counts after Disable: {'simxpm NumL0Acc': 2034, 'simxpm NumL0Inp': 2034, 'TEB_EvtCt': 2034, 'TEB_TrCt': 7, 'TEB_WrtCt': 2034, 'DRP_Damage': 0, 'DRP_RecordSize': 874014, '
+  simxpm NumL0Acc        2034
+  psana2 events          2034
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-08T23:10:20.025-08:00 evidence 20261108T231020-cycle-e5af99c5f-3964135: det:drp:ts prog:control prog:drp prog:pyxpm prog:teb
+2026-11-08T23:10:20.025-08:00 cycle PASS
+*** rxready ['DAQ:SIM:XPM:0:LinkRxReady0'] : [1]
+RxLink locked after 1 tries
+*** setting xpm link enables ['DAQ:SIM:XPM:0:LinkGroupMask0'] [32]
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 
+  experiment tstx00001 run 1 detector ts raw shape None
+  L1Accept events 2034; with ts data 2034; events matching the pattern of seed 0x1234: 2034
+  check: every TimingData field (ts_raw_2_1_0) vs pattern, eventcodes, inhibitCounts, destination, timestamp == the event's, pulseId rising
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --det ts --seed 0x1234 --self-test-offset 1
+  problem: event 3: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [2]... != [6]...
+  problem: event 4: fixedRates [0, 1, 1, 1]... != [1, 1, 1, 1]...; acRates [0, 0, 0, 1]... != [0, 0, 1, 1]...; timeSlot [1]... != [5]...
+  problem: event 5: fixedRates [1, 0, 0, 0]... != [0, 0, 0, 0]...; acRates [1, 1, 1, 0]... != [1, 1, 0, 0]...; timeSlot [0]... != [4]...
+  FAIL
+rc=1
+== down
+DOWN_EXIT=0
+2026-11-08T23:10:39.948-08:00 daq_sim: down: clean
+listening on 30050 or 15075 after the ts run: 0
+== up --segments 2 (for the web tests)
+UP_EXIT=0
+workdir /sdf/scratch/users/c/cwang31/proof37/s1/dsw  host sdfmilan120  platform 5  started 2026-11-08T23:10:42.423-08:00
+  configdb   pid 3966002  alive
+  lgbk       pid 3966151  alive
+  simxpm     pid 3966162  alive
+  control    pid 3966854  RUNNING
+  teb0       pid 3966855  RUNNING
+  fakecam_0  pid 3966856  RUNNING
+  fakecam_1  pid 3966857  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+== groupca, partca, xpmpatt web tests on it
+WEB3_EXIT=0
+test_gui_groupca.py::test_tabs[chromium] PASSED
+test_gui_groupca.py::test_displays_follow_simxpm_counters[chromium] PASSED
+test_gui_groupca.py::test_deadtime_labels_follow_link_masks[chromium] PASSED
+test_gui_groupca.py::test_checkboxes_write_their_pvs[chromium] PASSED
+test_gui_groupca.py::test_int_fields_write_their_pvs[chromium] PASSED
+test_gui_groupca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED
+test_gui_groupca.py::test_mask_bits_write_their_pvs[chromium] PASSED
+test_gui_groupca.py::test_transition_buttons_insert_messages[chromium] PASSED
+test_gui_groupca.py::test_run_and_clear[chromium] PASSED
+test_gui_partca.py::test_labels_follow_simxpm_counters[chromium] PASSED
+test_gui_partca.py::test_checkboxes_write_their_pvs[chromium] PASSED
+test_gui_partca.py::test_int_fields_write_their_pvs[chromium] PASSED
+test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED
+test_gui_partca.py::test_mask_bits_write_their_pvs[chromium] PASSED
+test_gui_partca.py::test_buttons_put_1_then_0[chromium] PASSED
+test_gui_partca.py::test_collection_auto_connect_and_reset[chromium] PASSED
+test_gui_xpmpatt.py::test_tabs[chromium] PASSED
+test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium] PASSED
+test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED
+test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium] PASSED
+test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium] PASSED
+================ 21 passed, 275 deselected in 476.13s (0:07:56) ================
+== down
+DOWN_EXIT=0
+2026-11-08T23:19:27.791-08:00 daq_sim: down: clean
+listening on 30050 or 15075 after: 0
+my procServ / psdaq.sim / webgui processes left: 0
+checkout local changes: 0
+S1_DONE 2026-11-08T23:19:30-08:00

@@ -1,0 +1,22 @@
+== on sdfmilan120, Slurm job 43843200 step 205 (the step that started this DAQ), tree e5af99c5f
+  simxpm     pid 4111695  alive
+  control    pid 4111757  RUNNING
+  teb0       pid 4111758  RUNNING
+  fakecam_0  pid 4111759  RUNNING
+  fakecam_1  pid 4111760  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 00:08:11 2026 140435.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 00:08:11 2026 140435.0
+  pvget DAQ:SIM:XPM:0:PART:5:InhEnable1              = 1           the browser left 1          ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Delay                 = 77          the browser left 77         ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Select                = 1           the browser left 1          ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot     = 4           the browser left 4          ok
+  pvget DAQ:SIM:TPR:CH0:DESTNS                       = 8           the browser left 8          ok
+  pvget DAQ:SIM:TPR:CH0:MODE                         = 1           the browser left 1          ok
+  pvget DAQ:SIM:DTI:4:UsLinkPartition0               = 5           the browser left 5          ok
+  pvget DAQ:SIM:DTI:4:UsLinkFwdMask2                 = 8           the browser left 8          ok
+  pvget DAQ:SIM:HSD:1_1B:A:CONFIG.readoutGroup       = 3           the browser left 3          ok
+  pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc                = 140435.0    the browser left 140435.0   ok
+READBACK PASS (10 PVs)
+readback exit 0
+READBACK_DONE

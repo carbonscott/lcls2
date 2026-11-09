@@ -1,0 +1,225 @@
+collection_widget: qt_walk --probe-import psdaq.cas.collection_widget: 0 QApplication(s) constructed on import, error None -> /sdf/scratch/users/c/cwang31/proof37/run/walks/collection_widget.probe.json
+datadev_monitor variant 0 []: qt_walk --gui cas/datadev_monitor.py: 12 instances, 80 calls, exit 0, elapsed 14.8 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/datadev_monitor-0/walk.json
+deadca variant 0 ['{pvbase}', '{platform}', '{xpm}']: qt_walk --gui cas/deadca.py: 55 instances, 0 calls, exit 0, elapsed 13.0 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/deadca-0/walk.json
+dtica: device simdti pid 4040614: simdti: ready, 535 PVs under DAQ:SIM:DTI, pid 4040614
+dtica variant 0 ['{pvbase}:DTI']: qt_walk --gui cas/dtica.py: 1279 instances, 0 calls, exit 0, elapsed 26.5 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/dtica-0/walk.json
+groupca variant 0 ['{pvbase}', '{xpm}', '{platform}']: qt_walk --gui cas/groupca.py: 138 instances, 0 calls, exit 0, elapsed 11.6 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/groupca-0/walk.json
+hsdpva: device simhsd pid 4043088: simhsd: ready, prefixes DAQ:SIM:HSD:1_1B:A DAQ:SIM:HSD:1_1B:B, pid 4043088
+hsdpva variant 0 ['{pvbase}:HSD:1_1B:A', '{pvbase}:HSD:1_1B:B']: qt_walk --gui cas/hsdpva.py: 1207 instances, 0 calls, exit 0, elapsed 17.3 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/hsdpva-0/walk.json
+partca-sum variant 0 []: qt_walk --gui cas/partca-sum.py: 256 instances, 0 calls, exit 4, elapsed 10.9 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/partca-sum-0/walk.json
+partca variant 0 ['{part}']: qt_walk --gui cas/partca.py: 127 instances, 1 calls, exit 0, elapsed 14.1 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/partca-0/walk.json
+pvant variant 0 ['--bases', '{part}', '{pvbase}:XPM:{xpm}:PART:0', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']: qt_walk --gui cas/pvant.py: 11 instances, 0 calls, exit 0, elapsed 12.5 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/pvant-0/walk.json
+pvatable: device simhsd pid 4045153: simhsd: ready, prefixes DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B, pid 4045153
+pvatable variant 0 ['--bases', '{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.txcntsum', 'MONPGP.rxcnt[2]', 'MONRAWBUF.freesz']: qt_walk --gui cas/pvatable.py: 17 instances, 0 calls, exit 0, elapsed 10.6 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/pvatable-0/walk.json
+tdmpva variant 0 ['{pvbase}:TDM']: qt_walk --gui cas/tdmpva.py: 0 instances, 0 calls, exit 4, elapsed 4.2 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/tdmpva-0/walk.json
+tprca: device simtpr pid 4047377: simtpr: ready, 228 PVs under DAQ:SIM:TPR, pid 4047377
+tprca variant 0 ['{pvbase}:TPR']: qt_walk --gui cas/tprca.py: 745 instances, 0 calls, exit 0, elapsed 16.3 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/tprca-0/walk.json
+xpmca variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmca.py: 0 instances, 0 calls, exit 4, elapsed 5.7 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/xpmca-0/walk.json
+xpmpatt variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmpatt.py: 667 instances, 0 calls, exit 0, elapsed 12.2 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/xpmpatt-0/walk.json
+procstat variant 0 ['-p', '{platform}', '-i', '1', '{cnf}']: qt_walk --gui procmgr/procstat: 6 instances, 40 calls, exit 0, elapsed 12.6 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/procstat-0/walk.json
+procstat variant 1 ['-p', '{platform}', '-i', '-1', '{cnf}']: qt_walk --gui procmgr/procstat: 6 instances, 5 calls, exit 0, elapsed 6.7 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/procstat-1/walk.json
+seq_epixhr variant 0 ['--test', '--plot', '--rate', '1000']: qt_walk --gui seq/seq_epixhr.py: 46 instances, 0 calls, exit 0, elapsed 9.4 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/seq_epixhr-0/walk.json
+seqplot variant 0 ['--seq', '0:10k.py', '1:burst.py', '--time', '0', '0.0002']: qt_walk --gui seq/seqplot.py: 92 instances, 0 calls, exit 0, elapsed 12.6 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/seqplot-0/walk.json
+daqstat: device simslurm pid 4052574: simslurm: ready, 4 jobs (control teb0 fakecam_0 fakecam_1) in /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/daqstat-dir/slurm.json, pid 4052574
+daqstat variant 0 ['-i', '1', '{walkdir}/daqstat.py']: qt_walk --gui slurm/daqstat.py: 6 instances, 30 calls, exit 0, elapsed 16.8 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/daqstat-0/walk.json
+daqstat variant 1 ['-i', '1', '{walkdir}/missing.py']: qt_walk --gui slurm/daqstat.py: 6 instances, 1 calls, exit 0, elapsed 10.0 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/daqstat-1/walk.json
+detector_protection_monitor: device simdetprot pid 4053760: simdetprot: ready, 6 PVs under DAQ:SIM:JF16M:BLOCKER on 127.0.0.1 port 15064, pid 4053760
+detector_protection_monitor variant 0 ['-b', '{pvbase}:JF16M:BLOCKER', '-d', 'Jungfrau']: qt_walk --gui trigger/detector_protection_monitor.py: 453 instances, 451 calls, exit 0, elapsed 17.6 s -> /sdf/scratch/users/c/cwang31/proof37/run/walks/runs/detector_protection_monitor-0/walk.json
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq/psdaq junit=/sdf/scratch/users/c/cwang31/proof37/run/sim.junit.xml
+walks: /sdf/scratch/users/c/cwang31/proof37/run/walks (run now against the simulated DAQ /sdf/scratch/users/c/cwang31/proof37/run/dsw)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 142, 387; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | /gui/datadev_monitor | 10/10/0 | PASS
+cas/deadca.py | /gui/deadca | 43/32/11 | PASS
+cas/dtica.py | /gui/dtica | 1062/1060/2 | PASS
+cas/groupca.py | /gui/groupca | 91/90/1 | PASS
+cas/hsdPs.py | GUI program, no web version (no parity/guis spec) | 1/0/0 (source sites; no walk) | FAIL
+cas/hsdpva.py | /gui/hsdpva | 850/845/5 | PASS
+cas/partca-sum.py | N/A: not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, "L0Delay"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv [], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/partca-sum.py:34 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (256 widgets built, none visible)] | -/-/- | PASS
+cas/partca.py | /gui/partca | 84/84/0 | PASS
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | /gui/pvatable | 10/10/0 | PASS
+cas/tdmpva.py | N/A: not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:TDM'], python 3.9.21, qt 5.15.8) of its own entry raised ModuleNotFoundError at cas/tdmpva.py:8 (No module named 'psdaq.pytdm') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/tprca.py | /gui/tprca | 439/429/10 | PASS
+cas/xpmca.py | N/A: not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, "PAddr", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:XPM:0'], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/xpmca.py:180 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/xpmpatt.py | /gui/xpmpatt | 454/454/0 | PASS
+cas/xpmpva.py | GUI program, no web version (no parity/guis spec) | 46/0/0 (source sites; no walk) | FAIL
+configdb/configdb_GUI.py | GUI program, no web version (no parity/guis spec) | 17/0/0 (source sites; no walk) | FAIL
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | /gui/seq_epixhr | 46/1/0 | FAIL
+seq/seqplot.py | /gui/seqplot | 92/2/0 | FAIL
+slurm/daqstat.py | /gui/daqstat | 14/9/5 | PASS
+trigger/detector_protection_monitor.py | /gui/detector_protection_monitor | 2/2/0 | PASS
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- seq/seq_epixhr.py (seq_epixhr; own files seq/seq_epixhr.py, seq/seqplot.py, seq/seqprogram.py; walk argv ['--test', '--plot', '--rate', '1000'], 46 instances, elapsed 9.4 s, python 3.9.21, qt 5.15.8)
+46 controls found, 1 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 46, M = 1, K = 0, M + K = 1
+walk: walk source digest matches (sha256:b947a967e6b430db0743328254066cbed3da66b4db93b718d25fcf8ce28fb9b0)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (45 rows): id | loc | kind | label
+  PatternWaveform.add.q0#0 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#1 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#2 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#3 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#4 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#5 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#6 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#7 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#8 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#9 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#10 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#11 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#12 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#13 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#14 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#15 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#16 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#17 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#18 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#19 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#20 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#21 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#22 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0[Clip to View] | seq/seqplot.py:145 | checkbox | Clip to View
+  PatternWaveform.add.q0[Max Traces:] | seq/seqplot.py:145 | checkbox | Max Traces:
+  PatternWaveform.add.q0[Downsample] | seq/seqplot.py:145 | checkbox | Downsample
+  PatternWaveform.add.q0[Peak] | seq/seqplot.py:145 | checkbox | Peak
+  PatternWaveform.add.q0#23 | seq/seqplot.py:145 | text | addPlot
+  PatternWaveform.add.q0[Forget hidden traces] | seq/seqplot.py:145 | checkbox | Forget hidden traces
+  PatternWaveform.add.q0[Mean] | seq/seqplot.py:145 | checkbox | Mean
+  PatternWaveform.add.q0[Subsample] | seq/seqplot.py:145 | checkbox | Subsample
+  PatternWaveform.add.q0#24 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0[1x] | seq/seqplot.py:145 | text | 1x
+  PatternWaveform.add.q0[Log Y] | seq/seqplot.py:145 | checkbox | Log Y
+  PatternWaveform.add.q0[Log X] | seq/seqplot.py:145 | checkbox | Log X
+  PatternWaveform.add.q0[Power Spectrum (FFT)] | seq/seqplot.py:145 | checkbox | Power Spectrum (FFT)
+  PatternWaveform.add.q0[dy/dx] | seq/seqplot.py:145 | checkbox | dy/dx
+  PatternWaveform.add.q0[Y vs. Y'] | seq/seqplot.py:145 | checkbox | Y vs. Y'
+  PatternWaveform.add.q0#25 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0[Show X Grid] | seq/seqplot.py:145 | checkbox | Show X Grid
+  PatternWaveform.add.q0[Show Y Grid] | seq/seqplot.py:145 | checkbox | Show Y Grid
+  PatternWaveform.add.q0#26 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#27 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#28 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#29 | seq/seqplot.py:145 | combo | addPlot
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: FAIL: M + K = 1 != N = 46 (45 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PatternWaveform.add.q0#0, PatternWaveform.add.q0#1, PatternWaveform.add.q0#2, PatternWaveform.add.q0#3, PatternWaveform.add.q0#4, PatternWaveform.add.q0#5, PatternWaveform.add.q0#6, PatternWaveform.add.q0#7, PatternWaveform.add.q0#8, PatternWaveform.add.q0#9, PatternWaveform.add.q0#10, PatternWaveform.add.q0#11, PatternWaveform.add.q0#12, PatternWaveform.add.q0#13, PatternWaveform.add.q0#14, PatternWaveform.add.q0#15, PatternWaveform.add.q0#16, PatternWaveform.add.q0#17, PatternWaveform.add.q0#18, PatternWaveform.add.q0#19, PatternWaveform.add.q0#20, PatternWaveform.add.q0#21, PatternWaveform.add.q0#22, PatternWaveform.add.q0[Clip to View], PatternWaveform.add.q0[Max Traces:], PatternWaveform.add.q0[Downsample], PatternWaveform.add.q0[Peak], PatternWaveform.add.q0#23, PatternWaveform.add.q0[Forget hidden traces], PatternWaveform.add.q0[Mean] ...
+
+--- seq/seqplot.py (seqplot; own files seq/seqplot.py; walk argv ['--seq', '0:10k.py', '1:burst.py', '--time', '0', '0.0002'], 92 instances, elapsed 12.6 s, python 3.9.21, qt 5.15.8)
+92 controls found, 2 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 92, M = 2, K = 0, M + K = 2
+walk: walk source digest matches (sha256:373f89797bbf834d6e48ac347e2dbd622a4a3b1b215c22c6a232d567df12cf49)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (90 rows): id | loc | kind | label
+  PatternWaveform.add.q0#0 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#1 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#2 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#3 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#4 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#5 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#6 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#7 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#8 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#9 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#10 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#11 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#12 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#13 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#14 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#15 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#16 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#17 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#18 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#19 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#20 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#21 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#22 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#23 | seq/seqplot.py:145 | checkbox | Clip to View
+  PatternWaveform.add.q0#24 | seq/seqplot.py:145 | checkbox | Max Traces:
+  PatternWaveform.add.q0#25 | seq/seqplot.py:145 | checkbox | Downsample
+  PatternWaveform.add.q0#26 | seq/seqplot.py:145 | checkbox | Peak
+  PatternWaveform.add.q0#27 | seq/seqplot.py:145 | text | addPlot
+  PatternWaveform.add.q0#28 | seq/seqplot.py:145 | checkbox | Forget hidden traces
+  PatternWaveform.add.q0#29 | seq/seqplot.py:145 | checkbox | Mean
+  PatternWaveform.add.q0#30 | seq/seqplot.py:145 | checkbox | Subsample
+  PatternWaveform.add.q0#31 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#32 | seq/seqplot.py:145 | text | 1x
+  PatternWaveform.add.q0#33 | seq/seqplot.py:145 | checkbox | Log Y
+  PatternWaveform.add.q0#34 | seq/seqplot.py:145 | checkbox | Log X
+  PatternWaveform.add.q0#35 | seq/seqplot.py:145 | checkbox | Power Spectrum (FFT)
+  PatternWaveform.add.q0#36 | seq/seqplot.py:145 | checkbox | dy/dx
+  PatternWaveform.add.q0#37 | seq/seqplot.py:145 | checkbox | Y vs. Y'
+  PatternWaveform.add.q0#38 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#39 | seq/seqplot.py:145 | checkbox | Show X Grid
+  PatternWaveform.add.q0#40 | seq/seqplot.py:145 | checkbox | Show Y Grid
+  PatternWaveform.add.q0#41 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#42 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#43 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#44 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#45 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#46 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#47 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#48 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#49 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#50 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#51 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#52 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#53 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#54 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#55 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#56 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#57 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#58 | seq/seqplot.py:145 | text | 100%
+  PatternWaveform.add.q0#59 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#60 | seq/seqplot.py:145 | checkbox | Manual
+  PatternWaveform.add.q0#61 | seq/seqplot.py:145 | text | 0
+  PatternWaveform.add.q0#62 | seq/seqplot.py:145 | text | 1
+  PatternWaveform.add.q0#63 | seq/seqplot.py:145 | checkbox | Invert Axis
+  PatternWaveform.add.q0#64 | seq/seqplot.py:145 | checkbox | Mouse Enabled
+  PatternWaveform.add.q0#65 | seq/seqplot.py:145 | checkbox | Visible Data Only
+  PatternWaveform.add.q0#66 | seq/seqplot.py:145 | checkbox | Auto Pan Only
+  PatternWaveform.add.q0#67 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#68 | seq/seqplot.py:145 | checkbox | Clip to View
+  PatternWaveform.add.q0#69 | seq/seqplot.py:145 | checkbox | Max Traces:
+  PatternWaveform.add.q0#70 | seq/seqplot.py:145 | checkbox | Downsample
+  PatternWaveform.add.q0#71 | seq/seqplot.py:145 | checkbox | Peak
+  PatternWaveform.add.q0#72 | seq/seqplot.py:145 | text | addPlot
+  PatternWaveform.add.q0#73 | seq/seqplot.py:145 | checkbox | Forget hidden traces
+  PatternWaveform.add.q0#74 | seq/seqplot.py:145 | checkbox | Mean
+  PatternWaveform.add.q0#75 | seq/seqplot.py:145 | checkbox | Subsample
+  PatternWaveform.add.q0#76 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#77 | seq/seqplot.py:145 | text | 1x
+  PatternWaveform.add.q0#78 | seq/seqplot.py:145 | checkbox | Log Y
+  PatternWaveform.add.q0#79 | seq/seqplot.py:145 | checkbox | Log X
+  PatternWaveform.add.q0#80 | seq/seqplot.py:145 | checkbox | Power Spectrum (FFT)
+  PatternWaveform.add.q0#81 | seq/seqplot.py:145 | checkbox | dy/dx
+  PatternWaveform.add.q0#82 | seq/seqplot.py:145 | checkbox | Y vs. Y'
+  PatternWaveform.add.q0#83 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#84 | seq/seqplot.py:145 | checkbox | Show X Grid
+  PatternWaveform.add.q0#85 | seq/seqplot.py:145 | checkbox | Show Y Grid
+  PatternWaveform.add.q0#86 | seq/seqplot.py:145 | combo | addPlot
+  PatternWaveform.add.q0#87 | seq/seqplot.py:145 | value | addPlot
+  PatternWaveform.add.q0#88 | seq/seqplot.py:145 | checkbox | Auto
+  PatternWaveform.add.q0#89 | seq/seqplot.py:145 | combo | addPlot
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: FAIL: M + K = 2 != N = 92 (90 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PatternWaveform.add.q0#0, PatternWaveform.add.q0#1, PatternWaveform.add.q0#2, PatternWaveform.add.q0#3, PatternWaveform.add.q0#4, PatternWaveform.add.q0#5, PatternWaveform.add.q0#6, PatternWaveform.add.q0#7, PatternWaveform.add.q0#8, PatternWaveform.add.q0#9, PatternWaveform.add.q0#10, PatternWaveform.add.q0#11, PatternWaveform.add.q0#12, PatternWaveform.add.q0#13, PatternWaveform.add.q0#14, PatternWaveform.add.q0#15, PatternWaveform.add.q0#16, PatternWaveform.add.q0#17, PatternWaveform.add.q0#18, PatternWaveform.add.q0#19, PatternWaveform.add.q0#20, PatternWaveform.add.q0#21, PatternWaveform.add.q0#22, PatternWaveform.add.q0#23, PatternWaveform.add.q0#24, PatternWaveform.add.q0#25, PatternWaveform.add.q0#26, PatternWaveform.add.q0#27, PatternWaveform.add.q0#28, PatternWaveform.add.q0#29 ...
+
+RESULT: FAIL (18/23 files pass)

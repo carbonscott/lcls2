@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/daq_sim.cnf": {
+   "bytes": 1098,
+   "sha256": "e19e0ece4bf898222eb0bfcc539314c0823dfd73bef5b8b21d0b4e01e7622f1d"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 820854,
+   "sha256": "1c96a2e0848d094931898d7d7fd73579f258d097888811f88da165eb89e3dbd6"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/configdb.log": {
+   "bytes": 499,
+   "sha256": "10bf7aba276e68db90a82c674843a29be269f3bb617b7a4ffdff01a06c3d01e4"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/cycle.jsonl": {
+   "bytes": 2330,
+   "sha256": "065c2a07d7249d9a17784ef7e31003001997a1d5ea5b11331dc6a62383781268"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/lgbk.log": {
+   "bytes": 1198,
+   "sha256": "46745099cd9f7ede6c34f630e75acfbe238b648547a5fe910751f77341f3637c"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/simxpm.log": {
+   "bytes": 2733,
+   "sha256": "c8a1307583a7f631a5268e1a9d1fe4a1d364101ce899220f17008979d6a5b4ee"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:control.log": {
+   "bytes": 65539,
+   "sha256": "f37165fcd3e236e447b9cb3caeaeb10e6eea389dcb50f044ed25176ab9d0ebcc"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:cspad_0.log": {
+   "bytes": 13367,
+   "sha256": "c0ee263c8ab913f69a57c6af84b4ca83046ec66447c4c584856d89f2b7d27fdb"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:teb0.log": {
+   "bytes": 8702,
+   "sha256": "f25a8d12f5454dc2249ddb108b01cfc2393f9619ea36361f7b35c822fc055ae7"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 820806,
+  "TEB_EvtCt": 1963,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1963,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1963,
+  "psana2 seeds": {
+   "0x1234": 1963
+  },
+  "psana2 seq": "1..1963",
+  "psana2 with data": 1963,
+  "simxpm NumL0Acc": 1963,
+  "simxpm NumL0Inp": 1963,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (820854 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T00:55:18-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-cspad/pmlogs/2026/11/09_00:54:59_sdfmilan120:cspad_0.log"
+ ],
+ "host": "sdfmilan120",
+ "job_id": "43843200",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:cspad",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "8ed250b21388805a00154848bf7ccd863cf47ce4",
+ "started": "2026-11-09T00:55:05.706-08:00"
+}

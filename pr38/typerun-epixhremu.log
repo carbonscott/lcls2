@@ -1,0 +1,96 @@
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=249 date=2026-11-09T00:55:31-08:00
+evidence=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/evidence sim_env=1 EPICS_PVA_ADDR_LIST=127.0.0.1
+before: listening on 30050/15075: 0; my procServ: 0
+== up --det epixhremu --detach
+2026-11-09T00:55:32.170-08:00 daq_sim: up on sdfmilan120 (job 43843200 step 249), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu
+2026-11-09T00:55:32.170-08:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-09T00:55:55.023-08:00 daq_sim: preflight rc=0: 00:55:55 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T00:55:56.329-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-09T00:55:56.329-08:00 daq_sim: config DB seeded: tst/BEAM/epixhremu_0 key=2 written
+2026-11-09T00:56:01.322-08:00 daq_sim: epixhremu frame (288, 384) from seed 0x1234 written to /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/epixhremu-frame.xtc2
+2026-11-09T00:56:01.325-08:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-09T00:56:07.096-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfmilan120 (Slurm job 43843200)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, epixhremu_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/daq_sim.cnf  pids {'control': 56980, 'teb0': 56981, 'epixhremu_0': 56982}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu
+UP_EXIT=0
+== cycle --events 1000
+2026-11-09T00:56:08.031-08:00 start state: reset
+2026-11-09T00:56:08.032-08:00 setRecord(True) -> OK
+2026-11-09T00:56:09.041-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T00:56:09.042-08:00 selectPlatform(control, drp, teb) -> OK
+2026-11-09T00:56:09.409-08:00 [warning] ami NOT supported in absence of MEB
+2026-11-09T00:56:09.414-08:00 setState allocated    -> allocated    OK
+2026-11-09T00:56:09.877-08:00 setState connected    -> connected    OK
+2026-11-09T00:56:11.245-08:00 setState configured   -> configured   OK
+2026-11-09T00:56:12.314-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-09T00:56:12.325-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+2026-11-09T00:56:12.330-08:00 setState starting     -> starting     OK
+2026-11-09T00:56:12.334-08:00 setState paused       -> paused       OK
+2026-11-09T00:56:12.337-08:00 setState running      -> running      OK
+2026-11-09T00:56:12.337-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+2026-11-09T00:56:14.345-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1078 (wanted >= 1000)
+2026-11-09T00:56:14.349-08:00 setState paused       -> paused       OK
+2026-11-09T00:56:15.410-08:00 counts after Disable: {'simxpm NumL0Acc': 2012, 'simxpm NumL0Inp': 2012, 'TEB_EvtCt': 2012, 'TEB_TrCt': 7, 'TEB_WrtCt': 2012, 'DRP_Damage': 0, 'DRP_RecordSize': 445189196, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+2026-11-09T00:56:15.414-08:00 setState starting     -> starting     OK
+2026-11-09T00:56:15.422-08:00 setState configured   -> configured   OK
+2026-11-09T00:56:15.440-08:00 setState connected    -> connected    OK
+2026-11-09T00:56:15.556-08:00 setState allocated    -> allocated    OK
+2026-11-09T00:56:15.598-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T00:56:15.600-08:00 setState reset        -> reset        OK
+2026-11-09T00:56:20.758-08:00 final state reset (start reset)
+transitions (request -> read back):
+  2026-11-09T00:56:08.032-08:00 -> 2026-11-09T00:56:09.041-08:00  unallocated  unallocated  
+  2026-11-09T00:56:09.042-08:00 -> 2026-11-09T00:56:09.414-08:00  allocated    allocated    
+  2026-11-09T00:56:09.414-08:00 -> 2026-11-09T00:56:09.877-08:00  connected    connected    
+  2026-11-09T00:56:09.877-08:00 -> 2026-11-09T00:56:11.245-08:00  configured   configured   
+  2026-11-09T00:56:11.245-08:00 -> 2026-11-09T00:56:12.330-08:00  starting     starting     
+  2026-11-09T00:56:12.330-08:00 -> 2026-11-09T00:56:12.334-08:00  paused       paused       
+  2026-11-09T00:56:12.334-08:00 -> 2026-11-09T00:56:12.337-08:00  running      running      
+  2026-11-09T00:56:14.346-08:00 -> 2026-11-09T00:56:14.349-08:00  paused       paused       
+  2026-11-09T00:56:15.410-08:00 -> 2026-11-09T00:56:15.414-08:00  starting     starting     
+  2026-11-09T00:56:15.414-08:00 -> 2026-11-09T00:56:15.422-08:00  configured   configured   
+  2026-11-09T00:56:15.422-08:00 -> 2026-11-09T00:56:15.440-08:00  connected    connected    
+  2026-11-09T00:56:15.440-08:00 -> 2026-11-09T00:56:15.556-08:00  allocated    allocated    
+  2026-11-09T00:56:15.556-08:00 -> 2026-11-09T00:56:15.598-08:00  unallocated  unallocated  
+  2026-11-09T00:56:15.598-08:00 -> 2026-11-09T00:56:15.600-08:00  reset        reset        
+counts:
+  simxpm NumL0Acc        2012
+  simxpm NumL0Inp        2012
+  TEB_EvtCt              2012
+  TEB_TrCt               7
+  TEB_WrtCt              2012
+  DRP_Damage             0
+  DRP_RecordSize         445189196
+  drp_num_dma_errors     0
+  drp_num_missing_rogs   0
+  drp_num_th_error       0
+  drp_num_pgp_jump       0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (445189244 B)
+  psana2 events          2012
+  psana2 with data       2012
+  psana2 checks          PASS
+  psana2 seq             1..2012
+  psana2 seeds           {'0x1234': 2012}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+2026-11-09T00:56:21.313-08:00 evidence 20261109T005621-cycle-8ed250b21-57030: det:drp:epixhremu prog:control prog:drp prog:pyxpm prog:teb
+2026-11-09T00:56:21.410-08:00 cycle PASS
+CYCLE_EXIT=0
+== down
+2026-11-09T00:56:21.838-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-09T00:56:27.220-08:00 daq_sim: stopping simxpm pid 56763: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-09T00:56:27.321-08:00 daq_sim: stopping lgbk pid 56761: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-09T00:56:27.521-08:00 daq_sim: stopping configdb pid 56744: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-09T00:56:28.340-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-09T00:56:28.351-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== leftovers: procServ 0 tagged 0 ports 0
+TYPERUN_DONE

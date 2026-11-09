@@ -1,0 +1,122 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/logs/covbind/p38b/login_rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"S=$S\"; echo \"Q=$Q\""
+ },
+ {
+  "send": "git rev-parse HEAD && git log --format='%h %s' 1a0c27361..HEAD | cut -c1-130 && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "# HEAD merges agentify 8830147da (#35, #36) into this PR's 328724dad, with no conflict. CHANGELOG.md keeps every entry of both sides"
+ },
+ {
+  "send": "git log -1 --format='%h parents: %p' HEAD; for p in 328724dad 8830147da; do echo \"CHANGELOG.md lines of $p missing at HEAD: $(git diff $p HEAD -- CHANGELOG.md | grep -cE '^-[^-]')\"; done"
+ },
+ {
+  "send": "# The PR against agentify 8830147da: coverage, the evidence writer, their tests and docs"
+ },
+ {
+  "send": "git diff --stat=130 8830147da HEAD | cat"
+ },
+ {
+  "send": "# 1. Build at this head, in its own Slurm step"
+ },
+ {
+  "send": "$S $Q/build.sh > $Q/build.log 2>&1; echo SRUN_EXIT=$?; grep -E '^host=|^BUILD_EXIT|no work to do|^real' $Q/build.log | cut -c1-138",
+  "expect": "SRUN_EXIT=\\d+",
+  "timeout": 1800
+ },
+ {
+  "send": "# 2. Before: nothing of a simulated DAQ is up on the node"
+ },
+ {
+  "send": "$S $Q/nodecheck.sh",
+  "timeout": 120
+ },
+ {
+  "send": "# 3. Each type on a fresh DAQ, each in its own Slurm step: daq_sim up --det <type> --detach, cycle --events 1000 (it writes the evidence record), down"
+ },
+ {
+  "send": "mkdir $EV && echo \"new, empty evidence dir: $EV ($(ls -A $EV | wc -l) records)\""
+ },
+ {
+  "send": "for T in fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he; do timeout -k 5 900 $S $Q/typerun.sh $T > $Q/tr-$T.log 2>&1; python3 $Q/trsum.py $T $Q/tr-$T.log; done",
+  "timeout": 7200
+ },
+ {
+  "send": "ls $EV | cat; echo \"$(ls $EV | wc -l) records\""
+ },
+ {
+  "send": "# What a record binds: the size and sha256 of each file it lists, taken when it was written (wave8's record)"
+ },
+ {
+  "send": "python3 $Q/showrec.py $EV wave8",
+  "timeout": 120
+ },
+ {
+  "send": "# 4. daq_sim coverage over these records, in its own Slurm step: 13 rows RUN and pyxpm STAND-IN; exit 1 for the unproven rows"
+ },
+ {
+  "send": "$S $Q/coverage.sh > $Q/coverage.log 2>&1; sed -n '1,6p' $Q/coverage.log | cut -c1-138; grep -E '^\\S+ +(RUN|STAND-IN|N/A) ' $Q/coverage.log | cut -c1-138; grep -A3 -E '^[0-9]+ rows,' $Q/coverage.log; grep COVERAGE_EXIT $Q/coverage.log",
+  "expect": "COVERAGE_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 5. The 23 cases of logs/covbind/final-forge-A.log (valid, then 22 forgeries) on these records, in one Slurm step: each through daq_sim coverage"
+ },
+ {
+  "send": "$S $Q/forge.sh $EV $Q/forged > $Q/forge.log 2>&1; echo \"SRUN_EXIT=$?; CASE lines: $(grep -c '^CASE' $Q/forge.log), RESULT OK: $(grep -c '^RESULT .* OK exit=' $Q/forge.log), MISMATCH: $(grep -c MISMATCH $Q/forge.log)\"",
+  "expect": "MISMATCH: \\d+",
+  "timeout": 2400
+ },
+ {
+  "send": "awk '/^CASE /{n++} n<=4' $Q/forge.log"
+ },
+ {
+  "send": "awk '/^CASE /{n++} n>=5 && n<=9' $Q/forge.log"
+ },
+ {
+  "send": "awk '/^CASE /{n++} n>=10 && n<=14' $Q/forge.log"
+ },
+ {
+  "send": "awk '/^CASE /{n++} n>=15 && n<=19' $Q/forge.log"
+ },
+ {
+  "send": "awk '/^CASE /{n++} n>=20' $Q/forge.log"
+ },
+ {
+  "send": "# 6. Before this PR: the same forged dirs under agentify's coverage.py (8830147da), at this HEAD, in one Slurm step"
+ },
+ {
+  "send": "$S $Q/before.sh > $Q/before.log 2>&1; grep -E '^(host=|real records|BEFORE)' $Q/before.log | cut -c1-138",
+  "expect": "BEFORE_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "# 7. The sim unit tests at this head (coverage, rogue_dev, framer, config DB, lgbk, simxpm, XpmDetector types), in their own Slurm step"
+ },
+ {
+  "send": "$S $Q/pytest.sh > $Q/pytest.log 2>&1; grep -E '^host=|^coverage from|passed|failed|error|PYTEST_EXIT' $Q/pytest.log | cut -c1-138",
+  "expect": "PYTEST_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "# 8. After: nothing of a simulated DAQ is left on the node, and the checkout is clean"
+ },
+ {
+  "send": "$S $Q/nodecheck.sh; echo \"checkout local changes: $(git status --short | wc -l)\"; git rev-parse HEAD; date '+%F %T %Z'",
+  "timeout": 120
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

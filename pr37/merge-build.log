@@ -1,0 +1,52 @@
+Building analysis software
+Building DAQ software
+Installation directory: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/install
+ninja: Entering directory `/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/builddir'
+[1/24] Compiling C++ object psdaq/drp/drp_sim_frame.p/simFrame.cc.o
+[2/24] Compiling C++ object psdaq/drp/drp.p/AreaDetector.cc.o
+[3/24] Compiling C++ object psdaq/drp/drp.p/EpixHRemu.cc.o
+[4/24] Compiling C++ object psdaq/drp/drp.p/JungfrauEmulator.cc.o
+[5/24] Compiling C++ object psdaq/psdaq/app/sim_udpencoder.p/sim_udpencoder.cc.o
+[6/24] Linking target psdaq/psdaq/app/sim_udpencoder
+[7/24] Compiling C++ object psdaq/drp/drp.p/TimingSystem.cc.o
+[8/24] Compiling C++ object psdaq/drp/libdrpbase.so.p/XpmDetector.cc.o
+[9/24] Compiling C++ object psdaq/drp/libdrpbase.so.p/BEBDetector.cc.o
+[10/24] Compiling C++ object psdaq/drp/libdrpbase.so.p/MemPoolSim.cc.o
+[11/24] Compiling C++ object psdaq/drp/drp.p/PGPDetectorApp.cc.o
+[12/24] Compiling C++ object psdaq/epicsArch/epicsArch.p/epicsArch.cc.o
+[13/24] Compiling C++ object psdaq/drp/drp_bld.p/BldDetector.cc.o
+[14/24] Linking target psdaq/drp/libdrpbase.so
+[15/24] Generating symbol file psdaq/drp/libdrpbase.so.p/libdrpbase.so.symbols
+[16/24] Linking target psdaq/drp/drp_sim_frame
+[17/24] Linking target psdaq/drp/fileWriteTest
+[18/24] Compiling C++ object psdaq/drp/drp_pva.p/PvaDetector.cc.o
+[19/24] Linking target psdaq/drp/drp_bld
+[20/24] Linking target psdaq/epicsArch/epicsArch
+[21/24] Linking target psdaq/drp/drp_pva
+[22/24] Linking target psdaq/drp/drp
+[23/24] Compiling C++ object psdaq/drp/drp_udpencoder.p/UdpEncoder.cc.o
+[24/24] Linking target psdaq/drp/drp_udpencoder
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/ninja -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/builddir -j 16
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 3ms
+   Building psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3
+      Built psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3
+Prepared 1 package in 3.77s
+Uninstalled 1 package in 1.01s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 7.16s
+ ~ psana==4.3.4 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3)
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 2ms
+   Building psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq
+      Built psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq
+Prepared 1 package in 1.14s
+Uninstalled 1 package in 65ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 336ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq)

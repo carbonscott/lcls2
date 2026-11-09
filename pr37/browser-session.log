@@ -1,0 +1,24 @@
+on sdfmilan120, Slurm job 43843200 step 205, wt-gui3 at e5af99c5f, local changes 0
+listening on 30050 (XPM pull) or 15075 (PVA) before: 0
+daq_sim up -w /sdf/scratch/users/c/cwang31/proof37/web1/dsw --segments 2 --detach: exit 0
+  configdb   pid 4111492  alive
+  lgbk       pid 4111683  alive
+  simxpm     pid 4111695  alive
+  control    pid 4111757  RUNNING
+  teb0       pid 4111758  RUNNING
+  fakecam_0  pid 4111759  RUNNING
+  fakecam_1  pid 4111760  RUNNING
+  simtpr: ready, 228 PVs under DAQ:SIM:TPR, pid 4111900
+  simhsd: ready, prefixes DAQ:SIM:HSD:1_1B:A DAQ:SIM:HSD:1_1B:B, pid 4111901
+  simdti: ready, 535 PVs under DAQ:SIM:DTI, pid 4111902
+  simdetprot: ready, 6 PVs under DAQ:SIM:JF16M:BLOCKER on 127.0.0.1 port 15064, pid 4111903
+  simdatadev: ready, 80 nodes (74 reachable) under /sdf/scratch/users/c/cwang31/proof37/web1/datadev, pid 4111904
+  daq_webgui pid 4112523: --pvgui groupca, deadca, partca, xpmpatt, tprca, hsdpva, dtica; --dpm; --datadev-sim
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=pva
+SESSION_UP
+stopping (stop file: yes, 192s)
+daq_webgui stopped
+simulators stopped: 
+daq_sim down: exit 0; daq_sim: down: clean
+listening on 30050, 15075 or 31063: 0; my procServ: 0; simulators of this step still alive: 0
+SESSION_DONE

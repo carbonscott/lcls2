@@ -1,0 +1,72 @@
+# merge-check at 2026-11-09T01:12:59-08:00 on sdfiana025, /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind
+$ git merge --no-commit --no-ff origin/agentify   (output captured at merge time, 2026-11-09 00:28 PST; committed 00:29:35 PST)
+Auto-merging CHANGELOG.md
+Auto-merging psdaq/psdaq/sim/RUNBOOK.md
+Automatic merge went well; stopped before committing as requested
+$ git log -1 --format="%H%n parents %P%n %s" HEAD
+8ed250b21388805a00154848bf7ccd863cf47ce4
+ parents 328724dad216d068bd7f8b9f1fd298c0442d0dff 8830147da58f51ccfcc1a2c01db1f4efb67040e4
+ Merge agentify (PRs #35, #36) into pr/covbind
+$ git rev-parse origin/agentify
+8830147da58f51ccfcc1a2c01db1f4efb67040e4
+$ git diff --stat 328724dad HEAD (what agentify brought)
+ CHANGELOG.md                                          |   1 +
+ psdaq/psdaq/sim/RUNBOOK.md                            |  11 +-
+ psdaq/psdaq/sim/simxpm.py                             |  37 +++-
+ psdaq/psdaq/webgui/README.md                          |  48 ++++-
+ psdaq/psdaq/webgui/parity/check_gui_parity.py         | 286 ++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/parity/check_parity.py             |  21 +-
+ psdaq/psdaq/webgui/parity/gui_rows.py                 | 635 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/parity/guis/README                 |  12 ++
+ psdaq/psdaq/webgui/parity/guis/collection_widget.json |   5 +
+ psdaq/psdaq/webgui/parity/guis/groupca.json           | 384 +++++++++++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/parity/guis/procstat.json          |  93 +++++++++
+ psdaq/psdaq/webgui/parity/guis/pvant.json             |  48 +++++
+ psdaq/psdaq/webgui/parity/guis/qt_walk.json           |   5 +
+ psdaq/psdaq/webgui/parity/qapps.py                    | 291 +++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/parity/qt_walk.py                  | 388 +++++++++++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/procstat_api.py                    | 279 ++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/pvgui/__init__.py                  | 140 +++++++++++++
+ psdaq/psdaq/webgui/pvgui/groupca.py                   | 194 ++++++++++++++++++
+ psdaq/psdaq/webgui/pvgui/pvant.py                     |  44 ++++
+ psdaq/psdaq/webgui/pvgui_api.py                       | 191 ++++++++++++++++++
+ psdaq/psdaq/webgui/server.py                          |  19 +-
+ psdaq/psdaq/webgui/static/gui/groupca.html            |  16 ++
+ psdaq/psdaq/webgui/static/gui/gui.css                 |  25 +++
+ psdaq/psdaq/webgui/static/gui/procstat.html           |  54 +++++
+ psdaq/psdaq/webgui/static/gui/procstat.js             | 113 +++++++++++
+ psdaq/psdaq/webgui/static/gui/pvant.html              |  16 ++
+ psdaq/psdaq/webgui/static/gui/pvgui.js                | 166 +++++++++++++++
+ psdaq/psdaq/webgui/tests/conftest.py                  |   5 +-
+ psdaq/psdaq/webgui/tests/test_check_gui_parity.py     | 131 ++++++++++++
+ psdaq/psdaq/webgui/tests/test_gui_groupca.py          | 324 ++++++++++++++++++++++++++++++
+ psdaq/psdaq/webgui/tests/test_gui_procstat.py         | 168 ++++++++++++++++
+ psdaq/psdaq/webgui/tests/test_gui_pvant.py            |  62 ++++++
+ psdaq/psdaq/webgui/tests/test_webgui_safety.py        | 124 +++++++++++-
+ psdaq/psdaq/webgui/tests/webgui_harness.py            | 103 ++++++++++
+ 34 files changed, 4419 insertions(+), 20 deletions(-)
+CHANGELOG.md lines of 328724dad missing at HEAD: 0
+CHANGELOG.md lines of 8830147da missing at HEAD: 0
+$ git diff --stat 8830147da HEAD (this PR against agentify)
+ CHANGELOG.md                           |   1 +
+ psdaq/psdaq/sim/README.md              |   2 +-
+ psdaq/psdaq/sim/RUNBOOK.md             |  44 +++++--
+ psdaq/psdaq/sim/coverage.py            | 398 +++++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ psdaq/psdaq/sim/daq_sim.py             |  29 ++++-
+ psdaq/psdaq/tests/test_sim_coverage.py | 472 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 6 files changed, 835 insertions(+), 111 deletions(-)
+$ git log --oneline 1a0c27361..HEAD
+8ed250b21 Merge agentify (PRs #35, #36) into pr/covbind
+8830147da Merge PR #36: sim: XpmDetector types configure through xpmdet_config on an emulated device
+29fce8b05 Merge agentify (PR #35) into pr/xpm; simxpm keeps one FwBuild, LinkGroupMask and RemoteLinkId set
+1ee004ab1 Merge PR #35: webgui: web copies of procstat, groupca and pvant, and check_gui_parity over every psdaq PyQt GUI
+328724dad coverage: a log names the run's xtc2 file also through a symlinked dir
+c338e3673 docs: coverage evidence bound to its files in the runbook and the changelog
+77da78011 coverage: a record proves a row only if its files show the row ran
+2af42fb79 Merge agentify (PR #34) into pr/gui-others
+43f0a277f webgui procstat: refuse a .cnf naming a non-loopback host; poll procServ only at 127.0.0.1
+9eae39ff1 CHANGELOG, README, RUNBOOK: check_gui_parity and /gui/<name> (#35)
+b7eca208f webgui parity: check_gui_parity runs the GUI walks live, none kept in the tree
+8f76b4e6b webgui: parity for the other QApplication programs; web procstat, groupca and pvant
+$ git status --short | wc -l
+0

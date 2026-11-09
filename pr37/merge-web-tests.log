@@ -1,0 +1,32 @@
+host sdfmilan120 date 2026-11-08T23:11:24-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/users/c/cwang31/proof37/s1/shots server-args ''
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.2.0, pluggy-1.7.0 -- /sdf/scratch/users/c/cwang31/agentify-webtest/venv/bin/python
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq/psdaq/webgui/tests
+configfile: ../../../pyproject.toml
+plugins: playwright-0.10.0
+collecting ... collected 296 items / 275 deselected / 21 selected
+
+test_gui_groupca.py::test_tabs[chromium] PASSED                          [  4%]
+test_gui_groupca.py::test_displays_follow_simxpm_counters[chromium] PASSED [  9%]
+test_gui_groupca.py::test_deadtime_labels_follow_link_masks[chromium] PASSED [ 14%]
+test_gui_groupca.py::test_checkboxes_write_their_pvs[chromium] PASSED    [ 19%]
+test_gui_groupca.py::test_int_fields_write_their_pvs[chromium] PASSED    [ 23%]
+test_gui_groupca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED [ 28%]
+test_gui_groupca.py::test_mask_bits_write_their_pvs[chromium] PASSED     [ 33%]
+test_gui_groupca.py::test_transition_buttons_insert_messages[chromium] PASSED [ 38%]
+test_gui_groupca.py::test_run_and_clear[chromium] PASSED                 [ 42%]
+test_gui_partca.py::test_labels_follow_simxpm_counters[chromium] PASSED  [ 47%]
+test_gui_partca.py::test_checkboxes_write_their_pvs[chromium] PASSED     [ 52%]
+test_gui_partca.py::test_int_fields_write_their_pvs[chromium] PASSED     [ 57%]
+test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED [ 61%]
+test_gui_partca.py::test_mask_bits_write_their_pvs[chromium] PASSED      [ 66%]
+test_gui_partca.py::test_buttons_put_1_then_0[chromium] PASSED           [ 71%]
+test_gui_partca.py::test_collection_auto_connect_and_reset[chromium] PASSED [ 76%]
+test_gui_xpmpatt.py::test_tabs[chromium] PASSED                          [ 80%]
+test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium] PASSED [ 85%]
+test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium] PASSED [ 90%]
+test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium] PASSED     [ 95%]
+test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium] PASSED    [100%]
+
+-- generated xml file: /sdf/scratch/users/c/cwang31/proof37/s1/web3.junit.xml --
+================ 21 passed, 275 deselected in 476.13s (0:07:56) ================

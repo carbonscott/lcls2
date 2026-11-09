@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/daq_sim.cnf": {
+   "bytes": 1079,
+   "sha256": "faf64c31e54f17229c212ba73fbf624db5d214508d18fd02231856999bf65cd2"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 780311,
+   "sha256": "e046c19364feb8268254931e96d160d846244adab74521b0167a8c72910c5849"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/configdb.log": {
+   "bytes": 493,
+   "sha256": "66a9be8db3addc19159dada7603337f3d14ad94d345f41f9f4e073397c46f0cf"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/cycle.jsonl": {
+   "bytes": 2327,
+   "sha256": "3ffa8cb62ecb67164ac3d92d58ff1888470fe64a136889f8e4400afc81ccc577"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/lgbk.log": {
+   "bytes": 1192,
+   "sha256": "af298b40a9904ab12418211edd2da633af0fed232937a235ee78793e3e39e961"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/simxpm.log": {
+   "bytes": 2718,
+   "sha256": "947a22295301517deeda78d781db69a0c0e995bc40ba1a0f348571e2df40f37f"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:control.log": {
+   "bytes": 65533,
+   "sha256": "0c7da02c6bab2293d11487d24d36f360af0a9cc269b1930f18d9e264dd7e7482"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:teb0.log": {
+   "bytes": 8699,
+   "sha256": "1dff02ee3c6c18b21dd2cbfc12b9c3ff3d74be854508c6326985e208903e407d"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:ts_0.log": {
+   "bytes": 16735,
+   "sha256": "553a2f85f539603e0f1b2609fad4ceaa8bf48f64168d9caa50d2c221766b5dfb"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 780263,
+  "TEB_EvtCt": 1807,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 1807,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1807,
+  "psana2 seeds": {
+   "0x1234": 1807
+  },
+  "psana2 seq": "1..1807",
+  "psana2 with data": 1807,
+  "simxpm NumL0Acc": 1807,
+  "simxpm NumL0Inp": 1807,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (780311 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T00:59:15-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-ts/pmlogs/2026/11/09_00:58:55_sdfmilan120:ts_0.log"
+ ],
+ "host": "sdfmilan120",
+ "job_id": "43843200",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:ts",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "8ed250b21388805a00154848bf7ccd863cf47ce4",
+ "started": "2026-11-09T00:59:01.566-08:00"
+}

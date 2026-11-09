@@ -1,0 +1,162 @@
+host sdfmilan120 date 2026-11-08T23:48:45-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/users/c/cwang31/proof37/run/drop/shots server-args ''
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________________ test_buttons_put_1_then_0[chromium] ______________________
+
+page = <Page url='http://127.0.0.1:32847/gui/partca'>
+ps = <webgui_harness.ServerProc object at 0x7f2f3a2962d0>
+
+    def test_buttons_put_1_then_0(page, ps):
+        C.open_page(page, ps, 'partca')
+>       C.check_pvbuttons(page, PAGE, BY['pvbutton'])
+
+test_gui_partca.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pvgui_checks.py:275: in check_pvbuttons
+    reveal(page, PAGE, r)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+page = <Page url='http://127.0.0.1:32847/gui/partca'>
+PAGE = <psdaq.webgui.pvgui.Page object at 0x7f2f3a363e60>
+rid = 'Ui_MainWindow.PvPushButton@4[DAQ:SIM:XPM:0:PART:5:MsgClear]'
+visible = True
+
+    def reveal(page, PAGE, rid, visible=True):
+        key = id(PAGE)
+        if key not in _PATHS:
+            _PATHS[key] = paths(PAGE)
+        for step in _PATHS[key].get(rid, []):
+            if step[0] == 'tab':
+                t = page.locator(sel(step[1]))
+                if t.get_attribute('aria-selected') != 'true':
+                    t.click()
+            else:
+                s = page.locator(sel(step[1]))
+                if s.input_value() != str(step[2]):
+                    s.select_option(str(step[2]))
+        if visible:
+>           expect(page.locator(sel(rid))).to_be_visible()
+E           AssertionError: Locator expected to be visible
+E           Actual value: None
+E           Error: element(s) not found 
+E           Call log:
+E             - Expect "to_be_visible" locator("[data-parity=\"Ui_MainWindow.PvPushButton@4[DAQ:SIM:XPM:0:PART:5:MsgClear]\"]") with timeout 5000ms
+E             - waiting for locator("[data-parity=\"Ui_MainWindow.PvPushButton@4[DAQ:SIM:XPM:0:PART:5:MsgClear]\"]")
+E           
+E           Aria snapshot:
+E           - heading "DAQ:SIM:XPM:0:PART:5" [level=1]
+E           - checkbox "Master" [checked]
+E           - text: Master
+E           - group "Trigger":
+E             - text: Trigger L0Select
+E             - combobox:
+E               - option "Fixed Rate"
+E               - option "AC Rate"
+E               - option "EventCode" [selected]
+E               - option "Sequence"
+E             - text: EventCode
+E             - textbox: "0"
+E             - text: L0Delay
+E             - textbox: "90"
+E             - text: DstSelect
+E             - combobox:
+E               - option "Include" [selected]
+E               - option "DontCare"
+E             - text: D0
+E             - checkbox "D0"
+E             - text: D1
+E             - checkbox "D1"
+E             - text: D2
+E             - checkbox "D2"
+E             - text: D3
+E             - checkbox "D3"
+E             - text: D4
+E             - checkbox "D4"
+E             - text: D5
+E             - checkbox "D5"
+E             - text: D6
+E             - checkbox "D6"
+E             - text: D7
+E             - checkbox "D7"
+E             - text: D8
+E             - checkbox "D8"
+E             - text: D9
+E             - checkbox "D9"
+E             - text: D10
+E             - checkbox "D10"
+E             - text: D11
+E             - checkbox "D11"
+E             - text: D12
+E             - checkbox "D12"
+E             - text: D13
+E             - checkbox "D13"
+E             - text: D14
+E             - checkbox "D14"
+E             - text: D15
+E             - checkbox "D15"
+E             - text: Run
+E             - checkbox
+E           - group "Transitions":
+E             - text: Transitions
+E             - button "Configure"
+E             - textbox: "0"
+E             - button "Enable"
+E             - button "Disable"
+E           - group "Message":
+E             - text: Message
+E             - button "Insert"
+E             - textbox: "0"
+E             - textbox: "0"
+E           - group "Inhibits":
+E             - text: Inhibits InhEnable
+E             - checkbox "0"
+E             - text: "0"
+E             - checkbox "1"
+E             - text: "1"
+E             - checkbox "2"
+E             - text: "2"
+E             - checkbox "3"
+E             - text: 3 InhInterval
+E             - textbox: "10"
+E             - textbox: "10"
+E             - textbox: "10"
+E             - textbox: "10"
+E             - text: InhLimit
+E             - textbox: "4"
+E             - textbox: "4"
+E             - textbox: "4"
+E             - textbox: "4"
+E           - button "Clear"
+E           - text: L0InpRate 0.0000 L0AccRate 0.0000 L1Rate 0.0 RunTime 4.000034332275391 NumL0Inp 4,056.0 NumL0Acc 4,056 (0xfd8) NumL1 4,056.0 DeadFrac 0.0000 DeadTime 0.0000
+E           - group "Collection":
+E             - text: Collection
+E             - button "Auto connect"
+E             - button "Reset"
+E             - table:
+E               - row "drp teb meb":
+E                 - cell "drp"
+E                 - cell "teb"
+E                 - cell "meb"
+E               - row:
+E                 - cell:
+E                   - list
+E                 - cell:
+E                   - list
+E                 - cell:
+E                   - list
+
+pvgui_checks.py:87: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+test_gui_partca.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+  def test_buttons_put_1_then_0(page, ps):
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'
+Exception ignored in: 'p4p._p4p.ClientProvider.__dealloc__'
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'
+=========================== short test summary info ============================
+FAILED test_gui_partca.py::test_buttons_put_1_then_0[chromium] - AssertionErr...
+1 failed, 295 deselected in 11.31s

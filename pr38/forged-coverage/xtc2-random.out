@@ -1,0 +1,98 @@
+daq_sim coverage at 8ed250b21388805a00154848bf7ccd863cf47ce4 (HEAD of /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind)
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+status: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind/psdaq/psdaq/sim/coverage_status.json
+evidence: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/xtc2-random (10 records)
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261109T005420-cycle-8ed250b21-50601
+det:drp:cspad                  RUN       evidence 20261109T005518-cycle-8ed250b21-54363
+det:drp:hsd                    UNPROVEN  no status entry
+det:drp:epixquad               UNPROVEN  no status entry
+det:drp:epixquad1kfps          UNPROVEN  no status entry
+det:drp:epixhr2x2              UNPROVEN  no status entry
+det:drp:epixhremu              RUN       evidence 20261109T005621-cycle-8ed250b21-57030
+det:drp:epixm320               RUN       evidence 20261109T010143-cycle-8ed250b21-71565
+det:drp:epixUHR                UNPROVEN  no status entry
+det:drp:epix100                RUN       evidence 20261109T010255-cycle-8ed250b21-75291
+det:drp:jungfrau               UNPROVEN  no status entry
+det:drp:jungfrauemu            RUN       evidence 20261109T005815-cycle-8ed250b21-59681
+det:drp:opal                   UNPROVEN  no status entry
+det:drp:tt                     UNPROVEN  no status entry
+det:drp:tb                     UNPROVEN  no status entry
+det:drp:ts                     RUN       evidence 20261109T005915-cycle-8ed250b21-65475
+det:drp:wave8                  RUN       evidence 20261109T010404-cycle-8ed250b21-78579
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files unhashed, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+det:drp:hrencoder              RUN       evidence 20261109T010023-cycle-8ed250b21-68416
+det:drp:piranha4               UNPROVEN  no status entry
+det:drp:epixuhr3x2             UNPROVEN  no status entry
+det:drp_gpu:fakecam            UNPROVEN  no status entry
+det:drp_gpu:epixuhremu         UNPROVEN  no status entry
+det:drp_gpu:epixuhrsim         UNPROVEN  no status entry
+det:drp_gpu:epixuhr3x2         UNPROVEN  no status entry
+det:drp_gpu:jungfrau           UNPROVEN  no status entry
+prog:ami-client                UNPROVEN  no status entry
+prog:ami-global                UNPROVEN  no status entry
+prog:ami-manager               UNPROVEN  no status entry
+prog:ami-node                  UNPROVEN  no status entry
+prog:ami-worker                UNPROVEN  no status entry
+prog:bldcas                    UNPROVEN  no status entry
+prog:cLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpcam*; no role in a DAQ run
+prog:control                   RUN       evidence 20261109T010404-cycle-8ed250b21-78579 (+8 more); 1 rejected
+prog:control_gui               UNPROVEN  no status entry
+prog:daqstat                   UNPROVEN  no status entry
+prog:deadca                    UNPROVEN  no status entry
+prog:drp                       RUN       evidence 20261109T010404-cycle-8ed250b21-78579 (+8 more); 1 rejected
+prog:drp_bld                   UNPROVEN  no status entry
+prog:drp_gpu                   UNPROVEN  no status entry
+prog:drp_pva                   UNPROVEN  no status entry
+prog:drp_udpencoder            UNPROVEN  no status entry
+prog:dtica                     UNPROVEN  no status entry
+prog:epics_exporter            UNPROVEN  no status entry
+prog:epicsArch                 UNPROVEN  no status entry
+prog:groupca                   UNPROVEN  no status entry
+prog:hpsBldCopy                UNPROVEN  no status entry
+prog:hpsBldServer              UNPROVEN  no status entry
+prog:hpsdbuscas                UNPROVEN  no status entry
+prog:hsd134PVs                 UNPROVEN  no status entry
+prog:hsd64PVs                  UNPROVEN  no status entry
+prog:hsdca                     UNPROVEN  no status entry
+prog:hsdcas                    UNPROVEN  no status entry
+prog:hsdpva                    UNPROVEN  no status entry
+prog:hsdpvs                    UNPROVEN  no status entry
+prog:lclsBldServer             UNPROVEN  no status entry
+prog:monReqServer              UNPROVEN  no status entry
+prog:partca                    UNPROVEN  no status entry
+prog:procstat                  UNPROVEN  no status entry
+prog:pvant                     UNPROVEN  no status entry
+prog:pvatable                  UNPROVEN  no status entry
+prog:pykcuxpm                  UNPROVEN  no status entry
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); evidence 20261109T010404-cycle-8ed250b21-78579 (+8 more); 1 rejected
+prog:qLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpdaq*; no role in a DAQ run
+prog:qRead                     N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no role in a DAQ run
+prog:shmemClient               UNPROVEN  no status entry
+prog:sim_udpencoder            UNPROVEN  no status entry
+prog:teb                       RUN       evidence 20261109T010404-cycle-8ed250b21-78579 (+8 more); 1 rejected
+prog:tmo_acr_opal_feedback     UNPROVEN  no status entry
+prog:tpr_trigger               UNPROVEN  no status entry
+prog:tprca                     UNPROVEN  no status entry
+prog:tprcas                    UNPROVEN  no status entry
+prog:tprioc                    UNPROVEN  no status entry
+prog:tprtrig                   UNPROVEN  no status entry
+prog:wave8pvs                  UNPROVEN  no status entry
+prog:xpmpva                    UNPROVEN  no status entry
+prog:xpmpvas                   UNPROVEN  no status entry
+prog:xpmPVs                    UNPROVEN  no status entry
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+status file claims (not counted above unless proven): 13 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 61 unproven row(s)
+  det:drp:wave8he: RUN row without valid evidence at HEAD 8ed250b21
+  unproven: det:drp:hsd det:drp:epixquad det:drp:epixquad1kfps det:drp:epixhr2x2 det:drp:epixUHR det:drp:jungfrau
+  unproven: det:drp:opal det:drp:tt det:drp:tb det:drp:piranha4 det:drp:epixuhr3x2 det:drp_gpu:fakecam
+  unproven: det:drp_gpu:epixuhremu det:drp_gpu:epixuhrsim det:drp_gpu:epixuhr3x2 det:drp_gpu:jungfrau prog:ami-client prog:ami-global
+  unproven: prog:ami-manager prog:ami-node prog:ami-worker prog:bldcas prog:control_gui prog:daqstat
+  unproven: prog:deadca prog:drp_bld prog:drp_gpu prog:drp_pva prog:drp_udpencoder prog:dtica
+  unproven: prog:epics_exporter prog:epicsArch prog:groupca prog:hpsBldCopy prog:hpsBldServer prog:hpsdbuscas
+  unproven: prog:hsd134PVs prog:hsd64PVs prog:hsdca prog:hsdcas prog:hsdpva prog:hsdpvs
+  unproven: prog:lclsBldServer prog:monReqServer prog:partca prog:procstat prog:pvant prog:pvatable
+  unproven: prog:pykcuxpm prog:shmemClient prog:sim_udpencoder prog:tmo_acr_opal_feedback prog:tpr_trigger prog:tprca
+  unproven: prog:tprcas prog:tprioc prog:tprtrig prog:wave8pvs prog:xpmpva prog:xpmpvas
+  unproven: prog:xpmPVs

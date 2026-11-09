@@ -1,0 +1,87 @@
+{
+ "content": {
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/daq_sim.cnf": {
+   "bytes": 1160,
+   "sha256": "7e8aa7a32d2a7b3fb89ac591c691df3744e7f6a6938d0a4c629ba94319832e05"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1286710689,
+   "sha256": "7c661207b2cbcf3734c9b2267ad3f393dd384de26dc2e2ff219e24c213aa9c72"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/configdb.log": {
+   "bytes": 505,
+   "sha256": "00bd16005ef822e95dfae73735d26f6f94d9acecbce490f646c8167b273b28a5"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/cycle.jsonl": {
+   "bytes": 2341,
+   "sha256": "8d1bf34c4a3c85114195c5e0125f6054ac3753a25f4e544c61735c63b0cb36dc"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/lgbk.log": {
+   "bytes": 1204,
+   "sha256": "7c8e8b79b77bea1deb2b61edd0411d72d72c63d29f292676a86b00e964090731"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/simxpm.log": {
+   "bytes": 2748,
+   "sha256": "6238a0df113b34e8513153a96e50aea5f222c0f3428ccf634f82f3dc2b96ed5e"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:control.log": {
+   "bytes": 69517,
+   "sha256": "c4c719367e159edf4f071b28fe959a75970ba9d7aed7822f31e7e9310d3a0b02"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:epixm320_0.log": {
+   "bytes": 18568,
+   "sha256": "becc4c0537f0f4196f36b3bb5810e59fc31966609187455bdd29ede2e7ab3e99"
+  },
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:teb0.log": {
+   "bytes": 8989,
+   "sha256": "3f4cfc35a97e188f2fe8f06ee7a54756e945c9644fb771e0fb604aeaa9715910"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1286710641,
+  "TEB_EvtCt": 2179,
+  "TEB_TrCt": 7,
+  "TEB_WrtCt": 2179,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 2179,
+  "psana2 seeds": {
+   "0x1234": 2179
+  },
+  "psana2 seq": "1..2179",
+  "psana2 with data": 2179,
+  "simxpm NumL0Acc": 2179,
+  "simxpm NumL0Inp": 2179,
+  "xtc2 file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1286710689 B)"
+ },
+ "dirty": false,
+ "ended": "2026-11-09T01:01:43-08:00",
+ "files": [
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/daq_sim.cnf",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/cycle.jsonl",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/configdb.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/lgbk.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/logs/simxpm.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:control.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:teb0.log",
+  "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-epixm320/pmlogs/2026/11/09_01:01:10_sdfmilan120:epixm320_0.log"
+ ],
+ "host": "sdfmilan120",
+ "job_id": "43843200",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:epixm320",
+  "prog:control",
+  "prog:drp",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "8ed250b21388805a00154848bf7ccd863cf47ce4",
+ "started": "2026-11-09T01:01:15.967-08:00"
+}

@@ -1,0 +1,39 @@
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=265 date=2026-11-09T01:08:27-08:00
+coverage.py of 8830147da (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/coverage_8830147da.py) at HEAD 8ed250b21 of /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind
+real records (10): proven rows 14: det:drp:cspad det:drp:epix100 det:drp:epixhremu det:drp:epixm320 det:drp:fakecam det:drp:hrencoder det:drp:jungfrauemu det:drp:ts det:drp:wave8 det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+BEFORE valid: dropped=[] want=[] no row to drop: OK
+BEFORE dirty-true: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: recorded with tracked files modified, so not by the commit's own code
+BEFORE dirty-absent: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: does not say the tree was clean, so not by the commit's own code
+BEFORE runid-null: dropped=[det:drp:epix100] want=[det:drp:epix100] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: names no run (run_id)
+BEFORE runid-blank: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: names no run (run_id)
+BEFORE other-sha: dropped=[det:drp:epix100] want=[det:drp:epix100] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: recorded at fffffffff, not at HEAD 8ed250b21
+BEFORE xtc2-empty: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files empty, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/xtc2-empty-files/tstx00001-r0001-s000-c000.xtc2: empty
+BEFORE xtc2-random: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files not, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (first datagram is transition 12, not a
+BEFORE xtc2-truncated: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files not, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 209 at byte 999310: extent
+BEFORE log-missing: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files missing, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/wd-wave8he/pmlogs/2026/11/09_01:04:49_sdfmilan120:wave8he_0.log.gone: missing
+BEFORE probe-xtc2-tiny-configure: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE probe-xtc2-of-other-det: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE probe-no-xtc2-listed: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE rehashed-xtc2-random: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files not, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/rehashed-xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 0 at byte 0: root Xt
+BEFORE rehashed-xtc2-truncated: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+  why: NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files not, e.g. /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/forged/rehashed-xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 209 at byte 99931
+BEFORE rehashed-probe-xtc2-tiny-configure: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE rehashed-probe-xtc2-of-other-det: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE runid-other-run: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE xtc2-byte-changed: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE det-log-of-other-type: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE no-content-hashes: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE teb-log-of-another-run: dropped=[] want=[prog:teb] ACCEPTED before this PR: still proves prog:teb
+BEFORE no-simxpm-log: dropped=[] want=[prog:pyxpm] ACCEPTED before this PR: still proves prog:pyxpm
+BEFORE_SUMMARY: of 22 forgeries, 11 dropped their row under the old rules, 11 still proved it
+BEFORE_EXIT=0

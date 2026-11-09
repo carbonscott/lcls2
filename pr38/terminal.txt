@@ -1,0 +1,296 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T08:52:45+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 bash --rcfile $R/logs/covbind/p38b/login_rc.sh -i
+cwang31@sdfiana025:wt-covbind$ hostname; date '+%F %T %Z'; echo "S=$S"; echo "Q=$Q"
+sdfiana025
+2026-11-09 00:52:48 PST
+S=srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G
+Q=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b
+cwang31@sdfiana025:wt-covbind$ git rev-parse HEAD && git log --format='%h %s' 1a0c27361..HEAD | cut -c1-130 && echo "local changes: $(git status --short | wc -l)"
+8ed250b21388805a00154848bf7ccd863cf47ce4
+8ed250b21 Merge agentify (PRs #35, #36) into pr/covbind
+8830147da Merge PR #36: sim: XpmDetector types configure through xpmdet_config on an emulated device
+29fce8b05 Merge agentify (PR #35) into pr/xpm; simxpm keeps one FwBuild, LinkGroupMask and RemoteLinkId set
+1ee004ab1 Merge PR #35: webgui: web copies of procstat, groupca and pvant, and check_gui_parity over every psdaq PyQt GUI
+328724dad coverage: a log names the run's xtc2 file also through a symlinked dir
+c338e3673 docs: coverage evidence bound to its files in the runbook and the changelog
+77da78011 coverage: a record proves a row only if its files show the row ran
+2af42fb79 Merge agentify (PR #34) into pr/gui-others
+43f0a277f webgui procstat: refuse a .cnf naming a non-loopback host; poll procServ only at 127.0.0.1
+9eae39ff1 CHANGELOG, README, RUNBOOK: check_gui_parity and /gui/<name> (#35)
+b7eca208f webgui parity: check_gui_parity runs the GUI walks live, none kept in the tree
+8f76b4e6b webgui: parity for the other QApplication programs; web procstat, groupca and pvant
+local changes: 0
+cwang31@sdfiana025:wt-covbind$ # HEAD merges agentify 8830147da (#35, #36) into this PR's 328724dad, with no conflict. CHANGELOG.md keeps every entry of both sides
+cwang31@sdfiana025:wt-covbind$ git log -1 --format='%h parents: %p' HEAD; for p in 328724dad 8830147da; do echo "CHANGELOG.md lines of $p missing at HEAD: $(git diff $p HEAD -- CHANGELOG.md | grep -cE '^-[^-]')"; done
+8ed250b21 parents: 328724dad 8830147da
+CHANGELOG.md lines of 328724dad missing at HEAD: 0
+CHANGELOG.md lines of 8830147da missing at HEAD: 0
+cwang31@sdfiana025:wt-covbind$ # The PR against agentify 8830147da: coverage, the evidence writer, their tests and docs
+cwang31@sdfiana025:wt-covbind$ git diff --stat=130 8830147da HEAD | cat
+ CHANGELOG.md                           |   1 +
+ psdaq/psdaq/sim/README.md              |   2 +-
+ psdaq/psdaq/sim/RUNBOOK.md             |  44 ++++++--
+ psdaq/psdaq/sim/coverage.py            | 398 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ psdaq/psdaq/sim/daq_sim.py             |  29 ++++--
+ psdaq/psdaq/tests/test_sim_coverage.py | 472 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ 6 files changed, 835 insertions(+), 111 deletions(-)
+cwang31@sdfiana025:wt-covbind$ # 1. Build at this head, in its own Slurm step
+cwang31@sdfiana025:wt-covbind$ $S $Q/build.sh > $Q/build.log 2>&1; echo SRUN_EXIT=$?; grep -E '^host=|^BUILD_EXIT|no work to do|^real' $Q/build.log | cut -c1-138
+SRUN_EXIT=0
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=242 date=2026-11-09T00:53:02-08:00
+ninja: no work to do.
+real	0m20.702s
+BUILD_EXIT=0
+cwang31@sdfiana025:wt-covbind$ # 2. Before: nothing of a simulated DAQ is up on the node
+cwang31@sdfiana025:wt-covbind$ $S $Q/nodecheck.sh
+host=sdfmilan120 job=43843200 step=243 2026-11-09 00:53:24 PST
+listening on the DAQ's fixed ports (simxpm 30050/15075, configdb 31050, rundb 31051, frames 31052, control 29985-30045): 0
+my procServ processes: 0; my psdaq.sim processes: 0; my drp/teb processes: 0
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfiana025:wt-covbind$ # 3. Each type on a fresh DAQ, each in its own Slurm step: daq_sim up --det <type> --detach, cycle --events 1000 (it writes the evidence record), down
+cwang31@sdfiana025:wt-covbind$ mkdir $EV && echo "new, empty evidence dir: $EV ($(ls -A $EV | wc -l) records)"
+new, empty evidence dir: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/evidence (0 records)
+cwang31@sdfiana025:wt-covbind$ for T in fakecam cspad epixhremu jungfrauemu ts hrencoder epixm320 epix100 wave8 wave8he; do timeout -k 5 900 $S $Q/typerun.sh $T > $Q/tr-$T.log 2>&1; python3 $Q/trsum.py $T $Q/tr-$T.log; done
+fakecam     step 244 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 1945, TEB_WrtCt 1945, psana2 events 1945, psana2 with data 1945, psana2 checks PASS; cycle PASS
+            evidence 20261109T005420-cycle-8ed250b21-50601: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+cspad       step 246 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 1963, TEB_WrtCt 1963, psana2 events 1963, psana2 with data 1963, psana2 checks PASS; cycle PASS
+            evidence 20261109T005518-cycle-8ed250b21-54363: det:drp:cspad prog:control prog:drp prog:pyxpm prog:teb
+epixhremu   step 249 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2012, TEB_WrtCt 2012, psana2 events 2012, psana2 with data 2012, psana2 checks PASS; cycle PASS
+            evidence 20261109T005621-cycle-8ed250b21-57030: det:drp:epixhremu prog:control prog:drp prog:pyxpm prog:teb
+jungfrauemu step 250 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2928, TEB_WrtCt 2928, psana2 events 2928, psana2 with data 2928, psana2 checks PASS; cycle PASS
+            evidence 20261109T005815-cycle-8ed250b21-59681: det:drp:jungfrauemu prog:control prog:drp prog:pyxpm prog:teb
+ts          step 253 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 1807, TEB_WrtCt 1807, psana2 events 1807, psana2 with data 1807, psana2 checks PASS; cycle PASS
+            evidence 20261109T005915-cycle-8ed250b21-65475: det:drp:ts prog:control prog:drp prog:pyxpm prog:teb
+hrencoder   step 254 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2154, TEB_WrtCt 2154, psana2 events 2154, psana2 with data 2154, psana2 checks PASS; cycle PASS
+            evidence 20261109T010023-cycle-8ed250b21-68416: det:drp:hrencoder prog:control prog:drp prog:pyxpm prog:teb
+epixm320    step 255 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2179, TEB_WrtCt 2179, psana2 events 2179, psana2 with data 2179, psana2 checks PASS; cycle PASS
+            evidence 20261109T010143-cycle-8ed250b21-71565: det:drp:epixm320 prog:control prog:drp prog:pyxpm prog:teb
+epix100     step 256 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2039, TEB_WrtCt 2039, psana2 events 2039, psana2 with data 2039, psana2 checks PASS; cycle PASS
+            evidence 20261109T010255-cycle-8ed250b21-75291: det:drp:epix100 prog:control prog:drp prog:pyxpm prog:teb
+wave8       step 258 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2011, TEB_WrtCt 2011, psana2 events 2011, psana2 with data 2011, psana2 checks PASS; cycle PASS
+            evidence 20261109T010404-cycle-8ed250b21-78579: det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+wave8he     step 259 sdfmilan120 8ed250b21 dirty=0: UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0, down: clean, left: procServ 0 tagged 0 ports 0
+            simxpm NumL0Acc 2067, TEB_WrtCt 2067, psana2 events 2067, psana2 with data 2067, psana2 checks PASS; cycle PASS
+            evidence 20261109T010514-cycle-8ed250b21-82109: det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+cwang31@sdfiana025:wt-covbind$ ls $EV | cat; echo "$(ls $EV | wc -l) records"
+20261109T005420-cycle-8ed250b21-50601.json
+20261109T005518-cycle-8ed250b21-54363.json
+20261109T005621-cycle-8ed250b21-57030.json
+20261109T005815-cycle-8ed250b21-59681.json
+20261109T005915-cycle-8ed250b21-65475.json
+20261109T010023-cycle-8ed250b21-68416.json
+20261109T010143-cycle-8ed250b21-71565.json
+20261109T010255-cycle-8ed250b21-75291.json
+20261109T010404-cycle-8ed250b21-78579.json
+20261109T010514-cycle-8ed250b21-82109.json
+10 records
+cwang31@sdfiana025:wt-covbind$ # What a record binds: the size and sha256 of each file it lists, taken when it was written (wave8's record)
+cwang31@sdfiana025:wt-covbind$ python3 $Q/showrec.py $EV wave8
+20261109T010404-cycle-8ed250b21-78579.json: rows det:drp:wave8 prog:control prog:drp prog:pyxpm prog:teb
+  run_id tstx00001/r0001, sha 8ed250b21, dirty False, host sdfmilan120, job 43843200, kind cycle
+  9 files: recorded bytes, sha256 | now: size, sha256 of the recorded bytes
+   9004440 B 2355d5ee5761 |  9004440 B same  wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+      1162 B 287802a06506 |     1162 B same  wd-wave8/daq_sim.cnf
+      2332 B 88ed5d0fdf90 |     2332 B same  wd-wave8/logs/cycle.jsonl
+       499 B e8bfa77d33a0 |      499 B same  wd-wave8/logs/configdb.log
+      1198 B b54ce540c73f |     1198 B same  wd-wave8/logs/lgbk.log
+      2733 B 9b4c44d83403 |     2733 B same  wd-wave8/logs/simxpm.log
+     66476 B a34704234600 |    67240 B same  wd-wave8/pmlogs/2026/11/09_01:03:40_sdfmilan120:control.log
+      8774 B b1b4ae23a9ae |     9069 B same  wd-wave8/pmlogs/2026/11/09_01:03:40_sdfmilan120:teb0.log
+     32723 B dd4f528d592f |    33072 B same  wd-wave8/pmlogs/2026/11/09_01:03:40_sdfmilan120:wave8_0.log
+cwang31@sdfiana025:wt-covbind$ # 4. daq_sim coverage over these records, in its own Slurm step: 13 rows RUN and pyxpm STAND-IN; exit 1 for the unproven rows
+cwang31@sdfiana025:wt-covbind$ $S $Q/coverage.sh > $Q/coverage.log 2>&1; sed -n '1,6p' $Q/coverage.log | cut -c1-138; grep -E '^\S+ +(RUN|STAND-IN|N/A) ' $Q/coverage.log | cut -c1-138; grep -A3 -E '^[0-9]+ rows,' $Q/coverage.log; grep COVERAGE_EXIT $Q/coverage.log
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=262 date=2026-11-09T01:05:33-08:00
+daq_sim coverage at 8ed250b21388805a00154848bf7ccd863cf47ce4 (HEAD of /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-c
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+status: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind/psdaq/psdaq/sim/coverage_status.json
+evidence: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/covbind/p38b/evidence (10 records)
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261109T005420-cycle-8ed250b21-50601
+det:drp:cspad                  RUN       evidence 20261109T005518-cycle-8ed250b21-54363
+det:drp:epixhremu              RUN       evidence 20261109T005621-cycle-8ed250b21-57030
+det:drp:epixm320               RUN       evidence 20261109T010143-cycle-8ed250b21-71565
+det:drp:epix100                RUN       evidence 20261109T010255-cycle-8ed250b21-75291
+det:drp:jungfrauemu            RUN       evidence 20261109T005815-cycle-8ed250b21-59681
+det:drp:ts                     RUN       evidence 20261109T005915-cycle-8ed250b21-65475
+det:drp:wave8                  RUN       evidence 20261109T010404-cycle-8ed250b21-78579
+det:drp:wave8he                RUN       evidence 20261109T010514-cycle-8ed250b21-82109
+det:drp:hrencoder              RUN       evidence 20261109T010023-cycle-8ed250b21-68416
+prog:cLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpca
+prog:control                   RUN       evidence 20261109T010514-cycle-8ed250b21-82109 (+9 more)
+prog:drp                       RUN       evidence 20261109T010514-cycle-8ed250b21-82109 (+9 more)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PU
+prog:qLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpda
+prog:qRead                     N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no
+prog:teb                       RUN       evidence 20261109T010514-cycle-8ed250b21-82109 (+9 more)
+78 rows, 13 run, 1 stand-in, 3 N/A, 61 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 13 RUN, 1 STAND-IN, 3 N/A
+FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence, 61 unproven row(s)
+  unproven: det:drp:hsd det:drp:epixquad det:drp:epixquad1kfps det:drp:epixhr2x2 det:drp:epixUHR det:drp:jungfrau
+COVERAGE_EXIT=1
+cwang31@sdfiana025:wt-covbind$ # 5. The 23 cases of logs/covbind/final-forge-A.log (valid, then 22 forgeries) on these records, in one Slurm step: each through daq_sim coverage
+cwang31@sdfiana025:wt-covbind$ $S $Q/forge.sh $EV $Q/forged > $Q/forge.log 2>&1; echo "SRUN_EXIT=$?; CASE lines: $(grep -c '^CASE' $Q/forge.log), RESULT OK: $(grep -c '^RESULT .* OK exit=' $Q/forge.log), MISMATCH: $(grep -c MISMATCH $Q/forge.log)"
+SRUN_EXIT=0; CASE lines: 23, RESULT OK: 23, MISMATCH: 0
+cwang31@sdfiana025:wt-covbind$ awk '/^CASE /{n++} n<=4' $Q/forge.log
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=263 date=2026-11-09T01:05:49-08:00
+base exit=1
+base proven rows: 14: det:drp:cspad det:drp:epix100 det:drp:epixhremu det:drp:epixm320 det:drp:fakecam det:drp:hrencoder det:drp:jungfrauemu det:drp:ts det:drp:wave8 det:drp:wave8he prog:control prog:drp prog:pyxpm prog:teb
+CASE valid (must drop: -)
+78 rows, 13 run, 1 stand-in, 3 N/A, 61 unproven, 0 claimed without valid evidence
+RESULT valid dropped=[] want=[] OK exit=1
+CASE dirty-true (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: recorded with tracked files modified, so not by the commit's own code
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT dirty-true dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE dirty-absent (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: does not say the tree was clean, so not by the commit's own code
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT dirty-absent dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE runid-null (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: names no run (run_id)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-null dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+cwang31@sdfiana025:wt-covbind$ awk '/^CASE /{n++} n>=5 && n<=9' $Q/forge.log
+CASE runid-blank (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: names no run (run_id)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-blank dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE other-sha (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: recorded at fffffffff, not at HEAD 8ed250b21
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT other-sha dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE xtc2-empty (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files empty, e.g. <root>/logs/covbind/p38b/forged/xtc2-empty-files/tstx00001-r0001-s000-c000.xtc2: empty
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-empty dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE xtc2-random (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-random dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE xtc2-truncated (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-truncated dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+cwang31@sdfiana025:wt-covbind$ awk '/^CASE /{n++} n>=10 && n<=14' $Q/forge.log
+CASE log-missing (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files missing, e.g. <root>/logs/covbind/p38b/wd-wave8he/pmlogs/2026/11/09_01:04:49_sdfmilan120:wave8he_0.log.gone: missing
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT log-missing dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE probe-xtc2-tiny-configure (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/forged/probe-xtc2-tiny-configure-files/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-xtc2-tiny-configure dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE probe-xtc2-of-other-det (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files unhashed, e.g. <root>/logs/covbind/p38b/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2: the record holds no content hash of it
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-xtc2-of-other-det dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE probe-no-xtc2-listed (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: lists no xtc2 file
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT probe-no-xtc2-listed dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE rehashed-xtc2-random (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: 1 of 9 files not xtc2, e.g. <root>/logs/covbind/p38b/forged/rehashed-xtc2-random-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 0 at byte 0: root Xtc is TypeId 319, not Parent)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-xtc2-random dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+cwang31@sdfiana025:wt-covbind$ awk '/^CASE /{n++} n>=15 && n<=19' $Q/forge.log
+CASE rehashed-xtc2-truncated (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files not xtc2, e.g. <root>/logs/covbind/p38b/forged/rehashed-xtc2-truncated-files/tstx00001-r0001-s000-c000.xtc2: not an xtc2 file (datagram 209 at byte 999310: extent 4418 does not fit the file (1000000 B))
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-xtc2-truncated dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE rehashed-probe-xtc2-tiny-configure (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: no listed xtc2 file has a detector of type epix100 in its Configure (they have: no detector)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-probe-xtc2-tiny-configure dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE rehashed-probe-xtc2-of-other-det (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: no listed xtc2 file has a detector of type wave8he in its Configure (they have: wave8)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT rehashed-probe-xtc2-of-other-det dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE runid-other-run (must drop: det:drp:epix100)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: <root>/logs/covbind/p38b/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2: its BeginRun is run tstx00001/r0001, the record says tstx00001/r0002
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT runid-other-run dropped=[det:drp:epix100] want=[det:drp:epix100] OK exit=1
+CASE xtc2-byte-changed (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: 1 of 9 files changed, e.g. <root>/logs/covbind/p38b/forged/xtc2-byte-changed-files/tstx00001-r0001-s000-c000.xtc2: its first 9004440 B are not the bytes the record hashed (sha256 differs)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT xtc2-byte-changed dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+cwang31@sdfiana025:wt-covbind$ awk '/^CASE /{n++} n>=20' $Q/forge.log
+CASE det-log-of-other-type (must drop: det:drp:wave8he)
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010514-cycle-8ed250b21-82109: no listed log runs drp -D wave8he and names the run of <root>/logs/covbind/p38b/wd-wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (its path or BeginRun time 1163063102.506791584)
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT det-log-of-other-type dropped=[det:drp:wave8he] want=[det:drp:wave8he] OK exit=1
+CASE no-content-hashes (must drop: det:drp:wave8)
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010404-cycle-8ed250b21-78579: holds no content hashes of its files (content), so they cannot be tied to the run
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT no-content-hashes dropped=[det:drp:wave8] want=[det:drp:wave8] OK exit=1
+CASE teb-log-of-another-run (must drop: prog:teb)
+prog:teb                       RUN       NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: its log of teb names neither the run's xtc2 file <root>/logs/covbind/p38b/wd-epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 nor its BeginRun time 1163062960.310196593; rejected 20261109T010404-cycle-8ed250b21-78579: its log of teb names neither the run's xtc2 file <root>/logs/covbind/p38b/wd-wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 nor its BeginRun time 1163063033.365962789; rejected 20261109T010514-cycle-8ed250b21-82109: its log of teb
+78 rows, 12 run, 1 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT teb-log-of-another-run dropped=[prog:teb] want=[prog:teb] OK exit=1
+CASE no-simxpm-log (must drop: prog:pyxpm)
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); NO VALID EVIDENCE at HEAD 8ed250b21; rejected 20261109T010255-cycle-8ed250b21-75291: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); rejected 20261109T010404-cycle-8ed250b21-78579: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); rejected 20261109T010514-cycle-8ed250b21-82109: lists no log of simxpm (a log whose "# CMDLINE:" runs simxpm); and 7 more rejected
+78 rows, 13 run, 0 stand-in, 3 N/A, 61 unproven, 1 claimed without valid evidence
+RESULT no-simxpm-log dropped=[prog:pyxpm] want=[prog:pyxpm] OK exit=1
+FORGE_DONE
+cwang31@sdfiana025:wt-covbind$ # 6. Before this PR: the same forged dirs under agentify's coverage.py (8830147da), at this HEAD, in one Slurm step
+cwang31@sdfiana025:wt-covbind$ $S $Q/before.sh > $Q/before.log 2>&1; grep -E '^(host=|real records|BEFORE)' $Q/before.log | cut -c1-138
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=265 date=2026-11-09T01:08:27-08:00
+real records (10): proven rows 14: det:drp:cspad det:drp:epix100 det:drp:epixhremu det:drp:epixm320 det:drp:fakecam det:drp:hrencoder det:
+BEFORE valid: dropped=[] want=[] no row to drop: OK
+BEFORE dirty-true: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+BEFORE dirty-absent: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+BEFORE runid-null: dropped=[det:drp:epix100] want=[det:drp:epix100] dropped before this PR too
+BEFORE runid-blank: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+BEFORE other-sha: dropped=[det:drp:epix100] want=[det:drp:epix100] dropped before this PR too
+BEFORE xtc2-empty: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+BEFORE xtc2-random: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+BEFORE xtc2-truncated: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+BEFORE log-missing: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+BEFORE probe-xtc2-tiny-configure: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE probe-xtc2-of-other-det: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE probe-no-xtc2-listed: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE rehashed-xtc2-random: dropped=[det:drp:wave8he] want=[det:drp:wave8he] dropped before this PR too
+BEFORE rehashed-xtc2-truncated: dropped=[det:drp:wave8] want=[det:drp:wave8] dropped before this PR too
+BEFORE rehashed-probe-xtc2-tiny-configure: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE rehashed-probe-xtc2-of-other-det: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE runid-other-run: dropped=[] want=[det:drp:epix100] ACCEPTED before this PR: still proves det:drp:epix100
+BEFORE xtc2-byte-changed: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE det-log-of-other-type: dropped=[] want=[det:drp:wave8he] ACCEPTED before this PR: still proves det:drp:wave8he
+BEFORE no-content-hashes: dropped=[] want=[det:drp:wave8] ACCEPTED before this PR: still proves det:drp:wave8
+BEFORE teb-log-of-another-run: dropped=[] want=[prog:teb] ACCEPTED before this PR: still proves prog:teb
+BEFORE no-simxpm-log: dropped=[] want=[prog:pyxpm] ACCEPTED before this PR: still proves prog:pyxpm
+BEFORE_SUMMARY: of 22 forgeries, 11 dropped their row under the old rules, 11 still proved it
+BEFORE_EXIT=0
+cwang31@sdfiana025:wt-covbind$ # 7. The sim unit tests at this head (coverage, rogue_dev, framer, config DB, lgbk, simxpm, XpmDetector types), in their own Slurm step
+cwang31@sdfiana025:wt-covbind$ $S $Q/pytest.sh > $Q/pytest.log 2>&1; grep -E '^host=|^coverage from|passed|failed|error|PYTEST_EXIT' $Q/pytest.log | cut -c1-138
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=266 date=2026-11-09T01:08:50-08:00
+coverage from /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind/psdaq/psdaq/sim/coverage.py
+121 passed in 77.87s (0:01:17)
+PYTEST_EXIT=0
+cwang31@sdfiana025:wt-covbind$ # 8. After: nothing of a simulated DAQ is left on the node, and the checkout is clean
+cwang31@sdfiana025:wt-covbind$ $S $Q/nodecheck.sh; echo "checkout local changes: $(git status --short | wc -l)"; git rev-parse HEAD; date '+%F %T %Z'
+host=sdfmilan120 job=43843200 step=268 2026-11-09 01:10:13 PST
+listening on the DAQ's fixed ports (simxpm 30050/15075, configdb 31050, rundb 31051, frames 31052, control 29985-30045): 0
+my procServ processes: 0; my psdaq.sim processes: 0; my drp/teb processes: 0
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+checkout local changes: 0
+8ed250b21388805a00154848bf7ccd863cf47ce4
+2026-11-09 01:10:14 PST
+cwang31@sdfiana025:wt-covbind$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

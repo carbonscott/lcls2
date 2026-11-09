@@ -1,0 +1,124 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T08:04:17+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ echo "listening on 31063 on this VM: $(ss -ltn | grep -c ':31063 ')"
+listening on 31063 on this VM: 0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/proof37/web37_up.sh web1   # one Slurm step on the node: a fresh DAQ, 5 device simulators, the web GUI
+on sdfmilan120, Slurm job 43843200 step 205, wt-gui3 at e5af99c5f, local changes 0
+listening on 30050 (XPM pull) or 15075 (PVA) before: 0
+daq_sim up -w /sdf/scratch/users/c/cwang31/proof37/web1/dsw --segments 2 --detach: exit 0
+  configdb   pid 4111492  alive
+  lgbk       pid 4111683  alive
+  simxpm     pid 4111695  alive
+  control    pid 4111757  RUNNING
+  teb0       pid 4111758  RUNNING
+  fakecam_0  pid 4111759  RUNNING
+  fakecam_1  pid 4111760  RUNNING
+  simtpr: ready, 228 PVs under DAQ:SIM:TPR, pid 4111900
+  simhsd: ready, prefixes DAQ:SIM:HSD:1_1B:A DAQ:SIM:HSD:1_1B:B, pid 4111901
+  simdti: ready, 535 PVs under DAQ:SIM:DTI, pid 4111902
+  simdetprot: ready, 6 PVs under DAQ:SIM:JF16M:BLOCKER on 127.0.0.1 port 15064, pid 4111903
+  simdatadev: ready, 80 nodes (74 reachable) under /sdf/scratch/users/c/cwang31/proof37/web1/datadev, pid 4111904
+  daq_webgui pid 4112523: --pvgui groupca, deadca, partca, xpmpatt, tprca, hsdpva, dtica; --dpm; --datadev-sim
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=pva
+SESSION_UP
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p37'
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31063:/tmp/cwang31-p37/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p37/webgui.sock:127.0.0.1:31063 sdfmilan120'
+exedev@indigo-galaxy:redo$ sleep 3; for u in partca xpmpatt deadca tprca hsdpva dtica detector_protection_monitor datadev_monitor; do curl -s -o /dev/null -w "GET http://127.0.0.1:31063/gui/$u on this VM -> HTTP %{http_code}\n" http://127.0.0.1:31063/gui/$u; done
+GET http://127.0.0.1:31063/gui/partca on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/xpmpatt on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/deadca on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/tprca on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/hsdpva on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/dtica on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/detector_protection_monitor on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/datadev_monitor on this VM -> HTTP 200
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python paced_drive37.py http://127.0.0.1:31063/ rec/pr37-web --flow gui37
+2026-11-09T08:05:14.530+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31063/; highlight >= 1.2 s, gap >= 2.7 s
+2026-11-09T08:05:16.664+00:00 open /gui/partca DAQ:SIM:XPM:0:PART:5; control state reset
+2026-11-09T08:05:18.049+00:00 #1  partca: collection panel: Auto connect (rollcall, alloc, connect) hold 1.20 s  gap     - s  -> lists: ['sdfmilan120', 'sdfmilan120'] | ['sdfmilan120'] | []; control state connected OK
+2026-11-09T08:05:22.516+00:00 #2  partca: collection panel: Reset                      hold 1.20 s  gap  4.47 s  -> lists emptied: [0, 0, 0]; control state reset OK
+2026-11-09T08:05:26.047+00:00 #3  partca: Inhibit 1 enable: DAQ:SIM:XPM:0:PART:5:InhEnable1 -> 1 hold 1.20 s  gap  3.53 s  -> PV InhEnable1 0 -> 1 OK
+2026-11-09T08:05:28.749+00:00 #4  partca: type 77 in L0Delay, Enter: DAQ:SIM:XPM:0:PART:5:L0Delay hold 2.16 s  gap  2.70 s  -> PV L0Delay 90 -> 77 OK
+2026-11-09T08:05:31.465+00:00 #5  partca: L0Select: AC Rate: DAQ:SIM:XPM:0:PART:5:L0Select -> 1 hold 1.91 s  gap  2.72 s  -> PV L0Select 0 -> 1 OK
+2026-11-09T08:05:34.166+00:00 #6  partca: AC timeslot box 2: DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot -> 4 hold 1.94 s  gap  2.70 s  -> PV L0Select_ACTimeslot 0 -> 4 OK
+2026-11-09T08:05:39.004+00:00 #7  groupca: tab Events                                  hold 1.20 s  gap  4.84 s  -> tab Events selected OK
+2026-11-09T08:05:41.705+00:00 #8  groupca: Run: enable group 5 L0 triggers in simxpm   hold 2.29 s  gap  2.70 s  -> Run checked True; PV NumL0Acc = 899.0 OK
+2026-11-09T08:05:48.046+00:00 #9  xpmpatt: tab Group 5                                 hold 1.20 s  gap  6.34 s  -> group 5 L0Select shows 'AC Rate' (index 1): what partca wrote OK
+2026-11-09T08:05:50.749+00:00 #10 xpmpatt: tab Stats: L0Accepts per group, last second hold 2.26 s  gap  2.70 s  -> PATT:GROUPS Sum [0, 0, 0, 0, 0, 1000, 0, 0]; page group 5 '1000' OK
+2026-11-09T08:05:53.452+00:00 #11 xpmpatt: tab Coincidences: group pairs               hold 2.08 s  gap  2.70 s  -> PATT:COINC (5,5) = 1000; page '1000' OK
+2026-11-09T08:05:59.433+00:00 deadca: link labels on the page ['fakecam_0', 'fakecam_1']; DeadFLnk cell 0 '0.000000'
+2026-11-09T08:06:04.025+00:00 #12 tprca: tab CH0                                       hold 1.20 s  gap 10.57 s  -> CH0 shown OK
+2026-11-09T08:06:06.726+00:00 #13 tprca: destination box 3: DAQ:SIM:TPR:CH0:DESTNS -> 8 hold 1.98 s  gap  2.70 s  -> PV DESTNS 0 -> 8 OK
+2026-11-09T08:06:09.428+00:00 #14 tprca: CH0 mode: DAQ:SIM:TPR:CH0:MODE -> 1           hold 1.28 s  gap  2.70 s  -> PV MODE 0 -> 1 OK
+2026-11-09T08:06:12.129+00:00 #15 tprca: tab Input: the link, simtpr counting          hold 1.88 s  gap  2.70 s  -> FRAMERATE '928571', RXCLKRATE '185.71' OK
+2026-11-09T08:06:17.276+00:00 #16 dtica: allocation tab Slot-4                         hold 1.21 s  gap  5.15 s  -> slot 4 allocation shown OK
+2026-11-09T08:06:20.163+00:00 #17 dtica: upstream link 0, partition box 6: DAQ:SIM:DTI:4:UsLinkPartition0 -> 5 hold 1.20 s  gap  2.89 s  -> PV UsLinkPartition0 4294967295 -> 5 OK
+2026-11-09T08:06:23.922+00:00 #18 dtica: downstream link 3 forwarded to upstream link 2 hold 1.20 s  gap  3.76 s  -> UsLinkFwdMask0-6 [0, 0, 0, 0, 0, 0, 0] -> [0, 0, 8, 0, 0, 0, 0] OK
+2026-11-09T08:06:26.698+00:00 #19 dtica: statistics tab Slot-4                         hold 1.20 s  gap  2.78 s  -> UsWrFifoD cell '6094.0000' OK
+2026-11-09T08:06:29.623+00:00 dtica slot 4 statistics: a UsWrFifoD cell '6094.0000' -> '6095.0000' in 2.5 s (simdti counts)
+2026-11-09T08:06:38.933+00:00 dpm: bar '93%'; dialog shown True 'Jungfrau Tripped' '20 pixels over threshold 2000'; server: sim_pid 4111903, connected True
+2026-11-09T08:06:40.219+00:00 #20 detector_protection_monitor: Dismiss. (BLOCKED is still set: it reopens) hold 1.20 s  gap 13.52 s  -> dialog shown again: n 1 -> 2 OK
+2026-11-09T08:06:43.827+00:00 #21 datadev_monitor: Refresh All (80 simulated nodes)    hold 1.20 s  gap  3.61 s  -> 'Last refresh: 2026-11-09 00:06:47'; status bar 'Done 2026-11-09 00:06:47 | 74/80 reachable | 63 with service | 31 with cfgRxCount'; checks run 80 OK
+2026-11-09T08:07:09.747+00:00 #22 hsdpva: tab Timing                                   hold 1.20 s  gap 25.92 s  -> MONTIMING timframecnt shown '116999946' OK
+2026-11-09T08:07:11.669+00:00 hsdpva Timing: timframecnt '118857088' (simhsd counts)
+2026-11-09T08:07:12.880+00:00 #23 hsdpva: tab Config                                   hold 1.20 s  gap  3.13 s  -> readoutGroup field shows '0' OK
+2026-11-09T08:07:15.580+00:00 #24 hsdpva: type 3 in readoutGroup                       hold 2.29 s  gap  2.70 s  -> field '3' OK
+2026-11-09T08:07:25.018+00:00 #25 hsdpva: Apply: put the whole DAQ:SIM:HSD:1_1B:A:CONFIG hold 1.20 s  gap  9.44 s  -> PV CONFIG.readoutGroup 0 -> 3 OK
+2026-11-09T08:07:53.283+00:00 #26 hsdpva: base selector: B                             hold 1.20 s  gap 28.27 s  -> base DAQ:SIM:HSD:1_1B:B tabs shown OK
+2026-11-09T08:08:02.205+00:00 #27 groupca: Run again: disable group 5                  hold 1.21 s  gap  8.92 s  -> Run checked False OK
+2026-11-09T08:08:06.388+00:00 groupca after Run off: PV NumL0Acc 140435.0 -> 140435.0 in 1.5 s (stopped: True)
+2026-11-09T08:08:06.388+00:00 writes left in the simulators for the read-back: {"DAQ:SIM:XPM:0:PART:5:InhEnable1": 1, "DAQ:SIM:XPM:0:PART:5:L0Delay": 77, "DAQ:SIM:XPM:0:PART:5:L0Select": 1, "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot": 4, "DAQ:SIM:TPR:CH0:DESTNS": 8, "DAQ:SIM:TPR:CH0:MODE": 1, "DAQ:SIM:DTI:4:UsLinkPartition0": 5, "DAQ:SIM:DTI:4:UsLinkFwdMask2": 8, "DAQ:SIM:HSD:1_1B:A:CONFIG.readoutGroup": 3, "DAQ:SIM:XPM:0:PART:5:NumL0Acc": 140435.0}
+video page@dac12358f80f86a38951060bd02aed17.webm: 172.5 s; browser context open 172.45 s (real speed: the video spans the whole context)
+GUI_FLOW_OK=True  WRITES=10 PVs -> rec/pr37-web/writes.json
+ACTIONS=27  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.701 s
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python pace_check.py rec/pr37-web/actions.jsonl
+rec/pr37-web/actions.jsonl: 27 actions
+  min(act_time - highlight_start) = 1.201 s  (at: dtica: upstream link 0, partition box 6: DAQ:SIM:DTI:4:UsLinkPartition0 -> 5)
+  min gap between consecutive act_times = 2.701 s  (before: groupca: Run: enable group 5 L0 triggers in simxpm)
+ACTIONS=27  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.701 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)
+exedev@indigo-galaxy:redo$ python3 -m json.tool rec/pr37-web/writes.json   # the PVs the browser wrote and left
+{
+    "DAQ:SIM:XPM:0:PART:5:InhEnable1": 1,
+    "DAQ:SIM:XPM:0:PART:5:L0Delay": 77,
+    "DAQ:SIM:XPM:0:PART:5:L0Select": 1,
+    "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot": 4,
+    "DAQ:SIM:TPR:CH0:DESTNS": 8,
+    "DAQ:SIM:TPR:CH0:MODE": 1,
+    "DAQ:SIM:DTI:4:UsLinkPartition0": 5,
+    "DAQ:SIM:DTI:4:UsLinkFwdMask2": 8,
+    "DAQ:SIM:HSD:1_1B:A:CONFIG.readoutGroup": 3,
+    "DAQ:SIM:XPM:0:PART:5:NumL0Acc": 140435.0
+}
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/proof37/web37_readback.sh web1 < rec/pr37-web/writes.json   # read back on the node, not through the web server
+== on sdfmilan120, Slurm job 43843200 step 205 (the step that started this DAQ), tree e5af99c5f
+  simxpm     pid 4111695  alive
+  control    pid 4111757  RUNNING
+  teb0       pid 4111758  RUNNING
+  fakecam_0  pid 4111759  RUNNING
+  fakecam_1  pid 4111760  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 00:08:11 2026 140435.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 00:08:11 2026 140435.0
+  pvget DAQ:SIM:XPM:0:PART:5:InhEnable1              = 1           the browser left 1          ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Delay                 = 77          the browser left 77         ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Select                = 1           the browser left 1          ok
+  pvget DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot     = 4           the browser left 4          ok
+  pvget DAQ:SIM:TPR:CH0:DESTNS                       = 8           the browser left 8          ok
+  pvget DAQ:SIM:TPR:CH0:MODE                         = 1           the browser left 1          ok
+  pvget DAQ:SIM:DTI:4:UsLinkPartition0               = 5           the browser left 5          ok
+  pvget DAQ:SIM:DTI:4:UsLinkFwdMask2                 = 8           the browser left 8          ok
+  pvget DAQ:SIM:HSD:1_1B:A:CONFIG.readoutGroup       = 3           the browser left 3          ok
+  pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc                = 140435.0    the browser left 140435.0   ok
+READBACK PASS (10 PVs)
+readback exit 0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/users/c/cwang31/proof37/web37_down.sh web1   # web GUI and simulators stopped, then daq_sim down, in that step
+stopping (stop file: yes, 192s)
+daq_webgui stopped
+simulators stopped: 
+daq_sim down: exit 0; daq_sim: down: clean
+listening on 30050, 15075 or 31063: 0; my procServ: 0; simulators of this step still alive: 0
+SESSION_DONE
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31063:/tmp/cwang31-p37'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*cwang31-p37/webgui.sock'"; pgrep -af '^ssh .*-L 31063:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ 

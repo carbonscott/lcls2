@@ -1,0 +1,8 @@
+host=sdfmilan120 head=8ed250b21388805a00154848bf7ccd863cf47ce4 dirty=0 job=43843200 step=266 date=2026-11-09T01:08:50-08:00
+coverage from /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-covbind/psdaq/psdaq/sim/coverage.py
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+........................................................................ [ 59%]
+.................................................                        [100%]
+121 passed in 77.87s (0:01:17)
+PYTEST_EXIT=0

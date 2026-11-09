@@ -1,0 +1,135 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty bash --rcfile /sdf/scratch/users/c/cwang31/proof37/node_rc.sh -i",
+  "expect": "cwang31@sdfmilan120",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $R/wt-gui3 && git rev-parse HEAD && git log --format='%h %s' 8830147da..HEAD | cut -c1-130 && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "# The PR against agentify 8830147da (after #35 and #36), by directory: web GUI and sim only. No PyQt GUI file, no hardware path, nothing deleted"
+ },
+ {
+  "send": "git diff --stat 8830147da HEAD | tail -1; git diff --name-only 8830147da HEAD | sed 's,/[^/]*$,,' | sort | uniq -c; echo \"outside CHANGELOG.md, webgui/, sim/: $(git diff --name-only 8830147da HEAD | grep -cvE '^(CHANGELOG.md|psdaq/psdaq/(webgui|sim)/)'); deleted: $(git diff --name-only --diff-filter=D 8830147da HEAD | wc -l)\""
+ },
+ {
+  "send": "# 1. Build at this head (the merge brought #36's C++)"
+ },
+ {
+  "send": "mkdir $P && echo \"new dir $P\"; source ./setup_env_daq.sh >/dev/null 2>&1; time ./build_all.sh -d -j 16 > $P/build.log 2>&1; echo BUILD_EXIT=$?; grep -E 'no work to do|Installed|psdaq==' $P/build.log | tail -3",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import sys, psdaq.webgui.datadev_api as m; print(\"DAQ env\", sys.version.split()[0], m.__file__)'"
+ },
+ {
+  "send": "python $Q/pvdup.py   # the merged simxpm: #36's per-link PVs beside this PR's, every PV name once",
+  "timeout": 120
+ },
+ {
+  "send": "# 2. A fresh simulated DAQ, started now in this Slurm step: control, teb0, fakecam_0 and fakecam_1. Nothing else is up on the node"
+ },
+ {
+  "send": "echo \"listening on 30050 (XPM pull) or 15075 (PVA): $(ss -ltn | grep -cE ':(30050|15075) ')\"; ls -d $WD 2>&1"
+ },
+ {
+  "send": "time daq_sim up -w $WD --segments 2 --detach > $P/up.log 2>&1; echo UP_EXIT=$?; tail -3 $P/up.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "daq_sim status -w $WD | head -9; ss -ltnp | grep -E ':(30050|15075) ' | awk '{print \"  listening:\", $4, $6}'"
+ },
+ {
+  "send": "# 3. The whole web GUI suite against it; the device simulators (simtpr, simhsd, simdti, simslurm, simdatadev, simdetprot) are started by their tests"
+ },
+ {
+  "send": "time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log",
+  "expect": "SUITE_EXIT=\\d+",
+  "timeout": 3000
+ },
+ {
+  "send": "python3 $Q/junit_backends.py $P/sim.junit.xml"
+ },
+ {
+  "send": "python3 $Q/junit_modules.py $P/sim.junit.xml 'test_gui_|test_walk_guard|test_check_gui'"
+ },
+ {
+  "send": "# 4. check_gui_parity: the walks run now against the DAQ and the device simulators, then one line per file"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --walks $P/walks --junit $P/sim.junit.xml > $P/gui-parity.txt 2>&1; echo GUI_PARITY_EXIT=$?; python3 $Q/gui_lines.py $P/gui-parity.txt",
+  "expect": "GUI_PARITY_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "# 18 of 23 pass. Fail: seqplot, seq_epixhr (pyqtgraph's Plot Options and axis menus not on the pages), configdb_GUI, hsdPs, xpmpva (no web version): exit 1"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_gui_parity --walks $P/walks --junit $P/sim.junit.xml --details > $P/gui-parity-details.txt 2>&1; echo DETAILS_EXIT=$?; wc -l < $P/gui-parity-details.txt",
+  "expect": "DETAILS_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "# 5. The walk guard: the walks just run started no ssh and no Slurm command (datadev_monitor's Refresh All, daqstat's daqmgr Runner)"
+ },
+ {
+  "send": "python3 $Q/guard_lines.py $P/walks; python3 $Q/junit_pick.py $P/sim.junit.xml test_walk_guard"
+ },
+ {
+  "send": "# 6. The control GUI's check, with a fresh offscreen walk: still PASS"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138",
+  "expect": "PARITY_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 7. Negative: dtica's CountClear of slot 4 removed from a scratch copy of parity/guis (the same walks)"
+ },
+ {
+  "send": "bash $Q/minus_gui_mapping.sh $P/sim.junit.xml $P/walks $P/minus dtica 'DtiStatistics.PvPushButton[DAQ:SIM:DTI:4:CountClear]'",
+  "expect": "GUI_PARITY_MINUS_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 8. Negative: partca's Clear button dropped from the page, in a scratch tree; partca's button test run from it on this DAQ"
+ },
+ {
+  "send": "bash $Q/drop_control.sh $WD $P/sim.junit.xml $P/walks $P/drop",
+  "expect": "GUI_PARITY_DROP_EXIT=\\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "# 9. The DAQ down: everything this step started stops"
+ },
+ {
+  "send": "daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -2 $P/down.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 300
+ },
+ {
+  "send": "sleep 2; echo \"listening on 30050 or 15075: $(ss -ltn | grep -cE ':(30050|15075) '); my procServ processes: $(pgrep -u $USER -x procServ | wc -l); my sim* processes: $(pgrep -u $USER -f 'psdaq.sim.sim' | wc -l)\""
+ },
+ {
+  "send": "# 10. The tests as CI would run them, with no simulated DAQ: the ones that need it skip, and say why"
+ },
+ {
+  "send": "WEBGUI_SHOTS=$P/shots-nosim bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -rs -k 'check_gui_parity or test_gui_ or test_walk_guard' > $P/nosim.log 2>&1; echo NOSIM_EXIT=$?; tail -1 $P/nosim.log",
+  "expect": "NOSIM_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

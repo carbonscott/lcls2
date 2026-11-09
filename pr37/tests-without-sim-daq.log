@@ -1,0 +1,122 @@
+host sdfmilan120 date 2026-11-08T23:49:53-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/users/c/cwang31/proof37/run/shots-nosim server-args ''
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.2.0, pluggy-1.7.0
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq/psdaq/webgui/tests
+configfile: ../../../pyproject.toml
+plugins: playwright-0.10.0
+collected 296 items / 207 deselected / 89 selected
+
+test_check_gui_parity.py ..sssssssssssssss.sssss.s...ss                  [ 33%]
+test_gui_daqstat.py sssss                                                [ 39%]
+test_gui_datadev_monitor.py ss                                           [ 41%]
+test_gui_deadca.py s                                                     [ 42%]
+test_gui_detector_protection_monitor.py ss                               [ 44%]
+test_gui_dtica.py sssss                                                  [ 50%]
+test_gui_groupca.py sssssssss                                            [ 60%]
+test_gui_hsdpva.py ssss                                                  [ 65%]
+test_gui_partca.py sssssss                                               [ 73%]
+test_gui_procstat.py ssssss                                              [ 79%]
+test_gui_pvant.py s                                                      [ 80%]
+test_gui_pvatable.py s                                                   [ 82%]
+test_gui_seq_epixhr.py ss                                                [ 84%]
+test_gui_seqplot.py ss                                                   [ 86%]
+test_gui_tprca.py ssssss                                                 [ 93%]
+test_gui_xpmpatt.py sssss                                                [ 98%]
+test_walk_guard.py .                                                     [100%]
+
+=============================== warnings summary ===============================
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq/psdaq/procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui3/psdaq/psdaq/procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+  procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+  procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+
+test_gui_daqstat.py::test_table_lists_the_jobs_states_live_and_sortable[chromium]
+  /sdf/scratch/users/c/cwang31/agentify-webtest/venv/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'base_url' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [13] test_check_gui_parity.py:46: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:85: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:99: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:128: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [3] test_check_gui_parity.py:135: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:154: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:173: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [2] test_check_gui_parity.py:211: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_gui_daqstat.py:114: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:144: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:159: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:195: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:52: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_datadev_monitor.py:85: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_datadev_monitor.py:124: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_deadca.py:36: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_detector_protection_monitor.py:94: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_detector_protection_monitor.py:112: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:50: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:82: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:110: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:140: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:145: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:129: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:143: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:166: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:181: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:202: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:225: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:254: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:282: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:306: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:55: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:97: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:133: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:138: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:48: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:65: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:70: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:75: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:80: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:85: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:107: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:64: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:89: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:103: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:122: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:139: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:38: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_pvant.py:34: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_pvatable.py:39: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seq_epixhr.py:24: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seq_epixhr.py:31: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seqplot.py:24: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seqplot.py:31: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:60: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:65: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:86: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:119: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:124: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:150: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:42: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:47: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:69: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:74: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:79: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+========== 8 passed, 81 skipped, 207 deselected, 9 warnings in 7.70s ===========
