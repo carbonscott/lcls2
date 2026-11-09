@@ -1,3 +1,4 @@
+import numbers
 from datetime import datetime, timezone
 
 class ControlDef:
@@ -51,9 +52,9 @@ class MyFloatPv:
         self.position = 0.0
 
     def update(self, value):
-        if type(value) == float:
-            self.position = value
-        elif type(value) == int:
+        # Any real number, numpy's included (np.arange values, as generic_timing_scan.py yields):
+        # with type(value) == float they were dropped and every step recorded step_value 0.0.
+        if isinstance(value, numbers.Real) and not isinstance(value, bool):
             self.position = float(value)
 
 class MyStringPv:

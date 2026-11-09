@@ -256,3 +256,19 @@ def test_feature_rejects_a_break_of_another_feature(tmp_path):
     assert feature.up_options('a', 5) == ['--det', 'hrencoder', '--also', 'epix100:6', '--also', 'wave8:6',
                                           '--fixed-rate', '5:3', '--fixed-rate', '6:4']
     assert feature.up_options('a', 7)[3] == 'epix100:0'
+
+
+def test_scan_step_value_takes_numpy_numbers():
+    """ConfigScanBase records MyFloatPv.position as step_value: generic_timing_scan.py yields
+    np.arange values, which MyFloatPv.update dropped (step_value 0.0 in every step)."""
+    np = pytest.importorskip('numpy')
+    from psdaq.control.ControlDef import MyFloatPv
+    m = MyFloatPv('step_value')
+    for value, want in ((np.float64(700000.), 700000.), (np.float32(2.5), 2.5), (np.int64(7), 7.),
+                        (3.5, 3.5), (4, 4.)):
+        m.update(value)
+        assert m.position == want and type(m.position) is float
+    for value in ('5', None, True):
+        m.update(value)
+        assert m.position == 4.
+
