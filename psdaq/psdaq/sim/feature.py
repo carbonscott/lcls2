@@ -134,12 +134,13 @@ def last_cycle(work):
 
 # --- checks ---------------------------------------------------------------------------------
 
-def check_a(work, state, rec, breakage=None):
+def check_a(work, state, rec, breakage=None, recompute=False):
     """Feature a's verdict from the cycle's record: 3 PGP DRPs of 3 types, 2 groups, their
-    markers different, per-DRP DAQ == psana2 (the cycle's per-DRP checks)."""
+    markers different, per-DRP DAQ == psana2 (the cycle's per-DRP checks; with recompute, read
+    from the files again)."""
     counts, problems = rec['counts'], []
     experiment, run = rec.get('experiment'), rec.get('run')
-    if breakage:
+    if breakage or recompute:
         st = dict(state)
         xtcdir = None
         if breakage == 'same-rate':
@@ -199,7 +200,7 @@ def broken_copy(work, experiment, run, alias, drop=DROP_L1):
         out = os.path.join(dst, os.path.basename(path))
         shutil.copyfile(path, out)
         try:
-            mine = xtc2_check.check(path, alias, None).get('with_data')
+            mine = xtc2_check.check(path, alias.rsplit('_', 1)[0], None).get('with_data')
         except Exception:
             mine = 0
         if mine:
@@ -213,7 +214,7 @@ def broken_copy(work, experiment, run, alias, drop=DROP_L1):
     return dst
 
 
-def scan_steps(path, det_name='epix100_0'):
+def scan_steps(path, det_name='epix100'):
     """[(step_value, step_docstring, events, events with det data)] of the run in one stream file."""
     os.environ.setdefault('LCLS_CALIB_HTTP', 'http://127.0.0.1:9/ws')
     from psana import DataSource
@@ -238,13 +239,13 @@ def check_b(work, state, rec, breakage=None):
     experiment, run = rec.get('experiment'), rec.get('run')
     want = [v + (1 if breakage == 'expect-values' else 0) for v in SCAN_VALUES]
     events = rec.get('events_per_step')
-    alias = f'{state["det"]}_0'
+    alias, name = f'{state["det"]}_0', state['det']
     files = sorted(glob.glob(work.path('data', ds.INSTRUMENT, experiment or 'none', 'xtc',
                                        f'{experiment}-r{run or 0:04d}-s*-c000.xtc2')))
     if not files:
         return counts, [f'no xtc2 file of run {run}']
     path = files[0]
-    steps = scan_steps(path, alias)
+    steps = scan_steps(path, name)
     counts['psana2 steps'] = len(steps)
     for i, (v, doc, n, k) in enumerate(steps):
         counts[f'step {i + 1}'] = f'step_value {v} docstring {doc} events {n} with {alias} data {k}'
@@ -262,7 +263,7 @@ def check_b(work, state, rec, breakage=None):
             problems.append(f'step {i + 1}: docstring {doc!r} does not name step {v}')
         if events and (n != events or k != n):
             problems.append(f'step {i + 1}: {n} events, {k} with data (want {events})')
-    r = xtc2_check.check(path, alias, state['seed'])
+    r = xtc2_check.check(path, name, state['seed'])
     daq = ((counts.get('simxpm links') or {}).get(alias) or {}).get('l1acc')
     counts[f'drp {alias}'] = (f'group {state["platform"]}: DAQ (simxpm L1Accepts sent) {daq} psana2 events '
                               f'{r["events"]} with data {r["with_data"]} per-event check '
@@ -426,7 +427,10 @@ def cmd_feature(args):
         if not args.check_only and rc != 0:
             counts, problems = rec['counts'], [f'cycle exit {rc}']
         else:
-            counts, problems = (check_a if feature == 'a' else check_e)(work, state, rec, args.breakage)
+            if feature == 'a':
+                counts, problems = check_a(work, state, rec, args.breakage, recompute=args.check_only)
+            else:
+                counts, problems = check_e(work, state, rec, args.breakage)
             if not args.breakage and not rec.get('ok'):
                 problems.append('the cycle failed')
     return report(feature, work, state, rec, counts, problems, started)

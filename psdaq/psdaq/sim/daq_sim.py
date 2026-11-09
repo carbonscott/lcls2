@@ -1494,9 +1494,9 @@ def _per_drp_counts(work, state, experiment, run, counts, xtcdir=None):
           [(a['alias'], a['group']) for a in state.get('also', ())]
     for alias, group in pgp:
         res = None
-        for path in files:              # its stream: the file in which it has data
-            try:
-                r = xtc2_check.check(path, alias, state['seed'])
+        for path in files:              # its stream: the file in which it has data (psana2 names
+            try:                        # the detector by its alias less the segment)
+                r = xtc2_check.check(path, alias.rsplit('_', 1)[0], state['seed'])
             except Exception:
                 continue
             if r.get('with_data'):
