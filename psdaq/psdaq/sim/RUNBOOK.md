@@ -430,9 +430,13 @@ A record proves a row only if all of these hold, and the row's line names the fi
     partition's processes (ID, status): its entry (`"kind": "procmgr"`) must show RUNNING every
     process whose procmgr log (`# ID:`) in the record names the run (`shows procstat did not list
     fakecam_0 RUNNING`).
-  - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the same, from
-    the witness's `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs
-    while the run ran; a `programs` entry does not count).
+  - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the witness's
+    `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs while the run
+    ran; a `programs` entry does not count): it passed, ran within the run's L1Accepts, read a
+    PV under its own `prefix` with 2 or more distinct numbers, and its `interfaces` entry for the
+    row's program gives `defined`, the PV names the program's source defines (more than 0), and
+    `missing`, those the stand-in does not serve, empty (`simhsd does not serve 2 of the 40 PVs
+    hsdpvs defines, e.g. ...`).
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
