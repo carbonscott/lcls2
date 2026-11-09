@@ -19,6 +19,12 @@ shows after each pump.  witness() turns the walks into the witness 'daq_sim cove
 A program passes if its walk exited 0 and at least one widget bound to a PV under the partition
 prefix showed 2 or more distinct numbers.  Coverage also checks that [start, end] lies within the
 run's L1Accepts, so the values were read while the run ran.
+
+A GUI whose PVs come from a device stand-in (R4: hsdpva on simhsd, tprca on simtpr, dtica on simdti,
+started by 'daq_sim up --pvservers') walks with a PVA client that searches only that stand-in's ports;
+its entry adds "stand_in" and "prefix" (the stand-in's PVs), and its reads are one per widget
+({"name": <PV>, "widget": "<class>#<n>", "values": [...]}) under that prefix; it passes if one widget
+showed 2 or more distinct values after its first text (psdaq.sim.coverage.changed_texts).
 """
 
 import argparse
@@ -48,6 +54,24 @@ WITNESS = {
     'partca':  {'file': 'cas/partca.py', 'argv': ['{part}']},
     'pvant':   {'file': 'cas/pvant.py',
                 'argv': ['--bases', '{part}', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']},
+    # R4: GUIs whose PVs come from a device stand-in of SERVERS ('server'), which daq_sim up --pvservers starts;
+    # up --gui --pvservers starts them as the configs do: hsdpva <bases> (test-hsd.cnf: hsdpva <pvlist>), tprca
+    # <prefix> (xcs.cnf: tprca DAQ:XCS:TPR), dtica <prefix> (lab3-cam.cnf: launch_py <bins>/dtica.py
+    # DAQ:LAB2:DTI:<shelf>; no dtica console script, so python -m).  Their reads are kept per widget (a structure
+    # PV such as <hsd>:MONTIMING shows each field in a widget of its own).  (pvatable and deadca are not here: their
+    # value widgets hold no PV the walk can name; see SERVER_GUI_BLOCKERS.)
+    'hsdpva':  {'file': 'cas/hsdpva.py', 'argv': ['{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B'], 'server': 'simhsd'},
+    'tprca':   {'file': 'cas/tprca.py', 'argv': ['{pvbase}:TPR'], 'server': 'simtpr'},
+    'dtica':   {'file': 'cas/dtica.py', 'argv': ['{pvbase}:DTI'], 'server': 'simdti', 'module': 'psdaq.cas.dtica'},
+}
+# The GUIs on a device stand-in that are not witnessed yet, and why (RUNBOOK §3d, R4).
+SERVER_GUI_BLOCKERS = {
+    'pvatable': 'its value widgets (PvField, a QLabel) hold no PV: PvManager keeps the PV and calls them back, so '
+                'the walk, which names a widget\'s PV by a pv attribute on it or its parents, binds none',
+    'deadca': 'its value widgets (PvDblArrayW, a QLabel) hold no PV either: a PvDblArray object holds it and sets '
+              'their text (0 PV-bound reads in a walk against simxpm)',
+    'daqstat': 'it reads no PV: its rows are Slurm job states (daqmgr), answered by simslurm, not a PV stand-in',
+    'xpmpva': 'it reads <xpm>:Us:RxAlign at start, which simxpm does not serve, and exits',
 }
 PUMPS = 4                               # snapshots after the first pump, one per second
 # PV monitors that are not GUIs, witnessed the same way: epics_exporter (the configs' pvrtmon-*
@@ -69,12 +93,27 @@ SERVERS = {
                'programs': ['hsdpvs']},
     'simtpr': {'args': ['-P', '{pvbase}:TPR'], 'prefix': '{pvbase}:TPR',
                'live': [('{pvbase}:TPR:EVTCNT', None)], 'programs': ['tprcas']},
+    'simdti': {'args': ['-P', '{pvbase}:DTI'], 'prefix': '{pvbase}:DTI',
+               'live': [('{pvbase}:DTI:3:TimFrRate', None)], 'programs': ['dticas']},
 }
+
+
+def pva_env(port):
+    """The environment of a PVA client that searches only the stand-in whose search (broadcast) port is
+    `port` on 127.0.0.1 (as pva_context, for a GUI process)."""
+    return {'EPICS_PVA_ADDR_LIST': '127.0.0.1', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
+            'EPICS_PVA_BROADCAST_PORT': str(port)}
 PORT_LINE = re.compile(r'Providing run-time monitoring data on port (\d+)')
 
 
 def argv(name, params):
     return [a.format(**params) for a in (WITNESS.get(name) or MONITORS[name])['argv']]
+
+
+def witnessed(gui=True, pvservers=False):
+    """The GUIs of WITNESS that 'up' starts: those on the partition with --gui, those on a device stand-in
+    (R4) only with --pvservers too."""
+    return [n for n, w in WITNESS.items() if gui and (pvservers or not w.get('server'))]
 
 
 def spec(name, params):
@@ -127,6 +166,24 @@ def reads(walk):
             if not out[pv] or out[pv][-1] != v:
                 out[pv].append(v)
     return [{'name': k, 'values': v} for k, v in sorted(out.items())]
+
+
+def widget_reads(walk):
+    """[{'name': PV, 'widget': '<class>#<n>', 'values': [texts]}]: one per widget bound to a PV in a qt_walk
+    --gui result, its texts in order (repeats dropped), so 2 numbers in one read are one widget's change."""
+    out = []
+    for n, inst in enumerate(walk.get('instances', [])):
+        if not inst.get('pv'):
+            continue
+        values = [t for _, t in inst.get('texts') or [] if t is not None]
+        if inst.get('text') is not None and (not values or values[-1] != inst['text']):
+            values.append(inst['text'])
+        kept = []
+        for v in values:
+            if not kept or kept[-1] != v:
+                kept.append(v)
+        out.append({'name': inst['pv'], 'widget': f'{inst.get("cls") or "?"}#{n}', 'values': kept})
+    return sorted(out, key=lambda r: (r['name'], r['widget']))
 
 
 def exporter_port(log):
@@ -227,6 +284,10 @@ def interface(program, args):
         return hsdpvs_names(prefixes)
     if program == 'tprcas':
         return tprcas_names(prefixes[0])
+    if program == 'dticas':             # the table dticas.main builds (simdti serves exactly it)
+        from psdaq.sim.simdti import dticas_table
+        pfx, table = dticas_table(prefixes[0])
+        return sorted(pfx + k for k in table)
     raise KeyError(program)
 
 
@@ -317,6 +378,16 @@ def entry(name, walk_path, code, t0, t1, prefix, params):
         live = [r['name'] for r in e['reads'] if r['values'][-1:] == ['RUNNING']]
         if not live:
             e['problems'].append('its table showed no process RUNNING')
+    elif WITNESS[name].get('server'):   # R4: the PVs of a device stand-in, one read per widget
+        server = WITNESS[name]['server']
+        sprefix = SERVERS[server]['prefix'].format(**params)
+        e.update(stand_in=server, prefix=sprefix)
+        e['reads'] = [r for r in widget_reads(walk) if r['name'].startswith(sprefix)]
+        from psdaq.sim.coverage import changed_texts
+        live = sorted({r['name'] for r in e['reads'] if len(changed_texts(r['values'])) >= 2})
+        if not live:
+            e['problems'].append(f'no widget bound to a PV under {sprefix} ({server}) showed 2 or more distinct values '
+                                 f'after its first text')
     else:
         e['reads'] = [r for r in reads(walk) if r['name'].startswith(prefix)]
         live = [r['name'] for r in e['reads'] if len(numbers(r['values'])) >= 2]

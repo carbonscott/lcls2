@@ -30,13 +30,13 @@ def test_extra_entries_start_the_programs_the_rows_count(tmp_path):
     """--meb, --ami, --pva and --epics add procmgr entries whose programs are rows coverage
     enumerates from the tree's configs, so a passing cycle's record names them."""
     extra = daq_sim.extra_entries(str(tmp_path), 5, meb=True, ami_bin=str(tmp_path / 'bin'),
-                                  pva=True, epics=True, gui=True, udp=True)
+                                  pva=True, epics=True, gui=True, udp=True, pvservers=True)
     rows = coverage.config_rows(write_cnf(str(tmp_path / 'daq_sim.cnf'), extra))
     want = ['prog:monReqServer', 'prog:shmemClient', 'prog:ami-manager', 'prog:ami-global',
             'prog:ami-node', 'prog:ami-worker', 'prog:ami-client', 'prog:drp_pva', 'prog:epicsArch',
             'prog:control_gui', 'prog:groupca', 'prog:partca', 'prog:pvant', 'prog:procstat', 'prog:epics_exporter',
             'prog:drp_udpencoder',
-            'prog:sim_udpencoder']
+            'prog:sim_udpencoder', 'prog:hsdpva', 'prog:tprca', 'prog:dtica']
     assert sorted(rows) == sorted(['det:drp:fakecam', 'prog:control', 'prog:drp', 'prog:teb'] + want)
     enumerated, problems = coverage.enumerate_rows(REPO)
     assert [r for r in want if r not in enumerated] == []
@@ -65,6 +65,9 @@ def test_procs_and_activedet(tmp_path):
     procs = daq_sim.procs(state)
     for p in ('meb0', 'shmc0', 'ami-manager', 'ami-worker_0', 'pvcam_0', 'epics_0', 'control_gui', 'groupca', 'encoder_0', 'simenc'):
         assert p in procs
+    assert not set(daq_sim.SERVER_GUI_PROCS) & set(procs)            # R4 GUIs need --pvservers too
+    assert set(daq_sim.SERVER_GUI_PROCS) <= set(daq_sim.procs(dict(state, pvservers=True)))
+    assert not set(daq_sim.SERVER_GUI_PROCS) & set(daq_sim.procs(dict(state, gui=False, pvservers=True)))
     path = str(tmp_path / 'activedet.json')
     daq_sim.write_activedet(path, 5, 1, True, ('pvcam_0', 'epics_0'))
     import json
@@ -300,10 +303,23 @@ def test_gui_entries_run_the_witnessed_argv(tmp_path):
     from psdaq.sim import gui_witness
     extra = daq_sim.extra_entries(str(tmp_path), 5, gui=True)
     params = daq_sim.gui_params(5, str(tmp_path / 'prom'), str(tmp_path / 'daq_sim.cnf'))
-    for name in list(gui_witness.WITNESS) + list(gui_witness.MONITORS):
+    for name in gui_witness.witnessed() + list(gui_witness.MONITORS):
         cmd = 'python -m psdaq.cas.partca' if name == 'partca' else name   # no partca console script
         assert f"cmd:'{cmd} {' '.join(gui_witness.argv(name, params))}'" in extra, name
     assert f"-M {tmp_path / 'prom'} -P DAQ:SIM:XPM:0 NumL0Acc" in extra
+    assert all(f"id:'{g}'" not in extra for g in daq_sim.SERVER_GUI_PROCS)
+    # R4: with --pvservers, each GUI on a stand-in searches only that stand-in's PVA ports
+    both = daq_sim.extra_entries(str(tmp_path), 5, gui=True, pvservers=True)
+    assert tuple(gui_witness.witnessed(True, True)[-3:]) == daq_sim.SERVER_GUI_PROCS
+    assert daq_sim.SERVER_GUI_PROCS == tuple(n for n, w in gui_witness.WITNESS.items() if w.get('server'))
+    for name in daq_sim.SERVER_GUI_PROCS:
+        W = gui_witness.WITNESS[name]
+        cmd = f'python -m {W["module"]}' if W.get('module') else name
+        port = daq_sim.ports(5)['pvservers'][W['server']][1]
+        entry = [e for e in both.split('},') if f"id:'{name}'" in e][0]
+        assert f"cmd:'{cmd} {' '.join(gui_witness.argv(name, params))}'" in entry, name
+        assert f'EPICS_PVA_BROADCAST_PORT={port}' in entry and 'EPICS_PVA_AUTO_ADDR_LIST=NO' in entry, entry
+    assert "cmd:'python -m psdaq.cas.dtica DAQ:SIM:DTI'" in both and "cmd:'hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B'" in both
 
 
 def test_monitor_witness_reads_the_exporters_gauges(tmp_path):
@@ -350,9 +366,43 @@ def test_procstat_witness_reads_its_table(tmp_path):
     assert gui_witness.spec('procstat', params)['walk']['record_calls'][0].endswith('spawnConsole')
 
 
-def test_stand_in_interfaces_come_from_the_programs_own_source():
-    """hsdpvs's names from its ChipServer, tprcas's from the table its main() builds."""
+def test_r4_entry_reads_the_stand_ins_pvs_widget_by_widget(tmp_path):
+    """A GUI on a device stand-in (R4): its entry names the stand-in and its prefix, and keeps one read per
+    widget, so two fields of one structure PV are never taken for one value that changed."""
     from psdaq.sim import gui_witness
+    params = daq_sim.gui_params(5)
+    hsd = 'DAQ:SIM:HSD:1_DA'
+    walk = {'argv': gui_witness.argv('hsdpva', params), 'instances': [
+        {'cls': 'QLineEdit', 'pv': hsd + ':A:MONTIMING', 'text': '7', 'texts': [['shown', '7'], ['pump:1', '7']]},
+        {'cls': 'QLineEdit', 'pv': hsd + ':A:MONTIMING', 'text': '9', 'texts': [['shown', '9']]},
+        {'cls': 'QLabel', 'pv': params['part'] + ':NumL0Acc', 'text': '5', 'texts': [['shown', '1'], ['pump:1', '5']]}]}
+    path = tmp_path / 'hsdpva.walk.json'
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('hsdpva', str(path), 0, 0, 1, params['part'], params)
+    assert e['stand_in'] == 'simhsd' and e['prefix'] == hsd
+    assert e['reads'] == [{'name': hsd + ':A:MONTIMING', 'widget': 'QLineEdit#0', 'values': ['7']},
+                          {'name': hsd + ':A:MONTIMING', 'widget': 'QLineEdit#1', 'values': ['9']}]
+    assert not e['pass'] and 'no widget bound to a PV under DAQ:SIM:HSD:1_DA (simhsd)' in e['problems'][0]
+    walk['instances'][1].update(text='12', texts=[['shown', '0'], ['pump:1', '12']])   # built with '0', then the PV
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('hsdpva', str(path), 0, 0, 1, params['part'], params)
+    assert not e['pass'] and e['live'] == []
+    walk['instances'][1].update(text='15kHz', texts=[['shown', '0'], ['pump:1', '12kHz'], ['pump:1', '15kHz']])
+    path.write_text(json.dumps(walk))
+    e = gui_witness.entry('hsdpva', str(path), 0, 0, 1, params['part'], params)
+    assert e['pass'] and e['live'] == [hsd + ':A:MONTIMING']
+    assert e['reads'][1]['values'] == ['0', '12kHz', '15kHz']
+    assert gui_witness.reads(walk)[0]['values'] == ['7', '0', '12kHz', '15kHz']   # R2's merge, which R4 does not use
+    assert gui_witness.pva_env(31301) == {'EPICS_PVA_ADDR_LIST': '127.0.0.1', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
+                                          'EPICS_PVA_BROADCAST_PORT': '31301'}
+    assert set(gui_witness.SERVER_GUI_BLOCKERS) == {'pvatable', 'deadca', 'daqstat', 'xpmpva'}
+
+
+def test_stand_in_interfaces_come_from_the_programs_own_source():
+    """hsdpvs's names from its ChipServer, tprcas's from the table its main() builds, dticas's too."""
+    from psdaq.sim import gui_witness
+    dti = gui_witness.interface('dticas', ['-P', 'X:DTI'])
+    assert 'X:DTI:3:UsLinkUp' in dti and all(n.startswith('X:DTI:') for n in dti) and len(dti) > 50
     hsd = gui_witness.interface('hsdpvs', ['-P', 'X:HSD:A', 'X:HSD:B'])
     assert 'X:HSD:A:MONTIMING' in hsd and 'X:HSD:B:CONFIG' in hsd and len(hsd) == 2 * len([n for n in hsd if n.startswith('X:HSD:A:')])
     tpr = gui_witness.interface('tprcas', ['-P', 'X:TPR'])

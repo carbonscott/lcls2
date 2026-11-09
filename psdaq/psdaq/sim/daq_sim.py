@@ -158,7 +158,8 @@ def ports(platform):
             'bld': 31220 + platform,
             'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform),
             'pvservers': {'simhsd': (31300 + 10 * platform, 31301 + 10 * platform),
-                          'simtpr': (31302 + 10 * platform, 31303 + 10 * platform)}}
+                          'simtpr': (31302 + 10 * platform, 31303 + 10 * platform),
+                          'simdti': (31304 + 10 * platform, 31305 + 10 * platform)}}
 
 
 def bld_group(platform):
@@ -339,7 +340,8 @@ def procs(state):
         (MEB_PROCS if state.get('meb') else ()) + (AMI_PROCS if state.get('ami') else ()) + \
         (PVA_PROCS if state.get('pva') else ()) + (EPICS_PROCS if state.get('epics') else ()) + \
         (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ()) + \
-        tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ())
+        tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ()) + \
+        (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ())
 
 
 def procmgr_status(state):
@@ -451,6 +453,12 @@ UDP = ''' {{ id:'encoder_0', flags:'spu',
 # the run is Running, scrapes the exporter, and keeps what they show (psdaq.sim.gui_witness), as
 # the witness 'daq_sim coverage' reads.
 GUI_PROCS = ('control_gui', 'groupca', 'partca', 'pvant', 'procstat', 'pvrtmon_0')
+# --gui with --pvservers (R4): the GUIs whose PVs come from a device stand-in (gui_witness.WITNESS 'server'), each
+# with a PVA client that searches only its stand-in's ports on 127.0.0.1
+SERVER_GUI_PROCS = ('hsdpva', 'tprca', 'dtica')
+SERVER_GUI = ''' {{ id:'{id}', flags:'s', env:'QT_QPA_PLATFORM=offscreen {pvaenv}',
+   cmd:'{cmd} {args}' }},
+'''
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
  {{ id:'groupca', flags:'s', env:'QT_QPA_PLATFORM=offscreen',
@@ -500,9 +508,10 @@ EPICS = ''' {{ id:'epics_0', flags:'spu',
 
 
 def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
-                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64):
+                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False):
     """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui and --ami
-    (ami_bin: where the ami-* programs are)."""
+    (ami_bin: where the ami-* programs are); with --gui and --pvservers also the GUIs on the
+    device stand-ins (R4)."""
     P = ports(platform)
     common = dict(v=' -v' if verbose else '', instr=INSTRUMENT, ep=EP, frames=P['frames'],
                   data=os.path.join(workdir, 'data'), prom=os.path.join(workdir, 'prom'),
@@ -527,6 +536,12 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         out += GUI.format(expname=EXPERIMENT, cfguri=f'http://127.0.0.1:{P["configdb"]}/ws/',
                           **{g: ' '.join(gui_witness.argv(g, params))
                              for g in list(gui_witness.WITNESS) + list(gui_witness.MONITORS)})
+        for g in (SERVER_GUI_PROCS if pvservers else ()):
+            W = gui_witness.WITNESS[g]
+            out += SERVER_GUI.format(id=g, cmd=f'python -m {W["module"]}' if W.get('module') else g,
+                                     args=' '.join(gui_witness.argv(g, params)),
+                                     pvaenv=' '.join(f'{k}={v}' for k, v in gui_witness.pva_env(
+                                         P['pvservers'][W['server']][1]).items()))
     if ami_bin:
         aopts = (f'--prometheus-dir {common["prom"]} --prometheus-port {P["ami_prom"]} '
                  f'--hutch {INSTRUMENT}_sim{platform}')
@@ -805,7 +820,7 @@ def cmd_up(args):
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
                 f'worker reads psana://shmem={meb_tag(args.platform)}')
         extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
-                              also, bld, args.seed, args.length)
+                              also, bld, args.seed, args.length, pvservers=pvservers)
         common = dict(instr=INSTRUMENT, ep=EP, prom=work.path('prom'), det=DETECTOR, frames=P['frames'],
                       data=work.path('data'), length=args.length, v=' -v' if args.verbose else '',
                       simk=SIM_TYPES[DETECTOR]['kwargs'].format(length=args.length, seed=args.seed,
@@ -1137,7 +1152,7 @@ def teardown(work, quiet=False):
         with open(work.path('logs', 'procmgr.log'), 'a') as out:
             subprocess.run(procmgr_cmd(state, 'stop') + ['-v'], cwd=work.dir, stdout=out,
                            stderr=subprocess.STDOUT, timeout=120)
-    for name in ('simhsd', 'simtpr', 'ioc', 'simxpm', 'lgbk', 'configdb'):
+    for name in ('simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb'):
         svc = state['services'].get(name)
         if svc:
             _kill(svc['pid'], name, quiet)
@@ -1734,7 +1749,9 @@ class GuiWitness:
                 print(f'{now()} GUI witness: reading {name}\'s PVs', flush=True)
         for name in gui_witness.WITNESS:
             if name in procs(state):
-                self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), env)) + [None]
+                server = gui_witness.WITNESS[name].get('server')     # R4: search only the stand-in's ports
+                wenv = dict(env, **gui_witness.pva_env(state['ports']['pvservers'][server][1])) if server else env
+                self.walks[name] = list(gui_witness.start(work.dir, name, work.path('logs', 'witness'), wenv)) + [None]
                 print(f'{now()} GUI witness: {name} walking offscreen (pid {self.walks[name][0].pid})', flush=True)
         for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
             if m['id'] in procs(state):
@@ -1790,9 +1807,13 @@ class GuiWitness:
         bad = [f'{n}: {e["problems"][:2]}' for n, e in list(programs.items()) + list(servers.items()) if not e['pass']]
         if not files:
             bad.append('no recorded xtc2 file (cycle without --no-record)')
-        out = {f'gui witness {n}': f'{len(e["live"])} live PVs, e.g. ' +
-               (', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}'
-                          for r in e['reads'] if r['name'] in e['live'][:2]) or 'none')
+        def shown(e):                   # an R4 entry has a read per widget: show two that changed
+            rs = [r for r in e['reads'] if r['name'] in e['live'][:2]]
+            if e.get('stand_in'):
+                rs = [r for r in rs if len(coverage.changed_texts(r['values'])) >= 2][:2]
+            return ', '.join(f'{r["name"].rsplit(":", 1)[-1]} {r["values"][:1] + r["values"][-1:]}' for r in rs) or 'none'
+        out = {f'gui witness {n}': f'{len(e["live"])} live PVs' +
+               (f' of {e["stand_in"]}' if e.get('stand_in') else '') + ', e.g. ' + shown(e)
                for n, e in programs.items()}
         out.update({f'pv server {n}': f'{len(e.get("live", []))} live PVs; ' + ', '.join(
             f'{p} {i["served"]}/{i["defined"]} PVs served' for p, i in e.get('interfaces', {}).items())
@@ -1986,12 +2007,14 @@ def main(argv=None):
                              'stand-ins on HOST_A, the --also DRPs on HOST_B)')
     upopts.add_argument('--dry-run', action='store_true', help='print the plan (.cnf, environment); start nothing')
     upopts.add_argument('--gui', action='store_true',
-                        help='also run the PyQt GUIs control_gui, groupca and pvant, offscreen, as the '
-                             'configs start them; cycle then runs groupca and pvant once more while '
-                             'Running and checks they show the partition\'s live counts (psdaq.sim.gui_witness)')
+                        help='also run the PyQt GUIs control_gui, groupca, partca, pvant and procstat and the '
+                             'monitor epics_exporter, offscreen, as the configs start them (with --pvservers also '
+                             'hsdpva, tprca and dtica on the stand-ins); cycle then runs each GUI once more while '
+                             'Running and checks it shows live values (psdaq.sim.gui_witness)')
     upopts.add_argument('--pvservers', action='store_true',
-                        help='also run the PV-server stand-ins simhsd (for hsdpvs) and simtpr (for tprcas), each on '
-                             'PVA ports of its own; cycle reads their PVs while Running (psdaq.sim.gui_witness)')
+                        help='also run the PV-server stand-ins simhsd (for hsdpvs), simtpr (for tprcas) and simdti '
+                             '(for dticas), each on PVA ports of its own; cycle reads their PVs while Running '
+                             '(psdaq.sim.gui_witness)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')
