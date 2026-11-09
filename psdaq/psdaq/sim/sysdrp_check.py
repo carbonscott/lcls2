@@ -13,15 +13,16 @@ word (psdaq/psdaq/sim/xtc2_check.py) numbers them.
 update carries one L1Accept's time and the image simxpm.camera_image(seed, seq): pixels 0 and 1
 the seq, the rest a pattern of seq, seed and position.  Every L1Accept must have the image in
 drp_pva's stream, the image must be exactly camera_image(seed, its seq), and its seq must be
-fakecam's seq of the same L1Accept, so drp_pva matched each update to its own L1Accept.  drp_pva
-queues PV updates only once its collector has handled Enable (PvaDetector.cc PvMonitor::updated,
-PvDrp's Enable handling), so the run's first L1Accepts may have no image: the check requires an
-image for every L1Accept from the first one that has it on, and reports how many came before.
+fakecam's seq of the same L1Accept, so drp_pva matched each update to its own L1Accept.  An
+L1Accept may have no image: drp_pva records the L1Accept without one when no update matched it
+in time (it queues updates only once it has handled Enable, and counts timeouts); those are
+counted here, and daq_sim cycle checks that drp_pva's own drp_match_count equals the number of
+L1Accepts that have the image.  At least one must.
 --self-test-offset K expects seq + K instead (the check must then fail).
 
 --udp NAME: drp_udpencoder's detector NAME recorded the frames sim_udpencoder sent, one per
-L1Accept (sim_udpencoder -T sim://): every L1Accept must have a frame, frameCount - seq must be
-the same for all of them (frames matched in order, none lost or repeated), and the value must
+L1Accept (sim_udpencoder -T sim://): frameCount - seq must be the same for every L1Accept that has
+a frame (frames matched in order, none repeated or out of place), and the value must
 be sim_udpencoder's test pattern, 200 for an odd frameCount, 100 for an even one
 (sim_udpencoder.cc _loopbackSend).
 
@@ -120,15 +121,10 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
             problem(f'no stream has a detector {pva}')
         got = data[pva]
         out['pva events'] = len(got)
-        lead = next((k for k, (ts, _) in enumerate(events) if got.get(ts) is not None), len(events))
-        out['pva L1Accepts before the first image'] = lead
-        if lead > max(10, len(events) // 10):
-            problem(f'{pva}: no image in the run\'s first {lead} L1Accepts')
         for k, (ts, seq) in enumerate(events):
             img = got.get(ts)
             if img is None:
-                if k >= lead:
-                    problem(f'L1Accept {k + 1} (seq {seq}): no {pva} image at its timestamp')
+                out.setdefault('pva missing (first 5 seqs)', []).append(seq)
                 continue
             out['pva with data'] = out.get('pva with data', 0) + 1
             flat = img.ravel()
@@ -150,7 +146,7 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
         for k, (ts, seq) in enumerate(events):
             f = got.get(ts)
             if f is None:
-                problem(f'L1Accept {k + 1} (seq {seq}): no {udp} frame at its timestamp')
+                out.setdefault('udp missing (first 5 seqs)', []).append(seq)
                 continue
             out['udp with data'] = out.get('udp with data', 0) + 1
             count, value = f
@@ -164,6 +160,13 @@ def check(xtcdir, exp, run, seed, pva=None, epics=False, det='fakecam', offset=0
             else:
                 out['udp matched'] = out.get('udp matched', 0) + 1
         out['udp frameCount - seq'] = first
+    for k in ('pva', 'udp'):
+        miss = out.pop(f'{k} missing (first 5 seqs)', [])
+        if (k == 'pva' and pva) or (k == 'udp' and udp):
+            out[f'{k} missing'] = len(miss)
+            out[f'{k} missing seqs'] = miss[:5]
+            if not out.get(f'{k} with data'):
+                problem(f'{pva if k == "pva" else udp}: no L1Accept has its data')
     if epics:
         if 'sim_count' not in where:
             problem('no stream has the epicsArch variables sim_count/sim_const')

@@ -919,6 +919,10 @@ def scrape(port, names):
     return out
 
 
+# What drp_pva and drp_udpencoder count of their PV updates / encoder frames (PvaDetector.cc,
+# UdpEncoder.cc exporters), per DRP
+PER_DRP_COUNTERS = ('drp_match_count', 'drp_timeout_count', 'drp_miss_count', 'drp_empty_count',
+                    'drp_tooOld_count')
 COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_ReqCt',
             'DRP_RecordSize', 'drp_num_dma_errors',
             'drp_num_pgp_jump', 'drp_num_th_error', 'drp_num_missing_rogs', 'DRP_Damage')
@@ -1091,6 +1095,11 @@ def cmd_cycle(args):
         counts.update(_meb_counts(work, state))
     if (state.get('pva') or state.get('epics') or state.get('udp')) and args.record and run:
         counts.update(_sysdrp_counts(work, state, status[6], run))
+        for proc, key in ((PVA_PROCS[0], 'sysdrp pva with data'), (UDP_PROCS[0], 'sysdrp udp with data')):
+            daq = counts.get(f'drp_match_count {proc}')
+            if key in counts and daq != counts[key]:     # the DAQ and psana2 agree on each DRP
+                counts['system DRP checks'] = (f'FAIL {proc} drp_match_count {daq} != psana2 '
+                                               f'{counts[key]} events with its data')
         ok &= counts.get('system DRP checks') == 'PASS'
     if ami:
         counts.update(ami.check(work, status[6], run if args.record else 0))
@@ -1162,8 +1171,12 @@ def _run_counts(work, plat):
     v = pv_get(f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Inp')
     out['simxpm NumL0Inp'] = None if isinstance(v, str) else int(v)
     for port in prometheus_targets(work.path('prom')):
-        for k, val in scrape(port, COUNTERS).items():
-            out[k.split('{')[0]] = int(val)
+        for k, val in scrape(port, COUNTERS + PER_DRP_COUNTERS).items():
+            name = k.split('{')[0]
+            if name in PER_DRP_COUNTERS:    # one per system DRP: keep its alias
+                m = re.search(r'alias="([^"]*)"', k)
+                name = f'{name} {m.group(1) if m else k}'
+            out[name] = int(val)
     print(f'{now()} counts after Disable: {out}', flush=True)
     return out
 

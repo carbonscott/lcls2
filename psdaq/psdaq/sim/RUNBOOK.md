@@ -548,9 +548,9 @@ its evidence record lists their logs.
 |---|---|---|---|
 | `--meb` | `meb0`: `monReqServer -d -n 8 -q 2 -t tstsim<p>`; `shmc0`: `shmemClient -p tstsim<p> -i 1 -v -R` | the TEB's events | `MEB_EvtCt` (events the MEB served), shmemClient's L1Accept lines |
 | `--ami` (implies `--meb`) | `ami-manager`, `ami-global`, `ami-node_0`, `ami-worker_0` (`psana://shmem=tstsim<p>`), `ami-client` (offscreen) | the MEB | `psdaq.sim.ami_check`: a graph that keeps every event's timestamp, seq and one fakecam pixel, fetched from the manager and compared with psana2 event by event |
-| `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every event holds the image, the image is `camera_image(seed, seq)` and its seq is fakecam's seq in the same event |
+| `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every recorded image is `camera_image(seed, seq)` with fakecam's seq of the same L1Accept, and drp_pva's `drp_match_count` equals the L1Accepts that have an image |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIocPVA -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (PVA, 1234.5) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` never decreases |
-| `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: one frame per event, frame counts +1 per event and in step with fakecam's seq, the 100/200 test pattern |
+| `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>` and `groupca DAQ:SIM 0 <p>`, offscreen | control's status messages; simxpm's PVs | control_gui's log holds the run's `fileReport` (the xtc2 path); groupca's log names no run, so coverage does not count it |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
@@ -671,7 +671,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 - **System DRPs.** drp_pva records one camera PV that simxpm updates for every L1Accept; drp_bld
   is not run. drp_pva takes PV updates only once it has handled Enable, and at the default 1 kHz
   its PVA monitor fell behind for the first ~50 L1Accepts of a run (they were recorded without
-  the image); run `--pva` at `--rate 100`, near a camera's rate, as §3g does. epicsArch archives two PVs of a softIocPVA on loopback. sim_udpencoder sends the
+  the image); run `--pva` at `--rate 100`, near a camera's rate, as §3g does. Even then an update
+  can miss its L1Accept (2 of 1119 in one run); the check counts them and requires drp_pva's own
+  count to agree. Those counters are per process, so compare them in the first cycle after `up`. epicsArch archives two PVs of a softIocPVA on loopback. sim_udpencoder sends the
   100/200 test pattern only (no `-f` playback in the run).
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
