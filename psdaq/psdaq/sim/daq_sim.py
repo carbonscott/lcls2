@@ -11,7 +11,8 @@
     daq_sim down   [-w WORKDIR]
     daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
     daq_sim matrix   [the coverage options]
-    daq_sim feature  a|b|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] (psdaq.sim.feature)
+    daq_sim feature  a|b|c|d|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] [--ami-src DIR]
+                     [--hosts A,B] (psdaq.sim.feature)
 
 'up' starts, in this order and all on this node:
   1. the isolation env (sim_env.sh, sourced by re-executing through bash) and the fail-closed
