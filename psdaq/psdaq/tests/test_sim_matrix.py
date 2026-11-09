@@ -50,15 +50,58 @@ def test_a_run_row_the_matrix_cannot_run_is_reported(tmp_path):
     assert cannot == [gpu] and (gpu.split(':')[2], gpu) not in got
 
 
-def test_features_not_in_psdaq_sim_feature_are_not_available(tmp_path):
+def test_features_not_in_psdaq_sim_feature_are_not_available(tmp_path, monkeypatch):
     from psdaq.sim import feature
-    assert set(matrix.available_features()) == set(feature.FEATURES) <= set(matrix.FEATURES)
-    missing = [x for x in matrix.FEATURES if x not in feature.FEATURES]
-    for x in missing:                                   # returns before any DAQ
-        r = matrix.run_feature(args(), x, str(tmp_path / x), dict(os.environ))
+    assert set(matrix.available_features()) == set(feature.FEATURES) == set(matrix.FEATURES)
+    monkeypatch.setattr(feature, 'FEATURES', {k: v for k, v in feature.FEATURES.items() if k != 'c'})
+    r = matrix.run_feature(args(), 'c', str(tmp_path / 'c'), dict(os.environ))     # returns before any DAQ
+    assert r['pass'] is False and r['verdict'] == 'NOT AVAILABLE'
+    assert r['assertions'] == [{'name': 'features/c', 'ok': False,
+                                'detail': 'NOT AVAILABLE: psdaq.sim.feature runs a,b,d,e'}]
+    assert not (tmp_path / 'c').exists()
+
+
+def test_feature_d_is_not_available_without_two_hosts_of_the_job(tmp_path, monkeypatch, capsys):
+    from psdaq.sim import feature
+    monkeypatch.setattr(feature, 'allocated_hosts', lambda: ['nodeA'])
+    monkeypatch.setenv('SLURM_JOB_ID', '42')
+    monkeypatch.setattr(matrix, 'Lock', None)           # no lock taken, no DAQ started
+    for hosts, words in ((None, 'two nodes needs --hosts HOST_A,HOST_B'),
+                         ('nodeA,nodeB', 'nodeB not in this Slurm job\'s allocation (job 42 holds nodeA)')):
+        r = matrix.run_feature(args(hosts=hosts), 'd', str(tmp_path / 'd'), dict(os.environ))
         assert r['pass'] is False and r['verdict'] == 'NOT AVAILABLE'
-        assert r['assertions'] == [{'name': f'features/{x}', 'ok': False,
-                                    'detail': f'NOT AVAILABLE: psdaq.sim.feature runs {",".join(feature.FEATURES)}'}]
+        assert len(r['assertions']) == 1 and r['assertions'][0]['name'] == 'features/d'
+        assert r['assertions'][0]['detail'].startswith('NOT AVAILABLE: ') and words in r['assertions'][0]['detail']
+        assert f'FEATURE d NOT AVAILABLE: ' in capsys.readouterr().out
+    assert not (tmp_path / 'd').exists()
+    monkeypatch.setattr(feature, 'allocated_hosts', lambda: ['nodeA', 'nodeB'])
+    assert matrix.feature_unavailable('d', 'nodeA,nodeB') is None
+    assert matrix.feature_unavailable('c') is None and matrix.feature_unavailable('a', 'x') is None
+
+
+def test_feature_verdicts_and_options(tmp_path, monkeypatch):
+    """run_feature passes c --ami-src and d --hosts, and reads each verdict line."""
+    from psdaq.sim import feature
+    monkeypatch.setattr(feature, 'unavailable', lambda x, hosts=None: None)
+    seen = []
+
+    def fake_run(argv, prefix, timeout, env=None):
+        seen.append(argv)
+        if argv[3] == 'down':
+            return 0, ['down: clean']
+        x = argv[4]
+        return {'a': 0, 'c': 1, 'd': 1}[x], [f'---- FEATURE {x} report', '  problem: p',
+                                               {'a': 'FEATURE a PASS', 'c': 'FEATURE c FAIL',
+                                                'd': 'FEATURE d NOT AVAILABLE: why'}[x]]
+    monkeypatch.setattr(matrix, 'run', fake_run)
+    a = args(ami_src='/ami', hosts='nodeA,nodeB', lock=None)
+    got = {x: matrix.run_feature(a, x, str(tmp_path / x), {}) for x in 'acd'}
+    assert [g['verdict'] for g in got.values()] == ['PASS', 'FAIL', 'NOT AVAILABLE']
+    assert [g['pass'] for g in got.values()] == [True, False, False]
+    feats = [v for v in seen if v[3] == 'feature']
+    assert feats[0][4:] == ['a', '-w', str(tmp_path / 'a'), '-p', '5']
+    assert feats[1][-2:] == ['--ami-src', '/ami'] and feats[2][-2:] == ['--hosts', 'nodeA,nodeB']
+    assert got['c']['assertions'][-1]['detail'] == 'exit 1, FEATURE c FAIL: p'
 
 
 # --- assertions from a cycle's record -----------------------------------------------------------

@@ -10,8 +10,9 @@
                    [--break kill-drp|truncate-xtc2] [--browser-python PATH] [--keep-up]
     daq_sim down   [-w WORKDIR]
     daq_sim coverage [--repo DIR] [--status FILE] [--evidence DIR] [-v] [--json]
-    daq_sim matrix   [-w WORKDIR] [--only types|features|coverage] [--types T,..] [--features x,..]
-                     [--events N] [--lock FILE] [--break register|kill-drp|corrupt] (psdaq.sim.matrix)
+    daq_sim matrix   [-w WORKDIR] [--only types|programs|features|coverage] [--types T,..] [--features x,..]
+                     [--events N] [--lock FILE] [--ami-src DIR] [--hosts A,B]
+                     [--break register|kill-drp|corrupt] (psdaq.sim.matrix)
     daq_sim feature  a|b|c|d|e [-w WORKDIR] [--events N] [--check-only] [--break KIND] [--ami-src DIR]
                      [--hosts A,B] (psdaq.sim.feature)
 
@@ -1459,7 +1460,8 @@ def _kill_drp(state, plat):
             break
         time.sleep(0.05)
     pid, cmd = drp_pid(state, f'{DETECTOR}_0')
-    print(f'{now()} --kill-drp: SIGKILL {DETECTOR}_0 pid {pid} at {pv} = {v}: {cmd[:120]}', flush=True)
+    n = v if isinstance(v, str) or v is None else int(v)     # a p4p value prints with its time stamp
+    print(f'{now()} --kill-drp: SIGKILL {DETECTOR}_0 pid {pid} at {pv} = {n}: {cmd[:160]}', flush=True)
     if pid:
         os.kill(pid, signal.SIGKILL)
 

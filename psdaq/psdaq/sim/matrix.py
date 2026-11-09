@@ -2,7 +2,8 @@
 
     daq_sim matrix [-w WORKDIR] [-p PLATFORM] [--only types|programs|features|coverage]...
                    [--types T,T,..] [--features x,x,..] [--events N] [--lock FILE]
-                   [--ami-src DIR] [--summary FILE] [--repo DIR] [--status FILE] [--evidence DIR] [-v]
+                   [--ami-src DIR] [--hosts A,B] [--summary FILE] [--repo DIR] [--status FILE]
+                   [--evidence DIR] [-v]
     daq_sim matrix -w WORKDIR --break register|kill-drp|corrupt [--types T] [--fault PATH]
 
 Sections, in this order (--only picks some, repeated or comma-separated):
@@ -26,7 +27,8 @@ Sections, in this order (--only picks some, repeated or comma-separated):
             Each type gets one line: type, node, job, run file, the DAQ's recorded count
             (TEB_WrtCt), psana2's events, events with data, the per-event verdict, its verdict.
   programs  one DAQ with every program option of daq_sim up (PROGRAM_OPTIONS: the MEB, AMI, drp_pva,
-            epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs; RUNBOOK 3h), in
+            epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs, the PV-server stand-ins
+            simhsd and simtpr; RUNBOOK 3h), in
             <WORKDIR>/programs: up, one recorded cycle with --ami-shot, down.  Assertions
             programs/<what>: those of a type for fakecam_0, and 'checks' (the cycle's checks of
             the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all
@@ -34,8 +36,9 @@ Sections, in this order (--only picks some, repeated or comma-separated):
             --ami-src, else daq_sim up's default ($DAQ_SIM_AMI_SRC, else ami-* on PATH).
   features  daq_sim feature <x> (psdaq.sim.feature: up, its run, its checks, down) for x = a..e,
             in <WORKDIR>/features/<x>; assertions features/<x> (FEATURE <x> PASS, exit 0) and
-            features/<x>/down.  A feature psdaq.sim.feature does not provide yet is NOT AVAILABLE,
-            a failed assertion.
+            features/<x>/down.  c gets --ami-src, d --hosts.  A feature psdaq.sim.feature does not
+            provide, or one it cannot run here (feature.unavailable: d without --hosts naming two
+            hosts of this Slurm job), is NOT AVAILABLE, a failed assertion, and starts nothing.
   coverage  daq_sim coverage at HEAD (the cycles above write its evidence): assertion coverage.
 
 The summary lists every assertion and ends 'MATRIX PASS' (exit 0) only if all of them passed;
@@ -81,7 +84,7 @@ from psdaq.sim import daq_sim as ds
 
 SECTIONS = ('types', 'programs', 'features', 'coverage')
 # The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3h)
-PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--rate', '100')
+PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--rate', '100')
 PROGRAM_CHECKS = ('system DRP checks', 'ami check', 'gui witness', 'ami shot')
 FEATURES = ('a', 'b', 'c', 'd', 'e')             # the contract's system features (a)-(e)
 BREAKS = ('register', 'kill-drp', 'corrupt')
@@ -122,6 +125,8 @@ def add_arguments(p):
     p.add_argument('--events', type=int, default=1000, help='L1Accepts of each cycle (default %(default)d)')
     p.add_argument('--ami-src', default=None, help='programs: AMI source tree for up --ami (default: up\'s, '
                    '$DAQ_SIM_AMI_SRC, else ami-* on PATH)')
+    p.add_argument('--hosts', default=None, metavar='HOST_A,HOST_B',
+                   help='features: feature d\'s two hosts (two hosts of this Slurm job; else d is NOT AVAILABLE)')
     p.add_argument('--lock', default=os.environ.get('DAQ_SIM_MATRIX_LOCK'),
                    help='flock(2) this file around each DAQ (default $DAQ_SIM_MATRIX_LOCK, else none)')
     p.add_argument('--lock-timeout', type=int, default=3600, help='s to wait for --lock (default %(default)d)')
@@ -269,6 +274,15 @@ def available_features():
     return tuple(getattr(feature, 'FEATURES', ()))
 
 
+def feature_unavailable(x, hosts=None):
+    """Why feature x cannot run here (psdaq.sim.feature.unavailable), or None."""
+    from psdaq.sim import feature
+    if x not in available_features():
+        return f'psdaq.sim.feature runs {",".join(available_features()) or "none"}'
+    check = getattr(feature, 'unavailable', None)
+    return check(x, hosts) if check else None
+
+
 # --- one DAQ: a type, or the programs run ---------------------------------------------------
 
 def run_type(args, det, wd, env, kill=False):
@@ -413,23 +427,28 @@ def run_feature(args, x, wd, env):
     def check(what, ok, detail):
         res['assertions'].append({'name': f'features/{x}{what}', 'ok': bool(ok), 'detail': detail})
 
-    if x not in available_features():
-        check('', False, f'NOT AVAILABLE: psdaq.sim.feature runs {",".join(available_features()) or "none"}')
+    why = feature_unavailable(x, getattr(args, 'hosts', None))
+    if why:                             # before the lock: nothing starts
+        check('', False, f'NOT AVAILABLE: {why}')
         res.update(verdict='NOT AVAILABLE', ended=ds.now(), **{'pass': False})
-        print(f'FEATURE {x} NOT AVAILABLE', flush=True)
+        print(f'FEATURE {x} NOT AVAILABLE: {why}', flush=True)
         return res
+    extra = (['--ami-src', args.ami_src] if x == 'c' and args.ami_src else []) + \
+        (['--hosts', args.hosts] if x == 'd' and getattr(args, 'hosts', None) else [])
     fresh(wd)
     out = []
     try:
         with Lock(args.lock, args.lock_timeout):
-            rc, out = run(daq_sim('feature', x, '-w', wd, '-p', str(args.platform)), f'  feature {x}| ', 3600, env)
+            rc, out = run(daq_sim('feature', x, '-w', wd, '-p', str(args.platform), *extra),
+                          f'  feature {x}| ', 3600, env)
             rc_d, out_d = run(daq_sim('down', '-w', wd), f'  feature {x} down| ', 300, env)
         clean = rc_d == 0 and any(l.rstrip().endswith('down: clean') for l in out_d)
         check('/down', clean, f'exit {rc_d}' + (', down: clean' if clean else ''))
     except ds.Fail as e:
         check('/lock', False, str(e))
         rc = None
-    verdict = next((l.split()[-1] for l in out if re.fullmatch(rf'FEATURE {x} (PASS|FAIL)', l.strip())), None)
+    verdict = next((m.group(1) for m in (re.match(rf'FEATURE {x} (PASS|FAIL|NOT AVAILABLE)\b', l.strip())
+                                         for l in out) if m), None)
     problems = [l.strip()[len('problem: '):] for l in out if l.strip().startswith('problem: ')]
     check('', rc == 0 and verdict == 'PASS', f'exit {rc}, FEATURE {x} {verdict}' +
           (': ' + '; '.join(p[:200] for p in problems[:3]) if problems else ''))
