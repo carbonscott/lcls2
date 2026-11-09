@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>datadev Node Status Monitor</title>
+<link rel="stylesheet" href="/static/gui/gui.css">
+<style>
+  .toolbar { display: flex; gap: 10px; align-items: center; }
+  .toolbar progress { flex: 1; }
+  #ts { margin-left: auto; }
+  .legend span.sw { display: inline-block; width: 18px; height: 18px; border: 1px solid #888; vertical-align: middle; }
+  table.dd { border-collapse: collapse; font-family: monospace; font-size: 11px; width: 100%; }
+  table.dd th { cursor: pointer; background: #eee; border: 1px solid #bbb; }
+  table.dd td { border: 1px solid #ddd; text-align: center; white-space: pre-line; }
+  table.dd td.left { text-align: left; }
+  .GREEN { background: #c8f5c8; } .RED { background: #f5c8c8; } .GRAY { background: #cccccc; } .AMBER { background: #f5e8c8; }
+</style>
+</head>
+<body data-gui="datadev_monitor">
+<!-- web copy of psdaq/cas/datadev_monitor.py (served by psdaq.webgui.datadev_api, which only runs the program's checks on
+     psdaq.sim.simdatadev's simulated nodes); data-parity = the PyQt row ids -->
+<h1 id="title">datadev Node Status Monitor</h1>
+<div class="toolbar">
+  <button id="refresh" data-parity="MainWindow._build_ui._refresh_btn">Refresh All</button>
+  <progress id="progress" max="100" hidden data-parity="MainWindow._build_ui._progress"></progress>
+  <span id="ts" data-parity="MainWindow._build_ui._ts_label">Not yet refreshed</span>
+</div>
+<div class="legend">
+  <span class="sw GREEN"></span> OK / present &nbsp; <span class="sw RED"></span> Missing / No &nbsp;
+  <span class="sw GRAY"></span> Unreachable &nbsp; <span class="sw AMBER"></span> N/A
+</div>
+<table class="dd"><thead><tr id="hdr"></tr></thead><tbody id="body"></tbody></table>
+<div class="statusbar" id="statusbar"></div>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const STEM = 'MainWindow._build_ui._table.col[';
+let ST = null, sortCol = null, sortDesc = false, polls = 0;
+function render() {
+  if (!ST) return;
+  if (!$('hdr').children.length) {
+    ST.headers.forEach((h, k) => {
+      const th = document.createElement('th'); th.textContent = h; th.dataset.parity = STEM + h + ']'; th.dataset.col = k;
+      th.addEventListener('click', () => { sortDesc = sortCol === k ? !sortDesc : false; sortCol = k; render(); });  // QTableWidget sorting
+      $('hdr').append(th);
+    });
+  }
+  let rows = ST.rows.slice();
+  if (sortCol !== null) {
+    rows.sort((a, b) => a.cells[sortCol] < b.cells[sortCol] ? -1 : a.cells[sortCol] > b.cells[sortCol] ? 1 : 0);
+    if (sortDesc) rows.reverse();
+  }
+  const body = $('body'); body.replaceChildren();
+  for (const r of rows) {
+    const tr = document.createElement('tr'); tr.dataset.node = r.cells[0];
+    r.cells.forEach((c, k) => { const td = document.createElement('td'); td.textContent = c;
+      if (r.colours[k]) td.className = r.colours[k]; if (k === 1 || k === 6) td.classList.add('left');
+      if (r.tips[k]) td.title = r.tips[k]; td.dataset.col = k; tr.append(td); });
+    body.append(tr);
+  }
+}
+async function poll() {
+  try {
+    ST = await (await fetch('/api/datadev/status', { cache: 'no-store' })).json();
+    if (!ST.ok) { $('statusbar').textContent = ST.err_info; return; }
+    $('refresh').disabled = !ST.button_enabled;
+    $('progress').hidden = !ST.progress_visible;
+    if (ST.progress !== null) $('progress').value = ST.progress;
+    $('ts').textContent = ST.ts_label; $('statusbar').textContent = ST.status;
+    document.body.dataset.refreshes = ST.refreshes;
+    render();
+    document.body.dataset.polls = ++polls;
+  } catch (e) { $('statusbar').textContent = 'status: ' + e; }
+}
+$('refresh').addEventListener('click', async () => {
+  $('refresh').disabled = true;
+  await fetch('/api/datadev/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  poll();
+});
+document.body.dataset.ready = '1';
+poll(); setInterval(poll, 300);
+</script>
+</body>
+</html>

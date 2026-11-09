@@ -1,0 +1,4274 @@
+{
+ "file": "cas/dtica.py",
+ "title": "dtica (a DTI's allocation and status, slots 3-7; the PVs of cas/dticas.py, served by the simulator simdti)",
+ "web": "/gui/dtica",
+ "backend": "sim-device:simdti",
+ "walk": {
+  "argv": [
+   "{pvbase}:DTI"
+  ],
+  "devices": [
+   {
+    "module": "simdti",
+    "args": [
+     "-P",
+     "{pvbase}:DTI"
+    ]
+   }
+  ],
+  "pump": 15,
+  "timeout": 90,
+  "drive": [
+   "tabs",
+   "pump:3"
+  ]
+ },
+ "mapping": {
+  "PvEditCheckList.cb#0": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#0\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#1": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#1\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#2": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#2\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#3": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#3\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#4": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#4\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#5": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#5\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#6": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#6\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#7": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#7\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#8": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#8\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#9": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#9\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#10": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#10\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#11": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#11\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#12": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#12\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#13": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#13\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#14": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#14\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#15": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#15\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#16": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#16\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#17": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#17\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#18": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#18\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#19": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#19\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#20": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#20\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#21": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#21\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#22": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#22\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#23": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#23\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#24": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#24\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#25": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#25\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#26": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#26\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#27": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#27\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#28": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#28\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#29": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#29\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#30": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#30\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#31": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#31\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#32": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#32\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#33": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#33\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#34": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#34\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#35": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#35\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#36": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#36\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#37": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#37\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#38": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#38\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#39": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#39\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#40": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#40\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#41": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#41\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#42": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#42\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#43": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#43\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#44": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#44\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#45": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#45\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#46": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#46\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#47": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#47\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#48": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#48\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#49": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#49\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#50": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#50\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#51": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#51\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#52": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#52\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#53": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#53\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#54": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#54\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#55": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#55\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#56": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#56\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#57": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#57\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#58": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#58\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#59": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#59\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#60": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#60\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#61": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#61\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#62": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#62\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#63": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#63\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#64": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#64\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#65": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#65\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#66": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#66\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#67": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#67\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#68": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#68\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#69": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#69\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#70": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#70\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#71": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#71\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#72": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#72\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#73": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#73\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#74": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#74\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#75": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#75\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#76": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#76\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#77": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#77\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#78": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#78\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#79": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#79\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#80": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#80\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#81": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#81\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#82": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#82\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#83": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#83\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#84": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#84\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#85": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#85\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#86": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#86\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#87": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#87\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#88": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#88\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#89": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#89\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#90": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#90\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#91": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#91\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#92": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#92\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#93": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#93\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#94": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#94\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#95": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#95\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#96": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#96\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#97": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#97\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#98": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#98\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#99": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#99\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#100": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#100\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#101": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#101\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#102": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#102\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#103": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#103\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#104": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#104\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#105": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#105\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#106": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#106\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#107": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#107\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#108": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#108\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#109": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#109\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#110": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#110\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#111": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#111\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#112": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#112\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#113": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#113\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#114": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#114\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#115": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#115\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#116": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#116\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#117": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#117\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#118": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#118\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#119": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#119\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#120": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#120\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#121": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#121\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#122": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#122\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#123": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#123\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#124": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#124\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#125": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#125\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#126": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#126\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#127": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#127\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#128": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#128\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#129": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#129\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#130": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#130\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#131": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#131\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#132": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#132\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#133": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#133\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#134": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#134\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#135": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#135\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#136": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#136\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#137": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#137\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#138": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#138\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#139": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#139\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#140": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#140\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#141": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#141\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#142": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#142\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#143": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#143\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#144": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#144\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#145": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#145\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#146": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#146\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#147": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#147\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#148": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#148\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#149": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#149\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#150": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#150\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#151": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#151\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#152": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#152\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#153": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#153\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#154": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#154\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#155": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#155\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#156": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#156\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#157": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#157\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#158": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#158\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#159": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#159\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#160": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#160\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#161": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#161\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#162": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#162\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#163": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#163\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#164": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#164\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#165": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#165\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#166": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#166\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#167": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#167\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#168": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#168\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#169": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#169\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#170": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#170\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#171": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#171\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#172": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#172\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#173": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#173\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#174": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#174\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#175": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#175\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#176": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#176\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#177": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#177\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#178": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#178\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#179": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#179\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#180": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#180\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#181": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#181\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#182": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#182\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#183": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#183\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#184": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#184\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#185": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#185\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#186": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#186\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#187": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#187\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#188": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#188\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#189": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#189\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#190": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#190\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#191": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#191\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#192": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#192\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#193": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#193\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#194": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#194\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#195": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#195\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#196": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#196\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#197": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#197\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#198": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#198\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#199": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#199\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#200": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#200\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#201": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#201\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#202": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#202\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#203": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#203\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#204": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#204\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#205": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#205\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#206": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#206\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#207": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#207\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#208": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#208\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#209": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#209\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#210": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#210\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#211": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#211\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#212": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#212\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#213": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#213\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#214": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#214\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#215": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#215\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#216": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#216\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#217": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#217\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#218": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#218\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#219": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#219\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#220": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#220\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#221": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#221\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#222": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#222\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#223": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#223\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#224": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#224\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#225": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#225\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#226": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#226\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#227": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#227\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#228": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#228\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#229": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#229\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#230": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#230\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#231": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#231\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#232": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#232\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#233": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#233\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#234": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#234\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#235": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#235\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#236": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#236\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#237": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#237\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#238": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#238\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#239": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#239\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#240": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#240\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#241": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#241\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#242": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#242\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#243": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#243\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#244": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#244\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#245": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#245\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#246": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#246\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#247": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#247\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#248": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#248\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#249": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#249\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#250": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#250\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#251": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#251\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#252": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#252\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#253": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#253\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#254": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#254\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#255": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#255\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#256": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#256\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#257": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#257\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#258": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#258\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#259": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#259\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#260": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#260\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#261": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#261\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#262": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#262\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#263": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#263\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#264": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#264\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#265": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#265\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#266": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#266\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#267": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#267\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#268": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#268\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#269": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#269\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#270": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#270\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#271": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#271\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#272": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#272\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#273": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#273\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#274": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#274\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#275": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#275\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#276": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#276\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#277": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#277\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#278": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#278\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#279": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#279\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#280": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#280\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#281": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#281\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#282": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#282\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#283": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#283\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#284": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#284\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#285": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#285\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#286": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#286\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#287": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#287\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#288": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#288\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#289": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#289\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#290": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#290\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#291": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#291\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#292": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#292\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#293": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#293\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#294": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#294\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#295": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#295\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#296": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#296\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#297": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#297\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#298": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#298\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#299": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#299\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#300": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#300\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#301": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#301\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#302": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#302\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#303": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#303\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#304": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#304\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#305": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#305\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#306": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#306\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#307": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#307\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#308": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#308\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#309": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#309\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#310": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#310\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#311": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#311\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#312": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#312\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#313": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#313\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "PvEditCheckList.cb#314": {
+   "web": "[data-parity~=\"PvEditCheckList.cb#314\"]",
+   "test": "test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]"
+  },
+  "LblPushButtonX.PvInput": {
+   "na": "dtica's LblPushButtonX, a helper nothing in dtica calls (setupUi builds DtiAllocation and DtiStatistics only): cas/dtica.py:80 is in a def never called; the walk shows the line never ran"
+  },
+  "LblEditIntX.PvInput": {
+   "na": "dtica's LblEditIntX, a helper nothing in dtica calls (setupUi builds DtiAllocation and DtiStatistics only): cas/dtica.py:83 is in a def never called; the walk shows the line never ran"
+  },
+  "DtiAllocation.cb#0": {
+   "web": "[data-parity~=\"DtiAllocation.cb#0\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#1": {
+   "web": "[data-parity~=\"DtiAllocation.cb#1\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#2": {
+   "web": "[data-parity~=\"DtiAllocation.cb#2\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#3": {
+   "web": "[data-parity~=\"DtiAllocation.cb#3\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#4": {
+   "web": "[data-parity~=\"DtiAllocation.cb#4\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#5": {
+   "web": "[data-parity~=\"DtiAllocation.cb#5\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#6": {
+   "web": "[data-parity~=\"DtiAllocation.cb#6\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#7": {
+   "web": "[data-parity~=\"DtiAllocation.cb#7\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#8": {
+   "web": "[data-parity~=\"DtiAllocation.cb#8\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#9": {
+   "web": "[data-parity~=\"DtiAllocation.cb#9\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#10": {
+   "web": "[data-parity~=\"DtiAllocation.cb#10\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#11": {
+   "web": "[data-parity~=\"DtiAllocation.cb#11\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#12": {
+   "web": "[data-parity~=\"DtiAllocation.cb#12\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#13": {
+   "web": "[data-parity~=\"DtiAllocation.cb#13\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#14": {
+   "web": "[data-parity~=\"DtiAllocation.cb#14\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#15": {
+   "web": "[data-parity~=\"DtiAllocation.cb#15\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#16": {
+   "web": "[data-parity~=\"DtiAllocation.cb#16\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#17": {
+   "web": "[data-parity~=\"DtiAllocation.cb#17\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#18": {
+   "web": "[data-parity~=\"DtiAllocation.cb#18\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#19": {
+   "web": "[data-parity~=\"DtiAllocation.cb#19\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#20": {
+   "web": "[data-parity~=\"DtiAllocation.cb#20\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#21": {
+   "web": "[data-parity~=\"DtiAllocation.cb#21\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#22": {
+   "web": "[data-parity~=\"DtiAllocation.cb#22\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#23": {
+   "web": "[data-parity~=\"DtiAllocation.cb#23\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#24": {
+   "web": "[data-parity~=\"DtiAllocation.cb#24\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#25": {
+   "web": "[data-parity~=\"DtiAllocation.cb#25\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#26": {
+   "web": "[data-parity~=\"DtiAllocation.cb#26\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#27": {
+   "web": "[data-parity~=\"DtiAllocation.cb#27\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#28": {
+   "web": "[data-parity~=\"DtiAllocation.cb#28\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#29": {
+   "web": "[data-parity~=\"DtiAllocation.cb#29\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#30": {
+   "web": "[data-parity~=\"DtiAllocation.cb#30\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#31": {
+   "web": "[data-parity~=\"DtiAllocation.cb#31\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#32": {
+   "web": "[data-parity~=\"DtiAllocation.cb#32\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#33": {
+   "web": "[data-parity~=\"DtiAllocation.cb#33\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#34": {
+   "web": "[data-parity~=\"DtiAllocation.cb#34\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#35": {
+   "web": "[data-parity~=\"DtiAllocation.cb#35\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#36": {
+   "web": "[data-parity~=\"DtiAllocation.cb#36\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#37": {
+   "web": "[data-parity~=\"DtiAllocation.cb#37\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#38": {
+   "web": "[data-parity~=\"DtiAllocation.cb#38\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#39": {
+   "web": "[data-parity~=\"DtiAllocation.cb#39\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#40": {
+   "web": "[data-parity~=\"DtiAllocation.cb#40\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#41": {
+   "web": "[data-parity~=\"DtiAllocation.cb#41\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#42": {
+   "web": "[data-parity~=\"DtiAllocation.cb#42\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#43": {
+   "web": "[data-parity~=\"DtiAllocation.cb#43\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#44": {
+   "web": "[data-parity~=\"DtiAllocation.cb#44\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#45": {
+   "web": "[data-parity~=\"DtiAllocation.cb#45\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#46": {
+   "web": "[data-parity~=\"DtiAllocation.cb#46\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#47": {
+   "web": "[data-parity~=\"DtiAllocation.cb#47\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#48": {
+   "web": "[data-parity~=\"DtiAllocation.cb#48\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#49": {
+   "web": "[data-parity~=\"DtiAllocation.cb#49\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#50": {
+   "web": "[data-parity~=\"DtiAllocation.cb#50\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#51": {
+   "web": "[data-parity~=\"DtiAllocation.cb#51\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#52": {
+   "web": "[data-parity~=\"DtiAllocation.cb#52\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#53": {
+   "web": "[data-parity~=\"DtiAllocation.cb#53\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#54": {
+   "web": "[data-parity~=\"DtiAllocation.cb#54\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#55": {
+   "web": "[data-parity~=\"DtiAllocation.cb#55\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#56": {
+   "web": "[data-parity~=\"DtiAllocation.cb#56\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#57": {
+   "web": "[data-parity~=\"DtiAllocation.cb#57\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#58": {
+   "web": "[data-parity~=\"DtiAllocation.cb#58\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#59": {
+   "web": "[data-parity~=\"DtiAllocation.cb#59\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#60": {
+   "web": "[data-parity~=\"DtiAllocation.cb#60\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#61": {
+   "web": "[data-parity~=\"DtiAllocation.cb#61\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#62": {
+   "web": "[data-parity~=\"DtiAllocation.cb#62\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#63": {
+   "web": "[data-parity~=\"DtiAllocation.cb#63\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#64": {
+   "web": "[data-parity~=\"DtiAllocation.cb#64\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#65": {
+   "web": "[data-parity~=\"DtiAllocation.cb#65\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#66": {
+   "web": "[data-parity~=\"DtiAllocation.cb#66\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#67": {
+   "web": "[data-parity~=\"DtiAllocation.cb#67\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#68": {
+   "web": "[data-parity~=\"DtiAllocation.cb#68\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#69": {
+   "web": "[data-parity~=\"DtiAllocation.cb#69\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#70": {
+   "web": "[data-parity~=\"DtiAllocation.cb#70\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#71": {
+   "web": "[data-parity~=\"DtiAllocation.cb#71\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#72": {
+   "web": "[data-parity~=\"DtiAllocation.cb#72\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#73": {
+   "web": "[data-parity~=\"DtiAllocation.cb#73\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#74": {
+   "web": "[data-parity~=\"DtiAllocation.cb#74\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#75": {
+   "web": "[data-parity~=\"DtiAllocation.cb#75\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#76": {
+   "web": "[data-parity~=\"DtiAllocation.cb#76\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#77": {
+   "web": "[data-parity~=\"DtiAllocation.cb#77\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#78": {
+   "web": "[data-parity~=\"DtiAllocation.cb#78\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#79": {
+   "web": "[data-parity~=\"DtiAllocation.cb#79\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#80": {
+   "web": "[data-parity~=\"DtiAllocation.cb#80\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#81": {
+   "web": "[data-parity~=\"DtiAllocation.cb#81\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#82": {
+   "web": "[data-parity~=\"DtiAllocation.cb#82\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#83": {
+   "web": "[data-parity~=\"DtiAllocation.cb#83\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#84": {
+   "web": "[data-parity~=\"DtiAllocation.cb#84\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#85": {
+   "web": "[data-parity~=\"DtiAllocation.cb#85\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#86": {
+   "web": "[data-parity~=\"DtiAllocation.cb#86\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#87": {
+   "web": "[data-parity~=\"DtiAllocation.cb#87\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#88": {
+   "web": "[data-parity~=\"DtiAllocation.cb#88\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#89": {
+   "web": "[data-parity~=\"DtiAllocation.cb#89\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#90": {
+   "web": "[data-parity~=\"DtiAllocation.cb#90\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#91": {
+   "web": "[data-parity~=\"DtiAllocation.cb#91\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#92": {
+   "web": "[data-parity~=\"DtiAllocation.cb#92\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#93": {
+   "web": "[data-parity~=\"DtiAllocation.cb#93\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#94": {
+   "web": "[data-parity~=\"DtiAllocation.cb#94\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#95": {
+   "web": "[data-parity~=\"DtiAllocation.cb#95\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#96": {
+   "web": "[data-parity~=\"DtiAllocation.cb#96\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#97": {
+   "web": "[data-parity~=\"DtiAllocation.cb#97\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#98": {
+   "web": "[data-parity~=\"DtiAllocation.cb#98\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#99": {
+   "web": "[data-parity~=\"DtiAllocation.cb#99\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#100": {
+   "web": "[data-parity~=\"DtiAllocation.cb#100\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#101": {
+   "web": "[data-parity~=\"DtiAllocation.cb#101\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#102": {
+   "web": "[data-parity~=\"DtiAllocation.cb#102\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#103": {
+   "web": "[data-parity~=\"DtiAllocation.cb#103\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#104": {
+   "web": "[data-parity~=\"DtiAllocation.cb#104\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#105": {
+   "web": "[data-parity~=\"DtiAllocation.cb#105\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#106": {
+   "web": "[data-parity~=\"DtiAllocation.cb#106\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#107": {
+   "web": "[data-parity~=\"DtiAllocation.cb#107\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#108": {
+   "web": "[data-parity~=\"DtiAllocation.cb#108\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#109": {
+   "web": "[data-parity~=\"DtiAllocation.cb#109\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#110": {
+   "web": "[data-parity~=\"DtiAllocation.cb#110\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#111": {
+   "web": "[data-parity~=\"DtiAllocation.cb#111\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#112": {
+   "web": "[data-parity~=\"DtiAllocation.cb#112\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#113": {
+   "web": "[data-parity~=\"DtiAllocation.cb#113\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#114": {
+   "web": "[data-parity~=\"DtiAllocation.cb#114\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#115": {
+   "web": "[data-parity~=\"DtiAllocation.cb#115\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#116": {
+   "web": "[data-parity~=\"DtiAllocation.cb#116\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#117": {
+   "web": "[data-parity~=\"DtiAllocation.cb#117\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#118": {
+   "web": "[data-parity~=\"DtiAllocation.cb#118\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#119": {
+   "web": "[data-parity~=\"DtiAllocation.cb#119\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#120": {
+   "web": "[data-parity~=\"DtiAllocation.cb#120\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#121": {
+   "web": "[data-parity~=\"DtiAllocation.cb#121\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#122": {
+   "web": "[data-parity~=\"DtiAllocation.cb#122\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#123": {
+   "web": "[data-parity~=\"DtiAllocation.cb#123\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#124": {
+   "web": "[data-parity~=\"DtiAllocation.cb#124\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#125": {
+   "web": "[data-parity~=\"DtiAllocation.cb#125\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#126": {
+   "web": "[data-parity~=\"DtiAllocation.cb#126\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#127": {
+   "web": "[data-parity~=\"DtiAllocation.cb#127\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#128": {
+   "web": "[data-parity~=\"DtiAllocation.cb#128\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#129": {
+   "web": "[data-parity~=\"DtiAllocation.cb#129\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#130": {
+   "web": "[data-parity~=\"DtiAllocation.cb#130\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#131": {
+   "web": "[data-parity~=\"DtiAllocation.cb#131\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#132": {
+   "web": "[data-parity~=\"DtiAllocation.cb#132\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#133": {
+   "web": "[data-parity~=\"DtiAllocation.cb#133\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#134": {
+   "web": "[data-parity~=\"DtiAllocation.cb#134\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#135": {
+   "web": "[data-parity~=\"DtiAllocation.cb#135\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#136": {
+   "web": "[data-parity~=\"DtiAllocation.cb#136\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#137": {
+   "web": "[data-parity~=\"DtiAllocation.cb#137\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#138": {
+   "web": "[data-parity~=\"DtiAllocation.cb#138\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#139": {
+   "web": "[data-parity~=\"DtiAllocation.cb#139\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#140": {
+   "web": "[data-parity~=\"DtiAllocation.cb#140\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#141": {
+   "web": "[data-parity~=\"DtiAllocation.cb#141\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#142": {
+   "web": "[data-parity~=\"DtiAllocation.cb#142\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#143": {
+   "web": "[data-parity~=\"DtiAllocation.cb#143\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#144": {
+   "web": "[data-parity~=\"DtiAllocation.cb#144\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#145": {
+   "web": "[data-parity~=\"DtiAllocation.cb#145\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#146": {
+   "web": "[data-parity~=\"DtiAllocation.cb#146\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#147": {
+   "web": "[data-parity~=\"DtiAllocation.cb#147\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#148": {
+   "web": "[data-parity~=\"DtiAllocation.cb#148\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#149": {
+   "web": "[data-parity~=\"DtiAllocation.cb#149\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#150": {
+   "web": "[data-parity~=\"DtiAllocation.cb#150\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#151": {
+   "web": "[data-parity~=\"DtiAllocation.cb#151\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#152": {
+   "web": "[data-parity~=\"DtiAllocation.cb#152\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#153": {
+   "web": "[data-parity~=\"DtiAllocation.cb#153\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#154": {
+   "web": "[data-parity~=\"DtiAllocation.cb#154\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#155": {
+   "web": "[data-parity~=\"DtiAllocation.cb#155\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#156": {
+   "web": "[data-parity~=\"DtiAllocation.cb#156\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#157": {
+   "web": "[data-parity~=\"DtiAllocation.cb#157\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#158": {
+   "web": "[data-parity~=\"DtiAllocation.cb#158\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#159": {
+   "web": "[data-parity~=\"DtiAllocation.cb#159\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#160": {
+   "web": "[data-parity~=\"DtiAllocation.cb#160\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#161": {
+   "web": "[data-parity~=\"DtiAllocation.cb#161\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#162": {
+   "web": "[data-parity~=\"DtiAllocation.cb#162\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#163": {
+   "web": "[data-parity~=\"DtiAllocation.cb#163\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#164": {
+   "web": "[data-parity~=\"DtiAllocation.cb#164\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#165": {
+   "web": "[data-parity~=\"DtiAllocation.cb#165\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#166": {
+   "web": "[data-parity~=\"DtiAllocation.cb#166\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#167": {
+   "web": "[data-parity~=\"DtiAllocation.cb#167\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#168": {
+   "web": "[data-parity~=\"DtiAllocation.cb#168\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#169": {
+   "web": "[data-parity~=\"DtiAllocation.cb#169\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#170": {
+   "web": "[data-parity~=\"DtiAllocation.cb#170\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#171": {
+   "web": "[data-parity~=\"DtiAllocation.cb#171\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#172": {
+   "web": "[data-parity~=\"DtiAllocation.cb#172\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#173": {
+   "web": "[data-parity~=\"DtiAllocation.cb#173\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#174": {
+   "web": "[data-parity~=\"DtiAllocation.cb#174\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#175": {
+   "web": "[data-parity~=\"DtiAllocation.cb#175\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#176": {
+   "web": "[data-parity~=\"DtiAllocation.cb#176\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#177": {
+   "web": "[data-parity~=\"DtiAllocation.cb#177\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#178": {
+   "web": "[data-parity~=\"DtiAllocation.cb#178\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#179": {
+   "web": "[data-parity~=\"DtiAllocation.cb#179\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#180": {
+   "web": "[data-parity~=\"DtiAllocation.cb#180\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#181": {
+   "web": "[data-parity~=\"DtiAllocation.cb#181\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#182": {
+   "web": "[data-parity~=\"DtiAllocation.cb#182\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#183": {
+   "web": "[data-parity~=\"DtiAllocation.cb#183\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#184": {
+   "web": "[data-parity~=\"DtiAllocation.cb#184\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#185": {
+   "web": "[data-parity~=\"DtiAllocation.cb#185\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#186": {
+   "web": "[data-parity~=\"DtiAllocation.cb#186\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#187": {
+   "web": "[data-parity~=\"DtiAllocation.cb#187\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#188": {
+   "web": "[data-parity~=\"DtiAllocation.cb#188\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#189": {
+   "web": "[data-parity~=\"DtiAllocation.cb#189\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#190": {
+   "web": "[data-parity~=\"DtiAllocation.cb#190\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#191": {
+   "web": "[data-parity~=\"DtiAllocation.cb#191\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#192": {
+   "web": "[data-parity~=\"DtiAllocation.cb#192\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#193": {
+   "web": "[data-parity~=\"DtiAllocation.cb#193\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#194": {
+   "web": "[data-parity~=\"DtiAllocation.cb#194\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#195": {
+   "web": "[data-parity~=\"DtiAllocation.cb#195\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#196": {
+   "web": "[data-parity~=\"DtiAllocation.cb#196\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#197": {
+   "web": "[data-parity~=\"DtiAllocation.cb#197\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#198": {
+   "web": "[data-parity~=\"DtiAllocation.cb#198\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#199": {
+   "web": "[data-parity~=\"DtiAllocation.cb#199\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#200": {
+   "web": "[data-parity~=\"DtiAllocation.cb#200\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#201": {
+   "web": "[data-parity~=\"DtiAllocation.cb#201\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#202": {
+   "web": "[data-parity~=\"DtiAllocation.cb#202\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#203": {
+   "web": "[data-parity~=\"DtiAllocation.cb#203\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#204": {
+   "web": "[data-parity~=\"DtiAllocation.cb#204\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#205": {
+   "web": "[data-parity~=\"DtiAllocation.cb#205\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#206": {
+   "web": "[data-parity~=\"DtiAllocation.cb#206\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#207": {
+   "web": "[data-parity~=\"DtiAllocation.cb#207\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#208": {
+   "web": "[data-parity~=\"DtiAllocation.cb#208\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#209": {
+   "web": "[data-parity~=\"DtiAllocation.cb#209\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#210": {
+   "web": "[data-parity~=\"DtiAllocation.cb#210\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#211": {
+   "web": "[data-parity~=\"DtiAllocation.cb#211\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#212": {
+   "web": "[data-parity~=\"DtiAllocation.cb#212\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#213": {
+   "web": "[data-parity~=\"DtiAllocation.cb#213\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#214": {
+   "web": "[data-parity~=\"DtiAllocation.cb#214\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#215": {
+   "web": "[data-parity~=\"DtiAllocation.cb#215\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#216": {
+   "web": "[data-parity~=\"DtiAllocation.cb#216\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#217": {
+   "web": "[data-parity~=\"DtiAllocation.cb#217\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#218": {
+   "web": "[data-parity~=\"DtiAllocation.cb#218\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#219": {
+   "web": "[data-parity~=\"DtiAllocation.cb#219\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#220": {
+   "web": "[data-parity~=\"DtiAllocation.cb#220\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#221": {
+   "web": "[data-parity~=\"DtiAllocation.cb#221\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#222": {
+   "web": "[data-parity~=\"DtiAllocation.cb#222\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#223": {
+   "web": "[data-parity~=\"DtiAllocation.cb#223\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#224": {
+   "web": "[data-parity~=\"DtiAllocation.cb#224\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#225": {
+   "web": "[data-parity~=\"DtiAllocation.cb#225\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#226": {
+   "web": "[data-parity~=\"DtiAllocation.cb#226\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#227": {
+   "web": "[data-parity~=\"DtiAllocation.cb#227\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#228": {
+   "web": "[data-parity~=\"DtiAllocation.cb#228\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#229": {
+   "web": "[data-parity~=\"DtiAllocation.cb#229\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#230": {
+   "web": "[data-parity~=\"DtiAllocation.cb#230\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#231": {
+   "web": "[data-parity~=\"DtiAllocation.cb#231\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#232": {
+   "web": "[data-parity~=\"DtiAllocation.cb#232\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#233": {
+   "web": "[data-parity~=\"DtiAllocation.cb#233\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#234": {
+   "web": "[data-parity~=\"DtiAllocation.cb#234\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#235": {
+   "web": "[data-parity~=\"DtiAllocation.cb#235\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#236": {
+   "web": "[data-parity~=\"DtiAllocation.cb#236\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#237": {
+   "web": "[data-parity~=\"DtiAllocation.cb#237\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#238": {
+   "web": "[data-parity~=\"DtiAllocation.cb#238\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#239": {
+   "web": "[data-parity~=\"DtiAllocation.cb#239\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#240": {
+   "web": "[data-parity~=\"DtiAllocation.cb#240\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#241": {
+   "web": "[data-parity~=\"DtiAllocation.cb#241\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#242": {
+   "web": "[data-parity~=\"DtiAllocation.cb#242\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#243": {
+   "web": "[data-parity~=\"DtiAllocation.cb#243\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiAllocation.cb#244": {
+   "web": "[data-parity~=\"DtiAllocation.cb#244\"]",
+   "test": "test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]"
+  },
+  "DtiStatistics.LblMask@1#0": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@1#0\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@1#1": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@1#1\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@1#2": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@1#2\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@1#3": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@1#3\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@1#4": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@1#4\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#0": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#0\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#1": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#1\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#2": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#2\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#3": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#3\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#4": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#4\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#5": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#5\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#6": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#6\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#7": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#7\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#8": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#8\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#9": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#9\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#10": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#10\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#11": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#11\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#12": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#12\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#13": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#13\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#14": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#14\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#15": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#15\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#16": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#16\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#17": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#17\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#18": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#18\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#19": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#19\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#20": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#20\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#21": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#21\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#22": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#22\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#23": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#23\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#24": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#24\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#25": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#25\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#26": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#26\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#27": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#27\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#28": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#28\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#29": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#29\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#30": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#30\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#31": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#31\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#32": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#32\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#33": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#33\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@2#34": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@2#34\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#0": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#0\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#1": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#1\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#2": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#2\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#3": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#3\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#4": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#4\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#5": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#5\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#6": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#6\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#7": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#7\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#8": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#8\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#9": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#9\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#10": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#10\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#11": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#11\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#12": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#12\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#13": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#13\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#14": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#14\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#15": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#15\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#16": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#16\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#17": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#17\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#18": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#18\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#19": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#19\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#20": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#20\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#21": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#21\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#22": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#22\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#23": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#23\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#24": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#24\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#25": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#25\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#26": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#26\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#27": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#27\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#28": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#28\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#29": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#29\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#30": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#30\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#31": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#31\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#32": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#32\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#33": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#33\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.LblMask@3#34": {
+   "web": "[data-parity~=\"DtiStatistics.LblMask@3#34\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvPushButton[DAQ:SIM:DTI:3:CountClear]": {
+   "web": "[data-parity~=\"DtiStatistics.PvPushButton[DAQ:SIM:DTI:3:CountClear]\"]",
+   "test": "test_gui_dtica.py::test_count_clear_buttons[chromium]"
+  },
+  "DtiStatistics.PvPushButton[DAQ:SIM:DTI:4:CountClear]": {
+   "web": "[data-parity~=\"DtiStatistics.PvPushButton[DAQ:SIM:DTI:4:CountClear]\"]",
+   "test": "test_gui_dtica.py::test_count_clear_buttons[chromium]"
+  },
+  "DtiStatistics.PvPushButton[DAQ:SIM:DTI:5:CountClear]": {
+   "web": "[data-parity~=\"DtiStatistics.PvPushButton[DAQ:SIM:DTI:5:CountClear]\"]",
+   "test": "test_gui_dtica.py::test_count_clear_buttons[chromium]"
+  },
+  "DtiStatistics.PvPushButton[DAQ:SIM:DTI:6:CountClear]": {
+   "web": "[data-parity~=\"DtiStatistics.PvPushButton[DAQ:SIM:DTI:6:CountClear]\"]",
+   "test": "test_gui_dtica.py::test_count_clear_buttons[chromium]"
+  },
+  "DtiStatistics.PvPushButton[DAQ:SIM:DTI:7:CountClear]": {
+   "web": "[data-parity~=\"DtiStatistics.PvPushButton[DAQ:SIM:DTI:7:CountClear]\"]",
+   "test": "test_gui_dtica.py::test_count_clear_buttons[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#0": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#0\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#1": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#1\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#2": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#2\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#3": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#3\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#4": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#4\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#5": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#5\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#6": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#6\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#7": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#7\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#8": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#8\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#9": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#9\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#10": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#10\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#11": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#11\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#12": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#12\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#13": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#13\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#14": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#14\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#15": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#15\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#16": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#16\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#17": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#17\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#18": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#18\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#19": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#19\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#20": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#20\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#21": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#21\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#22": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#22\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#23": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#23\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#24": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#24\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#25": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#25\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#26": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#26\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#27": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#27\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#28": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#28\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#29": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#29\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#30": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#30\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#31": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#31\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#32": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#32\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#33": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#33\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#34": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#34\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#35": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#35\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#36": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#36\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#37": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#37\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#38": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#38\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#39": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#39\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#40": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#40\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#41": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#41\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#42": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#42\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#43": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#43\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#44": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#44\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#45": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#45\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#46": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#46\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#47": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#47\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#48": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#48\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#49": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#49\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#50": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#50\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#51": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#51\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#52": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#52\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#53": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#53\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#54": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#54\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#55": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#55\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#56": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#56\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#57": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#57\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#58": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#58\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#59": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#59\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#60": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#60\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#61": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#61\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#62": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#62\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#63": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#63\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#64": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#64\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#65": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#65\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#66": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#66\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#67": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#67\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#68": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#68\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#69": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#69\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#70": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#70\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#71": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#71\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#72": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#72\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#73": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#73\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#74": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#74\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#75": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#75\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#76": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#76\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#77": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#77\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#78": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#78\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#79": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#79\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#80": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#80\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#81": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#81\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#82": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#82\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#83": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#83\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#84": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#84\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#85": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#85\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#86": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#86\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#87": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#87\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#88": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#88\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#89": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#89\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#90": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#90\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#91": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#91\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#92": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#92\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#93": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#93\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#94": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#94\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#95": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#95\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#96": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#96\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#97": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#97\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#98": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#98\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#99": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#99\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#100": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#100\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#101": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#101\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#102": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#102\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#103": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#103\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#104": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#104\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#105": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#105\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#106": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#106\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#107": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#107\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#108": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#108\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#109": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#109\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#110": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#110\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#111": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#111\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#112": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#112\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#113": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#113\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#114": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#114\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#115": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#115\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#116": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#116\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#117": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#117\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#118": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#118\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#119": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#119\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#120": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#120\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#121": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#121\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#122": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#122\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#123": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#123\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#124": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#124\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#125": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#125\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#126": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#126\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#127": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#127\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#128": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#128\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#129": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#129\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#130": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#130\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#131": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#131\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#132": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#132\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#133": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#133\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#134": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#134\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#135": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#135\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#136": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#136\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#137": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#137\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#138": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#138\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#139": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#139\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#140": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#140\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#141": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#141\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#142": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#142\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#143": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#143\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#144": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#144\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#145": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#145\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#146": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#146\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#147": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#147\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#148": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#148\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#149": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#149\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#150": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#150\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#151": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#151\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#152": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#152\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#153": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#153\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#154": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#154\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#155": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#155\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#156": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#156\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#157": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#157\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#158": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#158\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#159": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#159\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#160": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#160\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#161": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#161\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#162": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#162\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#163": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#163\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#164": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#164\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#165": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#165\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#166": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#166\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#167": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#167\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#168": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#168\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#169": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#169\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#170": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#170\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#171": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#171\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#172": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#172\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#173": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#173\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#174": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#174\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#175": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#175\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#176": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#176\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#177": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#177\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#178": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#178\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#179": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#179\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#180": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#180\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#181": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#181\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#182": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#182\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#183": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#183\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#184": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#184\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#185": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#185\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#186": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#186\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#187": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#187\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#188": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#188\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#189": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#189\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#190": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#190\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#191": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#191\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#192": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#192\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#193": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#193\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#194": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#194\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#195": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#195\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#196": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#196\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#197": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#197\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#198": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#198\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#199": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#199\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#200": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#200\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#201": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#201\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#202": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#202\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#203": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#203\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#204": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#204\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#205": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#205\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#206": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#206\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#207": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#207\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#208": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#208\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#209": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#209\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#210": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#210\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#211": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#211\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#212": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#212\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#213": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#213\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#214": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#214\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#215": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#215\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#216": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#216\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#217": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#217\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#218": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#218\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#219": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#219\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#220": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#220\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#221": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#221\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#222": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#222\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#223": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#223\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#224": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#224\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#225": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#225\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#226": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#226\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#227": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#227\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#228": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#228\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#229": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#229\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#230": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#230\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#231": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#231\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#232": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#232\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#233": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#233\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#234": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#234\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#235": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#235\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#236": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#236\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#237": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#237\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#238": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#238\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#239": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#239\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#240": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#240\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#241": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#241\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#242": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#242\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#243": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#243\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#244": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#244\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#245": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#245\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#246": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#246\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#247": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#247\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#248": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#248\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#249": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#249\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#250": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#250\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#251": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#251\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#252": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#252\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#253": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#253\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#254": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#254\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#255": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#255\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#256": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#256\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#257": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#257\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#258": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#258\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#259": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#259\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#260": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#260\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#261": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#261\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#262": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#262\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#263": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#263\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#264": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#264\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#265": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#265\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#266": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#266\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#267": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#267\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#268": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#268\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#269": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#269\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#270": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#270\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#271": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#271\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#272": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#272\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#273": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#273\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#274": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#274\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#275": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#275\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#276": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#276\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#277": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#277\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#278": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#278\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@1#279": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@1#279\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#0": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#0\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#1": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#1\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#2": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#2\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#3": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#3\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#4": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#4\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#5": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#5\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#6": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#6\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#7": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#7\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#8": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#8\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#9": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#9\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#10": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#10\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#11": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#11\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#12": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#12\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#13": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#13\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#14": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#14\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#15": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#15\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#16": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#16\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#17": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#17\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#18": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#18\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#19": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#19\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#20": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#20\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#21": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#21\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#22": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#22\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#23": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#23\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#24": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#24\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#25": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#25\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#26": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#26\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#27": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#27\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#28": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#28\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#29": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#29\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#30": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#30\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#31": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#31\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#32": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#32\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#33": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#33\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#34": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#34\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#35": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#35\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#36": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#36\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#37": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#37\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#38": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#38\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#39": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#39\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#40": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#40\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#41": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#41\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#42": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#42\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#43": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#43\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#44": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#44\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#45": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#45\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#46": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#46\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#47": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#47\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#48": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#48\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#49": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#49\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#50": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#50\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#51": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#51\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#52": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#52\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#53": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#53\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#54": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#54\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#55": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#55\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#56": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#56\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#57": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#57\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#58": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#58\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#59": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#59\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#60": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#60\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#61": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#61\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#62": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#62\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#63": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#63\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#64": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#64\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#65": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#65\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#66": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#66\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#67": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#67\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#68": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#68\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#69": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#69\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#70": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#70\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#71": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#71\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#72": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#72\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#73": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#73\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#74": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#74\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#75": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#75\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#76": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#76\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#77": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#77\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#78": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#78\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#79": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#79\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#80": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#80\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#81": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#81\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#82": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#82\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#83": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#83\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#84": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#84\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#85": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#85\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#86": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#86\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#87": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#87\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#88": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#88\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#89": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#89\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#90": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#90\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#91": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#91\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#92": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#92\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#93": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#93\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#94": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#94\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#95": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#95\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#96": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#96\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#97": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#97\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#98": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#98\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#99": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#99\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#100": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#100\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#101": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#101\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#102": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#102\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#103": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#103\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvIntTable@2#104": {
+   "web": "[data-parity~=\"DtiStatistics.PvIntTable@2#104\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@1[DAQ:SIM:DTI:3:QpllLock]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@1[DAQ:SIM:DTI:3:QpllLock]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@1[DAQ:SIM:DTI:4:QpllLock]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@1[DAQ:SIM:DTI:4:QpllLock]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@1[DAQ:SIM:DTI:5:QpllLock]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@1[DAQ:SIM:DTI:5:QpllLock]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@1[DAQ:SIM:DTI:6:QpllLock]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@1[DAQ:SIM:DTI:6:QpllLock]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@1[DAQ:SIM:DTI:7:QpllLock]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@1[DAQ:SIM:DTI:7:QpllLock]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@2[DAQ:SIM:DTI:3:MonClkRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@2[DAQ:SIM:DTI:3:MonClkRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@2[DAQ:SIM:DTI:4:MonClkRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@2[DAQ:SIM:DTI:4:MonClkRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@2[DAQ:SIM:DTI:5:MonClkRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@2[DAQ:SIM:DTI:5:MonClkRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@2[DAQ:SIM:DTI:6:MonClkRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@2[DAQ:SIM:DTI:6:MonClkRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@2[DAQ:SIM:DTI:7:MonClkRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@2[DAQ:SIM:DTI:7:MonClkRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@3[DAQ:SIM:DTI:3:TimLinkUp]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@3[DAQ:SIM:DTI:3:TimLinkUp]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@3[DAQ:SIM:DTI:4:TimLinkUp]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@3[DAQ:SIM:DTI:4:TimLinkUp]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@3[DAQ:SIM:DTI:5:TimLinkUp]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@3[DAQ:SIM:DTI:5:TimLinkUp]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@3[DAQ:SIM:DTI:6:TimLinkUp]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@3[DAQ:SIM:DTI:6:TimLinkUp]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@3[DAQ:SIM:DTI:7:TimLinkUp]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@3[DAQ:SIM:DTI:7:TimLinkUp]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@4[DAQ:SIM:DTI:3:TimRefClk]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@4[DAQ:SIM:DTI:3:TimRefClk]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@4[DAQ:SIM:DTI:4:TimRefClk]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@4[DAQ:SIM:DTI:4:TimRefClk]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@4[DAQ:SIM:DTI:5:TimRefClk]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@4[DAQ:SIM:DTI:5:TimRefClk]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@4[DAQ:SIM:DTI:6:TimRefClk]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@4[DAQ:SIM:DTI:6:TimRefClk]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@4[DAQ:SIM:DTI:7:TimRefClk]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@4[DAQ:SIM:DTI:7:TimRefClk]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@5[DAQ:SIM:DTI:3:TimFrRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@5[DAQ:SIM:DTI:3:TimFrRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@5[DAQ:SIM:DTI:4:TimFrRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@5[DAQ:SIM:DTI:4:TimFrRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@5[DAQ:SIM:DTI:5:TimFrRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@5[DAQ:SIM:DTI:5:TimFrRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@5[DAQ:SIM:DTI:6:TimFrRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@5[DAQ:SIM:DTI:6:TimFrRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "DtiStatistics.PvLabel@5[DAQ:SIM:DTI:7:TimFrRate]": {
+   "web": "[data-parity~=\"DtiStatistics.PvLabel@5[DAQ:SIM:DTI:7:TimFrRate]\"]",
+   "test": "test_gui_dtica.py::test_displays_follow_simdti[chromium]"
+  },
+  "Ui_MainWindow.alloctab.tab[Slot-3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.alloctab.tab[Slot-3]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.alloctab.tab[Slot-4]": {
+   "web": "[data-parity~=\"Ui_MainWindow.alloctab.tab[Slot-4]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.alloctab.tab[Slot-5]": {
+   "web": "[data-parity~=\"Ui_MainWindow.alloctab.tab[Slot-5]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.alloctab.tab[Slot-6]": {
+   "web": "[data-parity~=\"Ui_MainWindow.alloctab.tab[Slot-6]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.alloctab.tab[Slot-7]": {
+   "web": "[data-parity~=\"Ui_MainWindow.alloctab.tab[Slot-7]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.statstab.tab[Slot-3]": {
+   "web": "[data-parity~=\"Ui_MainWindow.statstab.tab[Slot-3]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.statstab.tab[Slot-4]": {
+   "web": "[data-parity~=\"Ui_MainWindow.statstab.tab[Slot-4]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.statstab.tab[Slot-5]": {
+   "web": "[data-parity~=\"Ui_MainWindow.statstab.tab[Slot-5]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.statstab.tab[Slot-6]": {
+   "web": "[data-parity~=\"Ui_MainWindow.statstab.tab[Slot-6]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  },
+  "Ui_MainWindow.statstab.tab[Slot-7]": {
+   "web": "[data-parity~=\"Ui_MainWindow.statstab.tab[Slot-7]\"]",
+   "test": "test_gui_dtica.py::test_tabs[chromium]"
+  }
+ }
+}

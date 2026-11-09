@@ -6,7 +6,10 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
 
   a GUI program with a web version
       {"file", "web": "<path the web GUI serves>", "backend": "sim-daq" | "sim-device:<stand-in>",
-       "walk": {"argv": [...], "pump", "drive", "record_calls", "variants": [{"argv": ...}, ...]},
+       "walk": {"argv": [...], "pump", "drive", "record_calls", "variants": [{"argv": ...}, ...],
+                "devices": [{"module": "<campaign simulator psdaq/sim/<module>.py>", "args": [...]}],
+                "env": {"HOME": "{walkdir}/home"}},     (placeholders: qt_walk.sim_params and {walkdir}, a scratch
+                                                         dir per spec for its devices and env)
        "mapping": {"<row id>": {"web": "<CSS selector>", "test": "<pytest node id>[chromium]"} | {"na": "<reason>"}}}
       Rows: gui_rows.make_rows from the source sites and the offscreen walk of the running program
       (qt_walk --gui against the simulated DAQ), run by --run-walks, as check_parity --run-walk does for
@@ -21,12 +24,16 @@ QApplication.  Each one needs a spec parity/guis/<name>.json whose "file" names 
       A backend sim-device:<name> is accepted only when <name> is a campaign simulator, a module
       psdaq/sim/<name>.py (e.g. simxpm), and the test recorded it (webgui_harness checks it runs).
   not a standalone GUI program
-      {"file", "na": "<one-line reason citing every construction line>", "rule": "walk-tool" | "library-demo"}
+      {"file", "na": "<one-line reason citing every construction line>", "rule": "walk-tool" | "library-demo" |
+       "no-window", ["walk": {...}]}
       walk-tool:    every construction is in a function that sets QT_QPA_PLATFORM=offscreen and the file has
                     no entry point (the parity walk itself);
       library-demo: every construction is under `if __name__ == '__main__':`, the file has no entry point,
                     other psdaq files import it, and the run-time probe (qt_walk --probe-import, run by
-                    --run-walks into <name>.probe.json) shows importing it constructs no QApplication.
+                    --run-walks into <name>.probe.json) shows importing it constructs no QApplication;
+      no-window:    the program's own entry, walked now (the spec's "walk", against the simulated DAQ), raises
+                    in its own files before QApplication.exec_ and shows no window (no GUI runs at this commit);
+                    the reason cites the line that raised.
 A file with no spec is a GUI program without a web version: FAIL (its source rows are counted).
 
 Output: one line per file `file | web path or N/A reason | N/M/K | PASS|FAIL`, then the rows that keep
@@ -73,7 +80,35 @@ def probe_path(spec, d):
     return os.path.join(d, spec['_name'] + '.probe.json')
 
 
-def check_na(e, spec, d=None):
+def check_no_window(e, spec, d, src):
+    """(ok, why) for rule no-window: the program's own entry, walked now against the simulated DAQ, raised before
+    QApplication.exec_ and showed no window; the reason cites the own-file line that raised."""
+    p = walk_path(spec, d) if d else None
+    if not p or not os.path.isfile(p):
+        return False, 'no walk %s.walk.json (run with --run-walks)' % spec['_name']
+    with open(p) as f:
+        walk = json.load(f)
+    digest = gui_rows.files_digest(src, gui_rows.own_and_libs(src, e['file'])[0]) if src else None
+    if digest and walk.get('src_digest') != digest:
+        return False, 'walk is of other source (%s, the tree has %s)' % (walk.get('src_digest'), digest)
+    ee = walk.get('entry_error')
+    if not ee or not ee.get('own_frames'):
+        return False, 'the walk ran without an error in the program\'s own files (notes: %s)' % walk.get('notes', [])[:2]
+    if any(ph[0] == 'exec' for ph in walk.get('phase_log', [])):
+        return False, 'the walk reached QApplication.exec_: the program shows a window'
+    shown = [x for x in walk.get('instances', []) if x.get('window_visible')]
+    if shown:
+        return False, '%d widget(s) in a visible window' % len(shown)
+    at = '%s:%d' % tuple(ee['own_frames'][-1][:2])
+    if at not in spec['na']:
+        return False, 'na reason must cite the line that raised (%s)' % at
+    return True, 'rule no-window: walk (argv %s, python %s, qt %s) of its own entry raised %s at %s (%s) before ' \
+                 'QApplication.exec_; no window shown (%d widgets built, none visible)' % (
+                     walk.get('argv'), walk.get('python'), walk.get('qt'), ee['type'], at, ee['message'][:120],
+                     len(walk.get('instances', [])))
+
+
+def check_na(e, spec, d=None, src=None):
     """(ok, why) for a not-a-GUI-program spec; d: the dir --run-walks wrote the walks and probes to (None: none)."""
     reason, rule = spec.get('na'), spec.get('rule')
     if not isinstance(reason, str) or not reason.strip() or '\n' in reason:
@@ -81,6 +116,8 @@ def check_na(e, spec, d=None):
     miss = ['%s:%d' % (e['file'], s['line']) for s in e['sites'] if '%s:%d' % (e['file'], s['line']) not in reason]
     if miss:
         return False, 'na reason must cite every construction line (%s)' % ', '.join(miss)
+    if rule == 'no-window':
+        return check_no_window(e, spec, d, src)
     if e.get('entry'):
         return False, 'has an entry point (%s): a program' % '; '.join(e['entry'])
     if rule == 'walk-tool':
@@ -164,31 +201,110 @@ def run_walks(src, specs, files, sim_dir, d, only=None, python=sys.executable, l
             continue
         walks = []
         variants = [{}] + spec['walk'].get('variants', [])
-        for i, var in enumerate(variants):
-            tmp = os.path.join(d, 'runs', '%s-%d' % (spec['_name'], i))
-            os.makedirs(tmp, exist_ok=True)
-            vspec = dict(spec)
-            vspec['walk'] = dict(spec['walk'], **var)
-            vspec.pop('_path', None)
-            sp = os.path.join(tmp, 'spec.json')
-            with open(sp, 'w') as f:
-                json.dump(vspec, f)
-            out = os.path.join(tmp, 'walk.json')
-            cmd = [python, '-m', 'psdaq.webgui.parity.qt_walk', '--gui', sp, '--sim-daq', sim_dir, '--out', out,
-                   '--workdir', tmp]
-            p = subprocess.run(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-                               timeout=float(vspec['walk'].get('timeout', 90)) + 60)
-            lines = [ln for ln in p.stdout.splitlines() if ln.startswith('qt_walk')]
-            log.write('%s variant %d %s: %s\n' % (spec['_name'], i, vspec['walk'].get('argv'), lines[-1] if lines else
-                                                'exit %d: %s' % (p.returncode, p.stdout[-800:])))
-            log.flush()
-            if not os.path.isfile(out):
-                raise SystemExit('check_gui_parity: walk of %s failed' % spec['_name'])
-            with open(out) as f:
-                walks.append(json.load(f))
+        wdir = os.path.join(d, 'runs', spec['_name'] + '-dir')        # {walkdir}: scratch for its devices and env
+        os.makedirs(wdir, exist_ok=True)
+        devs = start_devices(spec, sim_dir, env, python, log, wdir)
+        try:
+            run_variants(spec, variants, sim_dir, d, env, python, log, walks, wdir)
+        finally:
+            for p, _ in devs:
+                p.terminate()
+                try:
+                    p.wait(10)
+                except subprocess.TimeoutExpired:
+                    p.kill()
         merged = gui_rows.merge_walks(walks)
+        merged['devices'] = [x for _, x in devs]
         with open(walk_path(spec, d), 'w') as f:
             json.dump(merged, f, indent=0, sort_keys=True)
+
+
+def walk_params(sim_dir, wdir):
+    """The placeholders of a spec's walk argv, device args and env: qt_walk.sim_params plus {walkdir}."""
+    import psdaq
+    from psdaq.webgui.parity.qt_walk import sim_params
+    return dict(sim_params(sim_dir), walkdir=wdir, psdaq=os.path.dirname(os.path.realpath(psdaq.__file__)))
+
+
+def start_devices(spec, sim_dir, env, python, log, wdir=None):
+    """Start the campaign simulators a spec's walk names ("devices": [{"module": "simtpr", "args": [...]}], args with
+    the walk's placeholders), each `python -m psdaq.sim.<module>`, and wait for its 'ready' line."""
+    out = []
+    devs = spec['walk'].get('devices', [])
+    if not devs:
+        return out
+    params = walk_params(sim_dir, wdir)
+    for dv in devs:
+        args = [str(a).format(**params) for a in dv.get('args', [])]
+        cmd = [python, '-m', 'psdaq.sim.' + dv['module']] + args
+        p = subprocess.Popen(cmd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        ready = wait_ready(p, 30)
+        if ready is None:
+            p.kill()
+            raise SystemExit('check_gui_parity: %s did not start (%s)' % (' '.join(cmd), p.poll()))
+        log.write('%s: device %s pid %d: %s\n' % (spec['_name'], dv['module'], p.pid, ready))
+        log.flush()
+        out.append((p, {'module': dv['module'], 'args': args, 'pid': p.pid, 'ready': ready}))
+    return out
+
+
+def wait_ready(p, timeout):
+    """The first line of process p's output that says 'ready' (None if it exits or `timeout` s pass); the rest of its
+    output is read and dropped by a thread, so the pipe never fills."""
+    import queue
+    import threading
+    q = queue.Queue()
+
+    def reader():
+        for ln in p.stdout:
+            q.put(ln)
+        q.put(None)
+    threading.Thread(target=reader, daemon=True).start()
+    import time
+    end = time.time() + timeout
+    while time.time() < end:
+        try:
+            ln = q.get(timeout=max(0.1, end - time.time()))
+        except queue.Empty:
+            break
+        if ln is None:
+            break
+        if 'ready' in ln:
+            return ln.strip()
+    return None
+
+
+def run_variants(spec, variants, sim_dir, d, env, python, log, walks, wdir=None):
+    for i, var in enumerate(variants):
+        tmp = os.path.join(d, 'runs', '%s-%d' % (spec['_name'], i))
+        os.makedirs(tmp, exist_ok=True)
+        vspec = dict(spec)
+        vspec['walk'] = dict(spec['walk'], **var)
+        vspec['walk']['walkdir'] = wdir or tmp
+        vspec.pop('_path', None)
+        sp = os.path.join(tmp, 'spec.json')
+        with open(sp, 'w') as f:
+            json.dump(vspec, f)
+        out = os.path.join(tmp, 'walk.json')
+        cmd = [python, '-m', 'psdaq.webgui.parity.qt_walk', '--gui', sp, '--sim-daq', sim_dir, '--out', out,
+               '--workdir', tmp]
+        venv = dict(env)
+        if vspec['walk'].get('env'):                 # e.g. HOME: daqstat's Runner makes $HOME/daq/logs
+            params = walk_params(sim_dir, wdir or tmp)
+            for k, v in vspec['walk']['env'].items():
+                venv[k] = str(v).format(**params)
+                if k == 'HOME':
+                    os.makedirs(venv[k], exist_ok=True)
+        p = subprocess.run(cmd, env=venv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                           timeout=float(vspec['walk'].get('timeout', 90)) + 60)
+        lines = [ln for ln in p.stdout.splitlines() if ln.startswith('qt_walk')]
+        log.write('%s variant %d %s: %s\n' % (spec['_name'], i, vspec['walk'].get('argv'), lines[-1] if lines else
+                                            'exit %d: %s' % (p.returncode, p.stdout[-800:])))
+        log.flush()
+        if not os.path.isfile(out):
+            raise SystemExit('check_gui_parity: walk of %s failed' % spec['_name'])
+        with open(out) as f:
+            walks.append(json.load(f))
 
 
 def main(argv=None):
@@ -241,7 +357,7 @@ def main(argv=None):
             ok_all = False
             continue
         if 'na' in spec:
-            ok, why = check_na(e, spec, walks)
+            ok, why = check_na(e, spec, walks, src)
             lines.append('%s | N/A: %s [%s] | -/-/- | %s' % (e['file'], spec['na'], why, 'PASS' if ok else 'FAIL'))
             ok_all = ok_all and ok
             n_pass += ok
