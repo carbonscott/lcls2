@@ -506,8 +506,7 @@ A record proves a row only if all of these hold, and the row's line names the fi
     `tpr::Client` (`psdaq/psdaq/tpr/Client.cc`) maps the regular files `<dir>/tpra` (the
     card's register map, `TprReg`) and `<dir>/tpra<channel>` (its message queues) instead of the
     device files, and logs `Tpr::Client: simulated TPR (PSDAQ_SIM_TPR): /dev/tpra is <file>`; the
-    registers keep what the program writes, and no frame reaches the queues (so lclsBldServer,
-    which waits for frames, cannot run on it). Without the variable it opens `/dev/tpra` as
+    registers keep what the program writes. Without the variable it opens `/dev/tpra` as
     before. Neither program logs a run, so while the run is Running the cycle reads each card's
     channel and trigger registers once a second (`gui_witness.tpr_reads`); the `programs` entry
     (`"kind": "tpr"`) holds the reads and the card. Coverage reads the card from the program's
@@ -517,8 +516,35 @@ A record proves a row only if all of these hold, and the row's line names the fi
     channel on the readout group control gives it at Connect, the partition's), and needs 2 or
     more reads within the run's L1Accepts, each with exactly those values (`shows tprtrig's card
     at ... with trigger0.delay 0x2, not the 0x3 its command line programs`).
+  - the BLD server lclsBldServer (R8 and its packets): lab3-bld.cnf:52 starts it as
+    `lclsBldServer -i enp1s0f1 -r 4`, a line from 572812c2d, when `-b` was ignored and `-a` gave
+    the group; 27c997fae then made `-b` required (with no `-b` it prints its usage and exits 1,
+    at HEAD too), fixed each type's group to the production 239.255.25.0-3 on port 12148 and
+    dropped `-a`, and the cnf line was never updated. So `up --tpr` runs the cnf's command plus
+    `-b ebeam` (the type its usage still names the default), with `-i lo` for the loopback
+    interface and `-a 239.254.33.0 -p 31240+<p>`: options this branch adds to choose the group
+    base (the type adds 0-3) and port, off the production network (without them the groups and
+    port are as before: with no TPR, `strace` shows the same socket calls at base and head).
+    Its card (`<workdir>/tpr/lclsbldsvc/tpra`) gets timing frames: `up` starts
+    `psdaq.sim.tprframes`, which, for each channel a program enabled on a fixed rate, writes
+    every pulse of that rate's marker into the channel's queue file as the driver would (the
+    frame in `allq[gwp]`, its index in `allrp[ch]`, then `allwp[ch]`), at 1300/1.4 MHz / the
+    marker's divisor (fixed rate 4: 102 Hz), each frame timed at its pulse and carrying the
+    pulse ID simxpm gives that instant; `tpr::Client` polls a simulated card's queue file every
+    1 ms (reading a file does not block as the device does). While the run is Running the cycle
+    reads the card (as for tprtrig) and `gui_witness.bld_receive` joins 239.254.33.0 on
+    127.0.0.1 (it refuses any group in 239.255.0.0/16) and keeps every packet; the `programs`
+    entry (`"kind": "bld"`) holds the reads, the group and port, each packet's time, pulse ID
+    and size, and the words after them. Coverage checks the card as R8 (channel 1 on the fixed
+    rate `-r` selects, trigger 0 from channel 1) and then (`coverage.bld_problem`) that 10 or
+    more packets came on the group and port the program's own `# CMDLINE:` sends to
+    (`bld_expected`), each timed within the run's L1Accepts and after the one before, on the
+    marker of its `-r` and at half its rate or more, with simxpm's pulse ID for that time, of
+    the size and with the words lclsBldServer sends for its `-b` type, the pid in them the one
+    its procmgr log gives (`its packets carry pid ..., but its log of lclsBldServer gives pid
+    ...`).
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R3b, R4,
-  R5, R8) and checks the row's line says why.
+  R5, R8, the BLD server) and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
@@ -737,7 +763,7 @@ its evidence record lists their logs.
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIoc -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (CA, 1234.5); simxpm's `DAQ:SIM:XPM:0:PART:<p>:NumL0Acc` (PVA) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` and `sim_l0acc` never decrease, `sim_l0acc` stays within the run's L1Accepts |
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
 | `--pvservers` | services (not procmgr) `simhsd -P DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `simtpr -P DAQ:SIM:TPR` and `simdti -P DAQ:SIM:DTI`, each on PVA ports of its own (31300 + 10 p + 0..5: simxpm stays the only server on the node's search port); under procmgr the tree's own PV servers `bldcas -P DAQ:SIM -A 239.254.32.1 HPSEX` and `hpsdbuscas -P DAQ:SIM:HPSCPA` (lab3-bld.cnf), on ports 31300 + 10 p + 6..9 (it serves the address, it sends nothing); with `--gui` also the GUIs on them (R4): `hsdpva DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B`, `tprca DAQ:SIM:TPR` and `python -m psdaq.cas.dtica DAQ:SIM:DTI` (no `dtica` command; lab3-cam.cnf runs `launch_py <bins>/dtica.py`), offscreen, each with `EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_BROADCAST_PORT=<its stand-in's search port>`, and `pvatable --bases DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B --fields MONTIMING.trigcntsum ... MONRAWBUF.freeevt` (test-hsd.cnf) on simhsd the same way and `xpmpva DAQ:SIM:XPM:0` on simxpm | the stand-ins of `hsdpvs`, `hsd134PVs`, `tprcas`, `tprioc` and `dticas` (R3); bldcas and hpsdbuscas themselves (R3b) | while the run is Running, `psdaq.sim.gui_witness` gets from each stand-in every PV name the program's own source defines (hsdpvs's `ChipServer`, the tables `tprcas.main()` and `dticas.main()` build) and reads its monitoring counters (`MONTIMING`, `EVTCNT`, `3:TimFrRate`) once a second; the `gui_witness`'s `servers` entry is what coverage counts the STAND-IN rows `prog:hsdpvs`, `prog:hsd134PVs` and `prog:tprioc` (their names read from their C++ sources) and `prog:tprcas` from (no config starts `dticas`, so it has no row). From bldcas and hpsdbuscas it gets every name their source defines and puts one PV to a new value and back, reading it back (R3b). It walks hsdpva, pvatable, tprca, dtica and xpmpva offscreen once more, each searching only its stand-in (xpmpva: simxpm's own ports), and keeps each PV-bound widget's texts (one read per widget): their `programs` entries name the stand-in (R4) |
-| `--tpr` | `tprtrig`: `tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <p>` (srcf-rix.cnf, flags `sp`); `enc_trig`: `tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <p> -u enc_trig` (rix.py's `mono_enc_trig`, a `tpr` level process of the partition), each with `PSDAQ_SIM_TPR=<workdir>/tpr/<id>` | a simulated TPR card each: `tpr::Client` maps `<workdir>/tpr/<id>/tpra`, a file, instead of `/dev/tpra` (§3d, R8) | while the run is Running, `psdaq.sim.gui_witness` reads each card's channel and trigger registers once a second; coverage checks them against what each program's command line programs |
+| `--tpr` | `tprtrig`: `tprtrig -t a -c 0 -o 1 -d 2 -w 10 -z -p <p>` (srcf-rix.cnf, flags `sp`); `enc_trig`: `tpr_trigger -H tst -C localhost -t a -c 0 -o 1 -d 2 -w 10 -p <p> -u enc_trig` (rix.py's `mono_enc_trig`, a `tpr` level process of the partition); `lclsbldsvc`: `lclsBldServer -i lo -r 4 -b ebeam -a 239.254.33.0 -p <31240 + p>` (lab3-bld.cnf:52 with the `-b` its source requires, on loopback, off the production network), each with `PSDAQ_SIM_TPR=<workdir>/tpr/<id>`; and the service `tprframes` (`python -m psdaq.sim.tprframes <workdir>/tpr/lclsbldsvc/tpra`) | a simulated TPR card each: `tpr::Client` maps `<workdir>/tpr/<id>/tpra`, a file, instead of `/dev/tpra` (§3d, R8); tprframes delivers the timing frames of lclsBldServer's card at the fixed rate its channel selects | while the run is Running, `psdaq.sim.gui_witness` reads each card's channel and trigger registers once a second and receives lclsBldServer's packets on 239.254.33.0 (loopback); coverage checks the registers against what each program's command line programs, and lclsBldServer's packets against its command line and the run |
 | `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>`, `python -m psdaq.cas.partca DAQ:SIM:XPM:0:PART:<p>` (psdaq installs no `partca` command; lab3-cam.cnf runs it with `launch_py <bins>/partca.py`), `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate` and `procstat -p <p> -i 1 <WD>/daq_sim.cnf`, offscreen; `daqstat -i 1 <WD>/slurm/daqstat.py` (mfx.py: `daqstat -i 5`), offscreen, with `<WD>/slurm/bin` (simslurm's shims for squeue, sacct, scontrol, sinfo, sbatch, scancel) first on its PATH and `HOME=<WD>/slurm/home`; and the PV monitor `pvrtmon_0`: `epics_exporter -H tst -I xpm-0 -M <WD>/prom -P DAQ:SIM:XPM:0 NumL0Acc NumL0Inp RunTime`; and the service `simslurm`, a Slurm job for each process of `daq_sim.cnf` (`<WD>/slurm/daqstat.py`, daqmgr's config of them; state in `<WD>/slurm/state.json`) | control's status messages; simxpm's PVs; simslurm's jobs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca, partca, pvant and procstat never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, scrapes epics_exporter's Prometheus gauges (port from its log) once a second meanwhile, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing. daqstat's walk has its Slurm commands answered by simslurm and records each refresh of its table, while the cycle reads squeue from simslurm itself every 0.5 s (R5, §3d) |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
