@@ -228,7 +228,7 @@ def scan_steps(path, det_name):
     for run in ds_.runs():
         sv = run.Detector('step_value', accept_missing=True)
         sd = run.Detector('step_docstring', accept_missing=True)
-        has = 'step_value' in run.dsparms.configinfo_dict
+        has = type(sv).__name__ != 'MissingDet'     # step_value is an env variable, not a detector
         det = run.Detector(det_name)
         for step in run.steps():
             n = k = 0
