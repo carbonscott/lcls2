@@ -36,7 +36,7 @@ from psdaq.webgui.netguard import NonLoopbackError, require_loopback_host, is_lo
 # Extension modules add API routes without editing this file. Each one defines
 # register(app, get_routes, post_routes): get_routes maps a path to
 # fn(query_dict) -> (code, body); post_routes maps a path to fn(body) -> (code, body).
-EXT_MODULES = ('psdaq.webgui.configdb_api',)
+EXT_MODULES = ('psdaq.webgui.configdb_api', 'psdaq.webgui.procstat_api', 'psdaq.webgui.pvgui_api')
 
 
 def load_extensions(app, names=EXT_MODULES):
@@ -323,6 +323,8 @@ def make_handler(app):
                 return self._static('index.html')
             if p.startswith('/static/'):
                 return self._static(p[len('/static/'):])
+            if p.startswith('/gui/') and p.count('/') == 2 and p[5:].isidentifier():
+                return self._static('gui/%s.html' % p[5:])      # web copies of the other PyQt GUIs
             if p == '/api/meta':
                 return self._send(200, app.meta())
             if p == '/api/status':
@@ -461,6 +463,18 @@ def build_parser():
     p.add_argument('--events-drops-metric', default=None, help='prometheus: metric name for drops')
     p.add_argument('--events-labels', default='', help='prometheus: label filter k=v,k2=v2')
     p.add_argument('--events-period', type=float, default=1.0, help='events poll period [s]')
+    p.add_argument('--procstat-cnf', default=None,
+                   help='/gui/procstat: the procmgr .cnf whose processes it shows (as procstat <cnf>)')
+    p.add_argument('--procstat-platform', type=int, default=-1, help='/gui/procstat: platform (procstat -p; '
+                   'default: deduced from the .cnf)')
+    p.add_argument('--procstat-interval', type=float, default=5.0, help='/gui/procstat: query interval [s] '
+                   '(procstat -i, default 5)')
+    p.add_argument('--procstat-logdir', default=None, help='/gui/procstat: the directory procstat would run in; '
+                   'the log ids ProcMgr reports are relative to it (default: the working directory)')
+    p.add_argument('--pvgui', action='append', default=[], metavar="NAME:ARGS",
+                   help="/gui/<NAME>: web copy of a pvedit GUI with the PyQt program's arguments, e.g. "
+                        "'groupca:DAQ:SIM 0 5' (repeatable; PVs through one PV Access client, needs a "
+                        "loopback-only EPICS_PVA env, as --events-source pva)")
     p.add_argument('--print-config', action='store_true', help='print every endpoint as JSON and exit')
     p.add_argument('-l', '--loglevel', default='INFO')
     return p
@@ -471,6 +485,9 @@ def configure(args):
     from psdaq.webgui.backend import RealBackend, EmulatorBackend
     from psdaq.webgui import events as ev
     require_loopback_host(args.bind, '--bind')
+    if args.procstat_cnf:
+        from psdaq.webgui.procstat_api import require_loopback_cnf
+        require_loopback_cnf(args.procstat_cnf, args.procstat_platform)    # every process's host is loopback
     if args.emulate:
         backend = EmulatorBackend(fail_transition=args.emulate_fail, l1_rate=args.emulate_rate,
                                   slow_transition_time=args.emulate_slow)

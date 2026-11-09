@@ -1,0 +1,5 @@
+{
+ "file": "webgui/parity/qt_walk.py",
+ "na": "the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main()",
+ "rule": "walk-tool"
+}

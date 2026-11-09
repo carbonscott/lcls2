@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProcStat</title>
+<link rel="stylesheet" href="/static/gui/gui.css">
+</head>
+<body>
+<!-- web copy of psdaq/procmgr/procstat (WinProcStat, ui_procStat.Ui_mainWindow); data-parity = the PyQt row ids -->
+<main id="win" data-parity="WinProcStat">
+<h1>ProcStat <small id="cnf"></small></h1>
+<fieldset id="groupBoxProcessStatus"><legend>Process Status</legend>
+  <table class="grid" id="tableProcStat" data-parity="Ui_mainWindow.tableProcStat">
+    <thead><tr>
+      <th data-col="0" data-parity="Ui_mainWindow.tableProcStat.col[ID]">ID</th>
+      <th data-col="1" data-parity="Ui_mainWindow.tableProcStat.col[Status]">Status</th>
+    </tr></thead>
+    <tbody id="procRows" data-parity="Ui_mainWindow.tableProcStat.cellClicked WinProcStat.on_tableProcStat_currentCellChanged"></tbody>
+  </table>
+  <div class="row" id="horizontalFrame">
+    <button class="checkable" id="pushButtonConsole" aria-pressed="false" data-mode="1"
+            title="Select this button, and click on processes to open consoles"
+            data-parity="Ui_mainWindow.pushButtonConsole">Open Console</button>
+    <button class="checkable" id="pushButtonLogfile" aria-pressed="false" data-mode="2"
+            title="Select this button, and click on processes to view logfiles"
+            data-parity="Ui_mainWindow.pushButtonLogfile">View Logfile</button>
+    <button class="checkable" id="pushButtonRestart" aria-pressed="false" data-mode="3"
+            title="Select this button, and click on remote processes to restart"
+            data-parity="Ui_mainWindow.pushButtonRestart">Restart</button>
+  </div>
+</fieldset>
+<fieldset id="groupBoxOutputFileStatus"><legend>Output File Status</legend>
+  <div id="textBrowser" data-parity="Ui_mainWindow.textBrowser"></div>
+</fieldset>
+<section id="viewer" hidden data-parity="procstat.viewer">
+  <h2 id="viewerTitle"></h2>
+  <pre class="viewer" id="viewerText"></pre>
+  <button id="viewerClose">Close</button>
+</section>
+<div class="statusbar" id="statusbar"></div>
+</main>
+<p id="closedNote" class="closed" hidden>procStat closed</p>
+<dialog id="msgBox" data-parity="WinProcStat.msgBox">
+  <h2 id="msgBoxTitle">Warning</h2><div id="msgBoxText"></div>
+  <p><button id="msgBoxOk">OK</button></p>
+</dialog>
+<dialog id="criticalBox" data-parity="WinProcStat.onProcMgrUnknownError.QMessageBox.critical">
+  <h2 id="criticalTitle">Unknown Error</h2><div id="criticalText"></div>
+  <p><button id="criticalOk">OK</button></p>
+</dialog>
+<script src="/static/gui/procstat.js"></script>
+</body>
+</html>
