@@ -126,6 +126,10 @@ class cspad_cspadRawAlg_1_2_3(DetectorImpl):
 class fakecam_raw_2_0_0(cspad_cspadRawAlg_1_2_3):
     def __init__(self, *args):
         super().__init__(*args)
+# drp -D cspad (AreaDetector, as fakecam): raw 2.0.0 under detType cspad
+class cspad_raw_2_0_0(cspad_cspadRawAlg_1_2_3):
+    def __init__(self, *args):
+        super().__init__(*args)
 class fakecam_cube_2_0_0(DetectorImpl):
     def __init__(self, *args):
         super().__init__(*args)

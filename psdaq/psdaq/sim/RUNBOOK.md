@@ -20,7 +20,8 @@ Everything in `psdaq/psdaq/sim/`:
 | `lgbk_server.py` | Run DB / eLog stand-in. Experiment `tstx00001`; runs are numbered from 1. |
 | `simxpm.py` | Software XPM: the pyxpm PVs over PVA, timing frames to `sim://` DRPs, and the `control -X` PULL receiver. |
 | `xtc2_check.py` | psana2 read-back with a per-event payload check (every pixel or sample for BEB types, §3e). |
-| `rogue_dev.py`, `seeds/<type>.json` | The emulated device of a BEB type under `drp -d sim://` (§3e). |
+| `rogue_dev.py`, `seeds/<type>.json` | The emulated device of a BEB type under `drp -d sim://` (§3e), and the emulated TDet timing receiver of every XpmDetector type (`seeds/xpmdet.json`, §3f). |
+| `epixhremu_frame.py` | Writes the xtc2 file whose frame `drp -D epixhremu` replays (§3f). |
 | `pattern.py` | The simulated BEB pixel values, the same function as `MemPoolSim::pattern` in C++. |
 | `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
@@ -398,7 +399,8 @@ sleep 45; cat $ROOT/daq_sim_up.log
 srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=32 --mem=64G \
      bash -c "cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim cycle -w $WD --events 1000"
 ```
-`--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), `epix100`, `wave8`, `wave8he`.
+`--det` is one of `daq_sim.SIM_TYPES`: `fakecam` (the default), the BEB types `epix100`, `wave8`,
+`wave8he`, `hrencoder`, `epixm320`, and the XpmDetector types `cspad`, `epixhremu`, `jungfrauemu`, `ts` (§3f).
 The DRP is the real `drp -D <type> -d sim://...`, and its BEBDetector runs the type's own
 `psdaq/psdaq/configdb/<type>_config.py`, unmodified, against an emulated device:
 
@@ -437,11 +439,16 @@ What each type needs:
 | epix100 | `epix100_init`, `_connectionInfo`, `_config`, `_enable`, `_disable`, `_unconfig` | lcls2_epix_hr_pcie DevRoot + ePix100a board over SRPv3: 9 seeds (KCU and camera FPGA versions, DMA size, clock and lock bits, RxId, BaseClock) | `ePix100a_asics_0123.yml` through `yaml_config_store_example` | 3: 1,087,532 B image, rows interleaved by ASIC | `epix100_raw_2_0_1` raw (704,768), every pixel, 14 bit |
 | wave8 | `wave8_init`, `_connectionInfo`, `_config`, `_unconfig` (with PgpMonitor `init_lanes`/`check_lanes`, `config_timing`, `configure_trigger_delay`) | PgpMonitor KCU: board type and 2 link bits; driver text; 213 IOC PVs (29 the script writes or polls, 184 of the expert config it records); new IOC (no `EvrV2TriggerReg[0]:Delay`) | `wave8_config_store` through its `write_to_daq_config_db` | 1: aux timing; 2-9: 8 waveforms of 256 samples; 10: integrals (56 B); 11: processed (32 B) | `wave8_raw_0_0_1` raw_0..7, `wave8_fex_0_0_1` integrals, baselines, counts, intensity, position |
 | wave8he | `wave8he_init`, `_connectionInfo`, `_config` (writes the HLS counts and scales), `_unconfig` | as wave8, with the HLS PVs: 228 keys | no wave8he store in the tree: the wave8 store's config plus the HLS region bounds | 2-9: 8 waveforms; 0x0C: peaks (64 B); 0x0D: integrals (32 B), 24-bit packed | `wave8he_raw_0_0_1`, `wave8he_fex_0_0_1`: every field |
+| epixm320 | `epixm320_init` (PgpMonitor, `ePix320kM.Root` with `justCtrl`, `ConfigLclsTimingV2`, the RxId wait), `_connectionInfo`, `_config` (the firmware's own `fnInitAsicScript`: PLL, lane delays, waveforms, batchers, the ASIC YAMLs it writes to `/tmp`, then a 2500-trigger `hwTrigger` and `laneDiagnostics`), `_enable`, `_disable`, `_unconfig` | PgpMonitor KCU as hrencoder; camera over SRPv3: `RxId`, and `TriggerRegisters.AcqCount` and each `DigAsicStrmRegisters<i>.FrameCount` 2500, what the camera reports after the 2500-trigger train `hwTrigger` waits for | `epixm320_config_store.epixm320_cdict($SUBMODULEDIR/epix-hr-m-320k/software/config)`, as its `__main__` (`--dir`) | 1: timing copy; 2-5: ASICs 0-3, each a 48 B header (frameNo, asicNo), 192 x 384 in the ASIC's bank order (`EpixM320::_descramble`'s inverse), 48 B trailer | `epixm320_raw_0_1_0` raw (4, 192, 384), every pixel, 15 bit |
+| hrencoder | `hrencoder_init` (PgpMonitor `init_lanes`, `high_rate_encoder_dev.Root` start: `ConfigLclsTimingV2`, Fmc write-and-verify, `StopRun`), `_connectionInfo`, `_config` (`StartRun`), `_unconfig` | PgpMonitor KCU: board type, DMA size, 2 link bits, driver text; encoder board over SRPv3: `FpgaVersion` 0x02040000 (the root's `FebVersionLock`), `RemRxLinkReady`, `RxId`. Its XVC server (`rogue.protocols.xilinx.Xvc(2542)`) is a null stream endpoint: no socket | `hrencoder_config_store` through its `write_to_daq_config_db` | 2: `Enc::Stream` (8 B: position, error, missed-trigger and latch counts) | `hrencoder_raw_0_1_0` `value()` (position) and the three counts |
 
 Fault runs that fail Configure and name the register: epix100
 `ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay` (rogue's write-verify),
 wave8 and wave8he `pv:{prefix}:Top:TriggerEventManager:TriggerEventBuffer[0]:TriggerDelay=0`
-(`ValueError: TriggerDelay(ns) too small`).
+(`ValueError: TriggerDelay(ns) too small`), hrencoder
+`Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay` (rogue's write-verify in
+`config_expert`), epixm320 `Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`
+(write-verify when `_config` applies the expert config).
 
 **Debugging a type without a DRP.** `python -B -m psdaq.sim.rogue_drive --type <type>` runs the
 entry points in the DRP's order against `rogue_dev` and a private config DB. It prints the first
@@ -456,7 +463,54 @@ failure with its traceback, which is how a type's seeds are found.
 - **epixquad1kfps:** its ePixQuad package builds a Qt viewer at import (needs
   `QT_QPA_PLATFORM=offscreen` with no display); there is no epixquad1kfps store; `ePixQuad.Top`
   checks the PCIe card's build string on the same PCIe map as DevRoot.
-- **epixhr2x2, epixm320, epixUHR, hrencoder:** not tried.
+- **epixhr2x2:** `drp -D epixhr2x2 -d sim://` aborts at start: `epixhr2x2_config.py` imports
+  `lcls2_epix_hr_pcie` and `epix_hr_single_10k` without the `psdaq.utils.enable_*` modules that
+  put them on the path (`ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'`). With those
+  imports added (not committed), `epix_hr_single_10k` imports `setupLibPaths`, which is in its
+  `software/scripts`, not on the path; with that added too, `DevRoot` starts but the ePixHr10kT
+  board's registers are answered by no simulated transport (rogue_dev cannot place its seeds).
+  It also has no `epixhr2x2_connectionInfo`, which `BEBDetector::connectionInfo` requires (it has
+  `epixhr2x2_connect(base)` instead); no run gets that far yet.
+- **epixUHR:** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables from
+  `/cds/home/p/psrel/EpixUHR/pll/`, a facility path (the same CSVs are in
+  `$SUBMODULEDIR/epix-uhr-gtreadout-dev/software/config/pll/`), so `configdb_seed` cannot build its
+  default config here; nothing past that was tried.
+
+## 3f. XpmDetector types: fakecam, cspad, epixhremu, jungfrauemu, ts
+
+These types have no EventBatcher: their DRP class derives from `XpmDetector`, and on hardware
+`psdaq/psdaq/configdb/xpmdet_config.py` programs the KCU's TDet firmware (`l2si_drp.DrpTDetRoot`:
+the timing receiver, the trigger event buffers and the `TDetSemi` payload generator). Under
+`sim://` the DRP runs that same script, unmodified, at the same points as on hardware:
+
+| DRP step | `xpmdet_config` entry point | what the emulated receiver does |
+|---|---|---|
+| start (constructor) | `xpmdet_init(dev, laneMask, timebase)`: `detect_C1100` reads `/proc/<dev>`, builds and starts `DrpTDetRoot` | `seeds/xpmdet.json`: the driver text (a KCU1500), `TxClkCount` as a free-running counter (below), `XpmMessageAligner.RxId` 0xff000000 |
+| Alloc (`connectionInfo`) | `xpmdet_connectionInfo`: barrier, `refClockRate()` check (no Si570 reprogramming when it reads 180-190 MHz), `TxId`, the 8 trigger event buffers reset, `RxId` check | the link id the DRP reports is simxpm's (`MemPoolSim: simxpm registered ... link N`); the log line `XpmDetector: emulated RxId 0xff000000; link id 0x... from simxpm` gives both |
+| Connect | `xpmdet_connect(group, length)`: `TriggerEventBuffer`, `TDetSemi.Length_<lane>`, `Enable_<lane>` | registers read back what was written; `MemPoolSim` then joins simxpm's readout group |
+| Unconfigure, Dealloc | `xpmdet_unconfig`, `xpmdet_connectionShutdown` | |
+
+A seed value `{"count_hz": f}` makes the register a counter that advances f per second, for a
+script that measures a clock (`TDetTiming.refClockRate()`: 11,607,143 counts/s read as 185.71
+MHz). The fault hook works as for the BEB types; on these types the first write it breaks is at
+Connect (`xpmdet_connect`; there is no `xpmdet` step at Configure):
+`PSDAQ_SIM_ROGUE_FAULT=DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0` makes Connect fail, and the
+DRP log names it: `Verify error for block DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0 ... Got:
+0xff, Exp: 0x40`, then `**** python error` and signal 6.
+
+What each type needs and what psana2 checks (every L1Accept, `xtc2_check --det <type>`):
+
+| type | own config code | DRP data | psana interface and check |
+|---|---|---|---|
+| fakecam | `xpmdet_config` only | `TDetSemi` words (§4) | `fakecam_raw_2_0_0` raw: w3 == seed, the w[k] pattern, w2 = 1..N, pulseId vs timestamp |
+| cspad | `xpmdet_config` only (an `AreaDetector`, as fakecam) | as fakecam | `cspad_raw_2_0_0`, new in `psana/psana/detector/test_detectors.py` (the same reader as fakecam's): as fakecam |
+| epixhremu | `xpmdet_config` only; `EpixHRemu` replays the first L1Accept's `raw` (uint16, rank 2) of the file its `xtcfile` kwarg names | `daq_sim up` writes that file (`epixhremu_frame.py`: an epixhr2x2 frame of 288 x 384, pixel i = `pattern(seed, 0, i, 16)`); every event records its first 192 columns of its first 144 rows in all 4 ASIC positions, 221,184 B, so its DMA buffers are 256 kB (`sim_dma_size=0x40000`) | `epixhremu_raw_0_0_1` raw (1, 144, 768): every pixel vs the frame |
+| jungfrauemu | `xpmdet_config` only; `JungfrauEmulator` records each lane's DMA payload as one 512 x 1024 panel | `sim_length=262144` `TDetSemi` words (1 MiB, `sim_dma_size=0x101000`) | `jungfrauemu_raw_0_1_0`: its `raw()` adds random noise ("FOR DEBUGGING ONLY" in psana), so the words are checked through the `AreaDetectorRaw.raw` it overrides (seed, seq, pattern, pulseId), and `raw()` for its shape and a noise-sized difference |
+| ts | `xpmdet_config`, and its own `ts_config.py`: `ts_connect` at Connect (`ts_connect.py`: `RemoteLinkId`, `LinkGroupMask`, `LinkRxReady`, `LinkRxErrI` of every port) and `ts_config` at Configure (the readout group's `L0Select*`, `DstSelect`, `L0RawUpdate`, `InhInterval/InhLimit/InhEnable0-3`, then `FwBuild`), all PVs simxpm serves (pyxpm's names and types); config from `ts_config_store.beam_cdict()` | the 153 B `TimingData` the timing system's TDet firmware sends (`MemPoolSim.cc` `timingMessage`): the frame's pulseId and time, every other element `pattern(seed, seq, element, bits)` with the field's width | `ts_raw_2_1_0`: every `TimingData` field, `eventcodes`, `inhibitCounts`, `destination`, `timestamp` == the event's, `pulseId` rising and matching the timestamp |
+
+simxpm's `LinkRxReady<n>` and `LinkTxReady<n>` read 1 while a DRP holds link n; `RemoteLinkId<n>`
+reads 0 (no XPM behind it, so `ts_connect` does not recurse), and the trigger and inhibit PVs only
+keep what is written: simxpm's L1Accepts stay at `SIM:L1Rate`.
 
 ## 4. Read the file back with psana2
 ```bash
@@ -466,7 +520,7 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=4 --mem=8G \
               python -m psdaq.sim.xtc2_check $F --seed 0x1234 --expect <N>; echo EXIT=\$?"
 ```
 `xtc2_check` reads with `DataSource(files=[F], skip_calib_load='all')`. `LCLS_CALIB_HTTP` defaults to a dead loopback URL, so no calibration DB is contacted. psana2's Prometheus push is off by default. For every L1Accept it checks:
-- fakecam's raw data is present;
+- fakecam's raw data is present (cspad and jungfrauemu: the same words, §3f);
 - w3 == sim_seed;
 - w[k] = seed + w0 + k + (lane<<16);
 - w2 (simxpm's L1 sequence number) runs 1..N with no gap;
@@ -531,7 +585,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   - control's ZMQ on `*`;
   - the Prometheus exporters on `0.0.0.0:92xx`;
   - procServ `--allow`;
-  - pvAccess UDP 15076.
+  - pvAccess UDP 15076;
+  - with two or more XpmDetector DRPs on the node (`--segments 2`), `xpmdet_config`'s barrier
+    (`psdaq/configdb/barrier.py`) binds ZMQ ports 5561 and 5562 on `*`, as it does on hardware.
 
   Isolation relies on every peer being on this node and on the non-default EPICS ports.
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
@@ -540,6 +596,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   preset. It runs no firmware logic: a register the firmware would change on its own (a counter,
   a status bit) keeps its seed. A BEB type's frame has the subframes its DRP reads, with the
   timing header copied where the firmware sends a detailed timing frame.
+- **XpmDetector types.** `xpmdet_config` runs against registers that keep what is written; the
+  timing link id the DRP reports comes from simxpm, not the emulated `RxId`. epixhremu records
+  the same frame in every event, as the emulator does with its file. simxpm keeps the trigger and
+  inhibit settings `ts_config` writes but does not act on them.
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
   each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector

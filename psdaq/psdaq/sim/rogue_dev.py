@@ -14,14 +14,21 @@ constructors, before the config module builds its roots, with:
                 register store (and drops anything else, like a null stream)
 
 Everything above the transports -- pyrogue, the firmware device trees,
-rogue's SrpV3 protocol, the config script -- is the real code.  Registers
-read back what was last written (0 if never written), except:
+rogue's SrpV3 protocol, the config script -- is the real code, with three
+more hooks: pr.Device._start of a root applies the seeds below, pyrogue's
+ZmqServer binds 127.0.0.1 on a free port, and rogue's Xvc (a JTAG-over-TCP
+server some roots start) is a null stream endpoint.  Registers read back
+what was last written (0 if never written), except:
 
   seeds   a JSON file {"<register path>": value, ...} (psdaq/sim/seeds/
           <type>.json by default) presets status registers the config
           script polls (FW version, lock bits, clock counters...).  Each
           path is applied when the root that owns it starts; a path that
           is not a RemoteVariable in the tree raises (no auto-vivifying).
+          A value {"count_hz": f} makes the register a free-running counter
+          that advances f per second from the moment its root starts (a
+          clock-cycle counter the script turns into a frequency, such as
+          TimingFrameRx.TxClkCount for TDetTiming.refClockRate()).
   fault   PSDAQ_SIM_ROGUE_FAULT='<register path>[=<value>]': that register
           reads back <value> (default all ones) whatever is written, so
           rogue's write-verify, or the config script's own check, fails
@@ -57,9 +64,11 @@ import queue
 import struct
 import sys
 import threading
+import time
 
 import rogue
 import rogue.hardware.axi
+import rogue.protocols.xilinx
 import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
@@ -132,6 +141,7 @@ class Store(object):
         self._pages = {}
         self._lock = threading.Lock()
         self._faults = []       # (var_addr, offsets, sizes, value, path)
+        self._counters = []     # (var_addr, offsets, sizes, hz, t0): free-running counters
         self._vars = {}         # word address -> [(path, var_addr, offsets, sizes)]
 
     def _span(self, addr, size):
@@ -161,6 +171,11 @@ class Store(object):
             self.ntrans += 1
             self.last = ('R', addr, size)
             buf = self.raw_read(addr, size)
+            if self._counters:
+                now = time.monotonic()
+                for (vaddr, offs, sizes, hz, t0) in self._counters:
+                    count = int((now - t0) * hz) & ((1 << sum(sizes)) - 1)
+                    _put_bits(buf, addr, vaddr, offs, sizes, count)
             for (vaddr, offs, sizes, value, path) in self._faults:
                 _put_bits(buf, addr, vaddr, offs, sizes, value)
             return buf
@@ -179,6 +194,11 @@ class Store(object):
             buf = self.raw_read(var_addr, nbytes)
             _put_bits(buf, var_addr, var_addr, offsets, sizes, value)
             self.raw_write(var_addr, buf)
+
+    def add_counter(self, var_addr, offsets, sizes, hz):
+        with self._lock:
+            self._counters.append((var_addr, list(offsets), list(sizes), float(hz),
+                                   time.monotonic()))
 
     def add_fault(self, var_addr, offsets, sizes, value, path):
         with self._lock:
@@ -303,8 +323,40 @@ class SimStreamDma(ris.Master, ris.Slave):
     def setDriverDebug(self, level):
         pass
 
+    # rogue's 'dma == peer' (connect both ways), as on AxiStreamDma: the C++ operator cannot
+    # use a Python class as both ends, so it is pyrogue's streamConnectBiDir here
+    def __eq__(self, other):
+        pr.streamConnectBiDir(self, other)
+        return other
+
+    __hash__ = object.__hash__
+
     def _stop(self):
         self._q.put(None)
+
+
+class SimXvc(object):
+    """Stands in for rogue.protocols.xilinx.Xvc(port): no TCP server.  A stream peer as rogue's
+    '==' takes it (_getStreamSlave/_getStreamMaster): what it is sent is counted and dropped,
+    and it sends nothing."""
+
+    def __init__(self, port=2542, *args, **kwargs):
+        self.port = port
+        self._slave = ris.Slave()
+        self._master = ris.Master()
+        log.info('Xvc(%s) -> SimXvc (no socket)', port)
+
+    def _getStreamSlave(self):
+        return self._slave
+
+    def _getStreamMaster(self):
+        return self._master
+
+    def _start(self):
+        pass
+
+    def _stop(self):
+        pass
 
 
 PV_PREFIX = 'pv:'
@@ -448,6 +500,12 @@ class _Sim(object):
             value = self.seeds.pop(path)
             store = self._locate(var)
             addr = self._var_addr(var)
+            if isinstance(value, dict):         # {"count_hz": f}: a free-running counter
+                store.add_counter(addr, var.bitOffset, var.bitSize, value['count_hz'])
+                self.applied[path] = (store.name, addr, value)
+                log.info('seed %s @%s+0x%x counts at %s Hz', path, store.name, addr,
+                         value['count_hz'])
+                continue
             store.poke(addr, var.bitOffset, var.bitSize, value)
             got = var.get(read=True)
             self.applied[path] = (store.name, addr, value)
@@ -502,6 +560,11 @@ _SIM = _Sim()
 def _seed_value(k, v):
     if k.startswith(PV_PREFIX) and not isinstance(v, str):
         return v                    # PV values keep their JSON type (float, list...)
+    if isinstance(v, dict):
+        if set(v) != {'count_hz'} or float(v['count_hz']) <= 0:
+            raise SimDeviceError('rogue_dev: seed %r: a dict seed is {"count_hz": <positive '
+                                 'rate>}, not %r' % (k, v))
+        return {'count_hz': float(v['count_hz'])}
     return _int(v)
 
 
@@ -608,6 +671,12 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
         return dev_start(self, *args, **kwargs)
     pr.Device._start = _start
 
+    # Some firmware roots (high_rate_encoder_dev) serve Xilinx's XVC debug protocol on a TCP port
+    # of all interfaces, for a JTAG cable behind the card; the simulated device has none, so its
+    # Xvc is a stream endpoint that drops what it gets and opens no socket.
+    _SIM._orig_xvc = rogue.protocols.xilinx.Xvc
+    rogue.protocols.xilinx.Xvc = SimXvc
+
     # Firmware roots open a ZMQ server on a fixed port on all interfaces; a
     # simulated one stays on loopback and takes a free port.
     zmq_init = pr.interfaces.ZmqServer.__init__
@@ -635,6 +704,8 @@ def uninstall():
     if getattr(_SIM, '_orig_pv', None):
         import epics
         epics.PV = _SIM._orig_pv
+    if getattr(_SIM, '_orig_xvc', None):
+        rogue.protocols.xilinx.Xvc = _SIM._orig_xvc
     if getattr(_SIM, '_orig_open', None):
         builtins.open = _SIM._orig_open
     if _SIM._logf:

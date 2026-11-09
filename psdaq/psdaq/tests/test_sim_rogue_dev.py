@@ -210,3 +210,93 @@ def test_the_wave8_seed_file_loads():
     pvs = [k for k in seeds if k.startswith('pv:')]
     assert len(pvs) > 100 and 'pv:{prefix}:Top:TriggerEventManager:XpmMessageAligner:RxId' in pvs
     assert 'pv:{prefix}:Top:TriggerEventManager:EvrV2CoreTriggers:EvrV2TriggerReg[0]:Delay' not in pvs
+
+
+# --- free-running counters and the XpmDetector types' timing receiver (xpmdet_config) -----
+
+class Clocked(pr.Root):
+    def __init__(self, dev):
+        super().__init__(name='Clk', pollEn=False, initRead=True, timeout=2.0)
+        self.mem = rogue.hardware.axi.AxiMemMap(dev)
+        self.add(pr.Device(name='Rx', memBase=self.mem, offset=0x0))
+        self.Rx.add(pr.RemoteVariable(name='TxClkCount', offset=0x0, bitSize=32, mode='RO'))
+
+
+def test_count_hz_seed_is_a_free_running_counter():
+    import time
+    sim = rogue_dev.install(DEV, seeds={'Clk.Rx.TxClkCount': {'count_hz': 1e6}}, fault='')
+    with Clocked(DEV) as top:
+        t0, c0 = time.monotonic(), top.Rx.TxClkCount.get(read=True)
+        time.sleep(0.2)
+        t1, c1 = time.monotonic(), top.Rx.TxClkCount.get(read=True)
+        rate = (c1 - c0) / (t1 - t0)
+        assert 0.9e6 < rate < 1.1e6, rate
+        assert sim.applied['Clk.Rx.TxClkCount'][2] == {'count_hz': 1e6}
+
+
+def test_a_dict_seed_other_than_count_hz_fails_loudly(tmp_path, monkeypatch):
+    path = tmp_path / 'seeds.json'
+    path.write_text(json.dumps({'Clk.Rx.TxClkCount': {'hz': 5}}))
+    monkeypatch.setenv(rogue_dev.ENV_SEEDS, str(path))
+    with pytest.raises(rogue_dev.SimDeviceError, match='count_hz'):
+        rogue_dev.install(DEV, det_type='nosuchtype', fault='')
+
+
+XPMDET_DRIVE = """
+import json, os, socket, sys, traceback
+from psdaq.sim import rogue_dev
+dev = '%s'
+fault = sys.argv[1] if len(sys.argv) > 1 else ''
+sim = rogue_dev.install(dev, 'xpmdet', fault=fault)
+import psdaq.configdb.xpmdet_config as x
+def fail(*args):                                            # rogue threads outlive an exception
+    traceback.print_exception(*args)
+    sys.stderr.flush()
+    os._exit(1)
+sys.excepthook = fail
+root = x.xpmdet_init(dev, 1, '186M', 0)                   # as XpmDetector's constructor
+assert sim.pending() == [], sim.pending()
+rate = root.PcieControl.DevPcie.TDetTiming.refClockRate()
+alloc = {'body': {'drp': {'1': {'proc_info': {'host': socket.gethostname(), 'pid': os.getpid(),
+                                              'device': dev}, 'active': True}}}}
+info = x.xpmdet_connectionInfo(json.dumps(alloc))           # Alloc
+x.xpmdet_connect(3, 64)                                     # Connect: group 3, 64 words
+semi = root.PcieControl.DevPcie.TDetSemi
+teb = root.PcieControl.DevPcie.TDetTiming.TriggerEventManager.TriggerEventBuffer[0]
+print('RESULT', json.dumps({'rate': rate, 'paddr': info['paddr'], 'length': semi.Length_0.get(),
+                            'enable': semi.Enable_0.get(), 'partition': teb.Partition.get(),
+                            'master': teb.MasterEnable.get(), 'writes': len(sim.writes)}))
+x.xpmdet_unconfig()
+x.xpmdet_connectionShutdown()
+sys.stdout.flush()
+os._exit(0)
+""" % DEV
+
+
+def _drive_xpmdet(*args):
+    """xpmdet_config's entry points in XpmDetector.cc's order, in a subprocess (its root keeps
+    rogue threads alive)."""
+    import subprocess
+    import sys
+    return subprocess.run([sys.executable, '-c', XPMDET_DRIVE] + list(args), capture_output=True,
+                          text=True, timeout=120)
+
+
+def test_xpmdet_config_runs_against_the_emulated_timing_receiver():
+    r = _drive_xpmdet()
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode == 0, r.stderr[-3000:]
+    res = json.loads(r.stdout.split('RESULT ', 1)[1].splitlines()[0])
+    assert 180. < res['rate'] < 190.                        # the count_hz seed: 185.7 MHz
+    assert res['paddr'] == 0xff000000                       # the seeded RxId
+    assert (res['length'], res['enable'], res['partition'], res['master']) == (64, 1, 3, 1)
+    assert res['writes'] > 30
+
+
+def test_xpmdet_fault_makes_connect_name_the_register():
+    r = _drive_xpmdet('DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0')
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode != 0
+    assert 'Verify error' in r.stderr and 'TDetSemi' in r.stderr, r.stderr[-3000:]

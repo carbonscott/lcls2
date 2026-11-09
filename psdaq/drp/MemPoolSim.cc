@@ -225,17 +225,131 @@ static void wave8heData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32
     out.tail(32, 0x0d);
 }
 
+// hrencoder (HREncoder::_event reads subframe 2 as Enc::Stream): {int32 position, uint8
+// encErrCnt, missedTrigCnt, latches, reserved}.  position is pattern(seed, seq, 0, 32) as a
+// signed value, the three counts pattern(seed, seq, 1..3, 8); the reserved byte is 0.
+static void hrencoderData(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    uint8_t* d = out.data();
+    uint32_t position = MemPoolSim::pattern(seed, f.seq, 0, 32);
+    memcpy(d, &position, 4);
+    for (unsigned i = 0; i < 3; ++i)
+        d[4 + i] = uint8_t(MemPoolSim::pattern(seed, f.seq, 1 + i, 8));
+    d[7] = 0;
+    out.tail(8, 2);
+}
+
+// epixm320 (EpixM320::_event): subframes 2..5 are ASICs 0..3, each a 48 B header {rsvd u32,
+// frameNo u32, asicNo u8, ...}, 192 x 384 uint16 in the ASIC's bank order, and a 48 B trailer.
+// EpixM320::_descramble reorders the 24 banks (and shifts each bank's rows up by one for an
+// ASIC firmware bug); the framer puts image pixel (q, r, c) where that loop reads it.  15 data
+// bits (psana's epixm320 raw masks with 0x7fff; bit 15 is the gain bit, 0 here).
+static const unsigned EpixMRows = 192, EpixMCols = 384, EpixMBankRows = 4, EpixMBankCols = 6;
+static const unsigned EpixMBanks = 24, EpixMHdr = 48, EpixMAsic = EpixMRows * EpixMCols;
+
+static std::vector<uint32_t> epixm320Order()    // readout word -> image pixel within an ASIC
+{
+    std::vector<uint32_t> inv(EpixMAsic);
+    const unsigned bankHeight = EpixMRows / EpixMBankRows, bankWidth = EpixMCols / EpixMBankCols;
+    const unsigned hw = bankWidth / 2, hb = bankHeight * hw;
+    uint32_t d = 0;                                 // EpixM320::_descramble's dst, row-major
+    for (unsigned bankRow = 0; bankRow < EpixMBankRows; ++bankRow)
+        for (unsigned row = 0; row < bankHeight; ++row) {
+            unsigned rowFix = row == 0 ? bankHeight - 1 : row - 1;
+            for (unsigned bankCol = 0; bankCol < EpixMBankCols; ++bankCol) {
+                unsigned bank = EpixMBankRows * bankCol + bankRow;
+                for (unsigned col = 0; col < bankWidth; ++col)
+                    inv[(((col + 1) % 2) * hb + hw * rowFix + col / 2) * EpixMBanks + bank] = d++;
+            }
+        }
+    return inv;
+}
+
+static void epixm320Data(MemPoolSim::Out& out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    static const std::vector<uint32_t> order = epixm320Order();
+    static const std::vector<PixelMap> asics = [] {
+        std::vector<PixelMap> v;
+        for (uint32_t q = 0; q < 4; ++q)
+            v.emplace_back(EpixMAsic, 15, [q](size_t j) { return q * EpixMAsic + order[j]; });
+        return v;
+    }();
+    out.timingCopy(1);                  // the detailed timing frame; a copy stands in for it
+    for (unsigned q = 0; q < 4; ++q) {
+        uint8_t* d = out.data();
+        memset(d, 0, EpixMHdr);
+        memcpy(d + 4, &f.seq, 4);       // frameNo
+        d[8] = uint8_t(q);              // asicNo
+        asics[q].fill(reinterpret_cast<uint16_t*>(d + EpixMHdr), seed, f.seq);
+        memset(d + EpixMHdr + 2 * EpixMAsic, 0, EpixMHdr);
+        out.tail(2 * EpixMHdr + 2 * EpixMAsic, 2 + q);
+    }
+}
+
 // One row per BEB detector type that can run with -d sim://
 static const MemPoolSim::Batcher Batchers[] = {
     { "epix100", _padded(32) + _padded(Epix100Bytes), epix100Data },
     { "wave8",   _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(56) + _padded(32), wave8Data },
     { "wave8he", _padded(32) + 8 * _padded(2 * Wave8Samples) + _padded(64) + _padded(32), wave8heData },
+    { "hrencoder", _padded(8), hrencoderData },
+    { "epixm320", _padded(32) + 4 * _padded(2 * EpixMHdr + 2 * EpixMAsic), epixm320Data },
 };
 
 const MemPoolSim::Batcher* MemPoolSim::batcher(const std::string& detType)
 {
     for (const auto& b : Batchers)
         if (detType == b.detType)  return &b;
+    return nullptr;
+}
+
+// ts (TimingSystem::event, TimingDef.hh): the 153-byte packed TimingData that the timing
+// system's TDet firmware sends after the TimingHeader.  pulseId and timeStamp are the frame's.
+// Every other element, numbered 2, 3, ... in TimingData order (an array element by element),
+// is pattern(seed, seq, element, bits), 'bits' being what the field holds: 1 for the
+// fixedRates, acRates, ebeamPresent and mpsLimits flags, 3 for timeSlot, 4 for ebeamDestn and
+// each mpsPowerClass, else the field's size (psdaq/psdaq/sim/xtc2_check.py TIMING_FIELDS).
+static const struct { unsigned n, bytes, bits; } TimingFields[] = {
+    {10, 1,  1},    // fixedRates
+    { 6, 1,  1},    // acRates
+    { 1, 1,  3},    // timeSlot
+    { 1, 2, 16},    // timeSlotPhase
+    { 1, 1,  1},    // ebeamPresent
+    { 1, 1,  4},    // ebeamDestn
+    { 1, 2, 16},    // ebeamCharge
+    { 4, 2, 16},    // ebeamEnergy
+    { 2, 2, 16},    // xWavelength
+    { 1, 2, 16},    // dmod5
+    {16, 1,  1},    // mpsLimits
+    {16, 1,  4},    // mpsPowerClass
+    {18, 2, 16},    // sequenceValues (the event codes)
+    { 8, 4, 32},    // inhibitCounts
+};
+static const unsigned TimingDataBytes = 153;    // TimingDef::data_size
+
+static void timingMessage(uint8_t* out, const MemPoolSim::Frame& f, uint32_t seed)
+{
+    uint64_t pid  = f.pulseIdAndControl & ((1ull << 56) - 1);
+    uint64_t time = (uint64_t(f.seconds) << 32) | f.nanoseconds;
+    memcpy(out, &pid, 8);
+    memcpy(out + 8, &time, 8);
+    uint8_t* p = out + 16;
+    uint32_t element = 2;
+    for (const auto& field : TimingFields) {
+        for (unsigned i = 0; i < field.n; ++i, ++element, p += field.bytes) {
+            uint32_t v = MemPoolSim::pattern(seed, f.seq, element, field.bits);
+            memcpy(p, &v, field.bytes);                 // little-endian, as the firmware
+        }
+    }
+}
+
+static const MemPoolSim::TDetMsg TDetMsgs[] = {
+    { "ts", TimingDataBytes, timingMessage },
+};
+
+const MemPoolSim::TDetMsg* MemPoolSim::tdetMsg(const std::string& detType)
+{
+    for (const auto& t : TDetMsgs)
+        if (detType == t.detType)  return &t;
     return nullptr;
 }
 
@@ -270,6 +384,7 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
     MemPool     (para),
     m_alias     (para.alias),
     m_batcher   (batcher(para.detType)),
+    m_tdetMsg   (tdetMsg(para.detType)),
     m_nLanes    (__builtin_popcount(para.laneMask)),
     m_laneMask  (para.laneMask),
     m_virtChan  (0),
@@ -311,6 +426,15 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
         }
         logging::info("MemPoolSim: %s data framed as EventBatcher subframes (up to %u B of data)",
                       para.detType.c_str(), m_batcher->dataBytes);
+    }
+    if (m_tdetMsg) {
+        if (m_dmaSize < sizeof(Pds::TimingHeader) + m_tdetMsg->bytes + sizeof(uint32_t)) {
+            logging::critical("MemPoolSim: %s needs sim_dma_size >= %zu (have %u)", para.detType.c_str(),
+                              sizeof(Pds::TimingHeader) + m_tdetMsg->bytes + sizeof(uint32_t), m_dmaSize);
+            abort();
+        }
+        logging::info("MemPoolSim: %s data is its TDet firmware's %u B message",
+                      para.detType.c_str(), m_tdetMsg->bytes);
     }
     if (posix_memalign((void**)&m_memory, 4096, size_t(m_dmaCount) * m_dmaSize)) {
         logging::critical("MemPoolSim: failed to allocate %u x %u B of DMA buffers", m_dmaCount, m_dmaSize);
@@ -473,7 +597,11 @@ void MemPoolSim::_frames(const uint8_t* data, size_t size)
             auto sz = m_batcher
                     ? fillBatcher((uint8_t*)dmaBuffers[idx], *m_batcher, f, m_evtCounter,
                                   tid == TransitionId::L1Accept, seed)
-                    : fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, len, seed);
+                    : fill((uint8_t*)dmaBuffers[idx], f, m_evtCounter, lane, m_tdetMsg ? 0 : len, seed);
+            if (m_tdetMsg && tid == TransitionId::L1Accept) {
+                m_tdetMsg->data((uint8_t*)dmaBuffers[idx] + sz, f, seed);
+                sz += m_tdetMsg->bytes;
+            }
             m_ready.push_back({int32_t(sz), idx, (lane << 8) | m_virtChan});
             ++nReady;
         }

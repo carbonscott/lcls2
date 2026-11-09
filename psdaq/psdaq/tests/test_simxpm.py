@@ -211,3 +211,41 @@ if __name__ == '__main__':
     test_pull_commands()
     test_control_daqxpm_over_zmq()
     print('test_simxpm: OK')
+
+
+def _value(sim, name):
+    pv, nt = sim.pvs[name]
+    return pv.current()['value']
+
+
+def test_ts_config_pvs_and_link_ready():
+    """The PVs ts_config.py and ts_connect.py use exist with pyxpm's names, and LinkRxReady<n>
+    is 1 exactly while a DRP holds link n."""
+    endpoint = 'tcp://127.0.0.1:%d' % _free_port()
+    sim = SimXpm('SIMTEST', 2, endpoint, rate=100.)
+    X = 'SIMTEST:XPM:2'
+    for g in range(8):
+        for name in ['L0Select', 'L0Select_FixedRate', 'L0Select_EventCode', 'L0Select_ACRate',
+                     'L0Select_ACTimeslot', 'L0RawUpdate', 'DstSelect', 'DstSelect_Mask'] + \
+                    ['%s%d' % (k, i) for k in ('InhInterval', 'InhLimit', 'InhEnable')
+                     for i in range(4)]:
+            assert f'{X}:PART:{g}:{name}' in sim.pvs, name
+    for n in range(14):
+        for name in ('RemoteLinkId', 'LinkGroupMask', 'LinkRxReady', 'LinkRxErrI', 'RxLinkReset'):
+            assert f'{X}:{name}{n}' in sim.pvs
+    assert 'simxpm' in _value(sim, f'{X}:FwBuild')
+    t = threading.Thread(target=sim.run, daemon=True)
+    t.start()
+    ctx = zmq.Context.instance()
+    try:
+        assert _value(sim, f'{X}:LinkRxReady0') == 0
+        a, wa = _drp(ctx, endpoint, 'ts_0', credit=10)
+        time.sleep(0.2)
+        assert _value(sim, f'{X}:LinkRxReady{wa["link"]}') == 1
+        assert _value(sim, f'{X}:RemoteLinkId{wa["link"]}') == 0     # not an XPM: no recursion
+        a.send_multipart([b'BYE', b''])
+        time.sleep(0.2)
+        assert _value(sim, f'{X}:LinkRxReady{wa["link"]}') == 0
+    finally:
+        sim.stop.set()
+        t.join(2)

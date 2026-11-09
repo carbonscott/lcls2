@@ -1,0 +1,10 @@
+{
+ "_comment": "The simulated TDet timing receiver of every XpmDetector type (fakecam, cspad, epixhremu, jungfrauemu, ts) for psdaq.sim.rogue_dev: the l2si_drp DrpTDetRoot that psdaq/configdb/xpmdet_config.py builds on the KCU1500's PCIe map, and the driver's /proc text (detect_C1100 reads its 'Build String'). Keys are pyrogue register paths; values are what the hardware reports.",
+ "_proc": [
+  "Build String     : DrpTDet: Vivado v2023.1, XilinxKcu1500 (sim)"
+ ],
+ "DrpTDet.PcieControl.DevPcie.TDetTiming.TimingFrameRx.TxClkCount": {"count_hz": 11607143},
+ "_TxClkCount": "TDetTiming.refClockRate() is 16e-6 * (counts per second) MHz: 11607143 Hz reads 185.71 MHz, the 186M timebase's 1300/7 MHz, so xpmdet_connectionInfo does not reprogram the Si570",
+ "DrpTDet.PcieControl.DevPcie.TDetTiming.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id as XPM 0 port 0 reports it (xpm_utils.xpmLinkId type 0xff); the DRP takes the link id simxpm assigns, not this one"
+}

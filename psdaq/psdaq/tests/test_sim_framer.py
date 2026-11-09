@@ -111,7 +111,7 @@ def test_pattern_matches_the_cxx_mix():
 
 def test_unknown_type_is_refused():
     r = subprocess.run([EXE, 'nosuchtype', '1'], capture_output=True, text=True, timeout=60)
-    assert r.returncode == 1 and "no simulated EventBatcher layout for detType 'nosuchtype'" in r.stderr
+    assert r.returncode == 1 and "no simulated EventBatcher layout or TDet message for detType 'nosuchtype'" in r.stderr
 
 
 def test_wave8_frame_layout():
@@ -167,3 +167,87 @@ def test_wave8he_frame_layout():
         assert u24(integ[:24], i) == p(32 + i, 24)
     assert struct.unpack_from('<2f', peak, 56) == (p(24, 20) / 1024., p(25, 20) / 1024.)
     assert struct.unpack_from('<2f', integ, 24) == (p(40, 20) / 1024., p(41, 20) / 1024.)
+
+
+def test_ts_timing_message_layout():
+    """TimingSystem::event records the 153 bytes after the TimingHeader as TimingDef's packed
+    TimingData: pulseId and timeStamp of the frame, then every other element numbered 2, 3, ...
+    holding pattern(seed, seq, element, bits) with the field's meaning as its width."""
+    seq = 9
+    buf = frame('ts', seq)
+    assert len(buf) == 32 + 153
+    assert buf[:32] == timing_header(seq)
+    pid, time = struct.unpack_from('<QQ', buf, 32)
+    assert pid == PID and time == (1100000000 << 32) | 500000000
+    layout = [('fixedRates', 10, 'B', 1), ('acRates', 6, 'B', 1), ('timeSlot', 1, 'B', 3),
+              ('timeSlotPhase', 1, 'H', 16), ('ebeamPresent', 1, 'B', 1),
+              ('ebeamDestn', 1, 'B', 4), ('ebeamCharge', 1, 'H', 16), ('ebeamEnergy', 4, 'H', 16),
+              ('xWavelength', 2, 'H', 16), ('dmod5', 1, 'H', 16), ('mpsLimits', 16, 'B', 1),
+              ('mpsPowerClass', 16, 'B', 4), ('sequenceValues', 18, 'H', 16),
+              ('inhibitCounts', 8, 'I', 32)]
+    pos, element = 48, 2
+    for name, n, fmt, bits in layout:
+        values = struct.unpack_from('<%d%s' % (n, fmt), buf, pos)
+        want = pattern.pattern(SEED, seq, np.arange(element, element + n), bits)
+        assert list(values) == [int(v) for v in want], name
+        assert all(v < (1 << bits) for v in values), name
+        pos += n * struct.calcsize(fmt)
+        element += n
+    assert pos == len(buf)
+    from psdaq.sim.xtc2_check import TIMING_FIELDS          # the checker's copy of the layout
+    assert [(a, b, d) for a, b, c, d in layout] == TIMING_FIELDS
+
+
+def test_ts_message_differs_per_event_and_seed():
+    assert frame('ts', 1)[48:] != frame('ts', 2)[48:]
+    assert frame('ts', 1)[48:] != frame('ts', 1, SEED + 1)[48:]
+
+
+def test_hrencoder_frame_layout():
+    """HREncoder::_event reads subframe 2 as Enc::Stream {int32 position, uint8 encErrCnt,
+    missedTrigCnt, latches, reserved}."""
+    seq = 5
+    data, order = subframes(frame('hrencoder', seq))
+    assert order == [0, 2]
+    assert data[0] == timing_header(seq)
+    assert len(data[2]) == 8
+    position, err, missed, latches, rsvd = struct.unpack('<iBBBB', data[2])
+    p = lambda i, bits: int(pattern.pattern(SEED, seq, i, bits))
+    assert position & 0xffffffff == p(0, 32)
+    assert (err, missed, latches, rsvd) == (p(1, 8), p(2, 8), p(3, 8), 0)
+
+
+def epixm320_descramble(src):
+    """EpixM320::_descramble, written out again: 24 banks of 48 x 64 in the readout order,
+    reordered (bank = 4 * bankCol + bankRow), even/odd columns split, rows shifted up by one."""
+    rows, cols, nbank = 192, 384, 24
+    bh, bw = rows // 4, cols // 6
+    hw, hb = bw // 2, bh * bw // 2
+    dst = np.empty((rows, cols), dtype=src.dtype)
+    for r in range(rows):
+        bank_row, row = divmod(r, bh)
+        row_fix = bh - 1 if row == 0 else row - 1
+        for c in range(cols):
+            bank_col, col = divmod(c, bw)
+            bank = 4 * bank_col + bank_row
+            dst[r, c] = src[(((col + 1) % 2) * hb + hw * row_fix + col // 2) * nbank + bank]
+    return dst
+
+
+def test_epixm320_frame_layout():
+    """EpixM320::_event reads subframes 2..5 as ASICs 0..3: a 48 B header (frameNo at 4,
+    asicNo at 8), 192 x 384 uint16 in bank order, a 48 B trailer; descrambled, ASIC q's
+    pixel (r, c) is pattern(seed, seq, q * 73728 + r * 384 + c, 15)."""
+    seq = 3
+    data, order = subframes(frame('epixm320', seq))
+    assert order == [0, 1, 2, 3, 4, 5]
+    assert data[0] == timing_header(seq) and data[1] == data[0]
+    for q in range(4):
+        sf = data[2 + q]
+        assert len(sf) == 48 + 2 * 192 * 384 + 48
+        assert struct.unpack_from('<IIB', sf, 0) == (0, seq, q)
+        src = np.frombuffer(sf[48:48 + 2 * 192 * 384], dtype=np.uint16)
+        img = epixm320_descramble(src)
+        want = pattern.pattern(SEED, seq, q * 192 * 384 + np.arange(192 * 384), 15).reshape(192, 384)
+        assert (img == want).all(), q
+        assert sf[-48:] == bytes(48)

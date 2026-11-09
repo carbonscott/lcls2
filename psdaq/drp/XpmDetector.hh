@@ -25,9 +25,10 @@ protected:
     void connectionShutdown() override;
 private:
     void _init();
+    void _simInstall();
     void _simConfigure(const std::string& config_alias);
 private:
-    PyObject*            m_xmodule;        // python module, or nullptr with a sim:// device
+    PyObject*            m_xmodule;        // python module (psdaq.configdb.xpmdet_config)
     MemPoolSim*          m_sim;            // software timing source, or nullptr with hardware
     nlohmann::json       m_connectMsg;     // kept to fetch the sim payload seed at Configure
 protected:

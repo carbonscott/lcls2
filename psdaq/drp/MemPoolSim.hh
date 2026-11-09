@@ -30,6 +30,8 @@ namespace Drp {
 //   w0 = pulseId & 0xffffffff, w1 = pulseId >> 32, w2 = seq (L1Accepts since the last
 //   GroupL0Reset), w3 = seed, w[k] = seed + w0 + k + (lane << 16) for k = 4..L-1.
 // The seed comes from the configuration database at Configure (see XpmDetector).
+// The timing system's DRP (-D ts) gets the timing message its TDet firmware sends instead of
+// these words: TimingData (TimingDef.hh) with the frame's pulseId and time (MemPoolSim.cc).
 //
 // Detector types whose data the AxiStreamBatcherEventBuilder formats (BEBDetector) get their
 // DMA buffers in that format instead (see EventBatcher.hh): a batcher header, the TimingHeader
@@ -73,6 +75,15 @@ public:
         void      (*data)(Out& out, const Frame& f, uint32_t seed);
     };
     static const Batcher* batcher(const std::string& detType);
+    // An XpmDetector type whose TDet firmware sends a formatted message instead of the
+    // TDetSemi words above: 'bytes' of it after each L1Accept's TimingHeader (MemPoolSim.cc)
+    struct TDetMsg
+    {
+        const char* detType;
+        unsigned    bytes;
+        void      (*data)(uint8_t* out, const Frame& f, uint32_t seed);
+    };
+    static const TDetMsg* tdetMsg(const std::string& detType);
     // The simulated value of pixel 'index' in event 'seq' (see above)
     static uint32_t pattern(uint32_t seed, uint32_t seq, uint32_t index, unsigned bits);
     static uint32_t mix(uint32_t index);        // the position-dependent part of pattern()
@@ -107,6 +118,7 @@ private:
     std::string             m_endpoint;
     std::string             m_alias;
     const Batcher*          m_batcher;          // EventBatcher framing, or nullptr for TDet
+    const TDetMsg*          m_tdetMsg;          // TDet message instead of TDetSemi words, or nullptr
     unsigned                m_nLanes;
     uint8_t                 m_laneMask;
     unsigned                m_virtChan;

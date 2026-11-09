@@ -44,6 +44,8 @@ NUM_GROUPS = 8
 NUM_LINKS = 32                          # Length of DeadFLnk, as in pyxpm
 NUM_COINC = NUM_GROUPS * (NUM_GROUPS + 1) // 2      # PATT:COINC entries (pyxpm pvstats NCOINC)
 PATT_STATS = ('Sum', 'First', 'Last', 'MinIntv', 'MaxIntv')     # PATT:GROUPS columns (pyxpm pvstats pattStats)
+NUM_PORTS = 14                          # Front-panel links with per-link PVs, as ts_connect.py uses
+FW_BUILD = 'simxpm (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware'
 PID_MASK = (1 << 56) - 1
 
 
@@ -219,7 +221,7 @@ class SimXpm:
         # Stand-ins for the pyxpm PVs the XPM GUIs read (groupca: xpmTree, XpmDeadTime): stored values only.
         # RemoteLinkId stays 0 (no remote id, so groupca never resolves a host name); LinkGroupMask<n> is
         # 1 << group while the DRP of link n is in a readout group (pyxpm pvctrls LinkGroupMask).
-        self._add(f'{X}:FwBuild', 's', 'simxpm (psdaq/psdaq/sim/simxpm.py)')
+        self._add(f'{X}:FwBuild', 's', FW_BUILD)
         for n in range(NUM_LINKS):
             self._add(f'{X}:RemoteLinkId{n}', 'I', 0)
             self._add(f'{X}:LinkGroupMask{n}', 'I', 0)
@@ -246,6 +248,8 @@ class SimXpm:
             self._add(f'{P}:DeadFLnk', 'af', [0.] * NUM_LINKS)
             for label in ('NumL0Acc', 'NumL0Inp', 'L0AccRate', 'L0InpRate'):
                 self._add(f'{P}:{label}', 'f', 0.)
+            # Trigger and inhibit settings that ts_config.py writes (pvctrls.py PVCtrls and
+            # GroupCtrls); simxpm keeps them, its L1Accepts stay at SIM:L1Rate.
             # Stand-ins (pyxpm pvctrls/pvstats names and types) for groupca and partca: stored values,
             # RunTime/DeadFrac/DeadTime/NumL1/L1Rate computed from the counters in _stats.
             for label in ('L0Select', 'L0Select_FixedRate', 'L0Select_ACRate', 'L0Select_ACTimeslot',
@@ -263,6 +267,14 @@ class SimXpm:
             for label in ('MsgConfig', 'MsgConfigKey', 'MsgEnable', 'MsgDisable', 'MsgClear', 'MsgInsert',
                           'ResetL0'):
                 self._add(f'{P}:{label}', 'I', 0)
+        # Per-link PVs that ts_connect.py reads and writes (pvctrls.py LinkCtrls, pvstats.py
+        # LinkStatus): LinkRxReady<n> is 1 while a DRP holds link n (a locked receiver).
+        # LinkGroupMask<n>, RemoteLinkId<n> and FwBuild are added above for the XPM GUIs.
+        for n in range(NUM_PORTS):
+            for label in ('TxLinkReset', 'RxLinkReset', 'LinkLoopback'):
+                self._add(f'{X}:{label}{n}', 'I', 0)
+            for label in ('LinkTxReady', 'LinkRxReady', 'LinkRxErr', 'LinkRxErrI', 'LinkRxIsXpm'):
+                self._add(f'{X}:{label}{n}', 'I', 0)
 
     def _post(self, name, value):
         pv, nt = self.pvs[name]
@@ -388,6 +400,11 @@ class SimXpm:
 
     # --- DRP links --------------------------------------------------------------------
 
+    def _link_ready(self, number, ready):
+        if number < NUM_PORTS:
+            for label in ('LinkTxReady', 'LinkRxReady'):
+                self._post(f'{self.prefix}:{label}{number}', ready)
+
     def _receive(self):
         while True:
             try:
@@ -413,6 +430,7 @@ class SimXpm:
                 self.sock.send_multipart([identity, b'WELCOME', json.dumps(
                     {'xpm': self.xpm, 'link': number, 'pvbase': self.pvbase}).encode()])
                 self._post(f'{self.prefix}:SIM:NumLinks', len(self.links))
+                self._link_ready(number, 1)
                 logging.info('link %d: %s (%s pid %s)', number, alias, info.get('host'), info.get('pid'))
             elif link is None:
                 logging.warning('%s from an unregistered DRP; restart that DRP', kind.decode())
@@ -430,6 +448,7 @@ class SimXpm:
             elif kind == b'BYE':
                 del self.links[identity]
                 self._post(f'{self.prefix}:SIM:NumLinks', len(self.links))
+                self._link_ready(link.number, 0)
                 logging.info('link %d: %s is gone', link.number, link.alias)
 
     def _receive_pull(self):
