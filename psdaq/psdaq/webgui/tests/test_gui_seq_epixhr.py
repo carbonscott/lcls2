@@ -1,7 +1,9 @@
 """Headless-browser tests of /gui/seq_epixhr, the web copy of psdaq/seq/seq_epixhr.py --plot (psdaq.webgui.plots_api:
 seq_epixhr's own main() with --test, so nothing is written to an XPM, and Qt stood in), on the simulated DAQ's node,
 with --rate 1000 (with the default rate, seq_epixhr --test --plot raises in seqplot's simulation of its sequence).
-The plot's curves are compared with the curves the PyQt seq_epixhr --test --plot drew in this session's walk."""
+The plot's curves are compared with the curves the PyQt seq_epixhr --test --plot drew in this session's walk, and
+every control of the panel's context menu (48, parity/pg_options.py) with what it did to the PyQt seq_epixhr in the
+walk's option step."""
 
 import pytest
 
@@ -10,6 +12,7 @@ import plots_checks as P
 ARGV = ['--test', '--plot', '--rate', '1000']   # the default rate's --plot raises in seqplot's simulation
 ROWS = ['PatternWaveform.add.q0[epixhr]']
 PARITY_ROWS = {'test_plot_shows_the_pyqt_curves': ROWS, 'test_wheel_zoom_drag_pan': ROWS}
+PARITY_ROWS.update(P.option_tests(globals(), 'se', 'seq_epixhr', ROWS))
 
 
 @pytest.fixture(scope='module')
