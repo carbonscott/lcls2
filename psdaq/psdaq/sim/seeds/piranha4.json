@@ -1,0 +1,25 @@
+{
+ "_comment": "The simulated Piranha4 line camera behind a camera link gateway for psdaq.sim.rogue_dev: the KCU's ClinkPcie (AxiMemMap) and the FEB behind PGP lane 0 (SRPv3 on VC0, the camera's serial port on VC2) of cameralink_gateway.ClinkDevRoot, which psdaq/configdb/piranha4_config.py builds. Keys are pyrogue register paths; values are what the hardware reports.",
+ "ClinkDevRoot.ClinkPcie.Hsio.PgpMon[0].RxRemLinkReady": 1,
+ "_RxRemLinkReady": "the FEB's PGP2b link is up: the FEB devices' enableDeps, and piranha4_config's 'PGP Link is down' check",
+ "ClinkDevRoot.ClinkPcie.AxiPcieCore.AxiVersion.FpgaVersion": "0x03060000",
+ "ClinkDevRoot.ClinkPcie.AxiPcieCore.AxiVersion.DMA_SIZE_G": 4,
+ "_FpgaVersion": "ClinkDevRoot.PcieVersionLock and FebVersionLock: ClinkDevRoot.start checks both (a FEB mismatch raises)",
+ "ClinkDevRoot.ClinkFeb[0].AxiVersion.FpgaVersion": "0x08020000",
+ "ClinkDevRoot.ClinkPcie.Hsio.TimingRx.GthRxAlignCheck[1].TxClkFreqRaw": 185714286,
+ "_TxClkFreqRaw": "the 186M timebase's 1300/7 MHz reference: piranha4_connectionInfo reprograms the Si570 unless it reads 180-190 MHz",
+ "ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
+ "_RxId": "the XPM's remote link id; the DRP takes the link id simxpm assigns, not this one",
+ "_uart": {
+  "dests": [
+   "0x2"
+  ],
+  "replies": {
+   "gcp": "Model #:\tP4_CM_02K10D_00_R\r\nSerial #:\t00000001\r\nBiST:\tGood\r\nCPA:\t0 4095 0\r\nUSER>",
+   "vt": "Internal Temperature:\t40.0 C\r\nUSER>",
+   "vv": "Supply Voltage:\t12.0 V\r\nUSER>"
+  },
+  "default": "OK\r\nUSER>",
+  "_comment": "the Piranha4's serial console (surf UartPiranha4, piranha4_config.MyUartPiranha4Rx): every command is answered with its lines, each ending CR LF, and then the 'USER>' prompt, which the config script waits for (_await); 'gcp' is the configuration summary piranha4_connectionInfo parses: the Model line (P4_CM_02K..: 2048 pixels), 'Serial #', 'BiST' and, last, 'CPA'; 'vt' and 'vv' the temperature and voltage lines it prints; every other command gets 'OK'"
+ }
+}
