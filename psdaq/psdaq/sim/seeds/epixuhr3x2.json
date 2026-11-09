@@ -4,11 +4,7 @@
  "_PCIE_HW_TYPE_G": "the data card is a Varium C1100 (AxiPcieCore checks the hardware type its firmware was built for)",
  "Root.ROS[0].DataFpga[0].AxiPcieCore.CmsBridge.Status.HOST_STATUS2_REG": 1,
  "Root.ROS[0].DataFpga[0].AxiPcieCore.CmsBridge.Status.REG_MAP_ID_REG": "0x74736574",
- "Root.ROS[0].DataFpga[0].AxiPcieCore.CmsBridge.Mailbox.CONTROL_REG[5]": {
-  "response": 0,
-  "bits": 1
- },
- "_CmsBridge": "the C1100 card's management (axipcie CmsProxy): at start it resets the mailbox and waits for HOST_STATUS2_REG bit 0 (ready) and REG_MAP_ID_REG 'test'; each request through the mailbox waits for CONTROL_REG[5] to read 0, before (mailbox free) and after (response in the mailbox) it sets it: the card's firmware answers at once here, with an empty mailbox and HOST_MSG_ERR_REG 0",
+ "_CmsBridge": "the C1100 card's management (axipcie CmsProxy): at start it resets the mailbox and waits for HOST_STATUS2_REG bit 0 (ready) and REG_MAP_ID_REG 'test'; the mailbox's requests are answered by rogue_dev's CmsFirmware",
  "Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.XpmMessageAligner.RxId": "0xff000000",
  "_RxId": "the XPM's remote link id; the DRP takes the link id simxpm assigns, not this one"
 }

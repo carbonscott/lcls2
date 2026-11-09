@@ -395,3 +395,78 @@ def test_the_epixquad1kfps_prom_seed_loads():
     assert seeds['Top.CypressS25Fl.CmdReg'] == {'response': 0, 'bits': 8}
     with pytest.raises(rogue_dev.SimDeviceError, match='bits'):
         rogue_dev._seed_value('X.CmdReg', {'response': 0, 'bits': 40})
+
+
+CMS_DRIVE = """
+import json, os, sys, traceback
+from psdaq.sim import rogue_dev
+dev = '%s'
+seed = {'Top.Cms.Status.HOST_STATUS2_REG': 1, 'Top.Cms.Status.REG_MAP_ID_REG': 0x74736574}
+if len(sys.argv) > 1:                                       # the answer seed this replaces
+    seed['Top.Cms.Mailbox.CONTROL_REG[5]'] = {'response': 0, 'bits': 1}
+sim = rogue_dev.install(dev, seeds=seed, fault='')
+import psdaq.utils.enable_epix_uhr3x2                       # sys.path for surf and axipcie
+import pyrogue as pr
+import rogue.hardware.axi
+import surf.axi
+import axipcie
+def fail(*args):                                            # rogue threads outlive an exception
+    traceback.print_exception(*args)
+    sys.stderr.flush()
+    os._exit(1)
+sys.excepthook = fail
+class Top(pr.Root):
+    # A C1100's card management as axipcie AxiPcieCore builds it: CmsSubsystem behind surf's
+    # AXI-Lite master proxy on the PCIe map, two QSFP cages
+    def __init__(self):
+        super().__init__(name='Top', pollEn=False, initRead=False, timeout=2.0)
+        self.mem = rogue.hardware.axi.AxiMemMap(dev)
+        self.add(surf.axi.AxiLiteMasterProxy(name='Bridge', memBase=self.mem, offset=0x70000))
+        self.add(axipcie.CmsSubsystem(name='Cms', offset=0x80000000, memBase=self.Bridge.proxy,
+                                      moduleType='QSFP', numCages=2))
+top = Top()
+top.start()                                                 # CmsSubsystem._start: reset, ready
+cms = top.Cms
+cms.QsfpLowSpeedIo[1].QSFP_LPMODE.set(1)                    # a mailbox write (op 0x0E), verified
+cms.Mailbox.HbmTempMonEnable.set(1)                         # shares CONTROL_REG[5]'s word
+top.ReadAll()
+res = {'lpmode': [cms.QsfpLowSpeedIo[i].QSFP_LPMODE.get(read=True) for i in (0, 1)],
+       'hbm': cms.Mailbox.HbmTempMonEnable.get(read=True),
+       'ctrl': cms.Mailbox.nodes['CONTROL_REG[5]'].get(read=True),
+       'requests': {'%%#x' %% k: v for k, v in sim.cms[0].requests.items()}}
+print('RESULT', json.dumps(res))
+sys.stdout.flush()
+os._exit(0)
+""" % DEV
+
+
+def _drive_cms(*args):
+    import subprocess
+    import sys
+    return subprocess.run([sys.executable, '-c', CMS_DRIVE] + list(args), capture_output=True,
+                          text=True, timeout=120)
+
+
+def test_the_cms_mailbox_answers_its_requests():
+    """A CmsSubsystem's mailbox requests (axipcie _CmsProxy) are answered by rogue_dev's
+    CmsFirmware: a QSFP cage's low-speed IO keeps what is written, per cage; CONTROL_REG[5]'s
+    write-verify passes, and so does a write of HbmTempMonEnable, in the same word."""
+    r = _drive_cms()
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode == 0, r.stderr[-3000:]
+    res = json.loads(r.stdout.split('RESULT ', 1)[1].splitlines()[0])
+    assert res['lpmode'] == [0, 1]
+    assert (res['hbm'], res['ctrl']) == (1, 0)
+    assert res['requests']['0xe'] == 1 and res['requests']['0xd'] >= 3
+
+
+def test_the_old_answer_seed_fails_the_request_bit_s_write_verify():
+    """What CmsFirmware replaces: with CONTROL_REG[5] seeded to read 0, the request's
+    write-verify fails (Verify error ... HbmTempMonEnable, the word's first variable) in the
+    mailbox's worker thread."""
+    r = _drive_cms('old-seed')
+    if 'SUBMODULEDIR' in r.stderr and r.returncode:
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
+    assert r.returncode != 0
+    assert 'Verify error for block Top.Cms.Mailbox.HbmTempMonEnable' in r.stderr
