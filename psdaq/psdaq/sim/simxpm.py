@@ -33,7 +33,8 @@ control.py still connects its PUSH socket to 'tcp://None:<port>', so run it with
 Both the PVA server and the frame and PULL sockets bind to the loopback interface unless told
 otherwise.
 
-With --camera-pv NAME it also serves a camera PV for drp_pva, as an areaDetector IOC whose
+With --camera-pv NAME it also serves a camera PV for drp_pva (opened 0.25 s after a client connects, as
+CameraPV says), as an areaDetector IOC whose
 frames a timing receiver stamps: an NTNDArray (uint16, CAMERA_SHAPE) updated once for every
 L1Accept, its timeStamp the L1Accept's time (drp_pva matches PV updates to L1Accepts by exact
 time), its pixels camera_image(seed, seq): pixels 0 and 1 the L1Accept's seq (low, high 16 bits),
@@ -170,21 +171,63 @@ def camera_image(seed, seq, shape=CAMERA_SHAPE):
 
 
 class CameraPV:
-    """--camera-pv: an NTNDArray PV posted once per L1Accept with that L1Accept's time."""
+    """--camera-pv: an NTNDArray PV posted once per L1Accept with that L1Accept's time.
+
+    The PV opens OPEN_S after a client's first channel, with the last image, and closes after its last
+    channel.  drp_pva's PvMonitor (MonTracker, psdaq/psdaq/epicstools) starts its monitor inside its
+    constructor and drops an update that arrives before the constructor has returned (shared_from_this()
+    throws bad_weak_ptr in MonTracker::monitorEvent); pvAccessCPP signals a monitor's data only when its
+    queue goes from empty to not empty, so no later update reaches it either, and drp_pva waited out its
+    3 s at Configure ("PV ... hasn't connected").  Served open, as a camera IOC's PV is, the first update
+    came within 1 ms of drp_pva's search when its TCP link to simxpm was already up, before that
+    constructor had returned; opened OPEN_S later, it comes after.  An L1Accept with no client is not
+    posted (nobody would see it) but is the image the PV opens with."""
+    OPEN_S = 0.25
 
     def __init__(self, name, provider, seed):
         self.name, self.seed, self.nt = name, seed, NTNDArray()
-        self.pv = SharedPV(initial=self.nt.wrap(camera_image(seed, 0)))   # posts Values, as _add
+        self.lock = threading.Lock()
+        self.last = (0, None, None)                 # seq, sec, ns of the last L1Accept
+        self.clients = 0                            # first channels seen, so a stale open does nothing
+        self.pv = SharedPV(handler=self)            # closed until a client connects (posts Values, as _add)
         provider.add(name, self.pv)
         self.posted = 0
+        self.opened = 0
+
+    def _value(self, seq, sec, ns):
+        value = self.nt.wrap(camera_image(self.seed, seq))
+        if sec is not None:
+            value['uniqueId'] = seq
+            value['timeStamp.secondsPastEpoch'] = sec + POSIX_TIME_AT_EPICS_EPOCH
+            value['timeStamp.nanoseconds'] = ns
+        return value
 
     def post(self, sec, ns, seq):
-        value = self.nt.wrap(camera_image(self.seed, seq))
-        value['uniqueId'] = seq
-        value['timeStamp.secondsPastEpoch'] = sec + POSIX_TIME_AT_EPICS_EPOCH
-        value['timeStamp.nanoseconds'] = ns
-        self.pv.post(value)
-        self.posted += 1
+        value = self._value(seq, sec, ns)
+        with self.lock:
+            self.last = (seq, sec, ns)
+            if self.pv.isOpen():
+                self.pv.post(value)
+            self.posted += 1
+
+    def onFirstConnect(self, pv):               # p4p SharedPV handler: a client's first channel
+        with self.lock:
+            self.clients += 1
+            timer = threading.Timer(self.OPEN_S, self._open, (self.clients,))
+        timer.daemon = True
+        timer.start()
+
+    def _open(self, n):
+        with self.lock:
+            if n == self.clients and not self.pv.isOpen():
+                self.pv.open(self._value(*self.last))
+                self.opened += 1
+
+    def onLastDisconnect(self, pv):             # its last channel: the next client waits OPEN_S again
+        with self.lock:
+            self.clients += 1
+            if self.pv.isOpen():
+                self.pv.close()
 
 
 class TransitionId:

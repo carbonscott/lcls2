@@ -314,3 +314,56 @@ def test_link_full_holds_back_l0s_and_varies_deadflnk():
     finally:
         sim.stop.set()
         t.join(2)
+
+
+def _camera_server(cam_name, seed):
+    from p4p.server import Server, StaticProvider
+    from psdaq.sim.simxpm import CameraPV
+    prov = StaticProvider('camtest')
+    cam = CameraPV(cam_name, prov, seed)
+    srv = Server(providers=[prov], conf={'EPICS_PVAS_INTF_ADDR_LIST': '127.0.0.1', 'EPICS_PVAS_SERVER_PORT': '0',
+                                         'EPICS_PVAS_BROADCAST_PORT': '0', 'EPICS_PVAS_AUTO_BEACON_ADDR_LIST': 'NO',
+                                         'EPICS_PVAS_BEACON_ADDR_LIST': '127.0.0.1'}, useenv=False)
+    return cam, srv
+
+
+def _camera_client(srv):
+    from p4p.client.thread import Context
+    port = srv.conf()['EPICS_PVAS_SERVER_PORT']
+    return Context('pva', conf={'EPICS_PVA_AUTO_ADDR_LIST': 'NO', 'EPICS_PVA_ADDR_LIST': '127.0.0.1',
+                                'EPICS_PVA_NAME_SERVERS': '127.0.0.1:%s' % port}, useenv=False)
+
+
+def test_camera_pv_opens_a_while_after_a_client_connects():
+    """The camera PV opens OPEN_S after a client's first channel, with the last L1Accept's image and time, so a
+    monitor's first update comes that long after its subscription (drp_pva's MonTracker drops an update that
+    arrives while its constructor still runs, and then sees no later one); it closes after the last client."""
+    from psdaq.sim.simxpm import CameraPV, camera_image
+    cam, srv = _camera_server('CAMTEST:IMAGE', 0x1234)
+    try:
+        cam.post(1000, 500, 7)                  # no client: not posted, but the image it opens with
+        assert not cam.pv.isOpen() and cam.posted == 1
+        ctx = _camera_client(srv)
+        got = []
+        t0 = time.monotonic()
+        sub = ctx.monitor('CAMTEST:IMAGE', lambda v: got.append((time.monotonic() - t0, v)))
+        for _ in range(100):
+            if got:
+                break
+            time.sleep(0.05)
+        assert got and got[0][0] >= CameraPV.OPEN_S and cam.opened == 1, got
+        v = got[0][1]
+        assert v.raw['uniqueId'] == 7 and v.raw['timeStamp.nanoseconds'] == 500
+        assert (v.raw['value'].reshape(camera_image(0x1234, 7).shape) == camera_image(0x1234, 7)).all()
+        cam.post(1001, 0, 8)                    # open: posted to the client
+        time.sleep(0.3)
+        assert [x[1].raw['uniqueId'] for x in got] == [7, 8]
+        sub.close()
+        ctx.close()
+        for _ in range(60):
+            if not cam.pv.isOpen():
+                break
+            time.sleep(0.05)
+        assert not cam.pv.isOpen()
+    finally:
+        srv.stop()

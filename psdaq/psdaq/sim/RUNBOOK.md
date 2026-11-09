@@ -1169,7 +1169,12 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   its PVA monitor fell behind for the first ~50 L1Accepts of a run (they were recorded without
   the image); run `--pva` at `--rate 100`, near a camera's rate, as §3h does. Even then an update
   can miss its L1Accept (2 of 1119 in one run); the check counts them and requires drp_pva's own
-  count to agree. Those counters are per process, so compare them in the first cycle after `up`. epicsArch archives two CA PVs of a softIoc on loopback and one PVA PV of simxpm. sim_udpencoder sends the
+  count to agree. drp_pva's monitor (`MonTracker`) drops an update that arrives while its
+  constructor still runs (`shared_from_this()` throws `bad_weak_ptr`), and pvAccessCPP then
+  signals no later update, since the monitor's queue never empties; on loopback, with drp_pva's
+  TCP link to simxpm already up, the camera PV's first update came within 1 ms, so drp_pva
+  sometimes waited out its 3 s at Configure ("PV DAQ:SIM:CAM:IMAGE hasn't connected"). simxpm's
+  camera PV therefore opens 0.25 s after a client's first channel and closes after its last. Those counters are per process, so compare them in the first cycle after `up`. epicsArch archives two CA PVs of a softIoc on loopback and one PVA PV of simxpm. sim_udpencoder sends the
   100/200 test pattern only (no `-f` playback in the run).
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
