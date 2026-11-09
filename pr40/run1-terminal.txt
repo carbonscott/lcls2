@@ -1,0 +1,283 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T13:44:09+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty flock -w 5400 /tmp/agentify-daq-milan120.lock bash --rcfile /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/node_rc.sh -i
+cwang31@sdfmilan120:agentify-lcls2$ hostname; date '+%F %T %Z'; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID; this shell runs under: $(ps -o args= -p $PPID | cut -c1-60)"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3
+sdfmilan120
+2026-11-09 05:44:13 PST
+Slurm job 43843200 step 312; this shell runs under: /usr/bin/flock -w 5400 /tmp/agentify-daq-milan120.lock bash 
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+cwang31@sdfmilan120:agentify-lcls2$ cd $T && git rev-parse HEAD && git log -1 --format='agentify: %h %s' b593f5ea1 | cut -c1-130 && git log --first-parent --format='%h %s' b593f5ea1..HEAD | cut -c1-130 && echo "local changes: $(git status --short | wc -l)"
+ead686c33cd1017a6699e2a17412f2c2bd514544
+agentify: b593f5ea1 Merge PR #38: coverage: an evidence record proves a row only if its files show the row ran
+ead686c33 Merge agentify (PRs #37, #38) into pr/gui-batch3
+83d5211c9 webgui parity: check_gui_parity compares each pvgui page widget's PV with the PyQt widget's
+13ba1ffdf webgui tests: fixes from the first final run
+f505412c0 webgui parity: only a QTreeWidget gets a .select row
+dd944638e webgui parity: the configdb_GUI spec maps its 23 rows to their tests
+67b6c6bab CHANGELOG and README: the web copies of hsdPs, configdb_GUI and xpmpva, the pyqtgraph menu rows (#40)
+6e6e23184 webgui: web copy of xpmpva against two simxpms (an ATCA XPM with xtpg, a Kcu1500)
+404228e51 webgui: web copy of configdb_GUI against the config DB stand-in
+26c25b7ef webgui: web copy of hsdPs against simhsd, whose MONTRIG counts the phase scan triggers
+93be3be83 webgui plots: the Plot Options and axis menus of every pyqtgraph panel (seqplot, seq_epixhr)
+c1a794e29 webgui parity: pyqtgraph menu controls are rows; the walk sets each, follows a child process, drives trees and dialogs
+3f7cc16fc webgui procstat: refuse a .cnf whose HOST macro names another machine
+local changes: 0
+cwang31@sdfmilan120:wt-gui4$ # The PR against agentify b593f5ea1 (#37 and #38 merged), by directory: web GUI and sim only. No PyQt GUI file, no hardware path, nothing deleted
+cwang31@sdfmilan120:wt-gui4$ git diff --stat b593f5ea1 HEAD | tail -1; git diff --name-only b593f5ea1 HEAD | sed 's,/[^/]*$,,' | sort | uniq -c; echo "outside CHANGELOG.md, webgui/, sim/: $(git diff --name-only b593f5ea1 HEAD | grep -cvE '^(CHANGELOG.md|psdaq/psdaq/(webgui|sim)/)'); deleted: $(git diff --name-only --diff-filter=D b593f5ea1 HEAD | wc -l)"
+ 40 files changed, 13756 insertions(+), 170 deletions(-)
+      1 CHANGELOG.md
+      4 psdaq/psdaq/sim
+      6 psdaq/psdaq/webgui
+      5 psdaq/psdaq/webgui/parity
+      5 psdaq/psdaq/webgui/parity/guis
+      2 psdaq/psdaq/webgui/pvgui
+      5 psdaq/psdaq/webgui/static/gui
+     12 psdaq/psdaq/webgui/tests
+outside CHANGELOG.md, webgui/, sim/: 0; deleted: 0
+cwang31@sdfmilan120:wt-gui4$ # 1. Build at this head
+cwang31@sdfmilan120:wt-gui4$ mkdir $P && echo "new dir $P"; source ./setup_env_daq.sh >/dev/null 2>&1; time ./build_all.sh -d -j 16 > $P/build.log 2>&1; echo BUILD_EXIT=$?; grep -E 'no work to do|Installed|psdaq==' $P/build.log | tail -3
+new dir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run
+
+real	0m15.874s
+user	0m2.547s
+sys	0m0.750s
+BUILD_EXIT=0
+Installed 1 package in 1.14s
+Installed 1 package in 280ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import sys, psdaq.webgui.parity.check_gui_parity as m; print("DAQ env", sys.version.split()[0], m.__file__)'
+DAQ env 3.9.21 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/webgui/parity/check_gui_parity.py
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 2. procstat: a .cnf whose HOST macro names another machine. The same command on the base e5af99c5f (a scratch copy) and on this head
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ mkdir $P/base && git archive e5af99c5f psdaq/psdaq | tar -x -C $P/base && echo e5af99c5f > $P/base/COMMIT; bash $Q/hostmacro.sh $P/base
+tree /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/base at e5af99c5f
+  .cnf: procmgr_macro['HOST'] = 'daq-remote-host.invalid'
+  daq_webgui exit 124 (still serving after 12 s: stopped by timeout)
+  says: daq_webgui: listening on http://127.0.0.1:41159/ backend=emulator events=emulator
+  telnet opens / lookups / connects recorded: 44
+        22 ["telnet.open", "127.0.0.1", "29502"]
+        22 ["telnet.open", "127.0.0.1", "29503"]
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ bash $Q/hostmacro.sh .
+tree /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4 at ead686c33
+  .cnf: procmgr_macro['HOST'] = 'daq-remote-host.invalid'
+  daq_webgui exit 2
+  says: daq_webgui: --procstat-cnf /tmp/hostmacro-aJKR/p.cnf: procmgr_macro['HOST'] is 'daq-remote-host.invalid', neither loopback nor this machine's 
+  telnet opens / lookups / connects recorded: 0
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 3. A fresh simulated DAQ, started now in this Slurm step: control, teb0, fakecam_0 and fakecam_1. Nothing else is up on the node
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ echo "listening on 30050 (XPM pull) or 15075 (PVA): $(ss -ltn | grep -cE ':(30050|15075) ')"; ls -d $WD 2>&1
+listening on 30050 (XPM pull) or 15075 (PVA): 0
+ls: cannot access '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/dsw': No such file or directory
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ time daq_sim up -w $WD --segments 2 --detach > $P/up.log 2>&1; echo UP_EXIT=$?; tail -3 $P/up.log | cut -c1-138
+
+real	0m33.341s
+user	0m1.298s
+sys	0m0.738s
+UP_EXIT=0
+  webgui       port 31053 (not started: up --webgui)
+  drive        daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/dsw --events 1000   or   
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ daq_sim status -w $WD | head -9; ss -ltnp | grep -E ':(30050|15075) ' | awk '{print "  listening:", $4, $6}'
+workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/dsw  host sdfmilan120  platform 5  started 2026-11-09T05:45:07.512-08:00
+  configdb   pid 687312   alive
+  lgbk       pid 687339   alive
+  simxpm     pid 687341   alive
+  control    pid 687384   RUNNING
+  teb0       pid 687385   RUNNING
+  fakecam_0  pid 687386   RUNNING
+  fakecam_1  pid 687387   RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  listening: 127.0.0.1:30050 users:(("python3",pid=687341,fd=24))
+  listening: 127.0.0.1:15075 users:(("python3",pid=687341,fd=15))
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 4. The whole web GUI suite against it; the device simulators (simhsd, simxpm, configdb_server, simtpr, simdti, ...) are started by their tests
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log
+
+real	41m30.076s
+user	11m55.633s
+sys	1m38.379s
+SUITE_EXIT=0
+534 passed, 1 skipped, 1158 warnings in 2482.70s (0:41:22)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ python3 $Q/junit_backends.py $P/sim.junit.xml
+sim.junit.xml: [chromium] testcases by (status, backend): {('passed', 'emulator'): 8, ('passed', 'sim-daq'): 205, ('passed', 'sim-device:configdb_server'): 7, ('passed', 'sim-device:simdatadev'): 2, ('passed', 'sim-device:simdetprot'): 2, ('passed', 'sim-device:simdti'): 5, ('passed', 'sim-device:simhsd'): 55, ('passed', 'sim-device:simslurm'): 5, ('passed', 'sim-device:simtpr'): 6, ('passed', 'sim-device:simxpm'): 8, ('skipped', 'none'): 1}
+  parity rows tagged by passing-or-not [chromium] tests, by backend: {'sim-daq': 890, 'sim-device:configdb_server': 23, 'sim-device:simslurm': 9, 'sim-device:simdatadev': 17, 'sim-device:simdetprot': 2, 'sim-device:simdti': 1060, 'sim-device:simhsd': 905, 'sim-device:simtpr': 429, 'sim-device:simxpm': 2096, 'emulator': 0, 'none': 0}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ python3 $Q/junit_modules.py $P/sim.junit.xml 'test_gui_(seqplot|seq_epixhr|hsdPs|configdb_GUI|xpmpva)$|test_check_gui|test_webgui_safety'
+  test_check_gui_parity                      57 passed              rows    0  backend -
+  test_gui_configdb_GUI                      7 passed               rows   23  backend sim-device:configdb_server x7
+  test_gui_hsdPs                             50 passed              rows   49  backend sim-device:simhsd x50
+  test_gui_seq_epixhr                        50 passed              rows   49  backend sim-daq x50
+  test_gui_seqplot                           98 passed              rows   98  backend sim-daq x98
+  test_gui_xpmpva                            8 passed               rows 2096  backend sim-device:simxpm x8
+  test_webgui_safety                         20 passed              rows    0  backend emulator x3
+  7 modules: {'passed': 290}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ python3 $Q/junit_pick.py $P/sim.junit.xml 'test_pv_compare|test_each_page_widget_has_the_pv|host_macro'
+  test_check_gui_parity::test_pv_compare_counts_the_same_pv_and_names_another      passed    0.0 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[groupca] passed    5.4 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[pvant] passed    4.8 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[deadca] passed    3.4 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[partca] passed    5.1 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[xpmpatt] passed    5.1 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[tprca] passed    5.2 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[pvatable] passed    3.3 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[hsdpva] passed    5.2 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[dtica] passed    4.9 s
+  test_check_gui_parity::test_each_page_widget_has_the_pv_of_its_pyqt_widget[xpmpva] passed    5.3 s
+  test_webgui_safety::test_procstat_cnf_setting_a_remote_host_macro_is_refused     passed    0.4 s
+  test_webgui_safety::test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served passed    1.3 s
+  test_webgui_safety::test_procstat_poll_procmgr_refuses_a_remote_host_macro       passed    0.3 s
+  {'passed': 14}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 5. check_gui_parity: the walks run now against the DAQ and the device simulators, then one line per file and the PV check
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ time python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --walks $P/walks --junit $P/sim.junit.xml > $P/gui-parity.txt 2>&1; echo GUI_PARITY_EXIT=$?; python3 $Q/gui_lines.py $P/gui-parity.txt
+
+real	14m13.285s
+user	1m52.997s
+sys	0m16.704s
+GUI_PARITY_EXIT=1
+  collection_widget: qt_walk --probe-import psdaq.cas.collection_widget: 0 QApplication(s) constructed on import
+  datadev_monitor variant 0: qt_walk --gui cas/datadev_monitor.py: 12 instances, 80 calls, exit 0, elapsed 16.5 s
+  deadca variant 0: qt_walk --gui cas/deadca.py: 55 instances, 0 calls, exit 0, elapsed 16.6 s
+  dtica variant 0: qt_walk --gui cas/dtica.py: 1289 instances, 0 calls, exit 0, elapsed 29.8 s
+  groupca variant 0: qt_walk --gui cas/groupca.py: 140 instances, 0 calls, exit 0, elapsed 14.7 s
+  hsdPs variant 0: qt_walk --gui cas/hsdPs.py: 49 instances, 2 calls, exit 4, elapsed 97.1 s
+  hsdpva variant 0: qt_walk --gui cas/hsdpva.py: 1233 instances, 0 calls, exit 0, elapsed 20.7 s
+  partca variant 0: qt_walk --gui cas/partca.py: 131 instances, 1 calls, exit 0, elapsed 15.9 s
+  pvant variant 0: qt_walk --gui cas/pvant.py: 12 instances, 0 calls, exit 0, elapsed 16.2 s
+  pvatable variant 0: qt_walk --gui cas/pvatable.py: 18 instances, 0 calls, exit 0, elapsed 17.1 s
+  tdmpva variant 0: qt_walk --gui cas/tdmpva.py: 0 instances, 0 calls, exit 4, elapsed 4.7 s
+  tprca variant 0: qt_walk --gui cas/tprca.py: 745 instances, 0 calls, exit 0, elapsed 23.4 s
+  xpmca variant 0: qt_walk --gui cas/xpmca.py: 0 instances, 0 calls, exit 4, elapsed 11.0 s
+  xpmpatt variant 0: qt_walk --gui cas/xpmpatt.py: 676 instances, 0 calls, exit 0, elapsed 12.2 s
+  xpmpva variant 0: qt_walk --gui cas/xpmpva.py: 2461 instances, 0 calls, exit 0, elapsed 23.4 s
+  configdb_GUI variant 0: qt_walk --gui configdb/configdb_GUI.py: 18 instances, 2 calls, exit 0, elapsed 24.5 s
+  configdb_GUI variant 1: qt_walk --gui configdb/configdb_GUI.py: 13 instances, 1 calls, exit 0, elapsed 10.5 s
+  configdb_GUI variant 2: qt_walk --gui configdb/configdb_GUI.py: 12 instances, 0 calls, exit 0, elapsed 22.0 s
+  procstat variant 0: qt_walk --gui procmgr/procstat: 8 instances, 40 calls, exit 0, elapsed 19.0 s
+  procstat variant 1: qt_walk --gui procmgr/procstat: 8 instances, 5 calls, exit 0, elapsed 14.1 s
+  seq_epixhr variant 0: qt_walk --gui seq/seq_epixhr.py: 49 instances, 0 calls, exit 0, elapsed 98.9 s
+  seqplot variant 0: qt_walk --gui seq/seqplot.py: 98 instances, 0 calls, exit 0, elapsed 205.8 s
+  daqstat variant 0: qt_walk --gui slurm/daqstat.py: 8 instances, 30 calls, exit 0, elapsed 17.5 s
+  daqstat variant 1: qt_walk --gui slurm/daqstat.py: 8 instances, 1 calls, exit 0, elapsed 13.7 s
+  detector_protection_monitor variant 0: qt_walk --gui trigger/detector_protection_monitor.py: 2 instances, 0 calls, exit 0, elapsed 20.5 s
+walks: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/walks (run now against the simulated DAQ /sdf/scratch/lcls/ds/
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py                | N/A: widget library (CollectionWidget, embedded by ca... | -/-/-          | PASS
+cas/datadev_monitor.py                  | /gui/datadev_monitor                                     | 10/10/0        | PASS
+cas/deadca.py                           | /gui/deadca                                              | 43/32/11       | PASS
+cas/dtica.py                            | /gui/dtica                                               | 1062/1060/2    | PASS
+cas/groupca.py                          | /gui/groupca                                             | 91/90/1        | PASS
+cas/hsdPs.py                            | /gui/hsdPs                                               | 49/49/0        | PASS
+cas/hsdpva.py                           | /gui/hsdpva                                              | 850/845/5      | PASS
+cas/partca-sum.py                       | N/A: not a running GUI program at this commit: a scri... | -/-/-          | PASS
+cas/partca.py                           | /gui/partca                                              | 84/84/0        | PASS
+cas/pvant.py                            | /gui/pvant                                               | 6/6/0          | PASS
+cas/pvatable.py                         | /gui/pvatable                                            | 10/10/0        | PASS
+cas/tdmpva.py                           | N/A: not a running GUI program at this commit: import... | -/-/-          | PASS
+cas/tprca.py                            | /gui/tprca                                               | 439/429/10     | PASS
+cas/xpmca.py                            | N/A: not a running GUI program at this commit: its ma... | -/-/-          | PASS
+cas/xpmpatt.py                          | /gui/xpmpatt                                             | 454/454/0      | PASS
+cas/xpmpva.py                           | /gui/xpmpva                                              | 2098/2096/2    | PASS
+configdb/configdb_GUI.py                | /gui/configdb_GUI                                        | 23/23/0        | PASS
+procmgr/procstat                        | /gui/procstat                                            | 14/9/5         | PASS
+seq/seq_epixhr.py                       | /gui/seq_epixhr                                          | 49/49/0        | PASS
+seq/seqplot.py                          | /gui/seqplot                                             | 98/98/0        | PASS
+slurm/daqstat.py                        | /gui/daqstat                                             | 14/9/5         | PASS
+trigger/detector_protection_monitor.py  | /gui/detector_protection_monitor                         | 2/1/0          | FAIL
+webgui/parity/qt_walk.py                | N/A: the parity check's offscreen walk tool, not a GU... | -/-/-          | PASS
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2296 same, 0 another
+    PV, in 10 pages: deadca 0/0, dtica 30/30, groupca 67/67, hsdpva 584/584, partca 79/79, pvant 6/6, pvatable 0/0, tprca 414/414,
+    xpmpatt 444/444, xpmpva 672/672
+RESULT: FAIL (22/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ python -m psdaq.webgui.parity.check_gui_parity --walks $P/walks --junit $P/sim.junit.xml --details > $P/gui-parity-details.txt 2>&1; echo DETAILS_EXIT=$?; grep -E '^PV check \(page' $P/gui-parity-details.txt | sed -E 's/ \[[^]]*\] vs the walk\)/)/; s/ mapped rows with the same PV/ same PV/; s/the walk saw no PV on the PyQt widget/walk has no PV/' | cut -c1-150
+DETAILS_EXIT=1
+PV check (page deadca): 0 same PV, 0 with another; not compared: 32 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page dtica): 30 same PV, 0 with another; not compared: 1030 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page groupca): 67 same PV, 0 with another; not compared: 23 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page hsdpva): 584 same PV, 0 with another; not compared: 261 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page partca): 79 same PV, 0 with another; not compared: 5 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page pvant): 6 same PV, 0 with another; not compared: 0 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page pvatable ['--bases', 'DAQ:SIM:HSD:1_DA:A', 'DAQ:SIM:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.t
+PV check (page tprca): 414 same PV, 0 with another; not compared: 15 walk has no PV, 0 the page node has none, 0 no page node
+PV check (page xpmpatt): 444 same PV, 0 with another; not compared: 8 walk has no PV, 2 the page node has none, 0 no page node
+PV check (page xpmpva): 672 same PV, 0 with another; not compared: 1200 walk has no PV, 224 the page node has none, 0 no page node
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 6. The control GUI's check, with a fresh offscreen walk: still PASS
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138
+PARITY_EXIT=0
+157 controls found, 65 mapped to a web element with a passing headless-browser test, 92 marked not applicable
+N = 157, M = 65, K = 92, M + K = 157
+walk: walk source digest matches (sha256:8ca4dbc5f657faaad0149cc6ec9db644c3f88e986d21cd34a273e4bd854e8c7b)
+Unmapped (0 rows): id | loc | kind | label
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+RESULT: PASS (M + K = N = 157)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 7. Negative: seqplot's Log Y of its first panel (a pyqtgraph menu row) removed from a scratch copy of parity/guis (the same walks)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ bash $Q/minus_gui_mapping.sh $P/sim.junit.xml $P/walks $P/minus seqplot 'PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck'
+removed PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck from the copy guis/seqplot.json: {'web': '[data-parity~="PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck"]', 'test': 'test_gui_seqplot.py::test_menu_0_ctrl_logYCheck[chromium]'}
+GUI_PARITY_MINUS_EXIT=1
+seq/seqplot.py | /gui/seqplot | 98/97/0 | FAIL
+Unmapped (1 rows): id | loc | kind | label
+  PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck | seq/seqplot.py:145 | checkbox | Log Y
+RESULT: FAIL: M + K = 97 != N = 98 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck
+RESULT: FAIL (21/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 8. Negative: XPM 5's ClearErr button dropped from the xpmpva page, in a scratch tree; xpmpva's button test run from it on this DAQ
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ bash $Q/drop_control40.sh $WD $P/sim.junit.xml $P/walks $P/drop
+scratch tree /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/drop/tree: the only difference from the checkout:
+diff -r -x __pycache__ psdaq/psdaq/webgui/static/gui/pvgui.js /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40
+196c196,197
+<     case 'pvbutton': {                                                                  // PvPushButton: put 1, 0
+---
+>     case 'pvbutton': {
+>       if (n.id === "LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr]") return el('span', {});   // drop_control40.sh: the page has no
+DROP_TESTS_EXIT=1
+FAILED test_gui_xpmpva.py::test_buttons_put_their_values[chromium] - Assertio...
+1 failed, 534 deselected in 830.19s (0:13:50)
+GUI_PARITY_DROP_EXIT=1
+cas/xpmpva.py | /gui/xpmpva | 2098/1951/2 | FAIL
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simxpm) (145 rows): id | test | status
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  ... 145 rows of that test listed 'failed'
+RESULT: FAIL: M + K = 1953 != N = 2098 (0 unmapped, 0 not built, 145 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: LblPushButtonX.PvInput[DAQ:SIM:XPM:5:
+RESULT: FAIL (21/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 9. Negative for the PV check: a scratch tree whose xpmpva page gives the 4 MMCM reset buttons each other's PV. Its button test passes; the check fails
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ bash $Q/pv_negative.sh $WD $P/sim.junit.xml $P/walks $P/pvneg
+scratch tree /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/pvneg/tree: the only difference from the checkout:
+diff -r -x __pycache__ psdaq/psdaq/webgui/pvgui/xpmpva.py /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run
+138c138
+<                           {'type': 'pvbutton', 'pv': x + 'ResetMmcm%d' % i, 'label': 'R'})]})
+---
+>                           {'type': 'pvbutton', 'pv': x + 'ResetMmcm%d' % (i ^ 1), 'label': 'R'})]})
+PV_TESTS_EXIT=0
+1 passed, 534 deselected in 821.76s (0:13:41)
+GUI_PARITY_PV_EXIT=1
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run/pvneg/tree/psdaq/psdaq junit=/sdf/scratch/lcls/
+cas/xpmpva.py | /gui/xpmpva | 2098/2092/2 | FAIL
+Invalid mapping entries (4):
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm0]: the page widget has PV DAQ:SIM:XPM:5:XTPG:ResetMmcm1, the PyQt widget DAQ:SIM:XPM:5:XTPG:ResetMmcm0 (walk)
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm1]: the page widget has PV DAQ:SIM:XPM:5:XTPG:ResetMmcm0, the PyQt widget DAQ:SIM:XPM:5:XTPG:ResetMmcm1 (walk)
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm2]: the page widget has PV DAQ:SIM:XPM:5:XTPG:ResetMmcm3, the PyQt widget DAQ:SIM:XPM:5:XTPG:ResetMmcm2 (walk)
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm3]: the page widget has PV DAQ:SIM:XPM:5:XTPG:ResetMmcm2, the PyQt widget DAQ:SIM:XPM:5:XTPG:ResetMmcm3 (walk)
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2292 same, 4 another PV, in 10 pages:
+RESULT: FAIL: M + K = 2094 != N = 2098 (0 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 4 invalid); 4 invalid entries; rows: PvMmcm.PvPushButton[
+RESULT: FAIL (21/23 files pass)
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 10. The DAQ down: everything this step started stops
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -2 $P/down.log | cut -c1-138
+DOWN_EXIT=0
+2026-11-09T07:12:29.746-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+2026-11-09T07:12:29.751-08:00 daq_sim: down: clean
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ sleep 2; echo "listening on 30050 or 15075: $(ss -ltn | grep -cE ':(30050|15075) '); my procServ processes: $(pgrep -u $USER -x procServ | wc -l); my sim* processes: $(pgrep -u $USER -f 'psdaq.sim.(sim|configdb_server)' | wc -l)"
+listening on 30050 or 15075: 0; my procServ processes: 0; my sim* processes: 0
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ # 11. The tests as CI would run them, with no simulated DAQ: the ones that need it skip, and say why
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ WEBGUI_SHOTS=$P/shots-nosim bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -rs -k 'check_gui_parity or test_gui_ or test_walk_guard or test_webgui_safety' --junitxml=$P/nosim.junit.xml > $P/nosim.log 2>&1; echo NOSIM_EXIT=$?; tail -1 $P/nosim.log; python3 $Q/junit_pick.py $P/nosim.junit.xml 'test_pv_compare|host_macro'
+NOSIM_EXIT=0
+======== 35 passed, 310 skipped, 190 deselected, 55 warnings in 24.13s =========
+  test_check_gui_parity::test_pv_compare_counts_the_same_pv_and_names_another      passed    0.0 s
+  test_webgui_safety::test_procstat_cnf_setting_a_remote_host_macro_is_refused     passed    0.5 s
+  test_webgui_safety::test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served passed    1.4 s
+  test_webgui_safety::test_procstat_poll_procmgr_refuses_a_remote_host_macro       passed    0.5 s
+  {'passed': 4}
+(daq_20250402_r9) cwang31@sdfmilan120:wt-gui4$ echo "checkout local changes: $(git status --short | wc -l)"; date '+%F %T %Z'; exit
+checkout local changes: 0
+2026-11-09 07:13:26 PST
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

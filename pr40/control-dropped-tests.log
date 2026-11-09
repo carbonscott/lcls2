@@ -1,0 +1,142 @@
+host sdfmilan120 date 2026-11-09T08:34:26-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/drop/shots server-args ''
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_buttons_put_their_values[chromium] ____________________
+
+page = <Page url='http://127.0.0.1:40691/gui/xpmpva'>
+xv = <webgui_harness.ServerProc object at 0x7f424cdf10a0>
+
+    def test_buttons_put_their_values(page, xv):
+        C.open_page(page, xv, 'xpmpva')
+        pvs = sorted({PAGE.nodes[r]['pv'] for r in BUTTONS})
+        w = C.Watch(pvs)
+        bad = []
+        try:
+            for r in BUTTONS:                                 # each click: exactly its puts, seen by an independent monitor
+                n = PAGE.nodes[r]
+>               C.reveal(page, PAGE, r)
+
+test_gui_xpmpva.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+page = <Page url='http://127.0.0.1:40691/gui/xpmpva'>
+PAGE = <psdaq.webgui.pvgui.Page object at 0x7f424e4935f0>
+rid = 'LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr]', visible = True
+
+    def reveal(page, PAGE, rid, visible=True):
+        key = id(PAGE)
+        if key not in _PATHS:
+            _PATHS[key] = paths(PAGE)
+        for step in _PATHS[key].get(rid, []):
+            if step[0] == 'tab':
+                t = page.locator(sel(step[1]))
+                if t.get_attribute('aria-selected') != 'true':
+                    t.click()
+            else:
+                s = page.locator(sel(step[1]))
+                if s.input_value() != str(step[2]):
+                    s.select_option(str(step[2]))
+        if visible:
+>           expect(page.locator(sel(rid))).to_be_visible()
+E           AssertionError: Locator expected to be visible
+E           Actual value: None
+E           Error: element(s) not found 
+E           Call log:
+E             - Expect "to_be_visible" locator("[data-parity=\"LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr]\"]") with timeout 5000ms
+E             - waiting for locator("[data-parity=\"LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr]\"]")
+E           
+E           Aria snapshot:
+E           - heading "xpmpva" [level=1]
+E           - combobox:
+E             - option "DAQ:SIM:XPM:5" [selected]
+E             - option "DAQ:SIM:XPM:6"
+E           - tablist:
+E             - tab "Global"
+E             - tab "CuTiming" [selected]
+E             - tab "AMC0"
+E             - tab "AMC1"
+E             - tab "PLLs"
+E             - tab "DeadTime"
+E             - tab "Groups/EventCodes"
+E             - tab "Pattern"
+E             - tab "SFPs"
+E             - tab "PathTimer"
+E           - tabpanel:
+E             - text: RxClks 185.7100067138672 RxRsts 0.0 CrcErrs 0.0 RxDecErrs 0.0 RxDspErrs 0.0 BypassRsts 0.0 BypassDones 0.0 RxLinkUp 1.0 FIDs 929,000.0 RxReset
+E             - button
+E             - text: RxCountReset
+E             - button
+E             - text: RxAlign CuInput
+E             - textbox: "0"
+E             - text: CuBeamCode
+E             - textbox: "140"
+E             - text: CuDelay
+E             - textbox: "200"
+E             - text: CuDelay_ns - PulseId 0 (0x0) TimeStamp 1989-Dec-31 16:00:00 FiducialIntv 1,300 (0x514) FiducialErr
+E             - checkbox [disabled]
+E             - text: ClearErr mmcm0
+E             - button "R"
+E             - text: mmcm1
+E             - button "R"
+E             - text: mmcm2
+E             - button "R"
+E             - text: mmcm3
+E             - button "R"
+
+pvgui_checks.py:87: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+collection_widget: qt_walk --probe-import psdaq.cas.collection_widget: 0 QApplication(s) constructed on import, error None -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/collection_widget.probe.json
+datadev_monitor variant 0 []: qt_walk --gui cas/datadev_monitor.py: 12 instances, 80 calls, exit 0, elapsed 17.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/datadev_monitor-0/walk.json
+deadca variant 0 ['{pvbase}', '{platform}', '{xpm}']: qt_walk --gui cas/deadca.py: 55 instances, 0 calls, exit 0, elapsed 15.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/deadca-0/walk.json
+dtica: device simdti pid 1061743: simdti: ready, 535 PVs under DAQ:SIM:DTI, pid 1061743
+dtica variant 0 ['{pvbase}:DTI']: qt_walk --gui cas/dtica.py: 1289 instances, 0 calls, exit 0, elapsed 29.2 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/dtica-0/walk.json
+groupca variant 0 ['{pvbase}', '{xpm}', '{platform}']: qt_walk --gui cas/groupca.py: 140 instances, 0 calls, exit 0, elapsed 11.0 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/groupca-0/walk.json
+hsdPs: device simhsd pid 1063848: simhsd: ready, prefixes DAQ:SIM:HSD:1_PS:A, pid 1063848
+hsdPs: device simxpm pid 1063874: simxpm: ready, 793 PVs under DAQ:SIM:XPM:7, pid 1063874
+hsdPs variant 0 ['--base', '{pvbase}:HSD:1_PS:A', '--xpm', '{pvbase}:XPM:7', '--range', '0', '24', '8']: qt_walk --gui cas/hsdPs.py: 49 instances, 2 calls, exit 4, elapsed 96.1 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/hsdPs-0/walk.json
+hsdpva: device simhsd pid 1068800: simhsd: ready, prefixes DAQ:SIM:HSD:1_1B:A DAQ:SIM:HSD:1_1B:B, pid 1068800
+hsdpva variant 0 ['{pvbase}:HSD:1_1B:A', '{pvbase}:HSD:1_1B:B']: qt_walk --gui cas/hsdpva.py: 1233 instances, 0 calls, exit 0, elapsed 20.3 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/hsdpva-0/walk.json
+partca-sum variant 0 []: qt_walk --gui cas/partca-sum.py: 256 instances, 0 calls, exit 4, elapsed 12.9 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/partca-sum-0/walk.json
+partca variant 0 ['{part}']: qt_walk --gui cas/partca.py: 131 instances, 1 calls, exit 0, elapsed 15.9 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/partca-0/walk.json
+pvant variant 0 ['--bases', '{part}', '{pvbase}:XPM:{xpm}:PART:0', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']: qt_walk --gui cas/pvant.py: 12 instances, 0 calls, exit 0, elapsed 14.3 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/pvant-0/walk.json
+pvatable: device simhsd pid 1071794: simhsd: ready, prefixes DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B, pid 1071794
+pvatable variant 0 ['--bases', '{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.txcntsum', 'MONPGP.rxcnt[2]', 'MONRAWBUF.freesz']: qt_walk --gui cas/pvatable.py: 18 instances, 0 calls, exit 0, elapsed 16.9 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/pvatable-0/walk.json
+tdmpva variant 0 ['{pvbase}:TDM']: qt_walk --gui cas/tdmpva.py: 0 instances, 0 calls, exit 4, elapsed 4.2 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/tdmpva-0/walk.json
+tprca: device simtpr pid 1072905: simtpr: ready, 228 PVs under DAQ:SIM:TPR, pid 1072905
+tprca variant 0 ['{pvbase}:TPR']: qt_walk --gui cas/tprca.py: 745 instances, 0 calls, exit 0, elapsed 19.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/tprca-0/walk.json
+xpmca variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmca.py: 0 instances, 0 calls, exit 4, elapsed 9.7 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/xpmca-0/walk.json
+xpmpatt variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmpatt.py: 676 instances, 0 calls, exit 0, elapsed 19.2 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/xpmpatt-0/walk.json
+xpmpva: device simxpm pid 1076538: simxpm: ready, 793 PVs under DAQ:SIM:XPM:5, pid 1076538
+xpmpva: device simxpm pid 1076619: simxpm: ready, 793 PVs under DAQ:SIM:XPM:6, pid 1076619
+xpmpva variant 0 ['{pvbase}:XPM:5', '{pvbase}:XPM:6']: qt_walk --gui cas/xpmpva.py: 2461 instances, 0 calls, exit 0, elapsed 25.4 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/xpmpva-0/walk.json
+configdb_GUI: device configdb_server pid 1077738: configdb_server: ready, http://127.0.0.1:47321/ws/
+configdb_GUI variant 0 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst', '--password', 'sim']: qt_walk --gui configdb/configdb_GUI.py: 18 instances, 2 calls, exit 0, elapsed 26.9 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/configdb_GUI-0/walk.json
+configdb_GUI variant 1 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst']: qt_walk --gui configdb/configdb_GUI.py: 13 instances, 1 calls, exit 0, elapsed 15.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/configdb_GUI-1/walk.json
+configdb_GUI variant 2 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst']: qt_walk --gui configdb/configdb_GUI.py: 12 instances, 0 calls, exit 0, elapsed 21.1 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/configdb_GUI-2/walk.json
+procstat variant 0 ['-p', '{platform}', '-i', '1', '{cnf}']: qt_walk --gui procmgr/procstat: 8 instances, 40 calls, exit 0, elapsed 20.2 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/procstat-0/walk.json
+procstat variant 1 ['-p', '{platform}', '-i', '-1', '{cnf}']: qt_walk --gui procmgr/procstat: 8 instances, 5 calls, exit 0, elapsed 15.2 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/procstat-1/walk.json
+seq_epixhr variant 0 ['--test', '--plot', '--rate', '1000']: qt_walk --gui seq/seq_epixhr.py: 49 instances, 0 calls, exit 0, elapsed 98.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/seq_epixhr-0/walk.json
+seqplot variant 0 ['--seq', '0:33k_35k.py', '1:10k.py', '--time', '0', '0.01']: qt_walk --gui seq/seqplot.py: 98 instances, 0 calls, exit 0, elapsed 202.1 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/seqplot-0/walk.json
+daqstat: device simslurm pid 1089215: simslurm: ready, 4 jobs (control teb0 fakecam_0 fakecam_1) in /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/daqstat-dir/slurm.json, pid 1089215
+daqstat variant 0 ['-i', '1', '{walkdir}/daqstat.py']: qt_walk --gui slurm/daqstat.py: 8 instances, 30 calls, exit 0, elapsed 22.7 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/daqstat-0/walk.json
+daqstat variant 1 ['-i', '1', '{walkdir}/missing.py']: qt_walk --gui slurm/daqstat.py: 8 instances, 1 calls, exit 0, elapsed 15.5 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/daqstat-1/walk.json
+detector_protection_monitor: device simdetprot pid 1090227: simdetprot: ready, 6 PVs under DAQ:SIM:JF16M:BLOCKER on 127.0.0.1 port 15064, pid 1090227
+detector_protection_monitor variant 0 ['-b', '{pvbase}:JF16M:BLOCKER', '-d', 'Jungfrau']: qt_walk --gui trigger/detector_protection_monitor.py: 647 instances, 645 calls, exit 0, elapsed 39.6 s -> /lscratch/cwang31/tmp/gui-walks-onx5ec40/runs/detector_protection_monitor-0/walk.json
+---------------------------- Captured stderr setup -----------------------------
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/drop/tree/psdaq/psdaq/procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+  if not match('^(\d)\,(\d)(\d)?$', value):
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/drop/tree/psdaq/psdaq/procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+  if not match('^(\d)\,(\d)(\d)?$', value):
+test_gui_xpmpva.py:165: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+  def test_buttons_put_their_values(page, xv):
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'
+Exception ignored in: 'p4p._p4p.ClientProvider.__dealloc__'
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'
+=========================== short test summary info ============================
+FAILED test_gui_xpmpva.py::test_buttons_put_their_values[chromium] - Assertio...
+1 failed, 534 deselected in 859.92s (0:14:19)

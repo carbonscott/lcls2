@@ -1,0 +1,146 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=43843200 --overlap --ntasks=1 --cpus-per-task=16 --mem=32G --pty flock -w 5400 /tmp/agentify-daq-milan120.lock bash --rcfile /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/node_rc2.sh -i",
+  "expect": "cwang31@sdfmilan120",
+  "timeout": 5700
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID; this shell runs under: $(ps -o args= -p $PPID | cut -c1-60)\"; ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1 | head -3"
+ },
+ {
+  "send": "cd $T && git rev-parse HEAD && git log -1 --format='agentify: %h %s' 5b1f5587d | cut -c1-130 && git log --first-parent --format='%h %s' 5b1f5587d..HEAD | cut -c1-130 && echo \"local changes: $(git status --short | wc -l)\""
+ },
+ {
+  "send": "# The PR against agentify 5b1f5587d (#37, #38 and #39 merged), by directory: web GUI and sim only. No PyQt GUI file, no hardware path, nothing deleted"
+ },
+ {
+  "send": "git diff --stat 5b1f5587d HEAD | tail -1; git diff --name-only 5b1f5587d HEAD | sed 's,/[^/]*$,,' | sort | uniq -c; echo \"outside CHANGELOG.md, webgui/, sim/: $(git diff --name-only 5b1f5587d HEAD | grep -cvE '^(CHANGELOG.md|psdaq/psdaq/(webgui|sim)/)'); deleted: $(git diff --name-only --diff-filter=D 5b1f5587d HEAD | wc -l)\""
+ },
+ {
+  "send": "# 1. Build at this head"
+ },
+ {
+  "send": "mkdir $P && echo \"new dir $P\"; source ./setup_env_daq.sh >/dev/null 2>&1; time ./build_all.sh -d -j 16 > $P/build.log 2>&1; echo BUILD_EXIT=$?; grep -E 'no work to do|Installed|psdaq==' $P/build.log | tail -3",
+  "expect": "BUILD_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "source psdaq/psdaq/sim/sim_env.sh; export PYTHONPATH=$PWD/psdaq:$PYTHONPATH; python -c 'import sys, psdaq.webgui.parity.check_gui_parity as m; print(\"DAQ env\", sys.version.split()[0], m.__file__)'"
+ },
+ {
+  "send": "# 2. procstat: a .cnf whose HOST macro names another machine. The same command on the base e5af99c5f (a scratch copy) and on this head"
+ },
+ {
+  "send": "mkdir $P/base && git archive e5af99c5f psdaq/psdaq | tar -x -C $P/base && echo e5af99c5f > $P/base/COMMIT; bash $Q/hostmacro.sh $P/base",
+  "expect": "recorded: \\d+",
+  "timeout": 120
+ },
+ {
+  "send": "bash $Q/hostmacro.sh .",
+  "expect": "recorded: \\d+",
+  "timeout": 120
+ },
+ {
+  "send": "# 3. A fresh simulated DAQ, started now in this Slurm step: control, teb0, fakecam_0 and fakecam_1. Nothing else is up on the node"
+ },
+ {
+  "send": "echo \"listening on 30050 (XPM pull) or 15075 (PVA): $(ss -ltn | grep -cE ':(30050|15075) ')\"; ls -d $WD 2>&1"
+ },
+ {
+  "send": "time daq_sim up -w $WD --segments 2 --detach > $P/up.log 2>&1; echo UP_EXIT=$?; tail -3 $P/up.log | cut -c1-138",
+  "expect": "UP_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "daq_sim status -w $WD | head -9; ss -ltnp | grep -E ':(30050|15075) ' | awk '{print \"  listening:\", $4, $6}'"
+ },
+ {
+  "send": "# 4. The whole web GUI suite against it; the device simulators (simhsd, simxpm, configdb_server, simtpr, simdti, ...) are started by their tests"
+ },
+ {
+  "send": "time WEBGUI_SIM_DAQ=$WD WEBGUI_SHOTS=$P/shots bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -q --junitxml=$P/sim.junit.xml > $P/suite.log 2>&1; echo SUITE_EXIT=$?; tail -1 $P/suite.log",
+  "expect": "SUITE_EXIT=\\d+",
+  "timeout": 4500
+ },
+ {
+  "send": "python3 $Q/junit_backends.py $P/sim.junit.xml"
+ },
+ {
+  "send": "python3 $Q/junit_modules.py $P/sim.junit.xml 'test_gui_(seqplot|seq_epixhr|hsdPs|configdb_GUI|xpmpva)$|test_check_gui|test_webgui_safety'"
+ },
+ {
+  "send": "python3 $Q/junit_pick.py $P/sim.junit.xml 'test_pv_compare|test_each_page_widget_has_the_pv|host_macro'"
+ },
+ {
+  "send": "# 5. check_gui_parity: the walks run now against the DAQ and the device simulators, then one line per file and the PV check"
+ },
+ {
+  "send": "time python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD --walks $P/walks --junit $P/sim.junit.xml > $P/gui-parity.txt 2>&1; echo GUI_PARITY_EXIT=$?; python3 $Q/gui_lines.py $P/gui-parity.txt",
+  "expect": "GUI_PARITY_EXIT=\\d+",
+  "timeout": 2700
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_gui_parity --walks $P/walks --junit $P/sim.junit.xml --details > $P/gui-parity-details.txt 2>&1; echo DETAILS_EXIT=$?; grep -E '^PV check \\(page' $P/gui-parity-details.txt | sed -E 's/ \\[[^]]*\\] vs the walk\\)/)/; s/ mapped rows with the same PV/ same PV/; s/the walk saw no PV on the PyQt widget/walk has no PV/' | cut -c1-150",
+  "expect": "DETAILS_EXIT=\\d+",
+  "timeout": 600
+ },
+ {
+  "send": "# 6. The control GUI's check, with a fresh offscreen walk: still PASS"
+ },
+ {
+  "send": "python -m psdaq.webgui.parity.check_parity --junit $P/sim.junit.xml --run-walk > $P/parity.txt 2>&1; echo PARITY_EXIT=$?; grep -E 'controls found|^N = |^walk|^Unmapped|^Mapped but|^RESULT' $P/parity.txt | cut -c1-138",
+  "expect": "PARITY_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "# 7. Negative: seqplot's Log Y of its first panel (a pyqtgraph menu row) removed from a scratch copy of parity/guis (the same walks)"
+ },
+ {
+  "send": "bash $Q/minus_gui_mapping.sh $P/sim.junit.xml $P/walks $P/minus seqplot 'PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck'",
+  "expect": "GUI_PARITY_MINUS_EXIT=\\d+[\\s\\S]*RESULT: (FAIL|PASS) \\(",
+  "timeout": 900
+ },
+ {
+  "send": "# 8. Negative: XPM 5's ClearErr button dropped from the xpmpva page, in a scratch tree; xpmpva's button test run from it on this DAQ"
+ },
+ {
+  "send": "bash $Q/drop_control40.sh $WD $P/sim.junit.xml $P/walks $P/drop",
+  "expect": "GUI_PARITY_DROP_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "# 9. Negative for the PV check: a scratch tree whose xpmpva page gives the 4 MMCM reset buttons each other's PV. Its button test passes; the check fails"
+ },
+ {
+  "send": "bash $Q/pv_negative.sh $WD $P/sim.junit.xml $P/walks $P/pvneg",
+  "expect": "GUI_PARITY_PV_EXIT=\\d+",
+  "timeout": 1500
+ },
+ {
+  "send": "# 10. The DAQ down: everything this step started stops"
+ },
+ {
+  "send": "daq_sim down -w $WD > $P/down.log 2>&1; echo DOWN_EXIT=$?; tail -2 $P/down.log | cut -c1-138",
+  "expect": "DOWN_EXIT=\\d+",
+  "timeout": 400
+ },
+ {
+  "send": "sleep 2; echo \"listening on 30050 or 15075: $(ss -ltn | grep -cE ':(30050|15075) '); my procServ processes: $(pgrep -u $USER -x procServ | wc -l); my sim* processes: $(pgrep -u $USER -f 'psdaq.sim.(sim|configdb_server)' | wc -l)\""
+ },
+ {
+  "send": "# 11. The tests as CI would run them, with no simulated DAQ: the ones that need it skip, and say why"
+ },
+ {
+  "send": "WEBGUI_SHOTS=$P/shots-nosim bash psdaq/psdaq/webgui/tests/run_webgui_tests.sh -rs -k 'check_gui_parity or test_gui_ or test_walk_guard or test_webgui_safety' --junitxml=$P/nosim.junit.xml > $P/nosim.log 2>&1; echo NOSIM_EXIT=$?; tail -1 $P/nosim.log; python3 $Q/junit_pick.py $P/nosim.junit.xml 'test_pv_compare|host_macro'",
+  "expect": "NOSIM_EXIT=\\d+",
+  "timeout": 900
+ },
+ {
+  "send": "echo \"checkout local changes: $(git status --short | wc -l)\"; date '+%F %T %Z'; exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

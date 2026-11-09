@@ -1,0 +1,23 @@
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_readback.sh web1 < rec/pr40-web/writes.json   # read back on the node, not through the web server
+== on sdfmilan120, Slurm job 43843200 step 367 (the step that started this DAQ and the simulators), tree bbbd6c7d4
+  simxpm     pid 1136868  alive
+  control    pid 1137233  RUNNING
+  teb0       pid 1137234  RUNNING
+  fakecam_0  pid 1137235  RUNNING
+  fakecam_1  pid 1137236  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 09:11:40 2026 0.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 09:11:40 2026 0.0
+  simhsd-ps pid 1137762 alive
+  simxpm-7 pid 1137766 alive
+  simxpm-5 pid 1137768 alive
+  simxpm-6 pid 1137773 alive
+  configdb pid 1137776 alive
+  pvget     DAQ:SIM:HSD:1_PS:A:RESET.mmcmphase               = 16       the server's scan left 16       ok
+  config DB tst/BEAM/fakecam_0:user.sim_seed                 = 10794    the browser left 10794    ok
+  config DB tst/BEAM/fakecam_1:user.sim_seed                 = 10794    the browser left 10794    ok
+  pvget     DAQ:SIM:XPM:5:LinkLoopback2                      = 1        the browser left 1        ok
+  pvget     DAQ:SIM:XPM:5:LinkGroupMask2                     = 8        the browser left 8        ok
+  pvget     DAQ:SIM:XPM:6:LinkLoopback1                      = 1        the browser left 1        ok
+READBACK PASS (6 values)
+readback exit 0

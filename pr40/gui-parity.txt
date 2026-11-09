@@ -1,0 +1,72 @@
+collection_widget: qt_walk --probe-import psdaq.cas.collection_widget: 0 QApplication(s) constructed on import, error None -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/collection_widget.probe.json
+datadev_monitor variant 0 []: qt_walk --gui cas/datadev_monitor.py: 12 instances, 80 calls, exit 0, elapsed 15.7 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/datadev_monitor-0/walk.json
+deadca variant 0 ['{pvbase}', '{platform}', '{xpm}']: qt_walk --gui cas/deadca.py: 55 instances, 0 calls, exit 0, elapsed 17.9 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/deadca-0/walk.json
+dtica: device simdti pid 1035464: simdti: ready, 535 PVs under DAQ:SIM:DTI, pid 1035464
+dtica variant 0 ['{pvbase}:DTI']: qt_walk --gui cas/dtica.py: 1289 instances, 0 calls, exit 0, elapsed 28.1 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/dtica-0/walk.json
+groupca variant 0 ['{pvbase}', '{xpm}', '{platform}']: qt_walk --gui cas/groupca.py: 140 instances, 0 calls, exit 0, elapsed 13.4 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/groupca-0/walk.json
+hsdPs: device simhsd pid 1036516: simhsd: ready, prefixes DAQ:SIM:HSD:1_PS:A, pid 1036516
+hsdPs: device simxpm pid 1036671: simxpm: ready, 793 PVs under DAQ:SIM:XPM:7, pid 1036671
+hsdPs variant 0 ['--base', '{pvbase}:HSD:1_PS:A', '--xpm', '{pvbase}:XPM:7', '--range', '0', '24', '8']: qt_walk --gui cas/hsdPs.py: 49 instances, 2 calls, exit 4, elapsed 95.8 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/hsdPs-0/walk.json
+hsdpva: device simhsd pid 1039308: simhsd: ready, prefixes DAQ:SIM:HSD:1_1B:A DAQ:SIM:HSD:1_1B:B, pid 1039308
+hsdpva variant 0 ['{pvbase}:HSD:1_1B:A', '{pvbase}:HSD:1_1B:B']: qt_walk --gui cas/hsdpva.py: 1233 instances, 0 calls, exit 0, elapsed 19.8 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/hsdpva-0/walk.json
+partca-sum variant 0 []: qt_walk --gui cas/partca-sum.py: 256 instances, 0 calls, exit 4, elapsed 7.3 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/partca-sum-0/walk.json
+partca variant 0 ['{part}']: qt_walk --gui cas/partca.py: 131 instances, 1 calls, exit 0, elapsed 15.2 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/partca-0/walk.json
+pvant variant 0 ['--bases', '{part}', '{pvbase}:XPM:{xpm}:PART:0', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate']: qt_walk --gui cas/pvant.py: 12 instances, 0 calls, exit 0, elapsed 18.2 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/pvant-0/walk.json
+pvatable: device simhsd pid 1041276: simhsd: ready, prefixes DAQ:SIM:HSD:1_DA:A DAQ:SIM:HSD:1_DA:B, pid 1041276
+pvatable variant 0 ['--bases', '{pvbase}:HSD:1_DA:A', '{pvbase}:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.txcntsum', 'MONPGP.rxcnt[2]', 'MONRAWBUF.freesz']: qt_walk --gui cas/pvatable.py: 18 instances, 0 calls, exit 0, elapsed 14.9 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/pvatable-0/walk.json
+tdmpva variant 0 ['{pvbase}:TDM']: qt_walk --gui cas/tdmpva.py: 0 instances, 0 calls, exit 4, elapsed 4.4 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/tdmpva-0/walk.json
+tprca: device simtpr pid 1041975: simtpr: ready, 228 PVs under DAQ:SIM:TPR, pid 1041975
+tprca variant 0 ['{pvbase}:TPR']: qt_walk --gui cas/tprca.py: 745 instances, 0 calls, exit 0, elapsed 19.6 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/tprca-0/walk.json
+xpmca variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmca.py: 0 instances, 0 calls, exit 4, elapsed 7.1 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/xpmca-0/walk.json
+xpmpatt variant 0 ['{pvbase}:XPM:{xpm}']: qt_walk --gui cas/xpmpatt.py: 676 instances, 0 calls, exit 0, elapsed 12.3 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/xpmpatt-0/walk.json
+xpmpva: device simxpm pid 1043039: simxpm: ready, 793 PVs under DAQ:SIM:XPM:5, pid 1043039
+xpmpva: device simxpm pid 1043052: simxpm: ready, 793 PVs under DAQ:SIM:XPM:6, pid 1043052
+xpmpva variant 0 ['{pvbase}:XPM:5', '{pvbase}:XPM:6']: qt_walk --gui cas/xpmpva.py: 2461 instances, 0 calls, exit 0, elapsed 21.0 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/xpmpva-0/walk.json
+configdb_GUI: device configdb_server pid 1043754: configdb_server: ready, http://127.0.0.1:47321/ws/
+configdb_GUI variant 0 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst', '--password', 'sim']: qt_walk --gui configdb/configdb_GUI.py: 18 instances, 2 calls, exit 0, elapsed 23.7 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/configdb_GUI-0/walk.json
+configdb_GUI variant 1 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst']: qt_walk --gui configdb/configdb_GUI.py: 13 instances, 1 calls, exit 0, elapsed 11.5 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/configdb_GUI-1/walk.json
+configdb_GUI variant 2 ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst']: qt_walk --gui configdb/configdb_GUI.py: 12 instances, 0 calls, exit 0, elapsed 16.4 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/configdb_GUI-2/walk.json
+procstat variant 0 ['-p', '{platform}', '-i', '1', '{cnf}']: qt_walk --gui procmgr/procstat: 8 instances, 40 calls, exit 0, elapsed 14.2 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/procstat-0/walk.json
+procstat variant 1 ['-p', '{platform}', '-i', '-1', '{cnf}']: qt_walk --gui procmgr/procstat: 8 instances, 5 calls, exit 0, elapsed 8.9 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/procstat-1/walk.json
+seq_epixhr variant 0 ['--test', '--plot', '--rate', '1000']: qt_walk --gui seq/seq_epixhr.py: 49 instances, 0 calls, exit 0, elapsed 96.0 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/seq_epixhr-0/walk.json
+seqplot variant 0 ['--seq', '0:33k_35k.py', '1:10k.py', '--time', '0', '0.01']: qt_walk --gui seq/seqplot.py: 98 instances, 0 calls, exit 0, elapsed 206.5 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/seqplot-0/walk.json
+daqstat: device simslurm pid 1054762: simslurm: ready, 4 jobs (control teb0 fakecam_0 fakecam_1) in /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/daqstat-dir/slurm.json, pid 1054762
+daqstat variant 0 ['-i', '1', '{walkdir}/daqstat.py']: qt_walk --gui slurm/daqstat.py: 8 instances, 30 calls, exit 0, elapsed 14.4 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/daqstat-0/walk.json
+daqstat variant 1 ['-i', '1', '{walkdir}/missing.py']: qt_walk --gui slurm/daqstat.py: 8 instances, 1 calls, exit 0, elapsed 8.6 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/daqstat-1/walk.json
+detector_protection_monitor: device simdetprot pid 1055455: simdetprot: ready, 6 PVs under DAQ:SIM:JF16M:BLOCKER on 127.0.0.1 port 15064, pid 1055455
+detector_protection_monitor variant 0 ['-b', '{pvbase}:JF16M:BLOCKER', '-d', 'Jungfrau']: qt_walk --gui trigger/detector_protection_monitor.py: 529 instances, 527 calls, exit 0, elapsed 36.4 s -> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/detector_protection_monitor-0/walk.json
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq junit=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/sim.junit.xml
+walks: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks (run now against the simulated DAQ /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/dsw)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 148, 475; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | /gui/datadev_monitor | 10/10/0 | PASS
+cas/deadca.py | /gui/deadca | 43/32/11 | PASS
+cas/dtica.py | /gui/dtica | 1062/1060/2 | PASS
+cas/groupca.py | /gui/groupca | 91/90/1 | PASS
+cas/hsdPs.py | /gui/hsdPs | 49/49/0 | PASS
+cas/hsdpva.py | /gui/hsdpva | 850/845/5 | PASS
+cas/partca-sum.py | N/A: not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, "L0Delay"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv [], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/partca-sum.py:34 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (256 widgets built, none visible)] | -/-/- | PASS
+cas/partca.py | /gui/partca | 84/84/0 | PASS
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | /gui/pvatable | 10/10/0 | PASS
+cas/tdmpva.py | N/A: not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:TDM'], python 3.9.21, qt 5.15.8) of its own entry raised ModuleNotFoundError at cas/tdmpva.py:8 (No module named 'psdaq.pytdm') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/tprca.py | /gui/tprca | 439/429/10 | PASS
+cas/xpmca.py | N/A: not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, "PAddr", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:XPM:0'], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/xpmca.py:180 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/xpmpatt.py | /gui/xpmpatt | 454/454/0 | PASS
+cas/xpmpva.py | /gui/xpmpva | 2098/2096/2 | PASS
+configdb/configdb_GUI.py | /gui/configdb_GUI | 23/23/0 | PASS
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | /gui/seq_epixhr | 49/49/0 | PASS
+seq/seqplot.py | /gui/seqplot | 98/98/0 | PASS
+slurm/daqstat.py | /gui/daqstat | 14/9/5 | PASS
+trigger/detector_protection_monitor.py | /gui/detector_protection_monitor | 2/2/0 | PASS
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2296 same, 0 another PV, in 10 pages: deadca 0/0, dtica 30/30, groupca 67/67, hsdpva 584/584, partca 79/79, pvant 6/6, pvatable 0/0, tprca 414/414, xpmpatt 444/444, xpmpva 672/672
+
+RESULT: PASS (23/23 files pass)

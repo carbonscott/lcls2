@@ -1,0 +1,1031 @@
+host sdfmilan120 date 2026-11-09T07:35:19-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/shots server-args ''
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+........................................................................ [ 40%]
+........................................................................ [ 53%]
+........................................................................ [ 67%]
+....................s................................................... [ 80%]
+........................................................................ [ 94%]
+...............................                                          [100%]
+=============================== warnings summary ===============================
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+  test_check_gui_parity.py:32: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_qapps_lists_constructions_from_the_syntax_tree():
+
+test_check_gui_parity.py: 22 warnings
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py: 22 warnings
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_no_walk_is_kept_in_the_tree
+  test_check_gui_parity.py:43: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_no_walk_is_kept_in_the_tree():
+
+test_check_gui_parity.py: 18 warnings
+  test_check_gui_parity.py:47: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('name', ['procstat', 'groupca', 'pvant', 'deadca', 'partca', 'xpmpatt', 'tprca', 'pvatable',
+
+test_check_gui_parity.py: 55 warnings
+test_gui_configdb_GUI.py: 6 warnings
+test_gui_dtica.py: 2 warnings
+test_gui_groupca.py: 2 warnings
+test_gui_hsdPs.py: 53 warnings
+test_gui_hsdpva.py: 3 warnings
+test_gui_partca.py: 1 warning
+test_gui_seq_epixhr.py: 53 warnings
+test_gui_seqplot.py: 105 warnings
+test_gui_tprca.py: 2 warnings
+test_gui_xpmpatt.py: 2 warnings
+test_gui_xpmpva.py: 5 warnings
+  procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+
+test_check_gui_parity.py: 55 warnings
+test_gui_configdb_GUI.py: 6 warnings
+test_gui_dtica.py: 2 warnings
+test_gui_groupca.py: 2 warnings
+test_gui_hsdPs.py: 53 warnings
+test_gui_hsdpva.py: 3 warnings
+test_gui_partca.py: 1 warning
+test_gui_seq_epixhr.py: 53 warnings
+test_gui_seqplot.py: 105 warnings
+test_gui_tprca.py: 2 warnings
+test_gui_xpmpatt.py: 2 warnings
+test_gui_xpmpva.py: 5 warnings
+  procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+
+test_check_gui_parity.py::test_check_passes_and_fails_when_a_mapping_or_the_backend_goes
+  test_check_gui_parity.py:87: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_check_passes_and_fails_when_a_mapping_or_the_backend_goes(tmp_path, walks):
+
+test_check_gui_parity.py::test_pv_compare_counts_the_same_pv_and_names_another
+  test_check_gui_parity.py:101: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pv_compare_counts_the_same_pv_and_names_another():
+
+test_check_gui_parity.py: 10 warnings
+  test_check_gui_parity.py:115: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('name', PVGUI)
+
+test_check_gui_parity.py::test_check_fails_without_a_walk_or_with_a_walk_of_other_source
+  test_check_gui_parity.py:149: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_check_fails_without_a_walk_or_with_a_walk_of_other_source(tmp_path, walks):
+
+test_check_gui_parity.py::test_na_rules_are_checked
+  test_check_gui_parity.py:165: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_na_rules_are_checked():
+
+test_check_gui_parity.py::test_library_demo_needs_the_import_probe
+  test_check_gui_parity.py:178: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_library_demo_needs_the_import_probe(walks):
+
+test_check_gui_parity.py::test_no_window_rule_needs_the_walk_to_raise_at_the_cited_line[partca-sum-cas/partca-sum.py:34-TypeError]
+test_check_gui_parity.py::test_no_window_rule_needs_the_walk_to_raise_at_the_cited_line[xpmca-cas/xpmca.py:180-TypeError]
+test_check_gui_parity.py::test_no_window_rule_needs_the_walk_to_raise_at_the_cited_line[tdmpva-cas/tdmpva.py:8-ModuleNotFoundError]
+  test_check_gui_parity.py:185: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('name, line, error', [('partca-sum', 'cas/partca-sum.py:34', 'TypeError'),
+
+test_check_gui_parity.py::test_walk_refuses_other_hosts
+  test_check_gui_parity.py:204: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_walk_refuses_other_hosts(walks):
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+  test_check_gui_parity.py:214: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable():
+
+test_check_gui_parity.py::test_walk_refuses_every_ssh_of_datadev_monitor
+  test_check_gui_parity.py:223: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_walk_refuses_every_ssh_of_datadev_monitor(walks):
+
+test_check_gui_parity.py::test_unwritten_label_of_a_line_the_walk_saw_write_is_a_display
+  test_check_gui_parity.py:241: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unwritten_label_of_a_line_the_walk_saw_write_is_a_display():
+
+test_check_gui_parity.py::test_a_message_box_built_many_times_is_one_row
+  test_check_gui_parity.py:249: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_message_box_built_many_times_is_one_row():
+
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+  test_check_gui_parity.py:255: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_annotated_assignment_binds_its_widget():
+
+test_check_gui_parity.py::test_walk_records_pyqtgraph_plot_panels_and_their_curves[seqplot-2]
+test_check_gui_parity.py::test_walk_records_pyqtgraph_plot_panels_and_their_curves[seq_epixhr-1]
+  test_check_gui_parity.py:261: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('name, plots', [('seqplot', 2), ('seq_epixhr', 1)])
+
+test_check_gui_parity.py::test_pyqtgraph_menu_widgets_are_rows_of_their_plot
+  test_check_gui_parity.py:276: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pyqtgraph_menu_widgets_are_rows_of_their_plot():
+
+test_check_gui_parity.py::test_pg_option_table_has_one_option_per_control
+  test_check_gui_parity.py:289: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pg_option_table_has_one_option_per_control():
+
+test_check_gui_parity.py::test_tree_selection_and_columns_are_rows
+  test_check_gui_parity.py:299: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_selection_and_columns_are_rows():
+
+test_check_gui_parity.py::test_a_ready_line_is_the_word_ready
+  test_check_gui_parity.py:308: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_ready_line_is_the_word_ready():
+
+test_check_gui_parity.py::test_option_walk_sets_every_menu_control_and_puts_the_panel_back[seqplot-2]
+test_check_gui_parity.py::test_option_walk_sets_every_menu_control_and_puts_the_panel_back[seq_epixhr-1]
+test_check_gui_parity.py::test_option_walk_sets_every_menu_control_and_puts_the_panel_back[hsdPs-1]
+  test_check_gui_parity.py:320: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('name, panels', [('seqplot', 2), ('seq_epixhr', 1), ('hsdPs', 1)])
+
+test_check_gui_parity.py::test_walk_follows_hsdps_plotter_into_its_child_process
+  test_check_gui_parity.py:335: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_walk_follows_hsdps_plotter_into_its_child_process(walks):
+
+test_check_gui_parity.py::test_configdb_walk_selects_applies_confirms_and_closes
+  test_check_gui_parity.py:344: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_configdb_walk_selects_applies_confirms_and_closes(walks):
+
+test_check_gui_parity.py::test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site
+  test_check_gui_parity.py:356: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site():
+
+test_check_gui_parity.py::test_an_instance_at_a_line_with_no_site_is_a_built_row
+  test_check_gui_parity.py:362: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_an_instance_at_a_line_with_no_site_is_a_built_row():
+
+test_check_parity.py::test_complete_mapping_passes
+  test_check_parity.py:135: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_complete_mapping_passes(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_one_mapping_removed_fails_and_names_it
+  test_check_parity.py:148: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_one_mapping_removed_fails_and_names_it(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_failing_test_fails
+  test_check_parity.py:162: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_failing_test_fails(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_passing_test_without_the_rows_parity_property_fails
+  test_check_parity.py:168: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_passing_test_without_the_rows_parity_property_fails(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_missing_test_and_no_junit_fail
+  test_check_parity.py:175: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_missing_test_and_no_junit_fail(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_non_browser_test_is_invalid
+  test_check_parity.py:184: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_non_browser_test_is_invalid(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_stale_and_invalid_entries_fail
+  test_check_parity.py:191: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_stale_and_invalid_entries_fail(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_na_reason_must_cite_the_guard_line
+  test_check_parity.py:202: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_na_reason_must_cite_the_guard_line(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_na_on_user_facing_row_needs_flag
+  test_check_parity.py:209: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_na_on_user_facing_row_needs_flag(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_na_needs_the_walk_to_agree
+  test_check_parity.py:218: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_na_needs_the_walk_to_agree(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_mapped_row_the_walk_does_not_show_built_fails
+  test_check_parity.py:234: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mapped_row_the_walk_does_not_show_built_fails(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_mapped_row_tested_only_against_the_emulator_fails
+  test_check_parity.py:253: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mapped_row_tested_only_against_the_emulator_fails(pkg, tmp_path, capsys):
+
+test_check_parity.py::test_no_rows_fails
+  test_check_parity.py:275: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_no_rows_fails(tmp_path, capsys):
+
+test_check_parity.py::test_real_mapping_is_consistent_and_the_saved_walk_agrees
+  test_check_parity.py:310: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(not HAVE_REAL, reason='no control_gui or mapping.json next to webgui')
+
+test_check_parity.py::test_real_check_passes_and_fails_when_one_mapping_is_removed
+  test_check_parity.py:323: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(not HAVE_REAL, reason='no control_gui or mapping.json next to webgui')
+
+test_check_parity.py::test_real_rows_the_running_gui_never_builds_cannot_be_mapped
+  test_check_parity.py:355: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(not HAVE_REAL, reason='no control_gui or mapping.json next to webgui')
+
+test_check_parity.py::test_mainwindow_fragment_matches_rows
+  test_check_parity.py:388: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mainwindow_fragment_matches_rows():
+
+test_configdb_api.py::test_info_resolves_hutch
+  test_configdb_api.py:56: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_info_resolves_hutch(web, cfgdb):
+
+test_configdb_api.py::test_aliases_and_devices
+  test_configdb_api.py:63: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_aliases_and_devices(web):
+
+test_configdb_api.py::test_config_fakecam_as_the_tree_shows_it
+  test_configdb_api.py:71: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_config_fakecam_as_the_tree_shows_it(web):
+
+test_configdb_api.py::test_config_tree_kinds
+  test_configdb_api.py:89: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_config_tree_kinds(web):
+
+test_configdb_api.py::test_save_tree_hex_bad_status_and_uint64
+  test_configdb_api.py:111: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_save_tree_hex_bad_status_and_uint64(web):
+
+test_configdb_api.py::test_save_text_mode_and_bad_text
+  test_configdb_api.py:130: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_save_text_mode_and_bad_text(web):
+
+test_configdb_api.py::test_save_unchanged_is_an_error_in_the_log
+  test_configdb_api.py:141: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_save_unchanged_is_an_error_in_the_log(web):
+
+test_configdb_api.py::test_bad_names_refused
+  test_configdb_api.py:150: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_bad_names_refused(web):
+
+test_configdb_api.py::test_no_configdb_url_means_no_editor
+  test_configdb_api.py:156: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_no_configdb_url_means_no_editor():
+
+test_configdb_api.py::test_non_local_configdb_url_refused
+  test_configdb_api.py:167: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_non_local_configdb_url_refused():
+
+test_configdb_api.py::test_npy_roundtrip
+  test_configdb_api.py:189: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_npy_roundtrip(web):
+
+test_configdb_api.py::test_note_logs_and_unknown_event
+  test_configdb_api.py:198: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_note_logs_and_unknown_event(web):
+
+test_configdb_api.py::test_serial_number_db_merge
+  test_configdb_api.py:210: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_serial_number_db_merge(web):
+
+test_configdb_api.py::test_render_and_content
+  test_configdb_api.py:221: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_render_and_content(web):
+
+test_configeditor_ui.py::test_main_type_button_and_alias_popup[chromium]
+  /sdf/scratch/users/c/cwang31/agentify-webtest/venv/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'base_url' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+test_configeditor_ui.py::test_main_type_button_and_alias_popup[chromium]
+  test_configeditor_ui.py:178: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_main_type_button_and_alias_popup(gui):
+
+test_configeditor_ui.py::test_edit_opens_select_dialog[chromium]
+  test_configeditor_ui.py:192: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_edit_opens_select_dialog(gui, web):
+
+test_configeditor_ui.py::test_select_dialog_cancel[chromium]
+  test_configeditor_ui.py:231: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_select_dialog_cancel(gui):
+
+test_configeditor_ui.py::test_tree_expand_collapse[chromium]
+  test_configeditor_ui.py:248: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_expand_collapse(gui, fc0):
+
+test_configeditor_ui.py::test_tree_scalar_edit_and_radix[chromium]
+  test_configeditor_ui.py:279: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_scalar_edit_and_radix(gui, web, fc0):
+
+test_configeditor_ui.py::test_tree_list_and_long_value_popup[chromium]
+  test_configeditor_ui.py:308: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_list_and_long_value_popup(gui, web):
+
+test_configeditor_ui.py::test_tree_enum_popup[chromium]
+  test_configeditor_ui.py:338: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_enum_popup(gui, web):
+
+test_configeditor_ui.py::test_text_editor_and_type_switch[chromium]
+  test_configeditor_ui.py:362: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_text_editor_and_type_switch(gui, web, fc0):
+
+test_configeditor_ui.py::test_apply_confirm_cancel_and_ok[chromium]
+  test_configeditor_ui.py:394: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_apply_confirm_cancel_and_ok(gui, web, fc0):
+
+test_configeditor_ui.py::test_select_other_and_close[chromium]
+  test_configeditor_ui.py:417: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_select_other_and_close(gui, fc0):
+
+test_configeditor_ui.py::test_more_help_save_load[chromium]
+  test_configeditor_ui.py:439: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_more_help_save_load(gui, tmp_path):
+
+test_configeditor_ui.py::test_long_value_popup_more_load_save[chromium]
+  test_configeditor_ui.py:486: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_long_value_popup_more_load_save(gui, tmp_path):
+
+test_configeditor_ui.py::test_serial_number_checkbox[chromium]
+  test_configeditor_ui.py:527: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_serial_number_checkbox(gui, fc0):
+
+test_configeditor_ui.py::test_edit_seed_read_back_by_daq_config_readers[chromium]
+  test_configeditor_ui.py:556: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_edit_seed_read_back_by_daq_config_readers(gui, web, cfgdb, fc0):
+
+test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]
+  test_gui_configdb_GUI.py:127: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_target_read_only_and_progress_at_start(page, cdb):
+
+test_gui_configdb_GUI.py::test_alias_selection_lists_the_detectors[chromium]
+  test_gui_configdb_GUI.py:139: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_alias_selection_lists_the_detectors(page, cdb):
+
+test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]
+  test_gui_configdb_GUI.py:161: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_two_detectors_and_a_parameter(page, cdb):
+
+test_gui_configdb_GUI.py::test_enum_parameter_is_a_combo[chromium]
+  test_gui_configdb_GUI.py:184: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_enum_parameter_is_a_combo(page, cdb):
+
+test_gui_configdb_GUI.py::test_writing_without_a_password_warns[chromium]
+  test_gui_configdb_GUI.py:199: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_writing_without_a_password_warns(page, cdb):
+
+test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]
+  test_gui_configdb_GUI.py:225: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_apply_confirms_writes_and_rereads(page, cdb):
+
+test_gui_configdb_GUI.py::test_close_while_writing_asks[chromium]
+  test_gui_configdb_GUI.py:252: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_close_while_writing_asks(page, cdb):
+
+test_gui_daqstat.py::test_table_lists_the_jobs_states_live_and_sortable[chromium]
+  test_gui_daqstat.py:116: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_table_lists_the_jobs_states_live_and_sortable(page, ds):
+
+test_gui_daqstat.py::test_mode_buttons_are_exclusive[chromium]
+  test_gui_daqstat.py:146: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mode_buttons_are_exclusive(page, ds):
+
+test_gui_daqstat.py::test_cell_click_opens_console_logfile_and_restarts[chromium]
+  test_gui_daqstat.py:161: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_cell_click_opens_console_logfile_and_restarts(page, ds):
+
+test_gui_daqstat.py::test_current_row_kept_across_refresh[chromium]
+  test_gui_daqstat.py:197: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_current_row_kept_across_refresh(page, ds):
+
+test_gui_daqstat.py::test_unknown_error_shows_critical_and_closes[chromium]
+  test_gui_daqstat.py:209: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unknown_error_shows_critical_and_closes(page):
+
+test_gui_datadev_monitor.py::test_refresh_all_checks_every_simulated_node[chromium]
+  test_gui_datadev_monitor.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_refresh_all_checks_every_simulated_node(page, dd):
+
+test_gui_datadev_monitor.py::test_header_click_sorts_by_the_column[chromium]
+  test_gui_datadev_monitor.py:124: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_header_click_sorts_by_the_column(page, dd):
+
+test_gui_deadca.py::test_cells_show_deadflnk_and_link_labels[chromium]
+  test_gui_deadca.py:36: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_cells_show_deadflnk_and_link_labels(page, ds):
+
+test_gui_detector_protection_monitor.py::test_bar_shows_hot_pixels_as_percent_of_the_trip_count[chromium]
+  test_gui_detector_protection_monitor.py:94: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_bar_shows_hot_pixels_as_percent_of_the_trip_count(page, dp):
+
+test_gui_detector_protection_monitor.py::test_a_trip_opens_the_dialog_and_dismiss_reopens_it[chromium]
+  test_gui_detector_protection_monitor.py:112: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_trip_opens_the_dialog_and_dismiss_reopens_it(page, dp):
+
+test_gui_dtica.py::test_displays_follow_simdti[chromium]
+  test_gui_dtica.py:50: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_displays_follow_simdti(page, ds):
+
+test_gui_dtica.py::test_partition_boxes_put_their_index_minus_one[chromium]
+  test_gui_dtica.py:82: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_partition_boxes_put_their_index_minus_one(page, ds):
+
+test_gui_dtica.py::test_downstream_link_boxes_put_the_forward_masks[chromium]
+  test_gui_dtica.py:110: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_downstream_link_boxes_put_the_forward_masks(page, ds):
+
+test_gui_dtica.py::test_count_clear_buttons[chromium]
+  test_gui_dtica.py:140: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_count_clear_buttons(page, ds):
+
+test_gui_dtica.py::test_tabs[chromium]
+  test_gui_dtica.py:145: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs(page, ds):
+
+test_gui_groupca.py::test_tabs[chromium]
+  test_gui_groupca.py:129: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs(page, gs):
+
+test_gui_groupca.py::test_displays_follow_simxpm_counters[chromium]
+  test_gui_groupca.py:143: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_displays_follow_simxpm_counters(page, gs):
+
+test_gui_groupca.py::test_deadtime_labels_follow_link_masks[chromium]
+  test_gui_groupca.py:166: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_deadtime_labels_follow_link_masks(page, gs):
+
+test_gui_groupca.py::test_checkboxes_write_their_pvs[chromium]
+  test_gui_groupca.py:181: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_checkboxes_write_their_pvs(page, gs):
+
+test_gui_groupca.py::test_int_fields_write_their_pvs[chromium]
+  test_gui_groupca.py:202: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_int_fields_write_their_pvs(page, gs):
+
+test_gui_groupca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]
+  test_gui_groupca.py:225: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_combos_write_their_pvs_with_the_pyqt_choices(page, gs):
+
+test_gui_groupca.py::test_mask_bits_write_their_pvs[chromium]
+  test_gui_groupca.py:254: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mask_bits_write_their_pvs(page, gs):
+
+test_gui_groupca.py::test_transition_buttons_insert_messages[chromium]
+  test_gui_groupca.py:282: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_transition_buttons_insert_messages(page, gs):
+
+test_gui_groupca.py::test_run_and_clear[chromium]
+  test_gui_groupca.py:306: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_run_and_clear(page, gs):
+
+test_gui_hsdPs.py: 48 warnings
+test_gui_seq_epixhr.py: 48 warnings
+test_gui_seqplot.py: 96 warnings
+  <string>:1: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+
+test_gui_hsdPs.py::test_plot_shows_the_pyqt_curves[chromium]
+  test_gui_hsdPs.py:61: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_plot_shows_the_pyqt_curves(page, hp):
+
+test_gui_hsdPs.py::test_wheel_zoom_drag_pan[chromium]
+  test_gui_hsdPs.py:68: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_wheel_zoom_drag_pan(page, hp):
+
+test_gui_hsdpva.py::test_displays_show_the_structure_fields[chromium]
+  test_gui_hsdpva.py:56: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_displays_show_the_structure_fields(page, hs):
+
+test_gui_hsdpva.py::test_apply_puts_each_box_whole[chromium]
+  test_gui_hsdpva.py:98: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_apply_puts_each_box_whole(page, hs):
+
+test_gui_hsdpva.py::test_tabs[chromium]
+  test_gui_hsdpva.py:134: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs(page, hs):
+
+test_gui_hsdpva.py::test_base_selector_switches_the_tab_stack[chromium]
+  test_gui_hsdpva.py:139: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_base_selector_switches_the_tab_stack(page, hs):
+
+test_gui_partca.py::test_labels_follow_simxpm_counters[chromium]
+  test_gui_partca.py:48: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_labels_follow_simxpm_counters(page, ps):
+
+test_gui_partca.py::test_checkboxes_write_their_pvs[chromium]
+  test_gui_partca.py:65: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_checkboxes_write_their_pvs(page, ps):
+
+test_gui_partca.py::test_int_fields_write_their_pvs[chromium]
+  test_gui_partca.py:70: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_int_fields_write_their_pvs(page, ps):
+
+test_gui_partca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]
+  test_gui_partca.py:75: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_combos_write_their_pvs_with_the_pyqt_choices(page, ps):
+
+test_gui_partca.py::test_mask_bits_write_their_pvs[chromium]
+  test_gui_partca.py:80: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mask_bits_write_their_pvs(page, ps):
+
+test_gui_partca.py::test_buttons_put_1_then_0[chromium]
+  test_gui_partca.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_buttons_put_1_then_0(page, ps):
+
+test_gui_partca.py::test_collection_auto_connect_and_reset[chromium]
+  test_gui_partca.py:107: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_collection_auto_connect_and_reset(page, ps):
+
+test_gui_procstat.py::test_table_lists_sim_processes_live_and_sortable[chromium]
+  test_gui_procstat.py:64: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_table_lists_sim_processes_live_and_sortable(page, ps):
+
+test_gui_procstat.py::test_mode_buttons_are_exclusive[chromium]
+  test_gui_procstat.py:89: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mode_buttons_are_exclusive(page, ps):
+
+test_gui_procstat.py::test_cell_click_opens_console_and_logfile[chromium]
+  test_gui_procstat.py:103: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_cell_click_opens_console_and_logfile(page, ps):
+
+test_gui_procstat.py::test_restart_of_local_process_shows_warning[chromium]
+  test_gui_procstat.py:122: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_restart_of_local_process_shows_warning(page, ps):
+
+test_gui_procstat.py::test_current_row_kept_across_refresh[chromium]
+  test_gui_procstat.py:139: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_current_row_kept_across_refresh(page, ps):
+
+test_gui_procstat.py::test_unknown_error_shows_critical_and_closes[chromium]
+  test_gui_procstat.py:151: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unknown_error_shows_critical_and_closes(page):
+
+test_gui_pvant.py::test_fields_show_the_pvs_and_edits_change_nothing[chromium]
+  test_gui_pvant.py:34: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_fields_show_the_pvs_and_edits_change_nothing(page, ps):
+
+test_gui_pvatable.py::test_cells_show_the_structure_fields[chromium]
+  test_gui_pvatable.py:39: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_cells_show_the_structure_fields(page, ps):
+
+test_gui_seq_epixhr.py::test_plot_shows_the_pyqt_curves[chromium]
+  test_gui_seq_epixhr.py:27: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_plot_shows_the_pyqt_curves(page, se):
+
+test_gui_seq_epixhr.py::test_wheel_zoom_drag_pan[chromium]
+  test_gui_seq_epixhr.py:34: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_wheel_zoom_drag_pan(page, se):
+
+test_gui_seqplot.py::test_plots_show_the_pyqt_curves[chromium]
+  test_gui_seqplot.py:27: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_plots_show_the_pyqt_curves(page, sp):
+
+test_gui_seqplot.py::test_wheel_zoom_drag_pan_and_x_link[chromium]
+  test_gui_seqplot.py:34: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_wheel_zoom_drag_pan_and_x_link(page, sp):
+
+test_gui_tprca.py::test_tabs[chromium]
+  test_gui_tprca.py:60: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs(page, ts):
+
+test_gui_tprca.py::test_displays_follow_simtpr[chromium]
+  test_gui_tprca.py:65: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_displays_follow_simtpr(page, ts):
+
+test_gui_tprca.py::test_edit_fields_put_int_or_float[chromium]
+  test_gui_tprca.py:86: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_edit_fields_put_int_or_float(page, ts):
+
+test_gui_tprca.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]
+  test_gui_tprca.py:119: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_combos_write_their_pvs_with_the_pyqt_choices(page, ts):
+
+test_gui_tprca.py::test_destination_bits_put_the_mask_of_all_boxes[chromium]
+  test_gui_tprca.py:124: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_destination_bits_put_the_mask_of_all_boxes(page, ts):
+
+test_gui_tprca.py::test_fields_of_pvs_tprcas_does_not_serve_stay_initial[chromium]
+  test_gui_tprca.py:150: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_fields_of_pvs_tprcas_does_not_serve_stay_initial(page, ts):
+
+test_gui_xpmpatt.py::test_tabs[chromium]
+  test_gui_xpmpatt.py:42: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs(page, xs):
+
+test_gui_xpmpatt.py::test_stats_and_coincidences_follow_simxpm[chromium]
+  test_gui_xpmpatt.py:47: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_stats_and_coincidences_follow_simxpm(page, xs):
+
+test_gui_xpmpatt.py::test_combos_write_their_pvs_with_the_pyqt_choices[chromium]
+  test_gui_xpmpatt.py:69: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_combos_write_their_pvs_with_the_pyqt_choices(page, xs):
+
+test_gui_xpmpatt.py::test_mask_bits_write_their_pvs[chromium]
+  test_gui_xpmpatt.py:74: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mask_bits_write_their_pvs(page, xs):
+
+test_gui_xpmpatt.py::test_int_fields_write_their_pvs[chromium]
+  test_gui_xpmpatt.py:79: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_int_fields_write_their_pvs(page, xs):
+
+test_gui_xpmpva.py::test_tabs_and_the_xpm_selector[chromium]
+  test_gui_xpmpva.py:91: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tabs_and_the_xpm_selector(page, xv):
+
+test_gui_xpmpva.py::test_displays_show_what_the_pyqt_update_writes[chromium]
+  test_gui_xpmpva.py:103: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_displays_show_what_the_pyqt_update_writes(page, xv):
+
+test_gui_xpmpva.py::test_groups_and_event_codes[chromium]
+  test_gui_xpmpva.py:128: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_groups_and_event_codes(page, xv):
+
+test_gui_xpmpva.py::test_buttons_put_their_values[chromium]
+  test_gui_xpmpva.py:165: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_buttons_put_their_values(page, xv):
+
+test_gui_xpmpva.py::test_check_boxes[chromium]
+  test_gui_xpmpva.py:192: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_check_boxes(page, xv):
+
+test_gui_xpmpva.py::test_int_fields[chromium]
+  test_gui_xpmpva.py:205: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_int_fields(page, xv):
+
+test_gui_xpmpva.py::test_group_masks_put_the_mask_of_the_choice[chromium]
+  test_gui_xpmpva.py:216: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_group_masks_put_the_mask_of_the_choice(page, xv):
+
+test_gui_xpmpva.py::test_pattern_l0select_widgets[chromium]
+  test_gui_xpmpva.py:236: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pattern_l0select_widgets(page, xv):
+
+test_webgui_parity_ui.py::test_select_id_collapses_and_expands_detector[chromium]
+  test_webgui_parity_ui.py:136: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_select_id_collapses_and_expands_detector(page, server):
+
+test_webgui_parity_ui.py::test_show_id_collapses_and_expands_detector[chromium]
+  test_webgui_parity_ui.py:187: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_show_id_collapses_and_expands_detector(page, server):
+
+test_webgui_parity_ui.py::test_partition_display_cells_shown_not_editable[chromium]
+  test_webgui_parity_ui.py:211: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_partition_display_cells_shown_not_editable(page, server):
+
+test_webgui_parity_ui.py::test_collection_cells_shown_not_editable[chromium]
+  test_webgui_parity_ui.py:252: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_collection_cells_shown_not_editable(page, server):
+
+test_webgui_parity_ui.py::test_logger_text_shown_read_only[chromium]
+  test_webgui_parity_ui.py:275: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_logger_text_shown_read_only(page, server):
+
+test_webgui_parity_ui.py::test_box_state_ignores_arrow_keys_and_wheel[chromium]
+  test_webgui_parity_ui.py:295: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_box_state_ignores_arrow_keys_and_wheel(page, server):
+
+test_webgui_parity_ui.py::test_alt_a_applies_select_window[chromium]
+  test_webgui_parity_ui.py:339: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_alt_a_applies_select_window(page, server):
+
+test_webgui_parity_ui.py::test_popup_edit_text_mnemonics[chromium]
+  test_webgui_parity_ui.py:356: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_popup_edit_text_mnemonics(page, cfg_server):
+
+test_webgui_parity_ui.py::test_config_tree_key_and_index_cells_not_editable[chromium]
+  test_webgui_parity_ui.py:399: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_config_tree_key_and_index_cells_not_editable(page, cfg_server):
+
+test_webgui_parity_ui.py::test_tab_bar_user_and_expert[chromium]
+  test_webgui_parity_ui.py:433: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tab_bar_user_and_expert(page, emu_server):
+
+test_webgui_parity_ui.py::test_user_tab_play_stop_record[chromium]
+  test_webgui_parity_ui.py:459: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_user_tab_play_stop_record(page, emu_server):
+
+test_webgui_real.py::test_full_cycle_real[chromium]
+  test_webgui_real.py:61: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_full_cycle_real(page, real):
+
+test_webgui_ui.py::test_page_loads[chromium]
+  test_webgui_ui.py:88: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_page_loads(page, emu_server):
+
+test_webgui_ui.py::test_full_cycle[chromium]
+  test_webgui_ui.py:104: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_full_cycle(page, server):
+
+test_webgui_ui.py::test_record_toggle[chromium]
+  test_webgui_ui.py:199: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_record_toggle(page, server):
+
+test_webgui_ui.py::test_config_type_popup[chromium]
+  test_webgui_ui.py:211: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_config_type_popup(page, emu_server):
+
+test_webgui_ui.py::test_partition_columns_apply[chromium]
+  test_webgui_ui.py:226: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_partition_columns_apply(page, server):
+
+test_webgui_ui.py::test_collection_and_show_window[chromium]
+  test_webgui_ui.py:271: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_collection_and_show_window(page, server):
+
+test_webgui_ui.py::test_progress_bar[chromium]
+  test_webgui_ui.py:300: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_progress_bar(page, slow_server):
+
+test_webgui_ui.py::test_refresh_buttons[chromium]
+  test_webgui_ui.py:312: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_refresh_buttons(page, server):
+
+test_webgui_ui.py::test_state_and_transition_buttons[chromium]
+  test_webgui_ui.py:326: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_state_and_transition_buttons(page, emu_server):
+
+test_webgui_ui.py::test_error_log[chromium]
+  test_webgui_ui.py:338: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_error_log(page, emu_server):
+
+test_webgui_ui.py::test_info_panel[chromium]
+  test_webgui_ui.py:349: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_info_panel(page, emu_server):
+
+test_configeditor_ui.py::test_mapping_fragment_matches_rows
+  test_configeditor_ui.py:579: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_mapping_fragment_matches_rows():
+
+test_parity_enumerate_v1.py::test_one_row_per_checkbox_column
+  test_parity_enumerate_v1.py:198: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_one_row_per_checkbox_column(synth):
+
+test_parity_enumerate_v1.py::test_hidden_button_and_derived_flags
+  test_parity_enumerate_v1.py:218: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_hidden_button_and_derived_flags(synth):
+
+test_parity_enumerate_v1.py::test_unreachable_module_rows_listed
+  test_parity_enumerate_v1.py:232: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unreachable_module_rows_listed(synth):
+
+test_parity_enumerate_v1.py::test_action_combo_items_dialogs_and_fallback
+  test_parity_enumerate_v1.py:240: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_action_combo_items_dialogs_and_fallback(synth):
+
+test_parity_enumerate_v1.py::test_ids_have_no_line_numbers
+  test_parity_enumerate_v1.py:257: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_ids_have_no_line_numbers(synth):
+
+test_parity_enumerate_v1.py::test_ids_survive_an_edit
+  test_parity_enumerate_v1.py:264: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_ids_survive_an_edit(tmp_path):
+
+test_parity_enumerate_v1.py::test_real_control_gui
+  test_parity_enumerate_v1.py:278: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(not os.path.isdir(os.path.join(REAL, 'control_gui')),
+
+test_parity_enumerate_v1.py::test_event_filters_mnemonics_and_guards
+  test_parity_enumerate_v1.py:342: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_event_filters_mnemonics_and_guards(tmp_path):
+
+test_parity_enumerate_v1.py::test_real_control_gui_v1_additions
+  test_parity_enumerate_v1.py:371: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(not os.path.isdir(os.path.join(REAL, 'control_gui')),
+
+test_walk_guard.py::test_remote_shells_and_slurm_refused_others_run
+  test_walk_guard.py:31: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_remote_shells_and_slurm_refused_others_run():
+
+test_webgui_backend.py::test_startup_calls
+  test_webgui_backend.py:78: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_startup_calls(app):
+
+test_webgui_backend.py::test_commands_call_daqcontrol_like_pyqt
+  test_webgui_backend.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_commands_call_daqcontrol_like_pyqt(app):
+
+test_webgui_backend.py::test_status_stream_messages
+  test_webgui_backend.py:102: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_status_stream_messages(app):
+
+test_webgui_backend.py::test_prometheus_parser
+  test_webgui_backend.py:121: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_prometheus_parser():
+
+test_webgui_e2e_checks.py::test_gate[1000-None-True]
+test_webgui_e2e_checks.py::test_gate[1000-1082-False]
+test_webgui_e2e_checks.py::test_gate[1000-1150-False]
+test_webgui_e2e_checks.py::test_gate[1000-2000-False]
+test_webgui_e2e_checks.py::test_gate[100-1082-False]
+test_webgui_e2e_checks.py::test_gate[5000-None-True]
+  test_webgui_e2e_checks.py:73: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('events,stall,ok', [
+
+test_webgui_e2e_checks.py::test_gate_counter_unreadable
+  test_webgui_e2e_checks.py:90: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_gate_counter_unreadable(tmp_path, clock):
+
+test_webgui_e2e_checks.py::test_counts_equal_pass
+  test_webgui_e2e_checks.py:114: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_counts_equal_pass(tmp_path, monkeypatch):
+
+test_webgui_e2e_checks.py::test_one_count_off_fails_and_is_named[ps_events-1431-psana2 events 1431 != page 1531]
+test_webgui_e2e_checks.py::test_one_count_off_fails_and_is_named[ps_data-1530-psana2 with data 1530 != page 1531]
+test_webgui_e2e_checks.py::test_one_count_off_fails_and_is_named[teb-1532-TEB_WrtCt 1532 != page 1531]
+test_webgui_e2e_checks.py::test_one_count_off_fails_and_is_named[direct-1600-own NumL0Acc after Disable 1600 != page 1531]
+  test_webgui_e2e_checks.py:120: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('field,value,name', [
+
+test_webgui_e2e_checks.py::test_page_count_off_fails
+  test_webgui_e2e_checks.py:133: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_page_count_off_fails(tmp_path, monkeypatch):
+
+test_webgui_e2e_checks.py::test_below_events_fails
+  test_webgui_e2e_checks.py:138: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_below_events_fails(tmp_path, monkeypatch):
+
+test_webgui_e2e_checks.py::test_psana_check_failure_fails
+  test_webgui_e2e_checks.py:143: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_psana_check_failure_fails(tmp_path, monkeypatch):
+
+test_webgui_e2e_checks.py::test_expected_seed_order
+  test_webgui_e2e_checks.py:149: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_expected_seed_order(tmp_path):
+
+test_webgui_e2e_checks.py::test_config_read_pass
+  test_webgui_e2e_checks.py:180: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_config_read_pass(tmp_path):
+
+test_webgui_e2e_checks.py: 11 warnings
+  test_webgui_e2e_checks.py:185: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('change', [
+
+test_webgui_e2e_checks.py::test_edit_one_value_expect_another_fails
+  test_webgui_e2e_checks.py:202: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_edit_one_value_expect_another_fails(tmp_path):
+
+test_webgui_e2e_checks.py::test_no_configure_window
+  test_webgui_e2e_checks.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_no_configure_window(tmp_path):
+
+test_webgui_e2e_checks.py::test_lines_after_and_access_records
+  test_webgui_e2e_checks.py:213: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_lines_after_and_access_records(tmp_path):
+
+test_webgui_e2e_checks.py::test_truncate_xtc2
+  test_webgui_e2e_checks.py:245: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_truncate_xtc2(tmp_path):
+
+test_webgui_e2e_checks.py::test_truncate_too_short_and_missing
+  test_webgui_e2e_checks.py:261: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_truncate_too_short_and_missing(tmp_path):
+
+test_webgui_events_pva.py::test_pv_name_follows_xpm_naming
+  test_webgui_events_pva.py:41: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pv_name_follows_xpm_naming():
+
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[auto-yes]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[auto-unset]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[addr-empty]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[addr-offhost]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[addr-name]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[addr-bcast]
+test_webgui_events_pva.py::test_server_refuses_non_loopback_pva_env[nameserver-offhost]
+  test_webgui_events_pva.py:46: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('over,drop', [
+
+test_webgui_events_pva.py::test_server_accepts_loopback_pva_env
+  test_webgui_events_pva.py:63: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_server_accepts_loopback_pva_env():
+
+test_webgui_events_pva.py::test_latch_sequence
+  test_webgui_events_pva.py:77: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_latch_sequence():
+
+test_webgui_events_pva.py::test_latch_released_by_any_transition_up[configured-configure]
+test_webgui_events_pva.py::test_latch_released_by_any_transition_up[starting-beginrun]
+test_webgui_events_pva.py::test_latch_released_by_any_transition_up[paused-beginstep]
+test_webgui_events_pva.py::test_latch_released_by_any_transition_up[running-enable]
+  test_webgui_events_pva.py:97: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('state,transition', [('configured', 'configure'), ('starting', 'beginrun'),
+
+test_webgui_events_pva.py::test_latch_held_through_transitions_down
+  test_webgui_events_pva.py:108: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_latch_held_through_transitions_down():
+
+test_webgui_events_pva.py::test_latch_needs_two_equal_reads_after_stop
+  test_webgui_events_pva.py:119: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_latch_needs_two_equal_reads_after_stop():
+
+test_webgui_events_pva.py::test_latch_not_final_while_running_or_on_error
+  test_webgui_events_pva.py:127: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_latch_not_final_while_running_or_on_error():
+
+test_webgui_events_pva.py::test_pva_source_reads_a_loopback_pv
+  test_webgui_events_pva.py:177: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pva_source_reads_a_loopback_pv(tmp_path):
+
+test_webgui_hostorigin.py::test_get_loopback_host_accepted[127.0.0.1:{port}]
+test_webgui_hostorigin.py::test_get_loopback_host_accepted[127.0.0.1]
+test_webgui_hostorigin.py::test_get_loopback_host_accepted[localhost:{port}]
+test_webgui_hostorigin.py::test_get_loopback_host_accepted[[::1]:{port}]
+test_webgui_hostorigin.py::test_get_loopback_host_accepted[127.1.2.3:{port}]
+  test_webgui_hostorigin.py:88: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('host', ['127.0.0.1:{port}', '127.0.0.1', 'localhost:{port}', '[::1]:{port}',
+
+test_webgui_hostorigin.py: 28 warnings
+  test_webgui_hostorigin.py:96: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('host', ['evil.example:{port}', 'evil.example', 'sdfmilan119:{port}',
+
+test_webgui_hostorigin.py::test_get_without_host_header_refused
+  test_webgui_hostorigin.py:110: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_get_without_host_header_refused(web):
+
+test_webgui_hostorigin.py::test_post_non_loopback_host_refused_before_origin[None]
+test_webgui_hostorigin.py::test_post_non_loopback_host_refused_before_origin[http://{hp}]
+  test_webgui_hostorigin.py:121: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('origin', [None, 'http://{hp}'])
+
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://evil.example]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://evil.example:{port}]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[https://evil.example]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://127.0.0.1:{other}]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://localhost:{port}]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://127.0.0.1]
+test_webgui_hostorigin.py::test_post_foreign_origin_refused[http://[::1]:{port}]
+  test_webgui_hostorigin.py:131: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('origin', ['http://evil.example', 'http://evil.example:{port}', 'https://evil.example',
+
+test_webgui_hostorigin.py::test_post_foreign_origin_has_no_effect
+  test_webgui_hostorigin.py:142: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_post_foreign_origin_has_no_effect(web):
+
+test_webgui_hostorigin.py::test_post_same_origin_or_none_accepted[None]
+test_webgui_hostorigin.py::test_post_same_origin_or_none_accepted[http://{hp}]
+  test_webgui_hostorigin.py:154: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('origin', [None, 'http://{hp}'])
+
+test_webgui_hostorigin.py::test_origin_null_is_not_refused
+  test_webgui_hostorigin.py:169: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_origin_null_is_not_refused(web):
+
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[null-text/plain]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[null-application/x-www-form-urlencoded]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[null-multipart/form-data; b=x]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[null-None]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[None-text/plain]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[None-application/x-www-form-urlencoded]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[None-multipart/form-data; b=x]
+test_webgui_hostorigin.py::test_simple_request_content_types_refused[None-None]
+  test_webgui_hostorigin.py:181: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('ctype', ['text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data; b=x',
+
+test_webgui_hostorigin.py::test_no_cors_preflight[null]
+test_webgui_hostorigin.py::test_no_cors_preflight[http://evil.example]
+  test_webgui_hostorigin.py:194: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('origin', ['null', 'http://evil.example'])
+
+test_webgui_safety.py::test_refuses_non_loopback_bind[0.0.0.0]
+test_webgui_safety.py::test_refuses_non_loopback_bind[::]
+test_webgui_safety.py::test_refuses_non_loopback_bind[HOSTIP]
+test_webgui_safety.py::test_refuses_non_loopback_bind[sdfiana025.sdf.slac.stanford.edu]
+  test_webgui_safety.py:45: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('bind', ['0.0.0.0', '::', 'HOSTIP', 'sdfiana025.sdf.slac.stanford.edu'])
+
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args0]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args1]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args2]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args3]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args4]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args5]
+  test_webgui_safety.py:56: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('args', [
+
+test_webgui_safety.py::test_print_config_defaults_are_loopback
+  test_webgui_safety.py:71: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_print_config_defaults_are_loopback():
+
+test_webgui_safety.py::test_print_config_explicit_endpoints
+  test_webgui_safety.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_print_config_explicit_endpoints():
+
+test_webgui_safety.py::test_static_has_no_remote_urls
+  test_webgui_safety.py:95: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_static_has_no_remote_urls():
+
+test_webgui_safety.py::test_runtime_contacts_only_loopback
+  test_webgui_safety.py:134: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_runtime_contacts_only_loopback(tmp_path):
+
+test_webgui_safety.py::test_procstat_cnf_naming_a_remote_host_is_refused
+  test_webgui_safety.py:232: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_naming_a_remote_host_is_refused(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_opens_only_127_0_0_1
+  test_webgui_safety.py:245: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_opens_only_127_0_0_1(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_cnf_setting_a_remote_host_macro_is_refused
+  test_webgui_safety.py:279: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_setting_a_remote_host_macro_is_refused(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served
+  test_webgui_safety.py:296: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host
+  test_webgui_safety.py:333: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_procmgr_refuses_a_remote_host(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host_macro
+  test_webgui_safety.py:345: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_procmgr_refuses_a_remote_host_macro(tmp_path, conda_prefix):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+534 passed, 1 skipped, 1158 warnings in 2610.39s (0:43:30)

@@ -1,0 +1,51 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "echo \"listening on 31063 on this VM: $(ss -ltn | grep -c ':31063 ')\""
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_up.sh web1   # one Slurm step on the node, under the node lock: a fresh DAQ, the simulators, the web GUI",
+  "expect": "SESSION_UP|SESSION_DONE|exists",
+  "timeout": 5800,
+  "fail": "SESSION_DONE|exists"
+ },
+ {
+  "send": "ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p40'"
+ },
+ {
+  "send": "ssh -f -S none -L 31063:/tmp/cwang31-p40/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p40/webgui.sock:127.0.0.1:31063 sdfmilan120'",
+  "timeout": 60
+ },
+ {
+  "send": "sleep 3; for u in seqplot seq_epixhr hsdPs configdb_GUI xpmpva; do curl -s -o /dev/null -w \"GET http://127.0.0.1:31063/gui/$u on this VM -> HTTP %{http_code}\\n\" http://127.0.0.1:31063/gui/$u; done"
+ },
+ {
+  "send": "./pwvenv/bin/python paced_drive40.py http://127.0.0.1:31063/ rec/pr40-web --flow gui40",
+  "expect": "ACTIONS=|Traceback",
+  "timeout": 1200,
+  "fail": "Traceback|GUI_FLOW_OK=False"
+ },
+ {
+  "send": "./pwvenv/bin/python pace_check.py rec/pr40-web/actions.jsonl"
+ },
+ {
+  "send": "python3 -m json.tool rec/pr40-web/writes.json   # what the browser wrote and left (and the scan's last phase)"
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_readback.sh web1 < rec/pr40-web/writes.json   # read back on the node, not through the web server",
+  "expect": "READBACK (PASS|FAIL)|no running|readback exit",
+  "timeout": 300
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_down.sh web1   # web GUI and simulators stopped, then daq_sim down, in that step",
+  "expect": "SESSION_DONE|no session",
+  "timeout": 600,
+  "always": true
+ },
+ {
+  "send": "pkill -f '^ssh .*-L 31063:/tmp/cwang31-p40'; ssh sdfiana025 \"pkill -u \\$USER -f '^ssh -N .*cwang31-p40/webgui.sock'\"; pgrep -af '^ssh .*-L 31063:' || echo 'tunnel closed (both hops)'",
+  "always": true
+ }
+]

@@ -1,0 +1,366 @@
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq junit=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/sim.junit.xml
+walks: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks (read; not run now)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 148, 475; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | /gui/datadev_monitor | 10/10/0 | PASS
+cas/deadca.py | /gui/deadca | 43/32/11 | PASS
+cas/dtica.py | /gui/dtica | 1062/1060/2 | PASS
+cas/groupca.py | /gui/groupca | 91/90/1 | PASS
+cas/hsdPs.py | /gui/hsdPs | 49/49/0 | PASS
+cas/hsdpva.py | /gui/hsdpva | 850/845/5 | PASS
+cas/partca-sum.py | N/A: not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, "L0Delay"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv [], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/partca-sum.py:34 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (256 widgets built, none visible)] | -/-/- | PASS
+cas/partca.py | /gui/partca | 84/84/0 | PASS
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | /gui/pvatable | 10/10/0 | PASS
+cas/tdmpva.py | N/A: not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:TDM'], python 3.9.21, qt 5.15.8) of its own entry raised ModuleNotFoundError at cas/tdmpva.py:8 (No module named 'psdaq.pytdm') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/tprca.py | /gui/tprca | 439/429/10 | PASS
+cas/xpmca.py | N/A: not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, "PAddr", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:XPM:0'], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/xpmca.py:180 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/xpmpatt.py | /gui/xpmpatt | 454/454/0 | PASS
+cas/xpmpva.py | /gui/xpmpva | 2098/2096/2 | PASS
+configdb/configdb_GUI.py | /gui/configdb_GUI | 23/23/0 | PASS
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | /gui/seq_epixhr | 49/49/0 | PASS
+seq/seqplot.py | /gui/seqplot | 98/98/0 | PASS
+slurm/daqstat.py | /gui/daqstat | 14/9/5 | PASS
+trigger/detector_protection_monitor.py | /gui/detector_protection_monitor | 2/2/0 | PASS
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- cas/datadev_monitor.py (datadev_monitor; own files cas/datadev_monitor.py; walk argv [], 12 instances, elapsed 15.7 s, python 3.9.21, qt 5.15.8)
+10 controls found, 10 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 10, M = 10, K = 0, M + K = 10
+walk: walk source digest matches (sha256:0b6054971227a1a3a98684ae2df47ea9e79f2b962fabb8dca6605da6f6b6282d)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simdatadev) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 10)
+
+--- cas/deadca.py (deadca; own files cas/deadca.py; walk argv ['DAQ:SIM', '5', '0'], 55 instances, elapsed 17.9 s, python 3.9.21, qt 5.15.8)
+PV check (page deadca ['DAQ:SIM', '5', '0'] vs the walk): 0 mapped rows with the same PV, 0 with another; not compared: 32 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+43 controls found, 32 mapped to a web element with a passing headless-browser test, 11 marked not applicable
+N = 43, M = 32, K = 11, M + K = 43
+walk: walk source digest matches (sha256:c91acd32ba12ced7404f69fe3eecc52ad2e4b794d0c962a770b6c5b06664829a)
+
+Not applicable (11 rows; def-unreachable 11): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 11]
+  PvLabel.label | cas/deadca.py:42 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:42 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:42 never ran; 0 instance(s)
+  PvLabel.__display | cas/deadca.py:46 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:46 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:46 never ran; 0 instance(s)
+  PvEvtTab.PvEditCmb@1 | cas/deadca.py:384 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:384 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:384 never ran; 0 instance(s)
+  PvEvtTab.PvEditCmb@2 | cas/deadca.py:388 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:388 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:388 never ran; 0 instance(s)
+  PvEvtTab.PvEditCmb@3 | cas/deadca.py:389 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:389 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:389 never ran; 0 instance(s)
+  PvEvtTab.PvEditCmb@4 | cas/deadca.py:395 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:395 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:395 never ran; 0 instance(s)
+  PvEvtTab.PvEditCmb@5 | cas/deadca.py:396 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:396 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:396 never ran; 0 instance(s)
+  PvEditEvt.evtcmb | cas/deadca.py:407 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:407 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:407 never ran; 0 instance(s)
+  PvDstTab.chkB | cas/deadca.py:423 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:423 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:423 never ran; 0 instance(s)
+  PvEditDst.selcmb | cas/deadca.py:441 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:441 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:441 never ran; 0 instance(s)
+  PvInput.label | cas/deadca.py:458 | unreachable:def-unreachable | deadca's own copy of a pvedit class that nothing in deadca instantiates (setupUi builds only PvDblArrayW cells and one PvDblArray): cas/deadca.py:458 is in a class never used; the walk shows the line never ran | walk agree: line cas/deadca.py:458 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 43)
+
+--- cas/dtica.py (dtica; own files cas/dtica.py; walk argv ['DAQ:SIM:DTI'], 1289 instances, elapsed 28.1 s, python 3.9.21, qt 5.15.8)
+PV check (page dtica ['DAQ:SIM:DTI'] vs the walk): 30 mapped rows with the same PV, 0 with another; not compared: 1030 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+1062 controls found, 1060 mapped to a web element with a passing headless-browser test, 2 marked not applicable
+N = 1062, M = 1060, K = 2, M + K = 1062
+walk: walk source digest matches (sha256:f0b359a87b26fa58e4e861eea3efd958831822536edfe6762d7c8d74fba64329)
+
+Not applicable (2 rows; def-unreachable 2): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 2]
+  LblPushButtonX.PvInput | cas/dtica.py:80 | unreachable:def-unreachable | dtica's LblPushButtonX, a helper nothing in dtica calls (setupUi builds DtiAllocation and DtiStatistics only): cas/dtica.py:80 is in a def never called; the walk shows the line never ran | walk agree: line cas/dtica.py:80 never ran; 0 instance(s)
+  LblEditIntX.PvInput | cas/dtica.py:83 | unreachable:def-unreachable | dtica's LblEditIntX, a helper nothing in dtica calls (setupUi builds DtiAllocation and DtiStatistics only): cas/dtica.py:83 is in a def never called; the walk shows the line never ran | walk agree: line cas/dtica.py:83 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simdti) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 1062)
+
+--- cas/groupca.py (groupca; own files cas/groupca.py; walk argv ['DAQ:SIM', '0', '5'], 140 instances, elapsed 13.4 s, python 3.9.21, qt 5.15.8)
+PV check (page groupca ['DAQ:SIM', '0', '5'] vs the walk): 67 mapped rows with the same PV, 0 with another; not compared: 23 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+91 controls found, 90 mapped to a web element with a passing headless-browser test, 1 marked not applicable
+N = 91, M = 90, K = 1, M + K = 91
+walk: walk source digest matches (sha256:b840f85bd97f3ee44a9e67698873645aed94834e479dc7fcf8c66d4304db4f0f)
+
+Not applicable (1 rows; def-unreachable 1): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 1]
+  PvPatternStats.PvDbl | cas/groupca.py:163 | unreachable:def-unreachable | class PvPatternStats is never instantiated: its only use, the Pattern tab, is commented out (cas/groupca.py:312 #tw.addTab(PvPatternStats(...))); the walk shows its line never ran | walk agree: line cas/groupca.py:163 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 91)
+
+--- cas/hsdPs.py (hsdPs; own files cas/hsdPs.py; walk argv ['--base', 'DAQ:SIM:HSD:1_PS:A', '--xpm', 'DAQ:SIM:XPM:7', '--range', '0', '24', '8'], 49 instances, elapsed 95.8 s, python 3.9.21, qt 5.15.8)
+49 controls found, 49 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 49, M = 49, K = 0, M + K = 49
+walk: walk source digest matches (sha256:1ada0965584eacd13c72464acd54cb05317449b8e8bbdee6fb74efaa6191079d)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simhsd) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 49)
+
+--- cas/hsdpva.py (hsdpva; own files cas/hsdpva.py; walk argv ['DAQ:SIM:HSD:1_1B:A', 'DAQ:SIM:HSD:1_1B:B'], 1233 instances, elapsed 19.8 s, python 3.9.21, qt 5.15.8)
+PV check (page hsdpva ['DAQ:SIM:HSD:1_1B:A', 'DAQ:SIM:HSD:1_1B:B'] vs the walk): 584 mapped rows with the same PV, 0 with another; not compared: 261 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+850 controls found, 845 mapped to a web element with a passing headless-browser test, 5 marked not applicable
+N = 850, M = 845, K = 5, M + K = 850
+walk: walk source digest matches (sha256:2bb2daf1946f0df64174c99982303df354122c11c68b90505685957857194d16)
+
+Not applicable (5 rows; def-unreachable 5): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 5]
+  HsdConfig.widgets | cas/hsdpva.py:200 | unreachable:def-unreachable | hsdpva's HsdConfig, a tab class its window never builds (Ui_MainWindow.setupUi adds PvScalarBox, PvArrayTable, HsdBufferSummary, HsdEnv and HsdJesd tabs only; nothing else names HsdConfig): cas/hsdpva.py:200 is in a class never used; the walk shows the line never ran | walk agree: line cas/hsdpva.py:200 never ran; 0 instance(s)
+  HsdConfig.PvEditInt | cas/hsdpva.py:208 | unreachable:def-unreachable | hsdpva's HsdConfig, a tab class its window never builds (Ui_MainWindow.setupUi adds PvScalarBox, PvArrayTable, HsdBufferSummary, HsdEnv and HsdJesd tabs only; nothing else names HsdConfig): cas/hsdpva.py:208 is in a class never used; the walk shows the line never ran | walk agree: line cas/hsdpva.py:208 never ran; 0 instance(s)
+  HsdConfig.PvPushButton@1 | cas/hsdpva.py:213 | unreachable:def-unreachable | hsdpva's HsdConfig, a tab class its window never builds (Ui_MainWindow.setupUi adds PvScalarBox, PvArrayTable, HsdBufferSummary, HsdEnv and HsdJesd tabs only; nothing else names HsdConfig): cas/hsdpva.py:213 is in a class never used; the walk shows the line never ran | walk agree: line cas/hsdpva.py:213 never ran; 0 instance(s)
+  HsdConfig.PvPushButton@2 | cas/hsdpva.py:214 | unreachable:def-unreachable | hsdpva's HsdConfig, a tab class its window never builds (Ui_MainWindow.setupUi adds PvScalarBox, PvArrayTable, HsdBufferSummary, HsdEnv and HsdJesd tabs only; nothing else names HsdConfig): cas/hsdpva.py:214 is in a class never used; the walk shows the line never ran | walk agree: line cas/hsdpva.py:214 never ran; 0 instance(s)
+  HsdConfig.PvLabel | cas/hsdpva.py:215 | unreachable:def-unreachable | hsdpva's HsdConfig, a tab class its window never builds (Ui_MainWindow.setupUi adds PvScalarBox, PvArrayTable, HsdBufferSummary, HsdEnv and HsdJesd tabs only; nothing else names HsdConfig): cas/hsdpva.py:215 is in a class never used; the walk shows the line never ran | walk agree: line cas/hsdpva.py:215 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simhsd) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 850)
+
+--- cas/partca.py (partca; own files cas/partca.py; walk argv ['DAQ:SIM:XPM:0:PART:5'], 131 instances, elapsed 15.2 s, python 3.9.21, qt 5.15.8)
+PV check (page partca ['DAQ:SIM:XPM:0:PART:5'] vs the walk): 79 mapped rows with the same PV, 0 with another; not compared: 5 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+84 controls found, 84 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 84, M = 84, K = 0, M + K = 84
+walk: walk source digest matches (sha256:3cb8388184c1a6c30a99c64de864192046666dd4f43d982e266a3057d92e5d0e)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 84)
+
+--- cas/pvant.py (pvant; own files cas/pvant.py; walk argv ['--bases', 'DAQ:SIM:XPM:0:PART:5', 'DAQ:SIM:XPM:0:PART:0', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate'], 12 instances, elapsed 18.2 s, python 3.9.21, qt 5.15.8)
+PV check (page pvant ['--bases', 'DAQ:SIM:XPM:0:PART:5', 'DAQ:SIM:XPM:0:PART:0', '--fields', 'NumL0Acc', 'NumL0Inp', 'L0AccRate'] vs the walk): 6 mapped rows with the same PV, 0 with another; not compared: 0 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+6 controls found, 6 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 6, M = 6, K = 0, M + K = 6
+walk: walk source digest matches (sha256:cdaebaed77c01dfd9edb201e3dfdba6b34e60e998c43b51d6f944dfadc25c78f)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 6)
+
+--- cas/pvatable.py (pvatable; own files cas/pvatable.py; walk argv ['--bases', 'DAQ:SIM:HSD:1_DA:A', 'DAQ:SIM:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.txcntsum', 'MONPGP.rxcnt[2]', 'MONRAWBUF.freesz'], 18 instances, elapsed 14.9 s, python 3.9.21, qt 5.15.8)
+PV check (page pvatable ['--bases', 'DAQ:SIM:HSD:1_DA:A', 'DAQ:SIM:HSD:1_DA:B', '--fields', 'MONTIMING.trigcntsum', 'MONTIMING.timframecnt', 'MONPGP.txcntsum', 'MONPGP.rxcnt[2]', 'MONRAWBUF.freesz'] vs the walk): 0 mapped rows with the same PV, 0 with another; not compared: 10 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+10 controls found, 10 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 10, M = 10, K = 0, M + K = 10
+walk: walk source digest matches (sha256:365b9ceb0e73d3d17c5848d056487df2c1055355aaeea2bbc24e235c9541ee4e)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simhsd) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 10)
+
+--- cas/tprca.py (tprca; own files cas/tprca.py; walk argv ['DAQ:SIM:TPR'], 745 instances, elapsed 19.6 s, python 3.9.21, qt 5.15.8)
+PV check (page tprca ['DAQ:SIM:TPR'] vs the walk): 414 mapped rows with the same PV, 0 with another; not compared: 15 the walk saw no PV on the PyQt widget, 0 the page node has none, 0 no page node
+439 controls found, 429 mapped to a web element with a passing headless-browser test, 10 marked not applicable
+N = 439, M = 429, K = 10, M + K = 439
+walk: walk source digest matches (sha256:a75151e19370b38196c237069c212d568cf389034c35b26a4722c4069da82f2e)
+
+Not applicable (10 rows; def-unreachable 10): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 10]
+  PvRowDbl.qlabel | cas/tprca.py:235 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:235 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:235 never ran; 0 instance(s)
+  PvRowDbl.qedit | cas/tprca.py:240 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:240 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:240 never ran; 0 instance(s)
+  PvRowInt.qlabel | cas/tprca.py:245 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:245 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:245 never ran; 0 instance(s)
+  PvRowInt.qedit | cas/tprca.py:250 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:250 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:250 never ran; 0 instance(s)
+  PvRowCmb.qlabel | cas/tprca.py:255 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:255 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:255 never ran; 0 instance(s)
+  PvRowCmb.qedit | cas/tprca.py:260 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:260 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:260 never ran; 0 instance(s)
+  PvRowMod.qlabel | cas/tprca.py:265 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:265 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:265 never ran; 0 instance(s)
+  PvRowMod.qedit | cas/tprca.py:270 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:270 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:270 never ran; 0 instance(s)
+  PvRowEvt.qlabel | cas/tprca.py:275 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:275 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:275 never ran; 0 instance(s)
+  PvRowDst.qlabel | cas/tprca.py:285 | unreachable:def-unreachable | tprca's PvRow* layout helper that nothing calls (setupUi lays out the Input tab and each channel's tab itself): cas/tprca.py:285 is in a def never called; the walk shows the line never ran | walk agree: line cas/tprca.py:285 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simtpr) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 439)
+
+--- cas/xpmpatt.py (xpmpatt; own files cas/xpmpatt.py; walk argv ['DAQ:SIM:XPM:0'], 676 instances, elapsed 12.3 s, python 3.9.21, qt 5.15.8)
+PV check (page xpmpatt ['DAQ:SIM:XPM:0'] vs the walk): 444 mapped rows with the same PV, 0 with another; not compared: 8 the walk saw no PV on the PyQt widget, 2 the page node has none, 0 no page node
+454 controls found, 454 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 454, M = 454, K = 0, M + K = 454
+walk: walk source digest matches (sha256:920053b684db8cd2e6348b0182d9f9a61ef38142692865f29d80538c66472521)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 454)
+
+--- cas/xpmpva.py (xpmpva; own files cas/xpmpva.py; walk argv ['DAQ:SIM:XPM:5', 'DAQ:SIM:XPM:6'], 2461 instances, elapsed 21.0 s, python 3.9.21, qt 5.15.8)
+PV check (page xpmpva ['DAQ:SIM:XPM:5', 'DAQ:SIM:XPM:6'] vs the walk): 672 mapped rows with the same PV, 0 with another; not compared: 1200 the walk saw no PV on the PyQt widget, 224 the page node has none, 0 no page node
+2098 controls found, 2096 mapped to a web element with a passing headless-browser test, 2 marked not applicable
+N = 2098, M = 2096, K = 2, M + K = 2098
+walk: walk source digest matches (sha256:6f33f443897e86fe09b9583779a761c6a1f05f82d88b0fb5a4a37f9db5b9f831)
+
+Not applicable (2 rows; def-unreachable 2): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 2]
+  LblGroupMask.PvInput | cas/xpmpva.py:169 | unreachable:def-unreachable | xpmpva's LblGroupMask, a helper nothing calls (FrontPanelAMC builds its PvGroupMask boxes itself): cas/xpmpva.py:169 is in a def never called; the walk shows the line never ran | walk agree: line cas/xpmpva.py:169 never ran; 0 instance(s)
+  intInput.PvEditInt | cas/xpmpva.py:396 | unreachable:def-unreachable | xpmpva's intInput, a helper nothing calls: cas/xpmpva.py:396 is in a def never called; the walk shows the line never ran | walk agree: line cas/xpmpva.py:396 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simxpm) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 2098)
+
+--- configdb/configdb_GUI.py (configdb_GUI; own files configdb/configdb_GUI.py; walk argv ['--url', 'http://127.0.0.1:47321/ws-auth/', '--hutch', 'tst', '--password', 'sim'], 19 instances, elapsed 23.7 s, python 3.9.21, qt 5.15.8)
+23 controls found, 23 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 23, M = 23, K = 0, M + K = 23
+walk: walk source digest matches (sha256:b0f100e2c5e9e298a19bad0c62d2860c046eb9763122aa5372440c69b7e34cb0)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:configdb_server) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 23)
+
+--- procmgr/procstat (procstat; own files procmgr/procstat, procmgr/__init__.py, procmgr/ui_procStat.py; walk argv ['-p', '5', '-i', '1', '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/dsw/daq_sim.cnf'], 8 instances, elapsed 14.2 s, python 3.9.21, qt 5.15.8)
+14 controls found, 9 mapped to a web element with a passing headless-browser test, 5 marked not applicable
+N = 14, M = 9, K = 5, M + K = 14
+walk: walk source digest matches (sha256:4c3d284576be5e27f62ad3208a5a859f24b79589ea39c865bf885eb21c595e7f)
+
+Not applicable (5 rows; inert 1, no-object 4): id | loc | enumerator flags | reason | walk
+  [inert: 1]
+  Ui_mainWindow.textBrowser | procmgr/ui_procStat.py:81 | inert | Output File Status box: nothing in procstat or ui_procStat.py writes textBrowser (no setText/append/setHtml), the walk saw it empty; the web page shows the same empty box | walk agree: writes after construction 0, text at end ''
+  [no-object: 4]
+  WinProcStat.on_actionAbout_triggered.QMessageBox.about | procmgr/procstat:345 | unreachable:no-object | the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (procmgr/procstat:344) | walk agree: object 'actionAbout' does not exist at run time; line procmgr/procstat:345 never ran
+  WinProcStat.on_actionOpen_triggered | procmgr/procstat:332 | unreachable:no-object | the ui (procmgr/ui_procStat.py) creates no object named 'actionOpen', so connectSlotsByName never connects on_actionOpen_triggered: def on_actionOpen_triggered (procmgr/procstat:332) | walk agree: object 'actionOpen' not found among 22 object names
+  WinProcStat.on_actionQuit_triggered | procmgr/procstat:339 | unreachable:no-object | the ui (procmgr/ui_procStat.py) creates no object named 'actionQuit', so connectSlotsByName never connects on_actionQuit_triggered: def on_actionQuit_triggered (procmgr/procstat:339) | walk agree: object 'actionQuit' not found among 22 object names
+  WinProcStat.on_actionAbout_triggered | procmgr/procstat:344 | unreachable:no-object | the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects on_actionAbout_triggered: def on_actionAbout_triggered (procmgr/procstat:344) | walk agree: object 'actionAbout' not found among 22 object names
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 14)
+
+--- seq/seq_epixhr.py (seq_epixhr; own files seq/seq_epixhr.py, seq/seqplot.py, seq/seqprogram.py; walk argv ['--test', '--plot', '--rate', '1000'], 49 instances, elapsed 96.0 s, python 3.9.21, qt 5.15.8)
+49 controls found, 49 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 49, M = 49, K = 0, M + K = 49
+walk: walk source digest matches (sha256:b947a967e6b430db0743328254066cbed3da66b4db93b718d25fcf8ce28fb9b0)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 49)
+
+--- seq/seqplot.py (seqplot; own files seq/seqplot.py; walk argv ['--seq', '0:33k_35k.py', '1:10k.py', '--time', '0', '0.01'], 98 instances, elapsed 206.5 s, python 3.9.21, qt 5.15.8)
+98 controls found, 98 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 98, M = 98, K = 0, M + K = 98
+walk: walk source digest matches (sha256:373f89797bbf834d6e48ac347e2dbd622a4a3b1b215c22c6a232d567df12cf49)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 98)
+
+--- slurm/daqstat.py (daqstat; own files slurm/daqstat.py, slurm/ui_procStat.py; walk argv ['-i', '1', '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks/runs/daqstat-dir/daqstat.py'], 8 instances, elapsed 14.4 s, python 3.9.21, qt 5.15.8)
+14 controls found, 9 mapped to a web element with a passing headless-browser test, 5 marked not applicable
+N = 14, M = 9, K = 5, M + K = 14
+walk: walk source digest matches (sha256:6e178cd5b369b87e30e65bbb17eea4cfc2a56c8831a9422c759d1e4e1acf694c)
+
+Not applicable (5 rows; inert 1, no-object 4): id | loc | enumerator flags | reason | walk
+  [inert: 1]
+  Ui_mainWindow.textBrowser | slurm/ui_procStat.py:94 | inert | Output File Status box: nothing in daqstat or slurm/ui_procStat.py writes textBrowser (no setText/append/setHtml), the walk saw it empty; the web page shows the same empty box | walk agree: writes after construction 0, text at end ''
+  [no-object: 4]
+  WinProcStat.on_actionAbout_triggered.QMessageBox.about | slurm/daqstat.py:374 | unreachable:no-object | the ui (slurm/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (slurm/daqstat.py:373) | walk agree: object 'actionAbout' does not exist at run time; line slurm/daqstat.py:374 never ran
+  WinProcStat.on_actionOpen_triggered | slurm/daqstat.py:361 | unreachable:no-object | the ui (slurm/ui_procStat.py) creates no object named 'actionOpen', so connectSlotsByName never connects on_actionOpen_triggered: def on_actionOpen_triggered (slurm/daqstat.py:361) | walk agree: object 'actionOpen' not found among 22 object names
+  WinProcStat.on_actionQuit_triggered | slurm/daqstat.py:368 | unreachable:no-object | the ui (slurm/ui_procStat.py) creates no object named 'actionQuit', so connectSlotsByName never connects on_actionQuit_triggered: def on_actionQuit_triggered (slurm/daqstat.py:368) | walk agree: object 'actionQuit' not found among 22 object names
+  WinProcStat.on_actionAbout_triggered | slurm/daqstat.py:373 | unreachable:no-object | the ui (slurm/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (slurm/daqstat.py:373) | walk agree: object 'actionAbout' not found among 22 object names
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simslurm) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 14)
+
+--- trigger/detector_protection_monitor.py (detector_protection_monitor; own files trigger/detector_protection_monitor.py; walk argv ['-b', 'DAQ:SIM:JF16M:BLOCKER', '-d', 'Jungfrau'], 529 instances, elapsed 36.4 s, python 3.9.21, qt 5.15.8)
+2 controls found, 2 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 2, M = 2, K = 0, M + K = 2
+walk: walk source digest matches (sha256:7adf03679168af5b45b4949e0727d0e0539affcae77602d07a239ccc65cb1ab3)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simdetprot) (0 rows): id | test | status
+
+RESULT: PASS (M + K = N = 2)
+
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2296 same, 0 another PV, in 10 pages: deadca 0/0, dtica 30/30, groupca 67/67, hsdpva 584/584, partca 79/79, pvant 6/6, pvatable 0/0, tprca 414/414, xpmpatt 444/444, xpmpva 672/672
+
+RESULT: PASS (23/23 files pass)

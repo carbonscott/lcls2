@@ -1,0 +1,45 @@
+{
+ "flow": "gui40",
+ "events_after_disable": null,
+ "events_after_reset": null,
+ "ok": true,
+ "video": "/home/exedev/projects/lcls2/redo/rec/pr40-web/page@6c4a87194233f6f7f4c4ba184d97efea.webm",
+ "video_s": 122.4,
+ "wall_s": 121.38,
+ "actions": 36,
+ "min_highlight_to_act_s": 1.201,
+ "min_gap_s": 2.7,
+ "shots": [
+  "rec/pr40-web/01-seqplot-logy-grid.png",
+  "rec/pr40-web/02-seqplot-xrange.png",
+  "rec/pr40-web/03-seq_epixhr-fft-inverted.png",
+  "rec/pr40-web/04-hsdps-scan.png",
+  "rec/pr40-web/05-configdb-confirm.png",
+  "rec/pr40-web/06-configdb-written.png",
+  "rec/pr40-web/07-xpmpva-xpm5-amc0.png",
+  "rec/pr40-web/08-xpmpva-xpm6-qsfp0.png"
+ ],
+ "error_window_lines": [],
+ "writes": {
+  "scan:DAQ:SIM:HSD:1_PS:A:RESET.mmcmphase": 16,
+  "cdb:tst/BEAM/fakecam_0:user.sim_seed": 10794,
+  "cdb:tst/BEAM/fakecam_1:user.sim_seed": 10794,
+  "pv:DAQ:SIM:XPM:5:LinkLoopback2": 1,
+  "pv:DAQ:SIM:XPM:5:LinkGroupMask2": 8,
+  "pv:DAQ:SIM:XPM:6:LinkLoopback1": 1
+ },
+ "seqplot": {
+  "panels": [
+   "PatternWaveform.add.q0[33k_35k.py]",
+   "PatternWaveform.add.q0[10k.py]"
+  ],
+  "x0": [
+   -443.5149777220274,
+   9517.514977722027
+  ],
+  "typed": [
+   "1549",
+   "3541"
+  ]
+ }
+}

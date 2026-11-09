@@ -1,0 +1,13 @@
+# pvnotcmp.py (scripts/) on the walks of recording 1 (step 359, bbbd6c7d4): the mapped rows of the pvgui pages the PV check does not compare, by page and node type ("writes": a node that puts its PV)
+deadca compared 0 same 0 differ {('walk no PV', 'text'): 32}
+dtica compared 30 same 0 differ {('walk no PV', 'exclbox (writes)'): 315, ('walk no PV', 'fwdcell (writes)'): 245, ('walk no PV', 'maskdisp'): 75, ('walk no PV', 'text'): 385, ('walk no PV', 'tab'): 10}
+groupca compared 67 same 0 differ {('walk no PV', 'button'): 9, ('walk no PV', 'edit'): 8, ('walk no PV', 'check'): 1, ('walk no PV', 'value'): 2, ('walk no PV', 'tab'): 3}
+hsdpva compared 584 same 0 differ {('walk no PV', 'text'): 234, ('walk no PV', 'localcombo'): 1, ('walk no PV', 'tab'): 26}
+partca compared 79 same 0 differ {('walk no PV', 'button'): 2, ('walk no PV', 'list'): 3}
+pvant compared 6 same 0 differ {}
+pvatable compared 0 same 0 differ {('walk no PV', 'text'): 10}
+tprca compared 414 same 0 differ {('walk no PV', 'tab'): 15}
+xpmpatt compared 444 same 0 differ {('walk no PV', 'tab'): 8, ('page node no PV', 'tab'): 2}
+xpmpva compared 672 same 0 differ {('walk no PV', 'text'): 1180, ('page node no PV', 'value'): 224, ('walk no PV', 'localcombo'): 1, ('walk no PV', 'tab'): 19}
+TOTAL not compared 2810 {('walk no PV', 'text'): 1841, ('walk no PV', 'exclbox (writes)'): 315, ('walk no PV', 'fwdcell (writes)'): 245, ('walk no PV', 'maskdisp'): 75, ('walk no PV', 'tab'): 81, ('walk no PV', 'button'): 11, ('walk no PV', 'edit'): 8, ('walk no PV', 'check'): 1, ('walk no PV', 'value'): 2, ('walk no PV', 'localcombo'): 2, ('walk no PV', 'list'): 3, ('page node no PV', 'tab'): 2, ('page node no PV', 'value'): 224}
+writers not compared 560

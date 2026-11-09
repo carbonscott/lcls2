@@ -1,0 +1,199 @@
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq junit=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/sim.junit.xml,/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/drop/drop.junit.xml
+walks: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks (read; not run now)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 148, 475; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | /gui/datadev_monitor | 10/10/0 | PASS
+cas/deadca.py | /gui/deadca | 43/32/11 | PASS
+cas/dtica.py | /gui/dtica | 1062/1060/2 | PASS
+cas/groupca.py | /gui/groupca | 91/90/1 | PASS
+cas/hsdPs.py | /gui/hsdPs | 49/49/0 | PASS
+cas/hsdpva.py | /gui/hsdpva | 850/845/5 | PASS
+cas/partca-sum.py | N/A: not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, "L0Delay"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv [], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/partca-sum.py:34 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (256 widgets built, none visible)] | -/-/- | PASS
+cas/partca.py | /gui/partca | 84/84/0 | PASS
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | /gui/pvatable | 10/10/0 | PASS
+cas/tdmpva.py | N/A: not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:TDM'], python 3.9.21, qt 5.15.8) of its own entry raised ModuleNotFoundError at cas/tdmpva.py:8 (No module named 'psdaq.pytdm') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/tprca.py | /gui/tprca | 439/429/10 | PASS
+cas/xpmca.py | N/A: not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, "PAddr", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:XPM:0'], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/xpmca.py:180 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/xpmpatt.py | /gui/xpmpatt | 454/454/0 | PASS
+cas/xpmpva.py | /gui/xpmpva | 2098/1951/2 | FAIL
+configdb/configdb_GUI.py | /gui/configdb_GUI | 23/23/0 | PASS
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | /gui/seq_epixhr | 49/49/0 | PASS
+seq/seqplot.py | /gui/seqplot | 98/98/0 | PASS
+slurm/daqstat.py | /gui/daqstat | 14/9/5 | PASS
+trigger/detector_protection_monitor.py | /gui/detector_protection_monitor | 2/2/0 | PASS
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- cas/xpmpva.py (xpmpva; own files cas/xpmpva.py; walk argv ['DAQ:SIM:XPM:5', 'DAQ:SIM:XPM:6'], 2461 instances, elapsed 21.0 s, python 3.9.21, qt 5.15.8)
+PV check (page xpmpva ['DAQ:SIM:XPM:5', 'DAQ:SIM:XPM:6'] vs the walk): 672 mapped rows with the same PV, 0 with another; not compared: 1200 the walk saw no PV on the PyQt widget, 224 the page node has none, 0 no page node
+2098 controls found, 1951 mapped to a web element with a passing headless-browser test, 2 marked not applicable
+N = 2098, M = 1951, K = 2, M + K = 1953
+walk: walk source digest matches (sha256:6f33f443897e86fe09b9583779a761c6a1f05f82d88b0fb5a4a37f9db5b9f831)
+
+Not applicable (2 rows; def-unreachable 2): id | loc | enumerator flags | reason | walk
+  [def-unreachable: 2]
+  LblGroupMask.PvInput | cas/xpmpva.py:169 | unreachable:def-unreachable | xpmpva's LblGroupMask, a helper nothing calls (FrontPanelAMC builds its PvGroupMask boxes itself): cas/xpmpva.py:169 is in a def never called; the walk shows the line never ran | walk agree: line cas/xpmpva.py:169 never ran; 0 instance(s)
+  intInput.PvEditInt | cas/xpmpva.py:396 | unreachable:def-unreachable | xpmpva's intInput, a helper nothing calls: cas/xpmpva.py:396 is in a def never called; the walk shows the line never ran | walk agree: line cas/xpmpva.py:396 never ran; 0 instance(s)
+
+Unmapped (0 rows): id | loc | kind | label
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-device:simxpm) (145 rows): id | test | status
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:ModuleInit] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Inhibit] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:TagStream] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Cu:RxReset] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Cu:RxCountReset] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:6:ModuleInit] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Inhibit] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:6:TagStream] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Us:RxReset] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Us:RxCountReset] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:0:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:1:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:2:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:3:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:4:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:5:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:6:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:7:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:0:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:1:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:2:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:3:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:4:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:5:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:6:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:7:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:0:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:1:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:2:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:3:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:4:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:5:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:6:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:5:SEQENG:7:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:0:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:1:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:2:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:3:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:4:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:5:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:6:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@2[DAQ:SIM:XPM:6:SEQENG:7:ENABLE] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:0:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:1:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:2:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:3:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:4:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:5:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:6:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:5:SEQENG:7:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:0:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:1:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:2:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:3:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:4:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:5:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:6:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  GroupsTab.PvPushButtonVal@3[DAQ:SIM:XPM:6:SEQENG:7:DUMP] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:0:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:1:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:2:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:3:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:4:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:5:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:6:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:5:PART:7:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:0:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:1:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:2:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:3:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:4:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:5:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:6:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  PathTimer.PvPushButtonVal[DAQ:SIM:XPM:6:PART:7:PATH_TIME:Update] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset8] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset9] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset10] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset11] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset12] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:TxLinkReset13] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset8] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset9] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset10] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset11] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset12] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkReset13] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump8] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump9] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump10] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump11] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump12] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:5:RxLinkDump13] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump0] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump1] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump2] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump3] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:TxLinkReset7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkReset7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump4] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump5] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump6] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+  walk-only:cas/xpmpva.py:226[DAQ:SIM:XPM:6:RxLinkDump7] | test_gui_xpmpva.py::test_buttons_put_their_values[chromium] | failed
+
+RESULT: FAIL: M + K = 1953 != N = 2098 (0 unmapped, 0 not built, 145 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: LblPushButtonX.PvInput[DAQ:SIM:XPM:5:ModuleInit], LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Inhibit], LblPushButtonX.PvInput[DAQ:SIM:XPM:5:TagStream], LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Cu:RxReset], LblPushButtonX.PvInput[DAQ:SIM:XPM:5:Cu:RxCountReset], LblPushButtonX.PvInput[DAQ:SIM:XPM:5:XTPG:ClearErr], LblPushButtonX.PvInput[DAQ:SIM:XPM:6:ModuleInit], LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Inhibit], LblPushButtonX.PvInput[DAQ:SIM:XPM:6:TagStream], LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Us:RxReset], LblPushButtonX.PvInput[DAQ:SIM:XPM:6:Us:RxCountReset], PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm0], PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm1], PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm2], PvMmcm.PvPushButton[DAQ:SIM:XPM:5:XTPG:ResetMmcm3], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:0:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:1:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:2:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:3:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:4:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:5:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:6:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:5:SEQENG:7:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:0:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:1:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:2:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:3:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:4:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:5:ENABLE], GroupsTab.PvPushButtonVal@1[DAQ:SIM:XPM:6:SEQENG:6:ENABLE] ...
+
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2296 same, 0 another PV, in 10 pages: deadca 0/0, dtica 30/30, groupca 67/67, hsdpva 584/584, partca 79/79, pvant 6/6, pvatable 0/0, tprca 414/414, xpmpatt 444/444, xpmpva 672/672
+
+RESULT: FAIL (22/23 files pass)

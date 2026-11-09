@@ -1,0 +1,126 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-09T17:05:07+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ echo "listening on 31063 on this VM: $(ss -ltn | grep -c ':31063 ')"
+listening on 31063 on this VM: 0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_up.sh web1   # one Slurm step on the node, under the node lock: a fresh DAQ, the simulators, the web GUI
+on sdfmilan120, Slurm job 43843200 step 367 (node lock held), wt-gui4 at bbbd6c7d4, local changes 0
+listening on 30050 (XPM pull) or 15075 (PVA) before: 0
+daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web1/dsw --segments 2 --detach: exit 0
+  configdb   pid 1136756  alive
+  lgbk       pid 1136841  alive
+  simxpm     pid 1136868  alive
+  control    pid 1137233  RUNNING
+  teb0       pid 1137234  RUNNING
+  fakecam_0  pid 1137235  RUNNING
+  fakecam_1  pid 1137236  RUNNING
+  simhsd-ps: simhsd: ready, prefixes DAQ:SIM:HSD:1_PS:A, pid 1137762
+  simxpm-7: simxpm: ready, 793 PVs under DAQ:SIM:XPM:7, pid 1137766
+  simxpm-5: simxpm: ready, 793 PVs under DAQ:SIM:XPM:5, pid 1137768
+  simxpm-6: simxpm: ready, 793 PVs under DAQ:SIM:XPM:6, pid 1137773
+  configdb: configdb_server: ready, http://127.0.0.1:47321/ws/
+  daq_webgui pid 1138266: --seqplot, --seq-epixhr, --hsdps, --configdb-gui, --pvgui xpmpva
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=pva
+SESSION_UP
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p40'
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31063:/tmp/cwang31-p40/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -L /tmp/cwang31-p40/webgui.sock:127.0.0.1:31063 sdfmilan120'
+exedev@indigo-galaxy:redo$ sleep 3; for u in seqplot seq_epixhr hsdPs configdb_GUI xpmpva; do curl -s -o /dev/null -w "GET http://127.0.0.1:31063/gui/$u on this VM -> HTTP %{http_code}\n" http://127.0.0.1:31063/gui/$u; done
+GET http://127.0.0.1:31063/gui/seqplot on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/seq_epixhr on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/hsdPs on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/configdb_GUI on this VM -> HTTP 200
+GET http://127.0.0.1:31063/gui/xpmpva on this VM -> HTTP 200
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python paced_drive40.py http://127.0.0.1:31063/ rec/pr40-web --flow gui40
+2026-11-09T17:09:33.517+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31063/; highlight >= 1.2 s, gap >= 2.7 s
+2026-11-09T17:09:36.144+00:00 open /gui/seqplot: panels ['PatternWaveform.add.q0[33k_35k.py]', 'PatternWaveform.add.q0[10k.py]']; x range [-443.5, 9518] (panel 1 [-443.5, 9518]); curves 1 + 1
+2026-11-09T17:09:37.411+00:00 #1  seqplot: right-click plot 0: the context menu        hold 1.20 s  gap     - s  -> menu shown True OK
+2026-11-09T17:09:40.115+00:00 #2  seqplot: menu "Plot Options"                         hold 2.26 s  gap  2.70 s  -> section Plot Options open True OK
+2026-11-09T17:09:42.818+00:00 #3  seqplot: menu "Transforms"                           hold 2.29 s  gap  2.70 s  -> section Transforms open True OK
+2026-11-09T17:09:45.519+00:00 #4  seqplot: plot 0: Log Y: on                           hold 2.27 s  gap  2.70 s  -> logYCheck False -> True; left axis logMode True; y range [2.408, 2.41] OK
+2026-11-09T17:09:48.222+00:00 #5  seqplot: menu "Grid"                                 hold 2.13 s  gap  2.70 s  -> section Grid open True OK
+2026-11-09T17:09:50.925+00:00 #6  seqplot: plot 0: Show Y Grid: off                    hold 2.28 s  gap  2.70 s  -> yGridCheck True -> False; left axis grid False OK
+2026-11-09T17:09:53.629+00:00 #7  seqplot: menu "X axis"                               hold 2.12 s  gap  2.70 s  -> section X axis open True OK
+2026-11-09T17:09:56.332+00:00 #8  seqplot: plot 0: X axis min: type 1549, Enter        hold 2.31 s  gap  2.70 s  -> panel 0 x [1549, 9518] OK
+2026-11-09T17:09:59.033+00:00 #9  seqplot: plot 0: X axis max: type 3541, Enter        hold 2.20 s  gap  2.70 s  -> panel 0 x [1549, 3541], panel 1 x [1549, 3541] (setXLink) OK
+2026-11-09T17:10:01.734+00:00 #10 seqplot: plot 0: View All                            hold 1.99 s  gap  2.70 s  -> panel 0 x [-443.5, 9518], panel 1 x [-443.5, 9518] OK
+2026-11-09T17:10:04.678+00:00 open /gui/seq_epixhr: panels ['PatternWaveform.add.q0[epixhr]']; x range [7699, 8548]; curves 1
+2026-11-09T17:10:05.914+00:00 #11 seq_epixhr: right-click plot 0: the context menu     hold 1.20 s  gap  4.18 s  -> menu shown True OK
+2026-11-09T17:10:08.617+00:00 #12 seq_epixhr: menu "Plot Options"                      hold 2.31 s  gap  2.70 s  -> section Plot Options open True OK
+2026-11-09T17:10:11.321+00:00 #13 seq_epixhr: menu "Transforms"                        hold 2.31 s  gap  2.70 s  -> section Transforms open True OK
+2026-11-09T17:10:14.023+00:00 #14 seq_epixhr: plot 0: Power Spectrum (FFT): on         hold 2.30 s  gap  2.70 s  -> fftCheck False -> True; x range [7699, 8548] OK
+2026-11-09T17:10:16.726+00:00 #15 seq_epixhr: menu "Y axis"                            hold 2.28 s  gap  2.70 s  -> section Y axis open True OK
+2026-11-09T17:10:19.428+00:00 #16 seq_epixhr: plot 0: Y axis: Invert Axis: on          hold 2.30 s  gap  2.70 s  -> invertCheck False -> True; yInverted True OK
+2026-11-09T17:10:22.754+00:00 open /gui/hsdPs: argv --base DAQ:SIM:HSD:1_PS:A --xpm DAQ:SIM:XPM:7 --range 0 24 8; done True, error None; simhsd pid {'DAQ:SIM:HSD:1_PS:A': 1137762}; curves 3 with [0, 3, 3] points; statusbar 'scan done'
+2026-11-09T17:10:26.586+00:00 #17 hsdPs: right-click plot 0: the context menu          hold 1.20 s  gap  7.16 s  -> menu shown True OK
+2026-11-09T17:10:29.290+00:00 #18 hsdPs: menu "Plot Options"                           hold 2.29 s  gap  2.70 s  -> section Plot Options open True OK
+2026-11-09T17:10:31.993+00:00 #19 hsdPs: menu "Grid"                                   hold 2.31 s  gap  2.70 s  -> section Grid open True OK
+2026-11-09T17:10:34.697+00:00 #20 hsdPs: plot 0: Show X Grid: on                       hold 2.29 s  gap  2.70 s  -> xGridCheck False -> True; bottom axis grid 128 OK
+2026-11-09T17:10:37.400+00:00 #21 hsdPs: plot 0: Show Y Grid: on                       hold 2.26 s  gap  2.70 s  -> yGridCheck False -> True; left axis grid 128 OK
+2026-11-09T17:10:39.408+00:00 open /gui/configdb_GUI: target 'PROD  http://127.0.0.1:47321/ws/'; hutch/alias rows 2
+2026-11-09T17:10:40.625+00:00 #22 configdb_GUI: alias tst / BEAM                       hold 1.20 s  gap  3.23 s  -> detectors ['fakecam_0', 'fakecam_1', 'fakecam_2', 'tmoteb_0'] OK
+2026-11-09T17:10:43.326+00:00 #23 configdb_GUI: click detector fakecam_0               hold 2.29 s  gap  2.70 s  -> fakecam_0 selected OK
+2026-11-09T17:10:46.029+00:00 #24 configdb_GUI: Ctrl-click detector fakecam_1          hold 2.30 s  gap  2.70 s  -> fakecam_1 selected OK
+2026-11-09T17:10:48.730+00:00 #25 configdb_GUI: expand "user *"                        hold 2.30 s  gap  2.70 s  -> user.sim_seed shown OK
+2026-11-09T17:10:51.431+00:00 #26 configdb_GUI: parameter user.sim_seed                hold 2.23 s  gap  2.70 s  -> path 'user.sim_seed'; values ['sim_seed', 'UINT32 (0..4294967295)', '4660'] OK
+2026-11-09T17:10:54.132+00:00 #27 configdb_GUI: type 10794 in the value field          hold 2.29 s  gap  2.70 s  -> value field '10794' OK
+2026-11-09T17:10:56.833+00:00 #28 configdb_GUI: Read-only off (writing on)             hold 2.30 s  gap  2.70 s  -> Read-only checked False; Apply enabled True; target 'PROD  http://127.0.0.1:47321/ws-auth/' OK
+2026-11-09T17:10:59.534+00:00 #29 configdb_GUI: Apply                                  hold 2.27 s  gap  2.70 s  -> confirm: 'Setting user.sim_seed to 10794 on 1 detector(s)target: http://127.0.0.1:47321/ws-auth/  tst/BEAM'; rows [['fakecam_0', '4660', '10794']] OK
+2026-11-09T17:11:02.234+00:00 #30 configdb_GUI: OK: write                              hold 2.12 s  gap  2.70 s  -> log ['--- user.sim_seedfakecam_0: user.sim_seed already 4660fakecam_1: user.sim_seed already 10794--- writing user.sim_seed = 10794fakecam_0: user.sim_seed  4660 -> 10794  (key 5)1 written, 0 failed, 0 skipped']; re-read ['sim_seed', 'UINT32 (0..4294967295)', '10794'] OK
+2026-11-09T17:11:16.520+00:00 open /gui/xpmpva ['DAQ:SIM:XPM:5', 'DAQ:SIM:XPM:6']: FwBuild XPM 5 'simxpm xtpg (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware', XPM 6 'simxpm Kcu1500 (psdaq/psdaq/sim/simxpm.py): software XPM, no firmware'; page polls so far 3
+2026-11-09T17:11:17.743+00:00 #31 xpmpva: tab AMC0                                     hold 1.20 s  gap 15.51 s  -> tab AMC0 selected OK
+2026-11-09T17:11:20.444+00:00 #32 xpmpva: XPM 5 LinkLoopback2 box                      hold 2.25 s  gap  2.70 s  -> server put DAQ:SIM:XPM:5:LinkLoopback2 = 1 (ok True); page shows it OK
+2026-11-09T17:11:23.145+00:00 #33 xpmpva: XPM 5 LinkGroupMask2: group 3                hold 1.60 s  gap  2.70 s  -> server put DAQ:SIM:XPM:5:LinkGroupMask2 = 8 (ok True); page shows it OK
+2026-11-09T17:11:26.499+00:00 #34 xpmpva: XPM selector: DAQ:SIM:XPM:6                  hold 1.20 s  gap  3.35 s  -> DAQ:SIM:XPM:6 shown OK
+2026-11-09T17:11:29.200+00:00 #35 xpmpva: tab QSFP0                                    hold 2.28 s  gap  2.70 s  -> tab QSFP0 selected OK
+2026-11-09T17:11:31.901+00:00 #36 xpmpva: XPM 6 LinkLoopback1 box                      hold 2.25 s  gap  2.70 s  -> server put DAQ:SIM:XPM:6:LinkLoopback1 = 1 (ok True); page shows it OK
+2026-11-09T17:11:34.337+00:00 writes left for the read-back on the node: {"scan:DAQ:SIM:HSD:1_PS:A:RESET.mmcmphase": 16, "cdb:tst/BEAM/fakecam_0:user.sim_seed": 10794, "cdb:tst/BEAM/fakecam_1:user.sim_seed": 10794, "pv:DAQ:SIM:XPM:5:LinkLoopback2": 1, "pv:DAQ:SIM:XPM:5:LinkGroupMask2": 8, "pv:DAQ:SIM:XPM:6:LinkLoopback1": 1}
+video page@6c4a87194233f6f7f4c4ba184d97efea.webm: 122.4 s; browser context open 121.38 s (real speed: the video spans the whole context)
+GUI_FLOW_OK=True  WRITES=6 values -> rec/pr40-web/writes.json
+ACTIONS=36  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.700 s
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python pace_check.py rec/pr40-web/actions.jsonl
+rec/pr40-web/actions.jsonl: 36 actions
+  min(act_time - highlight_start) = 1.201 s  (at: xpmpva: XPM selector: DAQ:SIM:XPM:6)
+  min gap between consecutive act_times = 2.700 s  (before: configdb_GUI: expand "user *")
+ACTIONS=36  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.700 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)
+exedev@indigo-galaxy:redo$ python3 -m json.tool rec/pr40-web/writes.json   # what the browser wrote and left (and the scan's last phase)
+{
+    "scan:DAQ:SIM:HSD:1_PS:A:RESET.mmcmphase": 16,
+    "cdb:tst/BEAM/fakecam_0:user.sim_seed": 10794,
+    "cdb:tst/BEAM/fakecam_1:user.sim_seed": 10794,
+    "pv:DAQ:SIM:XPM:5:LinkLoopback2": 1,
+    "pv:DAQ:SIM:XPM:5:LinkGroupMask2": 8,
+    "pv:DAQ:SIM:XPM:6:LinkLoopback1": 1
+}
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_readback.sh web1 < rec/pr40-web/writes.json   # read back on the node, not through the web server
+== on sdfmilan120, Slurm job 43843200 step 367 (the step that started this DAQ and the simulators), tree bbbd6c7d4
+  simxpm     pid 1136868  alive
+  control    pid 1137233  RUNNING
+  teb0       pid 1137234  RUNNING
+  fakecam_0  pid 1137235  RUNNING
+  fakecam_1  pid 1137236  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 09:11:40 2026 0.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 09:11:40 2026 0.0
+  simhsd-ps pid 1137762 alive
+  simxpm-7 pid 1137766 alive
+  simxpm-5 pid 1137768 alive
+  simxpm-6 pid 1137773 alive
+  configdb pid 1137776 alive
+  pvget     DAQ:SIM:HSD:1_PS:A:RESET.mmcmphase               = 16       the server's scan left 16       ok
+  config DB tst/BEAM/fakecam_0:user.sim_seed                 = 10794    the browser left 10794    ok
+  config DB tst/BEAM/fakecam_1:user.sim_seed                 = 10794    the browser left 10794    ok
+  pvget     DAQ:SIM:XPM:5:LinkLoopback2                      = 1        the browser left 1        ok
+  pvget     DAQ:SIM:XPM:5:LinkGroupMask2                     = 8        the browser left 8        ok
+  pvget     DAQ:SIM:XPM:6:LinkLoopback1                      = 1        the browser left 1        ok
+READBACK PASS (6 values)
+readback exit 0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/web40_down.sh web1   # web GUI and simulators stopped, then daq_sim down, in that step
+stopping (stop file: yes, 141s)
+daq_webgui stopped
+simulators stopped: 
+daq_sim down: exit 0; daq_sim: down: clean
+listening on 30050, 15075, 31063 or 47321: 0; my procServ: 0; simulators of this step still alive: 0
+SESSION_DONE
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31063:/tmp/cwang31-p40'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*cwang31-p40/webgui.sock'"; pgrep -af '^ssh .*-L 31063:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ 

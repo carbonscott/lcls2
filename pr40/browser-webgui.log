@@ -1,0 +1,28 @@
+2026-11-09 09:09:22,649 OpenGL.acceleratesupport INFO: No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+2026-11-09 09:09:23,139 daq_webgui INFO: web GUI webgui-v0 started: backend=daqcontrol state=reset instrument=tst aliases=['BEAM'] (configdb http://127.0.0.1:31050/ws/)
+Setting phase 0
+Enabling triggers for group 0x41
+daq_webgui: listening on http://127.0.0.1:31063/ backend=daqcontrol events=pva
+Waiting
+Waiting
+Waiting
+Disabling
+Latched ('DAQ:SIM:HSD:1_PS:A', 115500, 94500, 0, 0)
+Setting phase 8
+recv total 210000
+Enabling triggers for group 0x41
+Waiting
+Waiting
+Waiting
+Disabling
+Latched ('DAQ:SIM:HSD:1_PS:A', 115500, 76710, 17790, 8)
+Setting phase 16
+recv total 210000
+Enabling triggers for group 0x41
+Waiting
+Waiting
+Waiting
+Disabling
+Latched ('DAQ:SIM:HSD:1_PS:A', 115500, 36735, 57765, 16)
+recv total 210000
+daq_webgui: stopped

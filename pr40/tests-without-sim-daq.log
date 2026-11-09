@@ -1,0 +1,306 @@
+host sdfmilan120 date 2026-11-09T09:04:22-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/shots-nosim server-args ''
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.2.0, pluggy-1.7.0
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/webgui/tests
+configfile: ../../../pyproject.toml
+plugins: playwright-0.10.0
+collected 535 items / 190 deselected / 345 selected
+
+test_check_gui_parity.py ..sssssssssssssssssss.sssssssssss.sssss.s...ss. [ 13%]
+...sssss..                                                               [ 16%]
+test_gui_configdb_GUI.py sssssss                                         [ 18%]
+test_gui_daqstat.py sssss                                                [ 20%]
+test_gui_datadev_monitor.py ss                                           [ 20%]
+test_gui_deadca.py s                                                     [ 20%]
+test_gui_detector_protection_monitor.py ss                               [ 21%]
+test_gui_dtica.py sssss                                                  [ 22%]
+test_gui_groupca.py sssssssss                                            [ 25%]
+test_gui_hsdPs.py ssssssssssssssssssssssssssssssssssssssssssssssssss     [ 40%]
+test_gui_hsdpva.py ssss                                                  [ 41%]
+test_gui_partca.py sssssss                                               [ 43%]
+test_gui_procstat.py ssssss                                              [ 44%]
+test_gui_pvant.py s                                                      [ 45%]
+test_gui_pvatable.py s                                                   [ 45%]
+test_gui_seq_epixhr.py sssssssssssssssssssssssssssssssssssssssssssssssss [ 59%]
+s                                                                        [ 60%]
+test_gui_seqplot.py ssssssssssssssssssssssssssssssssssssssssssssssssssss [ 75%]
+ssssssssssssssssssssssssssssssssssssssssssssss                           [ 88%]
+test_gui_tprca.py ssssss                                                 [ 90%]
+test_gui_xpmpatt.py sssss                                                [ 91%]
+test_gui_xpmpva.py ssssssss                                              [ 93%]
+test_walk_guard.py .                                                     [ 94%]
+test_webgui_safety.py ....................                               [100%]
+
+=============================== warnings summary ===============================
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+  test_check_gui_parity.py:32: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_qapps_lists_constructions_from_the_syntax_tree():
+
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_qapps_lists_constructions_from_the_syntax_tree
+test_check_gui_parity.py::test_na_rules_are_checked
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq/procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+    if not match('^(\d)\,(\d)(\d)?$', value):
+
+test_check_gui_parity.py::test_no_walk_is_kept_in_the_tree
+  test_check_gui_parity.py:43: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_no_walk_is_kept_in_the_tree():
+
+test_check_gui_parity.py::test_pv_compare_counts_the_same_pv_and_names_another
+  test_check_gui_parity.py:101: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pv_compare_counts_the_same_pv_and_names_another():
+
+test_check_gui_parity.py::test_na_rules_are_checked
+  test_check_gui_parity.py:165: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_na_rules_are_checked():
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+  test_check_gui_parity.py:214: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable():
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+test_check_gui_parity.py::test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site
+  procmgr/procmgr_lint:83: SyntaxWarning: invalid escape sequence '\d'
+
+test_check_gui_parity.py::test_rows_of_a_class_only_an_unreachable_def_uses_are_not_applicable
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+test_check_gui_parity.py::test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site
+  procmgr/showcnf:79: SyntaxWarning: invalid escape sequence '\d'
+
+test_check_gui_parity.py::test_unwritten_label_of_a_line_the_walk_saw_write_is_a_display
+  test_check_gui_parity.py:241: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unwritten_label_of_a_line_the_walk_saw_write_is_a_display():
+
+test_check_gui_parity.py::test_a_message_box_built_many_times_is_one_row
+  test_check_gui_parity.py:249: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_message_box_built_many_times_is_one_row():
+
+test_check_gui_parity.py::test_annotated_assignment_binds_its_widget
+  test_check_gui_parity.py:255: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_annotated_assignment_binds_its_widget():
+
+test_check_gui_parity.py::test_pyqtgraph_menu_widgets_are_rows_of_their_plot
+  test_check_gui_parity.py:276: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pyqtgraph_menu_widgets_are_rows_of_their_plot():
+
+test_check_gui_parity.py::test_pg_option_table_has_one_option_per_control
+  test_check_gui_parity.py:289: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_pg_option_table_has_one_option_per_control():
+
+test_check_gui_parity.py::test_tree_selection_and_columns_are_rows
+  test_check_gui_parity.py:299: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_tree_selection_and_columns_are_rows():
+
+test_check_gui_parity.py::test_a_ready_line_is_the_word_ready
+  test_check_gui_parity.py:308: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_ready_line_is_the_word_ready():
+
+test_check_gui_parity.py::test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site
+  test_check_gui_parity.py:356: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_a_widget_kept_in_a_nested_subscript_of_self_is_a_site():
+
+test_check_gui_parity.py::test_an_instance_at_a_line_with_no_site_is_a_built_row
+  test_check_gui_parity.py:362: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_an_instance_at_a_line_with_no_site_is_a_built_row():
+
+test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]
+  /sdf/scratch/users/c/cwang31/agentify-webtest/venv/lib/python3.12/site-packages/_pytest/fixtures.py:1392: PytestRemovedIn10Warning: Session-scoped fixtures defined as instance methods are deprecated.
+  Instance attributes set in the 'base_url' fixture will NOT be visible to test methods,
+  as each test gets a new instance while the fixture runs only once per class.
+  Use a @classmethod decorator below @pytest.fixture and set attributes on cls instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#class-scoped-fixture-as-instance-method
+    fixturefunc = resolve_fixture_function(fixturedef, request)
+
+test_gui_configdb_GUI.py::test_target_read_only_and_progress_at_start[chromium]
+  test_gui_configdb_GUI.py:127: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_target_read_only_and_progress_at_start(page, cdb):
+
+test_gui_configdb_GUI.py::test_alias_selection_lists_the_detectors[chromium]
+  test_gui_configdb_GUI.py:139: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_alias_selection_lists_the_detectors(page, cdb):
+
+test_gui_configdb_GUI.py::test_two_detectors_and_a_parameter[chromium]
+  test_gui_configdb_GUI.py:161: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_two_detectors_and_a_parameter(page, cdb):
+
+test_gui_configdb_GUI.py::test_enum_parameter_is_a_combo[chromium]
+  test_gui_configdb_GUI.py:184: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_enum_parameter_is_a_combo(page, cdb):
+
+test_gui_configdb_GUI.py::test_writing_without_a_password_warns[chromium]
+  test_gui_configdb_GUI.py:199: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_writing_without_a_password_warns(page, cdb):
+
+test_gui_configdb_GUI.py::test_apply_confirms_writes_and_rereads[chromium]
+  test_gui_configdb_GUI.py:225: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_apply_confirms_writes_and_rereads(page, cdb):
+
+test_gui_configdb_GUI.py::test_close_while_writing_asks[chromium]
+  test_gui_configdb_GUI.py:252: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_close_while_writing_asks(page, cdb):
+
+test_gui_daqstat.py::test_unknown_error_shows_critical_and_closes[chromium]
+  test_gui_daqstat.py:209: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unknown_error_shows_critical_and_closes(page):
+
+test_gui_procstat.py::test_unknown_error_shows_critical_and_closes[chromium]
+  test_gui_procstat.py:151: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_unknown_error_shows_critical_and_closes(page):
+
+test_walk_guard.py::test_remote_shells_and_slurm_refused_others_run
+  test_walk_guard.py:31: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_remote_shells_and_slurm_refused_others_run():
+
+test_webgui_safety.py::test_refuses_non_loopback_bind[0.0.0.0]
+test_webgui_safety.py::test_refuses_non_loopback_bind[::]
+test_webgui_safety.py::test_refuses_non_loopback_bind[HOSTIP]
+test_webgui_safety.py::test_refuses_non_loopback_bind[sdfiana025.sdf.slac.stanford.edu]
+  test_webgui_safety.py:45: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('bind', ['0.0.0.0', '::', 'HOSTIP', 'sdfiana025.sdf.slac.stanford.edu'])
+
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args0]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args1]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args2]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args3]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args4]
+test_webgui_safety.py::test_refuses_non_loopback_endpoints[args5]
+  test_webgui_safety.py:56: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize('args', [
+
+test_webgui_safety.py::test_print_config_defaults_are_loopback
+  test_webgui_safety.py:71: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_print_config_defaults_are_loopback():
+
+test_webgui_safety.py::test_print_config_explicit_endpoints
+  test_webgui_safety.py:85: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_print_config_explicit_endpoints():
+
+test_webgui_safety.py::test_static_has_no_remote_urls
+  test_webgui_safety.py:95: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_static_has_no_remote_urls():
+
+test_webgui_safety.py::test_runtime_contacts_only_loopback
+  test_webgui_safety.py:134: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_runtime_contacts_only_loopback(tmp_path):
+
+test_webgui_safety.py::test_procstat_cnf_naming_a_remote_host_is_refused
+  test_webgui_safety.py:232: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_naming_a_remote_host_is_refused(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_opens_only_127_0_0_1
+  test_webgui_safety.py:245: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_opens_only_127_0_0_1(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_cnf_setting_a_remote_host_macro_is_refused
+  test_webgui_safety.py:279: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_setting_a_remote_host_macro_is_refused(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served
+  test_webgui_safety.py:296: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_cnf_setting_the_host_macro_to_this_machine_is_served(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host
+  test_webgui_safety.py:333: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_procmgr_refuses_a_remote_host(tmp_path, conda_prefix):
+
+test_webgui_safety.py::test_procstat_poll_procmgr_refuses_a_remote_host_macro
+  test_webgui_safety.py:345: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_procstat_poll_procmgr_refuses_a_remote_host_macro(tmp_path, conda_prefix):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/nosim.junit.xml -
+=========================== short test summary info ============================
+SKIPPED [18] test_check_gui_parity.py:47: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:87: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [10] test_check_gui_parity.py:115: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:149: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:178: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [3] test_check_gui_parity.py:185: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:204: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:223: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [2] test_check_gui_parity.py:261: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [3] test_check_gui_parity.py:320: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:335: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_check_gui_parity.py:344: needs WEBGUI_SIM_DAQ: the offscreen walks run against the simulated DAQ
+SKIPPED [1] test_gui_configdb_GUI.py:127: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:139: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:161: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:184: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:199: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:225: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_configdb_GUI.py:252: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:116: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:146: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:161: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:197: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_daqstat.py:53: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_datadev_monitor.py:85: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_datadev_monitor.py:124: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_deadca.py:36: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_detector_protection_monitor.py:94: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_detector_protection_monitor.py:112: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:50: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:82: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:110: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:140: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_dtica.py:145: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:129: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:143: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:166: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:181: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:202: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:225: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:254: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:282: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_groupca.py:306: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [192] <string>:1: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdPs.py:61: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdPs.py:68: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:56: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:98: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:134: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_hsdpva.py:139: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:48: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:65: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:70: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:75: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:80: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:85: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_partca.py:107: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:64: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:89: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:103: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:122: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:139: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_procstat.py:38: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_pvant.py:34: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_pvatable.py:39: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seq_epixhr.py:27: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seq_epixhr.py:34: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seqplot.py:27: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_seqplot.py:34: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:60: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:65: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:86: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:119: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:124: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_tprca.py:150: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:42: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:47: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:69: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:74: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpatt.py:79: needs the simulated DAQ (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:91: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:103: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:128: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:165: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:192: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:205: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:216: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+SKIPPED [1] test_gui_xpmpva.py:236: needs the simulated DAQ node (WEBGUI_SIM_DAQ)
+======== 35 passed, 310 skipped, 190 deselected, 55 warnings in 23.11s =========

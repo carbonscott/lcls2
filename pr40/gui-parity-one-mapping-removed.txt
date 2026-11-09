@@ -1,0 +1,51 @@
+check_gui_parity: src=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui4/psdaq/psdaq junit=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/sim.junit.xml
+walks: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/walks (read; not run now)
+23 psdaq files outside control_gui construct a QApplication (qapps, from the syntax tree)
+  (not listed: webgui/parity/check_gui_parity.py has "QApplication(" only in string constant(s) at line(s) 148, 475; its syntax tree constructs none)
+  (not listed: webgui/parity/qapps.py has "QApplication(" only in string constant(s) at line(s) 1, 186, 239, 282, 285; its syntax tree constructs none)
+  (not listed: webgui/tests/test_check_gui_parity.py has "QApplication(" only in comments; its syntax tree constructs none)
+  (not listed: webgui/tests/test_parity_enumerate_v1.py has "QApplication(" only in string constant(s) at line(s) 83; its syntax tree constructs none)
+file | web path or N/A reason | N/M/K | result
+cas/collection_widget.py | N/A: widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe) [rule library-demo: imported by cas/groupca.py, cas/partca.py; QApplication only under __main__ (line 98); importing it constructed 0 QApplications (probe, python 3.9.21)] | -/-/- | PASS
+cas/datadev_monitor.py | /gui/datadev_monitor | 10/10/0 | PASS
+cas/deadca.py | /gui/deadca | 43/32/11 | PASS
+cas/dtica.py | /gui/dtica | 1062/1060/2 | PASS
+cas/groupca.py | /gui/groupca | 91/90/1 | PASS
+cas/hsdPs.py | /gui/hsdPs | 49/49/0 | PASS
+cas/hsdpva.py | /gui/hsdpva | 850/845/5 | PASS
+cas/partca-sum.py | N/A: not a running GUI program at this commit: a script with no main() and no entry point whose QApplication (cas/partca-sum.py:96) is in its __main__ block; run as written it raises TypeError at cas/partca-sum.py:34 (PvLabel(lol, pvbase, "L0Delay"): the old three-argument PvLabel, pvedit.PvLabel now takes owner, parent, pvbase, name) before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv [], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/partca-sum.py:34 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (256 widgets built, none visible)] | -/-/- | PASS
+cas/partca.py | /gui/partca | 84/84/0 | PASS
+cas/pvant.py | /gui/pvant | 6/6/0 | PASS
+cas/pvatable.py | /gui/pvatable | 10/10/0 | PASS
+cas/tdmpva.py | N/A: not a running GUI program at this commit: importing it raises ModuleNotFoundError at cas/tdmpva.py:8 (from psdaq.pytdm.pvdef import *: no psdaq/pytdm package exists in the tree or in any commit of its history), before its main() can construct the QApplication (cas/tdmpva.py:183), so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:TDM'], python 3.9.21, qt 5.15.8) of its own entry raised ModuleNotFoundError at cas/tdmpva.py:8 (No module named 'psdaq.pytdm') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/tprca.py | /gui/tprca | 439/429/10 | PASS
+cas/xpmca.py | N/A: not a running GUI program at this commit: its main() (QApplication at cas/xpmca.py:327) raises TypeError at cas/xpmca.py:180 (PvLabel(hl, pvbase, "PAddr", isInt=True): the old PvLabel signature, pvedit.PvLabel now takes owner, parent, pvbase, name) in setupUi, before QApplication.exec_, so no window is ever shown [rule no-window: walk (argv ['DAQ:SIM:XPM:0'], python 3.9.21, qt 5.15.8) of its own entry raised TypeError at cas/xpmca.py:180 (__init__() missing 1 required positional argument: 'name') before QApplication.exec_; no window shown (0 widgets built, none visible)] | -/-/- | PASS
+cas/xpmpatt.py | /gui/xpmpatt | 454/454/0 | PASS
+cas/xpmpva.py | /gui/xpmpva | 2098/2096/2 | PASS
+configdb/configdb_GUI.py | /gui/configdb_GUI | 23/23/0 | PASS
+procmgr/procstat | /gui/procstat | 14/9/5 | PASS
+seq/seq_epixhr.py | /gui/seq_epixhr | 49/49/0 | PASS
+seq/seqplot.py | /gui/seqplot | 98/97/0 | FAIL
+slurm/daqstat.py | /gui/daqstat | 14/9/5 | PASS
+trigger/detector_protection_monitor.py | /gui/detector_protection_monitor | 2/2/0 | PASS
+webgui/parity/qt_walk.py | N/A: the parity check's offscreen walk tool, not a GUI program: its only QApplication (webgui/parity/qt_walk.py:416, in run_walk) runs control_gui's CGWMain with QT_QPA_PLATFORM=offscreen to observe it; --gui walks other GUIs through their own main() [rule walk-tool: every construction (webgui/parity/qt_walk.py:416 in run_walk) in a function that sets QT_QPA_PLATFORM=offscreen; no entry point] | -/-/- | PASS
+
+--- seq/seqplot.py (seqplot; own files seq/seqplot.py; walk argv ['--seq', '0:33k_35k.py', '1:10k.py', '--time', '0', '0.01'], 98 instances, elapsed 206.5 s, python 3.9.21, qt 5.15.8)
+98 controls found, 97 mapped to a web element with a passing headless-browser test, 0 marked not applicable
+N = 98, M = 97, K = 0, M + K = 97
+walk: walk source digest matches (sha256:373f89797bbf834d6e48ac347e2dbd622a4a3b1b215c22c6a232d567df12cf49)
+
+Not applicable (0 rows; none): id | loc | enumerator flags | reason | walk
+
+Unmapped (1 rows): id | loc | kind | label
+  PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck | seq/seqplot.py:145 | checkbox | Log Y
+
+Mapped but not built by the running PyQt GUI, per the walk (0 rows, not counted): id | loc | walk
+
+Mapped but test not passing, not tagged with the row or not run against the simulated DAQ (backend sim-daq) (0 rows): id | test | status
+
+RESULT: FAIL: M + K = 97 != N = 98 (1 unmapped, 0 not built, 0 not passing, 0 na unconfirmed, 0 unproven na, 0 invalid); rows: PatternWaveform.add.q0[33k_35k.py].ctrl.logYCheck
+
+PV check of the pvgui pages (each mapped row whose PyQt widget had a PV in the walk: the page node has that PV): 2296 same, 0 another PV, in 10 pages: deadca 0/0, dtica 30/30, groupca 67/67, hsdpva 584/584, partca 79/79, pvant 6/6, pvatable 0/0, tprca 414/414, xpmpatt 444/444, xpmpva 672/672
+
+RESULT: FAIL (22/23 files pass)

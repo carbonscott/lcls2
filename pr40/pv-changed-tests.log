@@ -1,0 +1,3 @@
+host sdfmilan120 date 2026-11-09T08:49:31-08:00 server-python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python shots /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof40/run2/pvneg/shots server-args ''
+.                                                                        [100%]
+1 passed, 534 deselected in 828.17s (0:13:48)

@@ -1,0 +1,4 @@
+rec/pr40-web/actions.jsonl: 36 actions
+  min(act_time - highlight_start) = 1.201 s  (at: xpmpva: XPM selector: DAQ:SIM:XPM:6)
+  min gap between consecutive act_times = 2.700 s  (before: configdb_GUI: expand "user *")
+ACTIONS=36  MIN_HIGHLIGHT_TO_ACT=1.201 s  MIN_GAP_BETWEEN_ACTS=2.700 s  PASS (limits: highlight >= 1.0 s, gap >= 2.5 s)
