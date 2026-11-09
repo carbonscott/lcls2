@@ -557,9 +557,14 @@ A record proves a row only if all of these hold, and the row's line names the fi
     bytes; simdti's grows about 46 MB an hour) with a last line `{"t": ..., "capped": ...}`; a
     read after that time fails and says the log stopped at its cap.
   - what these rules catch: a forged witness or log that the record's hashes still match, as
-    long as the forger did not also fit the run's other files to it. The record is not signed: a
-    forger who also edits or adds a served-value log, takes AMI matches from the xtc2 file itself,
-    or edits procstat's tables still passes.
+    long as the forger did not also fit the run's other files to it: AMI matches whose seq or pixel
+    the xtc2 file does not hold, GUI values no stand-in served while the GUI read, another run's
+    witness or served-value log, a served-value log added beside the stand-ins' own, and a GUI
+    killed or restarted between `up` and the record. The record is not signed: a forger who also
+    edits or adds a served-value log, takes AMI matches from the xtc2 file itself, or edits
+    procstat's tables still passes. Nor does it catch pids swapped consistently between two AMI
+    processes in the witness and in their procmgr logs, or a GUI's reads moved or widened, within
+    the run, to other values its server served.
   `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these (R1, R2, R2b, R2c, R3, R3b, R4,
   R5, R8, the procmgr instance, the served values) and checks the row's line says why.
 
