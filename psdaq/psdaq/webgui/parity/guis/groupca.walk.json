@@ -1,0 +1,8892 @@
+{
+"argv": [
+"DAQ:SIM",
+"0",
+"5"
+],
+"calls": [],
+"elapsed": 12.0,
+"exit": 0,
+"file": "cas/groupca.py",
+"instances": [
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+279,
+"__init__"
+],
+[
+"cas/groupca.py",
+300,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 1,
+"site": [
+"cas/groupca.py",
+279,
+"__init__"
+],
+"text": "Master:",
+"texts": [
+[
+"shown",
+"Master:"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+237,
+"__init__"
+],
+[
+"cas/pvedit.py",
+249,
+"__init__"
+],
+[
+"cas/groupca.py",
+282,
+"__init__"
+],
+[
+"cas/groupca.py",
+300,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": true,
+"cls": "PvCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:Master",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 2,
+"site": [
+"cas/groupca.py",
+282,
+"__init__"
+],
+"text": "Group 5",
+"texts": [
+[
+"shown",
+"Group 5"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QTabWidget",
+"chain": [
+[
+"cas/groupca.py",
+302,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QTabWidget",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"currentChanged": 0
+},
+"seq": 3,
+"site": [
+"cas/groupca.py",
+302,
+"setupUi"
+],
+"tabs": [
+"Group 5",
+"Transitions",
+"Events"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 4,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "L0Select",
+"texts": [
+[
+"shown",
+"L0Select"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+797,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"choices": [
+"Fixed Rate",
+"AC Rate",
+"EventCode",
+"Sequence"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 2
+},
+"seq": 5,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "Fixed Rate",
+"texts": [
+[
+"shown",
+"Fixed Rate"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+759,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+]
+],
+"choices": [
+"1.02Hz",
+"10.2Hz",
+"102Hz",
+"1.02kHz",
+"10.2kHz",
+"71.4kHz",
+"929kHz",
+"Undef7",
+"Undef8",
+"Undef9"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_FixedRate",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 6,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "1.02Hz",
+"texts": [
+[
+"shown",
+"1.02Hz"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+764,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+]
+],
+"choices": [
+"0.5Hz",
+"1Hz",
+"5Hz",
+"10Hz",
+"30Hz",
+"60Hz"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACRate",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 7,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "0.5Hz",
+"texts": [
+[
+"shown",
+"0.5Hz"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 8,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS1",
+"texts": [
+[
+"shown",
+"TS1"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 9,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 10,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS2",
+"texts": [
+[
+"shown",
+"TS2"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 11,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 12,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS3",
+"texts": [
+[
+"shown",
+"TS3"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 13,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 14,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS4",
+"texts": [
+[
+"shown",
+"TS4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 15,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 16,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS5",
+"texts": [
+[
+"shown",
+"TS5"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 17,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+660,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {},
+"seq": 18,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "TS6",
+"texts": [
+[
+"shown",
+"TS6"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+661,
+"__init__"
+],
+[
+"cas/pvedit.py",
+765,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_ACTimeslot",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 19,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+744,
+"__init__"
+],
+[
+"cas/pvedit.py",
+776,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_EventCode",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 20,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+699,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"choices": [
+"Global_0",
+"Global_1",
+"Global_2",
+"Global_3",
+"Global_4",
+"Global_5",
+"Global_6",
+"Global_7",
+"Global_8",
+"Global_9",
+"Global_10",
+"Global_11",
+"Global_12",
+"Global_13",
+"Global_14",
+"Global_15",
+"Global_16",
+"Local"
+],
+"cls": "QComboBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_Sequence",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 2
+},
+"seq": 21,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "Global_0",
+"texts": [
+[
+"shown",
+"Global_0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 22,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 23,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 24,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 25,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 26,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 27,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 28,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 29,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 30,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 31,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 32,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 33,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 34,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 35,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 36,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 37,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+706,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"GLT 0",
+"GLT 1",
+"GLT 2",
+"GLT 3",
+"GLT 4",
+"GLT 5",
+"GLT 6",
+"GLT 7",
+"GLT 8",
+"GLT 9",
+"GLT 10",
+"GLT 11",
+"GLT 12",
+"GLT 13",
+"GLT 14",
+"GLT 15"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 38,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "GLT 0",
+"texts": [
+[
+"shown",
+"GLT 0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+709,
+"__init__"
+],
+[
+"cas/pvedit.py",
+777,
+"__init__"
+],
+[
+"cas/pvedit.py",
+799,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+920,
+"LblEditEvt"
+],
+[
+"cas/groupca.py",
+252,
+"addGroup"
+]
+],
+"choices": [
+"40kHz",
+"80kHz",
+"120kHz",
+"160kHz",
+"200kHz",
+"240kHz",
+"280kHz",
+"320kHz",
+"360kHz",
+"400kHz",
+"440kHz",
+"480kHz",
+"520kHz",
+"560kHz",
+"600kHz",
+"640kHz"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0Select_SeqBit",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 39,
+"site": [
+"cas/groupca.py",
+252,
+"addGroup"
+],
+"text": "40kHz",
+"texts": [
+[
+"shown",
+"40kHz"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 40,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "DstSelect",
+"texts": [
+[
+"shown",
+"DstSelect"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QComboBox",
+"chain": [
+[
+"cas/pvedit.py",
+290,
+"__init__"
+],
+[
+"cas/pvedit.py",
+523,
+"__init__"
+],
+[
+"cas/pvedit.py",
+850,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"choices": [
+"Include",
+"DontCare"
+],
+"cls": "PvEditCmb",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect",
+"receivers": {
+"activated": 0,
+"currentIndexChanged": 1
+},
+"seq": 41,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "Include",
+"texts": [
+[
+"shown",
+"Include"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 42,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D0",
+"texts": [
+[
+"shown",
+"D0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 43,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 44,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D1",
+"texts": [
+[
+"shown",
+"D1"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 45,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 46,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D2",
+"texts": [
+[
+"shown",
+"D2"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 47,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 48,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D3",
+"texts": [
+[
+"shown",
+"D3"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 49,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 50,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D4",
+"texts": [
+[
+"shown",
+"D4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 51,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 52,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D5",
+"texts": [
+[
+"shown",
+"D5"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 53,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 54,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D6",
+"texts": [
+[
+"shown",
+"D6"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 55,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 56,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D7",
+"texts": [
+[
+"shown",
+"D7"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 57,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 58,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D8",
+"texts": [
+[
+"shown",
+"D8"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 59,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 60,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D9",
+"texts": [
+[
+"shown",
+"D9"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 61,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 62,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D10",
+"texts": [
+[
+"shown",
+"D10"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 63,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 64,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D11",
+"texts": [
+[
+"shown",
+"D11"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 65,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 66,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D12",
+"texts": [
+[
+"shown",
+"D12"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 67,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 68,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D13",
+"texts": [
+[
+"shown",
+"D13"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 69,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 70,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D14",
+"texts": [
+[
+"shown",
+"D14"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 71,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+813,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {},
+"seq": 72,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "D15",
+"texts": [
+[
+"shown",
+"D15"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+814,
+"__init__"
+],
+[
+"cas/pvedit.py",
+852,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+923,
+"LblEditDst"
+],
+[
+"cas/groupca.py",
+254,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DstSelect_Mask",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 73,
+"site": [
+"cas/groupca.py",
+254,
+"addGroup"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+255,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 74,
+"site": [
+"cas/groupca.py",
+255,
+"addGroup"
+],
+"text": "L0RawUpdate",
+"texts": [
+[
+"shown",
+"L0RawUpdate"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+886,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+255,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0RawUpdate",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 75,
+"site": [
+"cas/groupca.py",
+255,
+"addGroup"
+],
+"text": "1",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"1"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+905,
+"LblCheckBox"
+],
+[
+"cas/groupca.py",
+261,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 76,
+"site": [
+"cas/groupca.py",
+261,
+"addGroup"
+],
+"text": "InhEnable",
+"texts": [
+[
+"shown",
+"InhEnable"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+237,
+"__init__"
+],
+[
+"cas/pvedit.py",
+249,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+905,
+"LblCheckBox"
+],
+[
+"cas/groupca.py",
+261,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "PvCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhEnable0",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 77,
+"site": [
+"cas/groupca.py",
+261,
+"addGroup"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+237,
+"__init__"
+],
+[
+"cas/pvedit.py",
+249,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+905,
+"LblCheckBox"
+],
+[
+"cas/groupca.py",
+261,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "PvCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhEnable1",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 78,
+"site": [
+"cas/groupca.py",
+261,
+"addGroup"
+],
+"text": "1",
+"texts": [
+[
+"shown",
+"1"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+237,
+"__init__"
+],
+[
+"cas/pvedit.py",
+249,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+905,
+"LblCheckBox"
+],
+[
+"cas/groupca.py",
+261,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "PvCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhEnable2",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 79,
+"site": [
+"cas/groupca.py",
+261,
+"addGroup"
+],
+"text": "2",
+"texts": [
+[
+"shown",
+"2"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/pvedit.py",
+237,
+"__init__"
+],
+[
+"cas/pvedit.py",
+249,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+905,
+"LblCheckBox"
+],
+[
+"cas/groupca.py",
+261,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "PvCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhEnable3",
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 80,
+"site": [
+"cas/groupca.py",
+261,
+"addGroup"
+],
+"text": "3",
+"texts": [
+[
+"shown",
+"3"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+262,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 81,
+"site": [
+"cas/groupca.py",
+262,
+"addGroup"
+],
+"text": "InhInterval",
+"texts": [
+[
+"shown",
+"InhInterval"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+262,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhInterval0",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 82,
+"site": [
+"cas/groupca.py",
+262,
+"addGroup"
+],
+"text": "10",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"10"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+262,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhInterval1",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 83,
+"site": [
+"cas/groupca.py",
+262,
+"addGroup"
+],
+"text": "10",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"10"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+262,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhInterval2",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 84,
+"site": [
+"cas/groupca.py",
+262,
+"addGroup"
+],
+"text": "10",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"10"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+262,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhInterval3",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 85,
+"site": [
+"cas/groupca.py",
+262,
+"addGroup"
+],
+"text": "10",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"10"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvedit.py",
+881,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+263,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 86,
+"site": [
+"cas/groupca.py",
+263,
+"addGroup"
+],
+"text": "InhLimit",
+"texts": [
+[
+"shown",
+"InhLimit"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+263,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhLimit0",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 87,
+"site": [
+"cas/groupca.py",
+263,
+"addGroup"
+],
+"text": "4",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+263,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhLimit1",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 88,
+"site": [
+"cas/groupca.py",
+263,
+"addGroup"
+],
+"text": "4",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+263,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhLimit2",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 89,
+"site": [
+"cas/groupca.py",
+263,
+"addGroup"
+],
+"text": "4",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+893,
+"PvInput"
+],
+[
+"cas/pvedit.py",
+908,
+"LblEditInt"
+],
+[
+"cas/groupca.py",
+263,
+"addGroup"
+],
+[
+"cas/groupca.py",
+304,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvEditInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:InhLimit3",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 90,
+"site": [
+"cas/groupca.py",
+263,
+"addGroup"
+],
+"text": "4",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 1
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+31,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 91,
+"site": [
+"cas/groupca.py",
+31,
+"__init__"
+],
+"text": "Transition",
+"texts": [
+[
+"shown",
+"Transition"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+31,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 92,
+"site": [
+"cas/groupca.py",
+31,
+"__init__"
+],
+"text": "Id",
+"texts": [
+[
+"shown",
+"Id"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+31,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 93,
+"site": [
+"cas/groupca.py",
+31,
+"__init__"
+],
+"text": "Env",
+"texts": [
+[
+"shown",
+"Env"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+32,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 94,
+"site": [
+"cas/groupca.py",
+32,
+"__init__"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 95,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "ClearReadout",
+"texts": [
+[
+"shown",
+"ClearReadout"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 96,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 97,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 98,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "Ping",
+"texts": [
+[
+"shown",
+"Ping"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 99,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 100,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "1",
+"texts": [
+[
+"shown",
+"1"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 101,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "Configure",
+"texts": [
+[
+"shown",
+"Configure"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 102,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 103,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "2",
+"texts": [
+[
+"shown",
+"2"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 104,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "BeginRun",
+"texts": [
+[
+"shown",
+"BeginRun"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 105,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 106,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "4",
+"texts": [
+[
+"shown",
+"4"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 107,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "Enable",
+"texts": [
+[
+"shown",
+"Enable"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 108,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 109,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "8",
+"texts": [
+[
+"shown",
+"8"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 110,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "Disable",
+"texts": [
+[
+"shown",
+"Disable"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 111,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 112,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "9",
+"texts": [
+[
+"shown",
+"9"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 113,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "EndRun",
+"texts": [
+[
+"shown",
+"EndRun"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 114,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 115,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "5",
+"texts": [
+[
+"shown",
+"5"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+38,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 0,
+"toggled": 1
+},
+"seq": 116,
+"site": [
+"cas/groupca.py",
+38,
+"__init__"
+],
+"text": "Unconfigure",
+"texts": [
+[
+"shown",
+"Unconfigure"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/groupca.py",
+39,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLineEdit",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"readonly": false,
+"receivers": {
+"editingFinished": 0,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 117,
+"site": [
+"cas/groupca.py",
+39,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+41,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 118,
+"site": [
+"cas/groupca.py",
+41,
+"__init__"
+],
+"text": "3",
+"texts": [
+[
+"shown",
+"3"
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+47,
+"__init__"
+],
+[
+"cas/groupca.py",
+310,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 119,
+"site": [
+"cas/groupca.py",
+47,
+"__init__"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": false,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QPushButton",
+"chain": [
+[
+"cas/groupca.py",
+181,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": false,
+"checked": false,
+"cls": "QPushButton",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 1,
+"toggled": 0
+},
+"seq": 120,
+"site": [
+"cas/groupca.py",
+181,
+"__init__"
+],
+"text": "Clear",
+"texts": [
+[
+"shown",
+"Clear"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QCheckBox",
+"chain": [
+[
+"cas/groupca.py",
+188,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"checkable": true,
+"checked": false,
+"cls": "QCheckBox",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {
+"clicked": 1,
+"stateChanged": 0,
+"toggled": 0
+},
+"seq": 121,
+"site": [
+"cas/groupca.py",
+188,
+"__init__"
+],
+"text": "Run",
+"texts": [
+[
+"shown",
+"Run"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+204,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 122,
+"site": [
+"cas/groupca.py",
+204,
+"__init__"
+],
+"text": "Group 5",
+"texts": [
+[
+"shown",
+"Group 5"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 123,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "L0InpRate",
+"texts": [
+[
+"shown",
+"L0InpRate"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0InpRate",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 124,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 125,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "L0AccRate",
+"texts": [
+[
+"shown",
+"L0AccRate"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0AccRate",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 126,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 127,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "RunTime",
+"texts": [
+[
+"shown",
+"RunTime"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:RunTime",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 128,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 129,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "NumL0Inp",
+"texts": [
+[
+"shown",
+"NumL0Inp"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:NumL0Inp",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 130,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 131,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "NumL0Acc",
+"texts": [
+[
+"shown",
+"NumL0Acc"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:NumL0Acc",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 132,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 133,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "DeadFrac",
+"texts": [
+[
+"shown",
+"DeadFrac"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DeadFrac",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 134,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+206,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 135,
+"site": [
+"cas/groupca.py",
+206,
+"__init__"
+],
+"text": "DeadTime",
+"texts": [
+[
+"shown",
+"DeadTime"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+457,
+"__init__"
+],
+[
+"cas/pvedit.py",
+485,
+"__init__"
+],
+[
+"cas/groupca.py",
+208,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "PvDbl",
+"enabled": false,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:DeadTime",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 136,
+"site": [
+"cas/groupca.py",
+208,
+"__init__"
+],
+"text": "0.0000",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0.0000"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+213,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 137,
+"site": [
+"cas/groupca.py",
+213,
+"__init__"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/groupca.py",
+213,
+"__init__"
+],
+[
+"cas/groupca.py",
+311,
+"setupUi"
+],
+[
+"cas/groupca.py",
+352,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 138,
+"site": [
+"cas/groupca.py",
+213,
+"__init__"
+],
+"text": "",
+"texts": [
+[
+"shown",
+""
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 7
+}
+],
+"kind": "gui",
+"libs": [
+"cas/collection_widget.py",
+"cas/pvedit.py",
+"cas/xpm_utils.py"
+],
+"lines": {
+"cas/groupca.py": [
+[
+1,
+7
+],
+[
+9,
+9
+],
+[
+18,
+20
+],
+[
+22,
+24
+],
+[
+26,
+26
+],
+[
+28,
+33
+],
+[
+35,
+48
+],
+[
+50,
+56
+],
+[
+58,
+58
+],
+[
+60,
+60
+],
+[
+72,
+74
+],
+[
+76,
+77
+],
+[
+80,
+94
+],
+[
+96,
+101
+],
+[
+103,
+104
+],
+[
+106,
+113
+],
+[
+117,
+121
+],
+[
+124,
+124
+],
+[
+126,
+129
+],
+[
+132,
+134
+],
+[
+136,
+136
+],
+[
+138,
+140
+],
+[
+142,
+142
+],
+[
+147,
+148
+],
+[
+150,
+151
+],
+[
+169,
+171
+],
+[
+173,
+175
+],
+[
+177,
+177
+],
+[
+179,
+186
+],
+[
+188,
+196
+],
+[
+198,
+198
+],
+[
+202,
+208
+],
+[
+211,
+216
+],
+[
+218,
+220
+],
+[
+222,
+222
+],
+[
+226,
+226
+],
+[
+236,
+238
+],
+[
+241,
+243
+],
+[
+246,
+248
+],
+[
+250,
+252
+],
+[
+254,
+257
+],
+[
+259,
+265
+],
+[
+267,
+269
+],
+[
+271,
+273
+],
+[
+275,
+285
+],
+[
+287,
+291
+],
+[
+293,
+293
+],
+[
+295,
+295
+],
+[
+297,
+297
+],
+[
+299,
+300
+],
+[
+302,
+304
+],
+[
+306,
+306
+],
+[
+310,
+311
+],
+[
+313,
+314
+],
+[
+318,
+318
+],
+[
+320,
+321
+],
+[
+323,
+324
+],
+[
+326,
+327
+],
+[
+329,
+330
+],
+[
+332,
+333
+],
+[
+335,
+337
+],
+[
+339,
+347
+],
+[
+349,
+353
+],
+[
+355,
+356
+],
+[
+358,
+358
+]
+]
+},
+"notes": [],
+"object_names": [
+"MainWindow",
+"ScrollLeftButton",
+"ScrollRightButton",
+"_layout",
+"centralWidget",
+"qt_scrollarea_hcontainer",
+"qt_scrollarea_vcontainer",
+"qt_scrollarea_viewport",
+"qt_splithandle_",
+"qt_tabwidget_stackedwidget",
+"qt_tabwidget_tabbar"
+],
+"own": [
+"cas/groupca.py"
+],
+"params": {
+"cnf": "/sdf/scratch/users/c/cwang31/gui-w03/dsw/daq_sim.cnf",
+"part": "DAQ:SIM:XPM:0:PART:5",
+"platform": 5,
+"pvbase": "DAQ:SIM",
+"workdir": "/sdf/scratch/users/c/cwang31/gui-w03/dsw",
+"xpm": 0
+},
+"phase_log": [
+[
+"exec",
+6.52
+],
+[
+"tabs",
+10.53
+],
+[
+"pump:1",
+10.96
+]
+],
+"python": "3.9.21",
+"qt": "5.15.8",
+"sim_daq": "/sdf/scratch/users/c/cwang31/gui-w03/dsw",
+"src": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq",
+"src_digest": "sha256:b840f85bd97f3ee44a9e67698873645aed94834e479dc7fcf8c66d4304db4f0f",
+"version": 1
+}

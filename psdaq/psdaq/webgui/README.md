@@ -92,3 +92,33 @@ python -m psdaq.webgui.parity.check_parity --junit /tmp/webgui-sim.xml [--run-wa
 ```
 It prints `N controls found, M mapped ..., K marked not applicable`, every not-applicable row with its
 reason, and names every row that is unmapped, untagged, failing or stale.
+
+## Parity with the other PyQt GUIs
+
+`parity/qapps.py` lists, from the syntax tree (not grep), every psdaq file outside `control_gui` that constructs
+a `QApplication` (a file whose text has `QApplication(` only inside a string, like the enumerator test's fixture,
+is reported as not listed).  `parity/check_gui_parity.py` checks each one with the control GUI's method
+(`check_parity.check`): rows from the source (`parity/gui_rows.py`: every call that builds a counted Qt or pvedit
+widget in the GUI's own files) and from the offscreen walk of the running program (`qt_walk --gui`: the program's
+own `main()` with a spec's arguments against the simulated DAQ, every counted widget class replaced by a recording
+subclass), M = rows whose headless-browser test passed tagged with the row and with backend `sim-daq`, K = rows
+the source flags (main block, a def nothing calls, a slot whose object the ui never creates, a display nothing
+writes) and the walk agrees with.  A file is either a GUI program with a spec `parity/guis/<name>.json` (web path,
+walk arguments, mapping) or not a GUI program (`"na"` with a rule the check verifies: `walk-tool`, `library-demo`
+with a run-time import probe); a file with no spec fails.
+
+| PyQt program | web page | data source in the tests | server arguments |
+|---|---|---|---|
+| `procmgr/procstat` | `/gui/procstat` | the daq_sim .cnf, its procServ ports and logs | `--procstat-cnf F [--procstat-platform P --procstat-interval S --procstat-logdir D]` |
+| `cas/groupca.py` | `/gui/groupca` | simxpm `PART:<group>` and XPM PVs (PV Access, loopback only) | `--pvgui 'groupca:<pvbase> <xpm> <groups>'` |
+| `cas/pvant.py` | `/gui/pvant` | simxpm PVs | `--pvgui 'pvant:--bases B... --fields F...'` |
+
+The pvedit pages are built by `pvgui/<name>.py` (no Qt) and rendered by `static/gui/pvgui.js`; each widget carries
+`data-parity="<row id>"`.  simxpm serves stand-ins for the pyxpm PVs groupca reads (FwBuild, RemoteLinkId<n>,
+LinkGroupMask<n>, L0Select*, L0RawUpdate, Inh*, RunTime, DeadFrac, DeadTime).
+
+```bash
+python -m psdaq.webgui.parity.check_gui_parity --run-walks --sim-daq $WD          # DAQ env (PyQt5), saves parity/guis/*.walk.json
+WEBGUI_SIM_DAQ=$WD psdaq/psdaq/webgui/tests/run_webgui_tests.sh -k test_gui_ --junitxml=/tmp/gui.xml
+python -m psdaq.webgui.parity.check_gui_parity --junit /tmp/gui.xml [--details]   # one line per file; exit 0 only if all pass
+```

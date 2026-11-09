@@ -1,0 +1,93 @@
+{
+ "file": "procmgr/procstat",
+ "title": "procstat (ProcMgr status of the processes a procmgr .cnf starts)",
+ "web": "/gui/procstat",
+ "backend": "sim-daq",
+ "walk": {
+  "argv": [
+   "-p",
+   "{platform}",
+   "-i",
+   "1",
+   "{cnf}"
+  ],
+  "pump": 6,
+  "timeout": 90,
+  "drive": [
+   "checkable-buttons-then-cells",
+   "pump:1"
+  ],
+  "record_calls": [
+   "psdaq.procmgr.ProcMgr:ProcMgr.spawnConsole",
+   "psdaq.procmgr.ProcMgr:ProcMgr.spawnLogfile",
+   "psdaq.procmgr.ProcMgr:ProcMgr.stop",
+   "psdaq.procmgr.ProcMgr:ProcMgr.start"
+  ],
+  "variants": [
+   {
+    "argv": [
+     "-p",
+     "{platform}",
+     "-i",
+     "-1",
+     "{cnf}"
+    ],
+    "pump": 3,
+    "drive": []
+   }
+  ]
+ },
+ "mapping": {
+  "Ui_mainWindow.pushButtonConsole": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonConsole\"]",
+   "test": "test_gui_procstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.pushButtonLogfile": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonLogfile\"]",
+   "test": "test_gui_procstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.pushButtonRestart": {
+   "web": "[data-parity~=\"Ui_mainWindow.pushButtonRestart\"]",
+   "test": "test_gui_procstat.py::test_mode_buttons_are_exclusive[chromium]"
+  },
+  "Ui_mainWindow.tableProcStat.cellClicked": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.cellClicked\"]",
+   "test": "test_gui_procstat.py::test_cell_click_opens_console_and_logfile[chromium]"
+  },
+  "Ui_mainWindow.tableProcStat.col[ID]": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.col[ID]\"]",
+   "test": "test_gui_procstat.py::test_table_lists_sim_processes_live_and_sortable[chromium]"
+  },
+  "Ui_mainWindow.tableProcStat.col[Status]": {
+   "web": "[data-parity~=\"Ui_mainWindow.tableProcStat.col[Status]\"]",
+   "test": "test_gui_procstat.py::test_table_lists_sim_processes_live_and_sortable[chromium]"
+  },
+  "Ui_mainWindow.textBrowser": {
+   "na": "Output File Status box: nothing in procstat or ui_procStat.py writes textBrowser (no setText/append/setHtml), the walk saw it empty; the web page shows the same empty box"
+  },
+  "WinProcStat.msgBox": {
+   "web": "[data-parity~=\"WinProcStat.msgBox\"]",
+   "test": "test_gui_procstat.py::test_restart_of_local_process_shows_warning[chromium]"
+  },
+  "WinProcStat.onProcMgrUnknownError.QMessageBox.critical": {
+   "web": "[data-parity~=\"WinProcStat.onProcMgrUnknownError.QMessageBox.critical\"]",
+   "test": "test_gui_procstat.py::test_unknown_error_shows_critical_and_closes[chromium]"
+  },
+  "WinProcStat.on_actionAbout_triggered": {
+   "na": "the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects on_actionAbout_triggered: def on_actionAbout_triggered (procmgr/procstat:344)"
+  },
+  "WinProcStat.on_actionAbout_triggered.QMessageBox.about": {
+   "na": "the ui (procmgr/ui_procStat.py) creates no object named 'actionAbout', so connectSlotsByName never connects this slot: def on_actionAbout_triggered (procmgr/procstat:344)"
+  },
+  "WinProcStat.on_actionOpen_triggered": {
+   "na": "the ui (procmgr/ui_procStat.py) creates no object named 'actionOpen', so connectSlotsByName never connects on_actionOpen_triggered: def on_actionOpen_triggered (procmgr/procstat:332)"
+  },
+  "WinProcStat.on_actionQuit_triggered": {
+   "na": "the ui (procmgr/ui_procStat.py) creates no object named 'actionQuit', so connectSlotsByName never connects on_actionQuit_triggered: def on_actionQuit_triggered (procmgr/procstat:339)"
+  },
+  "WinProcStat.on_tableProcStat_currentCellChanged": {
+   "web": "[data-parity~=\"WinProcStat.on_tableProcStat_currentCellChanged\"]",
+   "test": "test_gui_procstat.py::test_current_row_kept_across_refresh[chromium]"
+  }
+ }
+}

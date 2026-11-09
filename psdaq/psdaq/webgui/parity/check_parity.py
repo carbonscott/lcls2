@@ -156,11 +156,18 @@ def na_group(row):
     return 'hidden' if row['hidden'] else 'inert'
 
 
-def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest=None):
-    """walk: raw qt_walk observations (dict) or None; src_digest: digest of the --src control_gui."""
+def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest=None,
+          reconcile_fn=None, built_fn=None, required_backend=REQUIRED_BACKEND):
+    """walk: raw qt_walk observations (dict) or None; src_digest: digest of the --src control_gui.
+    reconcile_fn / built_fn: the walk's verdicts (default qt_walk.reconcile / qt_walk.built, the control GUI's);
+    check_gui_parity passes gui_rows.reconcile / gui_rows.built for the other GUIs.  required_backend: the junit
+    `backend` a mapped row's passing test must have recorded (sim-daq, or sim-device:<stand-in>)."""
+    reconcile_fn = reconcile_fn or qt_walk.reconcile
+    built_fn = built_fn or qt_walk.built
     by = {r['id']: r for r in rows}
     rep = {'N': len(rows), 'mapped': [], 'na': [], 'unproven_na': [], 'unconfirmed_na': [], 'unmapped': [],
-           'failing': [], 'not_built': [], 'stale': [], 'invalid': [], 'allow': allow_unproven_na, 'walk_note': ''}
+           'failing': [], 'not_built': [], 'stale': [], 'invalid': [], 'allow': allow_unproven_na, 'walk_note': '',
+           'backend': required_backend}
     verdicts, builds = {}, None
     if walk is None:
         rep['walk_note'] = 'no walk: no na row can be confirmed'
@@ -169,8 +176,8 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
             walk.get('src_digest'), src_digest)
         walk = None
     else:
-        verdicts = qt_walk.reconcile(rows, walk)
-        builds = qt_walk.built(rows, walk)
+        verdicts = reconcile_fn(rows, walk)
+        builds = built_fn(rows, walk)
         rep['walk_note'] = 'walk source digest matches (%s)' % walk.get('src_digest')
     for rid in sorted(mapping):
         if rid not in by:
@@ -216,7 +223,7 @@ def check(rows, mapping, results, allow_unproven_na=False, walk=None, src_digest
                 # the walk is the authority for 'built': a row the running GUI never builds cannot be mapped
                 rep['not_built'].append((r, e, b[1]))
                 continue
-            st = (test_status(results, e['test'], rid, REQUIRED_BACKEND) if results is not None
+            st = (test_status(results, e['test'], rid, required_backend) if results is not None
                   else 'no junit given')
             if st == 'passed':
                 rep['mapped'].append((r, e))
@@ -277,7 +284,7 @@ def render(rep, header=''):
         L.append('  %s | %s | %s' % (r['id'], r['loc'], obs))
     L.append('')
     L.append('Mapped but test not passing, not tagged with the row or not run against the simulated DAQ '
-             '(backend %s) (%d rows): id | test | status' % (REQUIRED_BACKEND, len(rep['failing'])))
+             '(backend %s) (%d rows): id | test | status' % (rep.get('backend', REQUIRED_BACKEND), len(rep['failing'])))
     for r, e, st in rep['failing']:
         L.append('  %s | %s | %s' % (r['id'], e['test'], st))
     if rep['stale']:

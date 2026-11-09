@@ -1,0 +1,5 @@
+{
+ "file": "cas/collection_widget.py",
+ "na": "widget library (CollectionWidget, embedded by cas/partca.py), not a program: its QApplication (cas/collection_widget.py:99) is only in the __main__ demo block, there is no entry point, and importing it builds no QApplication (probe)",
+ "rule": "library-demo"
+}

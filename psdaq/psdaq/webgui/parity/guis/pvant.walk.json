@@ -1,0 +1,787 @@
+{
+"argv": [
+"--bases",
+"DAQ:SIM:XPM:0:PART:5",
+"DAQ:SIM:XPM:0:PART:0",
+"--fields",
+"NumL0Acc",
+"NumL0Inp",
+"L0AccRate"
+],
+"calls": [],
+"elapsed": 9.3,
+"exit": 0,
+"file": "cas/pvant.py",
+"instances": [
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvant.py",
+49,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 1,
+"site": [
+"cas/pvant.py",
+49,
+"__init__"
+],
+"text": "5",
+"texts": [
+[
+"shown",
+"5"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvant.py",
+49,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 2,
+"site": [
+"cas/pvant.py",
+49,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvant.py",
+51,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 3,
+"site": [
+"cas/pvant.py",
+51,
+"__init__"
+],
+"text": "NumL0Acc",
+"texts": [
+[
+"shown",
+"NumL0Acc"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvant.py",
+51,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 4,
+"site": [
+"cas/pvant.py",
+51,
+"__init__"
+],
+"text": "NumL0Inp",
+"texts": [
+[
+"shown",
+"NumL0Inp"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLabel",
+"chain": [
+[
+"cas/pvant.py",
+51,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "QLabel",
+"enabled": true,
+"object_name": "",
+"pv": null,
+"receivers": {},
+"seq": 5,
+"site": [
+"cas/pvant.py",
+51,
+"__init__"
+],
+"text": "L0AccRate",
+"texts": [
+[
+"shown",
+"L0AccRate"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 0
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:NumL0Acc",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 6,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:0:NumL0Acc",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 7,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:NumL0Inp",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 8,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:0:NumL0Inp",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 9,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:5:L0AccRate",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 10,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+},
+{
+"base": "QLineEdit",
+"chain": [
+[
+"cas/pvedit.py",
+275,
+"__init__"
+],
+[
+"cas/pvedit.py",
+338,
+"__init__"
+],
+[
+"cas/pvedit.py",
+346,
+"__init__"
+],
+[
+"cas/pvedit.py",
+381,
+"__init__"
+],
+[
+"cas/pvant.py",
+56,
+"__init__"
+],
+[
+"cas/pvant.py",
+69,
+"setupUi"
+],
+[
+"cas/pvant.py",
+93,
+"main"
+]
+],
+"cls": "PvInt",
+"enabled": true,
+"object_name": "",
+"pv": "DAQ:SIM:XPM:0:PART:0:L0AccRate",
+"readonly": false,
+"receivers": {
+"editingFinished": 1,
+"returnPressed": 0,
+"textChanged": 0
+},
+"seq": 11,
+"site": [
+"cas/pvant.py",
+56,
+"__init__"
+],
+"text": "0",
+"texts": [
+[
+"shown",
+"-"
+],
+[
+"after-pump",
+"0"
+]
+],
+"visible": true,
+"window_visible": true,
+"writes": 6
+}
+],
+"kind": "gui",
+"libs": [
+"cas/pvedit.py"
+],
+"lines": {
+"cas/pvant.py": [
+[
+1,
+8
+],
+[
+10,
+12
+],
+[
+14,
+14
+],
+[
+16,
+16
+],
+[
+19,
+22
+],
+[
+24,
+26
+],
+[
+28,
+28
+],
+[
+30,
+30
+],
+[
+32,
+34
+],
+[
+36,
+36
+],
+[
+38,
+43
+],
+[
+45,
+45
+],
+[
+47,
+51
+],
+[
+53,
+56
+],
+[
+58,
+60
+],
+[
+62,
+66
+],
+[
+68,
+69
+],
+[
+71,
+71
+],
+[
+73,
+75
+],
+[
+77,
+77
+],
+[
+79,
+79
+],
+[
+81,
+85
+],
+[
+87,
+87
+],
+[
+90,
+94
+],
+[
+96,
+97
+],
+[
+99,
+99
+]
+]
+},
+"notes": [],
+"object_names": [
+"MainWindow",
+"_layout",
+"centralWidget"
+],
+"own": [
+"cas/pvant.py"
+],
+"params": {
+"cnf": "/sdf/scratch/users/c/cwang31/gui-w03/dsw/daq_sim.cnf",
+"part": "DAQ:SIM:XPM:0:PART:5",
+"platform": 5,
+"pvbase": "DAQ:SIM",
+"workdir": "/sdf/scratch/users/c/cwang31/gui-w03/dsw",
+"xpm": 0
+},
+"phase_log": [
+[
+"exec",
+4.28
+],
+[
+"pump:1",
+8.29
+]
+],
+"python": "3.9.21",
+"qt": "5.15.8",
+"sim_daq": "/sdf/scratch/users/c/cwang31/gui-w03/dsw",
+"src": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-gui2/psdaq/psdaq",
+"src_digest": "sha256:cdaebaed77c01dfd9edb201e3dfdba6b34e60e998c43b51d6f944dfadc25c78f",
+"version": 1
+}
