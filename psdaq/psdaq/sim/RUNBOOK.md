@@ -503,9 +503,11 @@ QT_QPA_PLATFORM=offscreen python -B -m psdaq.sim.rogue_drive --type epixhr2x2
 ```
 
 epixhr2x2 runs in a DAQ with it (§3k), and so does tt (§3l). On hardware the same surf error
-stops `tt_init`, and before 99cc4db8d both types also lacked the `<type>_connectionInfo` that
-`BEBDetector::connectionInfo` calls (d6b1e7552 merged `<det>_connect` into it; these two kept
-`tt_connect` and `epixhr2x2_connect`).
+stops `tt_init`. Before 99cc4db8d neither type had the `<type>_connectionInfo(root, alloc_json)`
+that `BEBDetector::connectionInfo` calls at Alloc. For tt, the one-argument `tt_connect(cl)`
+has not matched the DRP's two-argument call since 3b829abf4, and d6b1e7552 renamed that call
+to `<det>_connectionInfo`. For epixhr2x2, d6b1e7552 did add `epixhr2x2_connectionInfo`, and
+668cb79e1 renamed it back to a one-argument `epixhr2x2_connect(base)`.
 
 **Not running yet** (found with `rogue_drive`, and in a DRP where it gets that far):
 - **epixuhr3x2:** its config DB default now builds here (`EPIXUHR_CONFIG_DIR`, §3i), and
@@ -900,7 +902,7 @@ __init__() got an unexpected keyword argument 'size'`, `**** python error`) a fe
 
 | config entry points run | emulated device (`seeds/tt.json`) | DB config | DRP data (subframes) | psana check |
 |---|---|---|---|---|
-| `tt_init` (`TimeToolKcu1500Root` start, `ConfigureXpmMini`, `ConfigLclsTimingV2`), `tt_init_feb`, `tt_connectionInfo` (the PGP link check, `TxId`, `RxId`), `tt_config` (`user_to_expert`, `config_expert` over registers and the camera's UART, `gcp`, `MasterEnable`, the firmware version), `tt_unconfig` | `PgpMon[0].RxRemLinkReady`, `XpmMessageAligner.RxId`; the Piranha4's console (every command `OK` and the `USER>` prompt, `gcp` its summary) | `tt_config_store` through its `write_to_daq_config_db` | 2: the camera's region of interest, 2048 uint8 pixels (tdest 1, the firmware's FEX results, is not produced: `TimeTool::_event` does not read it) | `tt_raw_2_0_0` `image()` (2048,) uint8 and `_info().image`, every pixel, 8 bit |
+| `tt_init` (`TimeToolKcu1500Root` start, `ConfigureXpmMini`, `ConfigLclsTimingV2`), `tt_init_feb`, `tt_connectionInfo` (99cc4db8d: the PGP link check, `TxId`, `RxId`), `tt_config` (`user_to_expert`, `config_expert` over registers and the camera's UART, `gcp`, `MasterEnable`, the firmware version), `tt_unconfig` | `PgpMon[0].RxRemLinkReady`, `XpmMessageAligner.RxId`; the Piranha4's console (every command `OK` and the `USER>` prompt, `gcp` its summary) | `tt_config_store` through its `write_to_daq_config_db` | 2: the camera's region of interest, 2048 uint8 pixels (tdest 1, the firmware's FEX results, is not produced: `TimeTool::_event` does not read it) | `tt_raw_2_0_0` `image()` (2048,) uint8 and `_info().image`, every pixel, 8 bit |
 
 `TimeTool::_configure` takes the region of interest's length from the config
 (`UartPiranha4.ROI1 - ROI0 + 1`) and `TimeTool::_event` records subframe 2 only if it has that
@@ -915,11 +917,19 @@ maps them to the camera's `ROI[i]` and `SAD[i]` (as it maps `PllConfig0` to `Pll
 Config DB entries written by the old store keep the old names and still abort at Configure;
 they must be written again.
 
-Not fixed: the store's `expert.TimeToolKcu1500.Application.AppLane.*` settings (prescalers, FIR
-coefficients, IIR time constant, background subtraction) do not reach the firmware tree, which
-names the lane `AppLane[0]` (lcls2_timetool `_Application.py`) and for which `tt_config`'s
-translation has no `AppLane` entry: it prints `Lookup failed for node [AppLane] in path
-[cl.TimeToolKcu1500.Application]` and skips them, on hardware as here.
+**Not fixed: the timetool's processing settings are skipped, on hardware as here.** The store
+writes them under `expert.TimeToolKcu1500.Application.AppLane`: the raw-data and background
+prescalers (`Prescale`, `Fex.background_prescaler`), the 8 FIR coefficient sets and
+`LoadCoefficients`, the IIR time constant (`Fex.FrameIIR`) and background subtraction
+(`Fex.FrameSubtractor`). lcls2_timetool names the lane `AppLane[%i]` (`_Application.py`), and
+`tt_config`'s `rogue_translate` has no `AppLane` entry, so `config_expert` prints `Lookup failed
+for node [AppLane] in path [cl.TimeToolKcu1500.Application]` at every Configure (the drp's log)
+and writes none of them. The firmware keeps whatever those registers held. The one-line entry
+(`'AppLane': 'AppLane[%d]' % lane`, as for `ClinkFeb`) is not added here. It would make
+`tt_config` write these values to deployed timetools, which, with this release's
+lcls2_timetool, it does not write today. Among them are a raw-data prescaler of 2 and
+`LoadCoefficients` 1, which the store's own comment says crashes `pgpread_timetool.cc`. That
+change needs the timetool's owners.
 
 Fault run that fails Configure and names the register:
 `TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay`

@@ -37,7 +37,7 @@
   },
   "det:drp:tt": {
     "status": "RUN",
-    "note": "daq_sim up --det tt + cycle, with PSDAQ_SIM_PYTHONPATH naming a rogue-6 surf of the release: tt_config.py against rogue_dev (TimeToolKcu1500Root: the KCU, the camera link FEB over SRPv3, the Piranha4 console), every pixel of the 2048-pixel uint8 region of interest checked through tt_raw_2_0_0"
+    "note": "daq_sim up --det tt + cycle, with PSDAQ_SIM_PYTHONPATH naming a rogue-6 surf of the release: tt_config.py against rogue_dev (TimeToolKcu1500Root: the KCU, the camera link FEB over SRPv3, the Piranha4 console), every pixel of the 2048-pixel uint8 region of interest checked through tt_raw_2_0_0; the store's AppLane settings (FIR, prescale, IIR, background) are skipped, as on hardware (RUNBOOK §3l)"
   },
   "det:drp:epixquad": {
     "status": "RUN",

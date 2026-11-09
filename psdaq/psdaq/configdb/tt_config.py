@@ -78,8 +78,9 @@ def tt_connect(cl):
     d['paddr'] = rxId
     return d
 
-# called on alloc: BEBDetector::connectionInfo calls <det>_connectionInfo (d6b1e7552 merged
-# <det>_connect into it; this type kept only tt_connect)
+# called on alloc: BEBDetector::connectionInfo calls <det>_connectionInfo(root, alloc_json).
+# The one-argument tt_connect(cl) has not matched the DRP's two-argument call since 3b829abf4
+# (then <det>_connect; d6b1e7552 renamed the call to <det>_connectionInfo)
 def tt_connectionInfo(cl, alloc_json_str):
     return tt_connect(cl)
 
