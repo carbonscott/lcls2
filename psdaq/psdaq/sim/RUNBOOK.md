@@ -627,7 +627,11 @@ to external triggers).
   `{"response": v, "bits": n}` makes a register's low n bits read v whatever is written:
   `Top.CypressS25Fl.CmdReg`'s low byte, the flash's status, reads 0 (idle; `waitForFlashReady`
   polls bit 0, active-low ready). The calibration data `Top.start` then reads (git hash, board
-  ids) reads 0, as do the camera registers it compares them with.
+  ids) reads 0, as do the camera registers it compares them with. The package's `ePixViewer`
+  constructs a `QApplication` when `ePixQuad` is imported (`ePixViewer/_ePixViewer.py` line 57),
+  so a process that imports `epixquad1kfps_config` with no display aborts (`qt.qpa.xcb: could
+  not connect to display`), a DRP on a node without one too; `daq_sim up` runs this type's
+  config seeding and DRP with `QT_QPA_PLATFORM=offscreen`.
 - **epixUHR.** `epixUHR_config_store.epixUHR_cdict()` reads its PLL tables and pixel maps from
   `EPIXUHR_CONFIG_DIR` (default the facility's `/cds/home/p/psrel/EpixUHR`); `up` writes
   simulated ones (`psdaq.sim.epixuhr_files`: Si5345 tables of a few registers, all-zero 168 x 192

@@ -106,8 +106,11 @@ SIM_TYPES = {
     # the timing BEB: tb_config reads the card's image name, then programs simxpm's PVs as ts does
     'tb':        {'kwargs': 'sim_dma_size=0x1000,sim_dma_count=1024,sim_seed={seed:#x}'},
     'epixquad':  {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}'},
-    # the same EpixQuad DRP; its camera's SPI PROM answers the commands Top.start sends (rogue_dev)
-    'epixquad1kfps': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}'},
+    # the same EpixQuad DRP; its camera's SPI PROM answers the commands Top.start sends (rogue_dev).
+    # Its package's ePixViewer constructs a QApplication when ePixQuad is imported, so whatever
+    # imports epixquad1kfps_config (configdb_seed, the DRP) needs a display: offscreen here
+    'epixquad1kfps': {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=256,sim_seed={seed:#x}',
+                      'env': {'QT_QPA_PLATFORM': 'offscreen'}},
     # its store's default reads PLL tables and pixel maps from EPIXUHR_CONFIG_DIR: 'up' writes them
     # (psdaq.sim.epixuhr_files); 4 ASICs of 48,384 B packed pixels per event
     'epixUHR':   {'kwargs': 'sim_dma_size=0x40000,sim_dma_count=256,sim_seed={seed:#x}',
@@ -412,6 +415,8 @@ def cmd_up(args):
                            '--access-log', work.path('logs', 'configdb-access.jsonl')], env)
         wait_listen(P['configdb'], 30, p, 'configdb_server')
         sim_type = SIM_TYPES[DETECTOR]
+        env.update(sim_type.get('env', {}))     # what the type's own code needs to run here
+        os.environ.update(sim_type.get('env', {}))  # procmgr and the DRP inherit it
         if sim_type.get('config_files'):    # files the type's store reads, at a path env names
             mod, sub, var = sim_type['config_files']
             r = subprocess.run([py, '-m', mod, work.path(sub)], env=env, capture_output=True,
