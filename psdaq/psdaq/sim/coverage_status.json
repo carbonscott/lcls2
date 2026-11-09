@@ -98,5 +98,53 @@
     "stand_in": "simxpm",
     "interface": "the XPM PVs of pvctrls.py and pvstats.py and the control -X ZMQ PULL port, which pykcuxpm serves from a KCU card with the same PVCtrls/PVStats classes as pyxpm (pykcuxpm.py:18-19,111-114); not pvxtpg.py's XTPG PVs",
     "note": "daq_sim cycle, as for pyxpm; simxpm also sends the timing frames"
+  },
+  "prog:ami-client": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle --ami-shot (R1): while the run is Running, psdaq.sim.ami_shot runs ami-client offscreen on the running manager with a viewer of fakecam:raw:raw (the AMI screenshot); the record lists that client's log (# CMDLINE, # PID) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 and the processes that held AMI's ports, the client's window process (an 'ami editor' whose parent is that ami-client pid) among them"
+  },
+  "prog:ami-global": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-global as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-global among them"
+  },
+  "prog:ami-manager": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-manager as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-manager among them"
+  },
+  "prog:ami-node": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-node as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-node among them"
+  },
+  "prog:ami-worker": {
+    "status": "RUN",
+    "note": "daq_sim up --ami + cycle (R1): procmgr runs ami-worker as ami.cnf does, on 127.0.0.1; the record lists its procmgr log (# CMDLINE and procServ's pid) and logs/ami_check.json, the cycle's ami_check witness: the run_id and xtc2 file, AMI's per-event matches with psana2 (timestamp, seq, pixel) and the AMI processes (pid, cmdline) that held AMI's ports while the result was fetched, ami-worker among them"
+  },
+  "prog:control_gui": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): control_gui -l DEBUG logs control's fileReport, the run's xtc2 path relative to the data dir, which coverage resolves under the record's data_dir to the hashed file"
+  },
+  "prog:groupca": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs groupca offscreen (groupca DAQ:SIM 0 <platform>, as asc.cnf starts it); while the run is Running, cycle runs its main() once more offscreen through qt_walk (passive: pumps only) and logs/gui_witness.json, the witness, names the run and the partition PVs it showed, each with 2 or more numbers, read within the run's L1Accepts"
+  },
+  "prog:pvant": {
+    "status": "RUN",
+    "note": "daq_sim up --gui + cycle (R2): procmgr runs pvant offscreen (pvant --bases <the partition> --fields NumL0Acc NumL0Inp L0AccRate; lab3-wave8.cnf gives it wave8 bases); while the run is Running, cycle runs its main() once more offscreen through qt_walk (passive: pumps only) and logs/gui_witness.json, the witness, names the run and the partition PVs it showed, each with 2 or more numbers, read within the run's L1Accepts"
+  },
+  "prog:hsdca": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-hsd64.cnf:30 runs 'hsdca', but psdaq/pyproject.toml:44 comments its entry point out (#hsdca = \"psdaq.cas.hsdca:main\") and psdaq/psdaq/cas/hsdca.py does not exist"
+  },
+  "prog:hsdcas": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-hsd64.cnf:29 runs 'hsdcas', but psdaq/pyproject.toml:45 comments its entry point out (#hsdcas = \"psdaq.cas.hsdcas:main\") and psdaq/psdaq/cas/hsdcas.py does not exist"
+  },
+  "prog:xpmpvas": {
+    "status": "N/A",
+    "reason": "no source in the tree: lab3-xtpg.cnf:26 runs 'xpmpvas -P DAQ:LAB2:XPM:<shelf>', but no file, entry point or build target of that name exists (git grep -w xpmpvas finds only that config and the coverage tests)"
+  },
+  "prog:tmo_acr_opal_feedback": {
+    "status": "N/A",
+    "reason": "no source in the tree: srcf-tmo.cnf:174 runs 'python tmo_acr_opal_feedback.py -P TMO:ACR' from the hutch's working dir; no file of that name exists in the tree"
   }
 }

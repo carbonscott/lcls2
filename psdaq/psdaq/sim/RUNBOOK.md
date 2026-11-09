@@ -26,6 +26,8 @@ Everything in `psdaq/psdaq/sim/`:
 | `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` and `daq_sim matrix` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
+| `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3g). |
+| `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3g). |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
 | `../webgui/e2e.py`, `../webgui/e2e_browser.py` | `daq_sim e2e`: the checks (DAQ env), and the headless-browser driver (Playwright venv). |
@@ -348,7 +350,7 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
 **Evidence.** Each passing run writes one JSON record with
 `psdaq.sim.coverage.record_evidence(rows, kind, files, ...)`:
 - **Fields:** `{sha, dirty, rows, kind, run_id, job_id, host, files, content, started, ended,
-  counts}`; `dirty` is true when tracked files differed from HEAD during the run; `content`
+  counts, data_dir}`; `data_dir` is the run's data dir (the drp's `-o`); `dirty` is true when tracked files differed from HEAD during the run; `content`
   holds, per listed file, its size and sha256 when the record was written (`{bytes, sha256}`).
 - **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
 - **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
@@ -357,8 +359,9 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
   `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`, then, for any row
   the check below would reject, `evidence <id>: coverage would reject it for <row>: <why>`.
 - **Files:** the record lists the run's xtc2 files, `daq_sim.cnf`, `logs/cycle.jsonl`, each
-  service's log (which `up` heads with its `# CMDLINE:`, as procmgr heads each process's log)
-  and the newest procmgr log of each process. If you delete the work dir, the record no longer
+  service's log (which `up` heads with its `# CMDLINE:`, as procmgr heads each process's log),
+  the newest procmgr log of each process and the witnesses of the cycle's checks
+  (`logs/ami_check.json` with `--ami`, `logs/gui_witness.json` with `--gui`, below). If you delete the work dir, the record no longer
   counts.
 
 **Verdict.** The tool prints every row on its own line with its status and either its evidence id
@@ -393,10 +396,41 @@ A record proves a row only if all of these hold, and the row's line names the fi
     neither the run's xtc2 file ... nor its BeginRun time ...`).
 
   A log names the run if it holds the path of a listed `.xtc2` file of the run (the DRP logs
-  `Opening file <path>`, control the file reports) or that file's BeginRun time as `sec.nsec`
-  (the TEB logs `BeginRun @ <time>`, simxpm `BeginRun ... time <time>`). The tool reads the
-  xtc2 files itself (datagram and Xtc headers, Names, the runinfo), as psana2's reader lays
-  them out; it needs no psana.
+  `Opening file <path>`, control the file reports), that path relative to the record's
+  `data_dir` (control_gui logs control's `fileReport` as `/tst/<expt>/xtc/<file>`; it counts only
+  if, joined to `data_dir`, it resolves to the very file the record hashed), or that file's
+  BeginRun time as `sec.nsec` (the TEB logs `BeginRun @ <time>`, simxpm `BeginRun ... time
+  <time>`). The tool reads the xtc2 files itself (datagram and Xtc headers, Names, the runinfo,
+  each L1Accept's timestamp), as psana2's reader lays them out; it needs no psana.
+
+  Programs whose own log can never name a run need a **witness**: a JSON log a check of the
+  same cycle wrote, `{"witness": <kind>, "run_id", "xtc2": [...], ...}`, listed (and so hashed)
+  by the record, with the record's `run_id` and one of its `.xtc2` files of that run
+  (`names run ..., the record says ...`, `names no listed xtc2 file of run ...`):
+  - `prog:ami-*` (R1), always: an `ami_check` witness (`logs/ami_check.json`) that passed
+    (`says the check failed`), with `matches`, AMI's per-event agreement with psana2 as
+    `[timestamp, seq, pixel]`, at least one, every timestamp an L1Accept of the run's file
+    (`lists no per-event match`, `match timestamp ... is no L1Accept of the run's files`), and
+    `served_by`, the processes (`pid`, `cmdline`, `ancestors`) that held a TCP socket on AMI's
+    ports while the cycle fetched AMI's result, and, with `--ami-shot`, while the screenshot's
+    ami-client showed the run: one of them, or one of their ancestors (AMI's GUI windows are
+    processes it forks, renamed `ami editor`), must run the row's program with the pid its log
+    gives (procmgr's `@@@ The PID of new child ... is: N`, or the `# PID: N` line ami_shot writes)
+    (`its served_by lists no ami-client process`, `its log of ami-client gives pid N, not one of
+    the ami-client processes that served the check`, `its log of ami-client gives no pid`). The
+    program's own log is required too. The procmgr `ami-client` loads no graph, so it holds none
+    of AMI's ports; the ami-client row is proven by the one `cycle --ami-shot` runs.
+  - a GUI or monitor whose log does not name the run (R2; groupca, pvant): a
+    `gui_witness` (`logs/gui_witness.json`) whose `programs` entry for it passed, whose `start`
+    and `end` (EPICS-epoch seconds, the walk's process) lie between the run file's first and last
+    L1Accept (`read from ... to ..., not within the run's L1Accepts`), and that shows at least one
+    PV under the witness's `partition` prefix with 2 or more distinct numbers (a placeholder such
+    as `-` is none) (`shows groupca read no live value under DAQ:SIM:XPM:0:PART:5`); plus the
+    GUI's own log with its `# CMDLINE:`.
+  - a STAND-IN row whose stand-in's log does not name the run (R3, a PV server): the same, from
+    the witness's `servers` entry for the stand-in (a client of the cycle read the stand-in's PVs
+    while the run ran; a `programs` entry does not count).
+  `psdaq/psdaq/tests/test_sim_coverage.py` forges each of these and checks the row's line says why.
 
 So commit first, build, then run: after every new commit, the runs must be repeated.
 
@@ -547,11 +581,11 @@ its evidence record lists their logs.
 | option | adds (procmgr id: program) | simulated source | what `cycle` checks |
 |---|---|---|---|
 | `--meb` | `meb0`: `monReqServer -d -n 8 -q 2 -t tstsim<p>`; `shmc0`: `shmemClient -p tstsim<p> -i 1 -v -R` | the TEB's events | `MEB_EvtCt` (events the MEB served), shmemClient's L1Accept lines |
-| `--ami` (implies `--meb`) | `ami-manager`, `ami-global`, `ami-node_0`, `ami-worker_0` (`psana://shmem=tstsim<p>`), `ami-client` (offscreen) | the MEB | `psdaq.sim.ami_check`: a graph that keeps every event's timestamp, seq and one fakecam pixel, fetched from the manager and compared with psana2 event by event |
+| `--ami` (implies `--meb`) | `ami-manager`, `ami-global`, `ami-node_0`, `ami-worker_0` (`psana://shmem=tstsim<p>`), `ami-client` (offscreen) | the MEB | `psdaq.sim.ami_check`: a graph that keeps every event's timestamp, seq and one fakecam pixel, fetched from the manager and compared with psana2 event by event; it writes the `ami_check` witness (`logs/ami_check.json`: the run, the per-event matches, the AMI processes that held AMI's ports when the result was fetched) that proves the AMI rows |
 | `--pva` | `pvcam_0`: `drp_pva -d sim://... pva/DAQ:SIM:CAM:IMAGE` | `simxpm --camera-pv`: an NTNDArray updated once per L1Accept with that L1Accept's time | `psdaq.sim.sysdrp_check --pva`: every recorded image is `camera_image(seed, seq)` with fakecam's seq of the same L1Accept, and drp_pva's `drp_match_count` equals the L1Accepts that have an image |
 | `--epics` | `epics_0`: `epicsArch -d sim://... epicsArch.txt` | a stand-in IOC, EPICS base's `softIoc -S`, with `DAQ:SIM:EPICS:COUNT` (CA, +1 every 0.1 s) and `DAQ:SIM:EPICS:CONST` (CA, 1234.5); simxpm's `DAQ:SIM:XPM:0:PART:<p>:NumL0Acc` (PVA) | `sysdrp_check --epics`: `sim_const` is 1234.5, `sim_count` and `sim_l0acc` never decrease, `sim_l0acc` stays within the run's L1Accepts |
 | `--udp` | `encoder_0`: `drp_udpencoder -d sim://... -L <udp port>`; `simenc`: `sim_udpencoder -T sim://... -p <p> -a 127.0.0.1 -d <udp port>` | `sim_udpencoder` sends one encoder frame per L1Accept, paced by simxpm's frames instead of `/dev/tpra` | `sysdrp_check --udp`: every recorded frame's count in step with fakecam's seq, the 100/200 test pattern, and drp_udpencoder's `drp_match_count` equals the L1Accepts that have a frame |
-| `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>` and `groupca DAQ:SIM 0 <p>`, offscreen | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport`, but with the path relative to the data dir (`/tst/<expt>/xtc/...`), and groupca's log names no run, so coverage counts neither |
+| `--gui` | `control_gui -H localhost -l DEBUG -u <config DB stand-in>`, `groupca DAQ:SIM 0 <p>` and `pvant --bases DAQ:SIM:XPM:0:PART:<p> --fields NumL0Acc NumL0Inp L0AccRate`, offscreen | control's status messages; simxpm's PVs | control_gui logs the run's `fileReport` with its path relative to the data dir, which the record's `data_dir` resolves. groupca and pvant never log a run: once the run is Running, `psdaq.sim.gui_witness` runs each GUI's own `main()` once more, offscreen, through the parity check's walk (`qt_walk --gui`, passive: event pumps only, nothing clicked or written), keeps every PV-bound widget's text after each pump, and writes the `gui_witness` witness (`logs/gui_witness.json`); `cycle` stays Running until the walks end and fails if a GUI showed no partition PV changing |
 
 drp_pva, epicsArch and drp_udpencoder take their timing from simxpm with `-d sim://` as `drp`
 does (MemPoolSim); without it they open the PGP card as before. The MEB does not unlink its
@@ -573,6 +607,21 @@ daq_sim up -w $WD --ami --ami-src /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_09152
 # step B: a cycle; besides the fakecam counts it prints the MEB, AMI and system DRP counts
 daq_sim cycle -w $WD --events 1000
 daq_sim down -w $WD
+```
+
+**A screenshot of AMI showing the camera.** With a DAQ up with `--ami`, `daq_sim cycle --ami-shot
+PNG` (`psdaq.sim.ami_shot`) starts, once the run is Running, one more `ami-client` (AMI's own Qt
+GUI) offscreen on the running manager, with a graph of its own (`-g ami_shot`, so the check's
+graph is left alone) loaded from a flowchart that holds one viewed source node, `fakecam:raw:raw`;
+loading it opens AMI's image viewer of the camera, as double-clicking the source does. The
+directory `psdaq/psdaq/sim/qtgrab`, first on that client's `PYTHONPATH` only, makes each of its
+windows save itself (`QWidget.grab`) to `<WD>/logs/ami-shot/<title>.<pid>.png` every 2 s, with no
+change to AMI. Once the viewer's window shows data, the newest grab is copied to PNG and the
+client stopped; the cycle prints `ami shot PASS <png>: window "fakecam:raw:raw" ...` and, after
+Disable, the MEB's served-event count `MEB_EvtCt`. The client's PVA server takes 31230 + 2 p and
+31231 + 2 p, its Prometheus port 31181 + 2 p.
+```bash
+daq_sim cycle -w $WD --events 1000 --ami-shot $WD/ami.png
 ```
 
 ## 4. Read the file back with psana2
@@ -668,8 +717,15 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   shmemClient queue 1, and each sees the events the MEB had a free buffer for, not every event.
   AMI's node and global collectors bind their upstream port on `*`, as they do in production;
   every other AMI port is on 127.0.0.1. The AMI programs never see the run's file or BeginRun
-  time, so their logs cannot name the run and coverage does not count their rows (ami_check
-  shows they processed the run's events).
+  time, so their logs cannot name the run: coverage counts their rows from the `ami_check`
+  witness (§3d), which ties the check to the AMI processes by the sockets they held on AMI's
+  ports, read from `/proc` while the result was fetched (another user's process would not be
+  seen).
+- **GUI witnesses.** The witness of groupca and pvant is a second instance of each GUI,
+  run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
+  `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. xpmpva is
+  not run: at startup it reads `<xpm>:Us:RxAlign` and `<xpm>:Cu:RxAlign`, which this simxpm does
+  not serve, and exits on the timeout.
 - **PVA servers.** A unicast PVA search reaches only one of the sockets bound to the node's
   search port (15076), so simxpm is the only PVA server on it: the stand-in IOC is CA only, and
   ami-client's own PVA server gets ports 31210 + 2 p and 31211 + 2 p. With two PVA servers on
