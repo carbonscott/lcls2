@@ -1,0 +1,90 @@
+host=sdfada013 date=2026-11-09T17:50:51-08:00 /dev/tpra: ls: cannot access '/dev/tpra': No such file or directory strace: /usr/bin/strace
+== wt-base-t4 5aaf09617 dirty=0 lclsBldServer.cc 12a2086be6b3e9d054c46d7bfc49b9c4e13eeca7 Client.cc f4a4d899df3f5fe5b1803d0cff59be6146f39191 Client.hh dee66869be33a9e89779b80a071aec4b0a4a64ad
+$ ldd wt-base-t4/install/bin/lclsBldServer | grep libtpr
+	libtpr.so => /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/lib/libtpr.so (0x00007fdf3fb66000)
+$ env -u PSDAQ_SIM_TPR lclsBldServer -i enp1s0f1 -r 4     # lab3-bld.cnf:52 as it is
+EXIT=1
+Cannot get IP address for network interface enp1s0f1.
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/lclsBldServer: MC interface not set
+Usage: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/lclsBldServer [options]
+          -d <dev>       : <tpr a/b>    [default: a]
+          -b <type>      : BLD type     [default: ebeam]
+          -a <addr>      : MC address   [default: 0xefff1801]
+          -i <addr/name> : MC interface [no default] 
+          -r <rate>      : update rate  [default: 5 = 10Hz]
+          -e <eventcode> : update evcode
+$ env -u PSDAQ_SIM_TPR strace -f -e trace=socket,bind,connect,setsockopt,sendto,sendmsg,openat lclsBldServer -i lo -r 4 -b ebeam
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/bh_tail2.sh: line 10: 2624336 Aborted                 env -u PSDAQ_SIM_TPR timeout 30 strace -f -e trace=socket,bind,connect,setsockopt,sendto,sendmsg,openat $B/lclsBldServer -i lo -r 4 -b ebeam > /tmp/bh-$$-$wt-b.out 2>&1
+EXIT=134
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+bind(3, {sa_family=AF_INET, sin_port=htons(12148), sin_addr=inet_addr("127.0.3.255")}, 16) = 0
+setsockopt(3, SOL_IP, IP_MULTICAST_IF, [16777343], 4) = 0
+connect(3, {sa_family=AF_INET, sin_port=htons(12148), sin_addr=inet_addr("239.255.25.0")}, 16) = 0
+openat(AT_FDCWD, "/dev/tpra", O_RDWR)   = -1 ENOENT (No such file or directory)
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=2624340, si_uid=18262} ---
++++ killed by SIGABRT (core dumped) +++
+timeout: the monitored command dumped core
+sendto/sendmsg calls: 0
+$ env -u PSDAQ_SIM_TPR tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/bh_tail2.sh: line 10: 2624362 Aborted                 env -u PSDAQ_SIM_TPR timeout 30 $B/tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5 > /tmp/bh-$$-$wt-t.out 2>&1
+EXIT=134
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+timeout: the monitored command dumped core
+== wt-final c370014fc dirty=0 lclsBldServer.cc a57b3329f644d33fd1bbc099d6995da6bb20a38b Client.cc a98a653ec43f7cf9390e8ee3f21e6d60ae91940f Client.hh e2addd8983a6ad302348782ef33745719e6dd6b7
+$ ldd wt-final/install/bin/lclsBldServer | grep libtpr
+	libtpr.so => /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libtpr.so (0x00007f9918967000)
+$ env -u PSDAQ_SIM_TPR lclsBldServer -i enp1s0f1 -r 4     # lab3-bld.cnf:52 as it is
+EXIT=1
+Cannot get IP address for network interface enp1s0f1.
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/lclsBldServer: MC interface not set
+Usage: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/lclsBldServer [options]
+          -d <dev>       : <tpr a/b>    [default: a]
+          -b <type>      : BLD type     [default: ebeam]
+          -a <addr>      : MC group base [default: 0xefff1900; the type adds 0-3]
+          -p <port>      : MC port      [default: 12148]
+          -i <addr/name> : MC interface [no default] 
+          -r <rate>      : update rate  [default: 5 = 10Hz]
+          -e <eventcode> : update evcode
+$ env -u PSDAQ_SIM_TPR strace -f -e trace=socket,bind,connect,setsockopt,sendto,sendmsg,openat lclsBldServer -i lo -r 4 -b ebeam
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/bh_tail2.sh: line 10: 2624423 Aborted                 env -u PSDAQ_SIM_TPR timeout 30 strace -f -e trace=socket,bind,connect,setsockopt,sendto,sendmsg,openat $B/lclsBldServer -i lo -r 4 -b ebeam > /tmp/bh-$$-$wt-b.out 2>&1
+EXIT=134
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+socket(AF_INET, SOCK_DGRAM, IPPROTO_IP) = 3
+bind(3, {sa_family=AF_INET, sin_port=htons(12148), sin_addr=inet_addr("127.0.3.255")}, 16) = 0
+setsockopt(3, SOL_IP, IP_MULTICAST_IF, [16777343], 4) = 0
+connect(3, {sa_family=AF_INET, sin_port=htons(12148), sin_addr=inet_addr("239.255.25.0")}, 16) = 0
+openat(AT_FDCWD, "/dev/tpra", O_RDWR)   = -1 ENOENT (No such file or directory)
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=2624427, si_uid=18262} ---
++++ killed by SIGABRT (core dumped) +++
+timeout: the monitored command dumped core
+sendto/sendmsg calls: 0
+$ env -u PSDAQ_SIM_TPR tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/bh_tail2.sh: line 10: 2624443 Aborted                 env -u PSDAQ_SIM_TPR timeout 30 $B/tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5 > /tmp/bh-$$-$wt-t.out 2>&1
+EXIT=134
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+timeout: the monitored command dumped core
+== diff base head: lab3-bld.cnf:52's command (only the usage lines of -a and the new -p may differ)
+2,3c2,3
+< /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/lclsBldServer: MC interface not set
+< Usage: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/lclsBldServer [options]
+---
+> /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/lclsBldServer: MC interface not set
+> Usage: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/lclsBldServer [options]
+6c6,7
+<           -a <addr>      : MC address   [default: 0xefff1801]
+---
+>           -a <addr>      : MC group base [default: 0xefff1900; the type adds 0-3]
+>           -p <port>      : MC port      [default: 12148]
+DIFF_EXIT=1
+== diff base head: the cnf's command with -b ebeam, socket calls and output (pids masked)
+DIFF_EXIT=0
+== diff base head: tprtrig
+DIFF_EXIT=0
+2026-11-09T17:50:53-08:00

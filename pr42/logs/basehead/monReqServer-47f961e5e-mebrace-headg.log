@@ -1,0 +1,9 @@
+on sdfmilan048, Slurm job 43839059 step 620, HEAD 45d593567, local changes 0, node lock held
+monReqServer: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-prog1/install/bin/monReqServer (md5 b6dfc7d1)
+run 1: up 0 cycle 0 down 0; meb0 pid 3383377 exe wt-prog1/install/bin/monReqServer: built Unconfigure 1, 'lost connection with a DRP' 0, at stop: Normal exit status = 0
+run 2: up 0 cycle 0 down 0; meb0 pid 3387454 exe wt-prog1/install/bin/monReqServer: built Unconfigure 1, 'lost connection with a DRP' 0, at stop: Normal exit status = 0
+run 3: up 0 cycle 0 down 0; meb0 pid 3391320 exe wt-prog1/install/bin/monReqServer: built Unconfigure 1, 'lost connection with a DRP' 0, at stop: Normal exit status = 0
+run 4: up 0 cycle 0 down 0; meb0 pid 3395940 exe wt-prog1/install/bin/monReqServer: built Unconfigure 1, 'lost connection with a DRP' 0, at stop: Normal exit status = 0
+run 5: up 0 cycle 0 down 0; meb0 pid 3400035 exe wt-prog1/install/bin/monReqServer: built Unconfigure 1, 'lost connection with a DRP' 0, at stop: Normal exit status = 0
+run 6: up 0 cycle 1 down 0; meb0 pid 3403868 exe wt-prog1/install/bin/monReqServer: built Unconfigure 0, 'lost connection with a DRP' 1, at stop: The process was killed by signal 6
+MEBRACE_DONE headg

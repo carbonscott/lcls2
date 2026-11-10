@@ -1,0 +1,42 @@
+== oldtt wt-typesint HEAD d27f657f0 local changes 0 on sdfada013 job 43970564 step 240 2026-11-09T22:12:26Z
+tt_config.py (installed, what the drp runs): 0 old_uart_names lines; source: 0
+node lock held from 14:12:26
+-- A: ttcfg.py (skeptic13's harness) at d27f657f0, source tree on PYTHONPATH
+old-format entry written: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/typesfix/old-base/store-old.json
+-- A: tt_config with the old-format entry (60 s limit)
+ttcfg rc=0 in 67.5 s
+stored UartPiranha4 keys: ['CLS', 'CLM', 'DST', 'FFM', 'FRS', 'LPC', 'ROI[0]', 'ROI[1]', 'SAC', 'SAD[0]', 'SAD[1]', 'SAD[2]', 'SAM', 'SBH', 'SBR', 'SBV', 'SCD', 'SEM', 'SET', 'SMM', 'SPF', 'SSB', 'SSF', 'STG', 'STM', 'SVM', 'USD', 'USL', 'U
+tt_config from /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-typesint/psdaq/psdaq/configdb/tt_config.py
+sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]
+=== RESULT HANG: tt_config had not returned after 60 s
+-- A: tt_config with the new-format entry (60 s limit)
+ttcfg rc=0 in 7.7 s
+stored UartPiranha4 keys: ['CLS', 'CLM', 'DST', 'FFM', 'FRS', 'LPC', 'ROI0', 'ROI1', 'SAC', 'SAD0', 'SAD1', 'SAD2', 'SAM', 'SBH', 'SBR', 'SBV', 'SCD', 'SEM', 'SET', 'SMM', 'SPF', 'SSB', 'SSF', 'STG', 'STM', 'SVM', 'USD', 'USL', 'USS']
+tt_config from /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-typesint/psdaq/psdaq/configdb/tt_config.py
+sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI1
+sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD2
+=== RESULT RETURNED in 0.3 s: 75 names, 0 illegal XtcData::Names: []
+-- B: pinned tt DAQ with the old-format entry (installed drp and tt_config)
+UP_EXIT=0
+configdb http://127.0.0.1:31050/ws
+tt_0 UartPiranha4 now: ['CLS', 'CLM', 'DST', 'FFM', 'FRS', 'LPC', 'ROI[0]', 'ROI[1]', 'SAC', 'SAD[0]', 'SAD[1]', 'SAD[2]', 'SAM', 'SBH', 'SBR', 'SBV', 'SCD', 'SEM', 'SET', 'SMM', 'SPF', 'SSB', 'SSF', 'STG', 'STM', 'SVM', 'USD', 'USL', 'USS'
+CYCLE_EXIT=1
+2026-11-09T14:14:29.632-08:00 setState unallocated  -> unallocated  OK
+2026-11-09T14:14:29.767-08:00 setState allocated    -> allocated    OK
+2026-11-09T14:14:31.165-08:00 setState connected    -> connected    OK
+2026-11-09T14:15:31.219-08:00 setState configured   -> error        FAIL
+2026-11-09T14:15:31.239-08:00 [error] tt_0 did not respond to configure
+2026-11-09T14:15:31.239-08:00 [error] 1 client did not respond to configure
+2026-11-09T14:15:31.239-08:00 [error] configure failed to change state
+2026-11-09T14:16:01.270-08:00 [error] tt_0 did not respond to disconnect
+2026-11-09T14:16:01.270-08:00 [error] 1 client did not respond to disconnect
+2026-11-09T14:16:01.270-08:00 [error] disconnect failed to change state
+2026-11-09T14:16:01.270-08:00 setState allocated    -> connected    FAIL
+2026-11-09T14:16:01.777-08:00 cycle FAIL
+drp log: wd-old/pmlogs/2026/11/09_14:14:21_sdfada013:tt_0.log
+118:sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]
+configure request -> drp abort: 14:14:31.165 -> 
+DOWN_EXIT=0
+2026-11-09T14:16:08.894-08:00 daq_sim: down: clean
+leftovers: 0
+OLDTT_DONE wt-typesint 2026-11-09T22:16:08Z

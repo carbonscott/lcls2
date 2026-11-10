@@ -1,0 +1,10 @@
+host=sdfmilan120 head=36dbeae62 dirty=15 date=2026-11-09T06:09:15-08:00 job=43843200 step=330
+== epixUHR_config.py as at 6b226e5d7 (6b226e5d7): 3 uses of an undefined i
+=== STEP epixUHR_config
+=== FAILED in epixUHR_config
+NameError: name 'i' is not defined
+DRIVE_EXIT=1
+== epixUHR_config.py as at HEAD (36dbeae62): 1 uses of an undefined i
+=== STEP epixUHR_config
+=== DONE: all entry points returned
+DRIVE_EXIT=0

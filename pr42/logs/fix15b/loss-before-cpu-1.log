@@ -1,0 +1,108 @@
+2026-11-09T21:14:04.149-08:00 MATRIX: sections types at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked files modified: False) host sdfmilan082 job 44000948 step 382 workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1
+2026-11-09T21:14:04.419-08:00 matrix: types: jungfrau
+2026-11-09T21:14:04.419-08:00 matrix: ---- type jungfrau (1 of 1)
+2026-11-09T21:14:04.423-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+  jungfrau up| 2026-11-09T21:14:04.793-08:00 daq_sim: up on sdfmilan082 (job 44000948 step 382), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau
+  jungfrau up| 2026-11-09T21:14:04.793-08:00 daq_sim: preflight (fail-closed isolation check) ...
+  jungfrau up| 2026-11-09T21:14:27.113-08:00 daq_sim: preflight rc=0: 21:14:27 PREFLIGHT PASS  (logs/preflight.log)
+  jungfrau up| 2026-11-09T21:14:30.544-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+  jungfrau up| 2026-11-09T21:14:30.544-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+  jungfrau up| 2026-11-09T21:14:30.544-08:00 daq_sim: config DB seeded: tst/BEAM/jungfrau_0 key=2 written
+  jungfrau up| 2026-11-09T21:14:32.577-08:00 daq_sim: procmgr start daq_sim.cnf
+  jungfrau up| 2026-11-09T21:14:37.839-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  jungfrau up|   host         sdfmilan082 (Slurm job 44000948)
+  jungfrau up|   control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  jungfrau up|   configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, jungfrau_0 sim_seed=0x1234)
+  jungfrau up|   rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  jungfrau up|   simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 100 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  jungfrau up|   procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/daq_sim.cnf  pids {'control': 1878358, 'teb0': 1878359, 'jungfrau_0': 1878360}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/pmlogs
+  jungfrau up|   data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data  (xtc2 written when recording)
+  jungfrau up|   prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  jungfrau up|   webgui       port 31053 (not started: up --webgui)
+  jungfrau up|   drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau
+  jungfrau up|   stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau
+  jungfrau cycle| 2026-11-09T21:14:38.738-08:00 start state: reset
+  jungfrau cycle| 2026-11-09T21:14:38.739-08:00 setRecord(True) -> OK
+  jungfrau cycle| 2026-11-09T21:14:39.750-08:00 setState unallocated  -> unallocated  OK
+  jungfrau cycle| 2026-11-09T21:14:39.751-08:00 selectPlatform(control, drp, teb) -> OK
+  jungfrau cycle| 2026-11-09T21:14:39.957-08:00 [warning] ami NOT supported in absence of MEB
+  jungfrau cycle| 2026-11-09T21:14:39.983-08:00 setState allocated    -> allocated    OK
+  jungfrau cycle| 2026-11-09T21:14:41.767-08:00 setState connected    -> connected    OK
+  jungfrau cycle| 2026-11-09T21:14:44.008-08:00 setState configured   -> configured   OK
+  jungfrau cycle| 2026-11-09T21:14:45.086-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  jungfrau cycle| 2026-11-09T21:14:45.101-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  jungfrau cycle| 2026-11-09T21:14:45.109-08:00 setState starting     -> starting     OK
+  jungfrau cycle| 2026-11-09T21:14:45.113-08:00 setState paused       -> paused       OK
+  jungfrau cycle| 2026-11-09T21:14:45.117-08:00 setState running      -> running      OK
+  jungfrau cycle| 2026-11-09T21:14:45.117-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+  jungfrau cycle| 2026-11-09T21:14:56.081-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1017 (wanted >= 1000)
+  jungfrau cycle| 2026-11-09T21:14:56.088-08:00 setState paused       -> paused       OK
+  jungfrau cycle| 2026-11-09T21:14:57.231-08:00 counts after Disable: {'simxpm NumL0Acc': 1097, 'simxpm NumL0Inp': 1097, 'simxpm NumL0Acc group 5': 1097, 'simxpm links': {'jungfrau_0': {'group': 5, 'l1acc': 1097, 'link': 0}}, 'TEB_EvtCt': 1097, 'TEB_TrCt': 16, 'TEB_WrtCt': 1097, 'DRP_Damage': 0, 'DRP_RecordSize': 1150434044, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+  jungfrau cycle| 2026-11-09T21:14:57.235-08:00 setState starting     -> starting     OK
+  jungfrau cycle| 2026-11-09T21:14:57.245-08:00 setState configured   -> configured   OK
+  jungfrau cycle| 2026-11-09T21:14:57.275-08:00 setState connected    -> connected    OK
+  jungfrau cycle| 2026-11-09T21:14:57.392-08:00 setState allocated    -> allocated    OK
+  jungfrau cycle| 2026-11-09T21:14:57.441-08:00 setState unallocated  -> unallocated  OK
+  jungfrau cycle| 2026-11-09T21:14:57.442-08:00 setState reset        -> reset        OK
+  jungfrau cycle| 2026-11-09T21:15:11.559-08:00 final state reset (start reset)
+  jungfrau cycle| transitions (request -> read back):
+  jungfrau cycle|   2026-11-09T21:14:38.740-08:00 -> 2026-11-09T21:14:39.750-08:00  unallocated  unallocated
+  jungfrau cycle|   2026-11-09T21:14:39.751-08:00 -> 2026-11-09T21:14:39.983-08:00  allocated    allocated
+  jungfrau cycle|   2026-11-09T21:14:39.984-08:00 -> 2026-11-09T21:14:41.767-08:00  connected    connected
+  jungfrau cycle|   2026-11-09T21:14:41.767-08:00 -> 2026-11-09T21:14:44.008-08:00  configured   configured
+  jungfrau cycle|   2026-11-09T21:14:44.008-08:00 -> 2026-11-09T21:14:45.109-08:00  starting     starting
+  jungfrau cycle|   2026-11-09T21:14:45.109-08:00 -> 2026-11-09T21:14:45.113-08:00  paused       paused
+  jungfrau cycle|   2026-11-09T21:14:45.113-08:00 -> 2026-11-09T21:14:45.117-08:00  running      running
+  jungfrau cycle|   2026-11-09T21:14:56.082-08:00 -> 2026-11-09T21:14:56.088-08:00  paused       paused
+  jungfrau cycle|   2026-11-09T21:14:57.231-08:00 -> 2026-11-09T21:14:57.235-08:00  starting     starting
+  jungfrau cycle|   2026-11-09T21:14:57.235-08:00 -> 2026-11-09T21:14:57.245-08:00  configured   configured
+  jungfrau cycle|   2026-11-09T21:14:57.245-08:00 -> 2026-11-09T21:14:57.275-08:00  connected    connected
+  jungfrau cycle|   2026-11-09T21:14:57.275-08:00 -> 2026-11-09T21:14:57.392-08:00  allocated    allocated
+  jungfrau cycle|   2026-11-09T21:14:57.392-08:00 -> 2026-11-09T21:14:57.441-08:00  unallocated  unallocated
+  jungfrau cycle|   2026-11-09T21:14:57.441-08:00 -> 2026-11-09T21:14:57.442-08:00  reset        reset
+  jungfrau cycle| counts:
+  jungfrau cycle|   simxpm NumL0Acc        1097
+  jungfrau cycle|   simxpm NumL0Inp        1097
+  jungfrau cycle|   simxpm NumL0Acc group 5 1097
+  jungfrau cycle|   simxpm links           {'jungfrau_0': {'group': 5, 'l1acc': 1097, 'link': 0}}
+  jungfrau cycle|   TEB_EvtCt              1097
+  jungfrau cycle|   TEB_TrCt               16
+  jungfrau cycle|   TEB_WrtCt              1097
+  jungfrau cycle|   DRP_Damage             0
+  jungfrau cycle|   DRP_RecordSize         1150434044
+  jungfrau cycle|   drp_num_dma_errors     0
+  jungfrau cycle|   drp_num_missing_rogs   0
+  jungfrau cycle|   drp_num_th_error       0
+  jungfrau cycle|   drp_num_pgp_jump       0
+  jungfrau cycle|   xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1150434092 B)
+  jungfrau cycle|   psana2 events          1097
+  jungfrau cycle|   psana2 with data       1097
+  jungfrau cycle|   psana2 checks          PASS
+  jungfrau cycle|   psana2 seq             1..1097
+  jungfrau cycle|   psana2 seeds           {'0x1234': 1097}
+  jungfrau cycle|   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+  jungfrau cycle| 2026-11-09T21:15:12.723-08:00 evidence 20261109T211512-cycle-b14885af3-1878470: det:drp:jungfrau prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb
+  jungfrau cycle| 2026-11-09T21:15:12.800-08:00 cycle PASS
+  jungfrau down| 2026-11-09T21:15:13.192-08:00 daq_sim: procmgr stop daq_sim.cnf
+  jungfrau down| 2026-11-09T21:15:18.519-08:00 daq_sim: stopping simsls pid 1878299: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simsls --port 31054 --seed 4660
+  jungfrau down| 2026-11-09T21:15:18.920-08:00 daq_sim: stopping simxpm pid 1878268: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+  jungfrau down| 2026-11-09T21:15:19.020-08:00 daq_sim: stopping lgbk pid 1878260: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+  jungfrau down| 2026-11-09T21:15:19.321-08:00 daq_sim: stopping configdb pid 1878013: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+  jungfrau down| 2026-11-09T21:15:19.984-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31054, 31055]
+  jungfrau down| 2026-11-09T21:15:19.992-08:00 daq_sim: down: clean
+2026-11-09T21:15:20.002-08:00 matrix: lock /tmp/agentify-daq-milan082.lock released
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1097 psana2 1097 with-data 1097 per-event PASS PASS
+==== MATRIX SUMMARY at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked files modified: False), host sdfmilan082, job 44000948 step 382, 2026-11-09T21:14:04.149-08:00 .. 2026-11-09T21:15:20.003-08:00
+types (1):
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1097 psana2 1097 with-data 1097 per-event PASS PASS
+assertions: 7, 7 passed, 0 failed
+  PASS types/jungfrau/up: exit 0
+  PASS types/jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/jungfrau/drp-alive: jungfrau_0 drp pid 1878360 alive after the run
+  PASS types/jungfrau/counts: simxpm L1Accepts 1097, TEB_WrtCt 1097, psana2 events 1097, with jungfrau data 1097: equal and >= 1000
+  PASS types/jungfrau/per-event: xtc2_check --det jungfrau: PASS
+  PASS types/jungfrau/evidence: record 20261109T211512-cycle-b14885af3-1878470
+  PASS types/jungfrau/down: exit 0, down: clean
+summary JSON: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/matrix-summary.json
+whole matrix at this HEAD (with carried results): FAIL; not run: types/fakecam types/cspad types/hsd types/epixquad types/epixquad1kfps types/epixhr2x2 types/epixhremu types/epixm320 types/epixUHR types/epix100 types/jungfrauemu types/opal types/tt types/tb types/ts types/wave8 types/wave8he types/hrencoder types/piranha4 types/epixuhr3x2 features/a features/b features/c features/d features/e programs coverage; failed: types/det:drp_gpu:fakecam/runnable types/det:drp_gpu:epixuhremu/runnable types/det:drp_gpu:epixuhrsim/runnable types/det:drp_gpu:epixuhr3x2/runnable types/det:drp_gpu:jungfrau/runnable
+MATRIX PASS (7 assertions)

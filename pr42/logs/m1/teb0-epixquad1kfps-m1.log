@@ -1,0 +1,124 @@
+# ID:      teb0
+# PLATFORM:5
+# HOST:    sdfmilan023
+# CMDLINE: teb -P tst -C localhost -k ep_domain=lo,ep_provider=tcp -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/mx-m1/types/epixquad1kfps/prom -u teb0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_17:44:19_sdfmilan023:teb0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/teb)
+@@@ The PID of new child "2026/11/09_17:44:19_sdfmilan023:teb0.log" is: 1215846
+@@@ @@@ @@@ @@@ @@@
+tst-teb[1215846]: <I> logging configured
+tst-teb[1215846]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-teb[1215846]: <I> Prometheus run-time monitoring data is on port 9200
+EventBuilder timeout is 12000 ms, 12000000000 ns
+tst-teb[1215846]: <I> Ready for transitions
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:25 2026
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:26 2026
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:27 2026
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:28 2026
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:29 2026
+tst-teb[1215846]: <I> received key = rollcall @ Mon Nov  9 17:44:30 2026
+tst-teb[1215846]: <I> received key = alloc @ Mon Nov  9 17:44:31 2026
+tst-teb[1215846]: <I> Using requested interface lo, address 127.0.0.1
+tst-teb[1215846]: <I> received key = connect @ Mon Nov  9 17:44:31 2026
+*** EB Epoch list size 348448
+*** EB Event list size 22300672
+tst-teb[1215846]: <I> EbLfServer: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-teb[1215846]: <I> EbLfServer:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-teb[1215846]: <I> EbLfServer:   data_progress FI_PROGRESS_AUTO
+tst-teb[1215846]: <I> EbLfServer:   control_progress FI_PROGRESS_AUTO
+tst-teb[1215846]: <I> EbLfServer:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-teb[1215846]: <I> EbLfServer:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-teb[1215846]: <I> Inbound  link with DRP ID  0 connected
+tst-teb[1215846]: <I> Outbound link with DRP ID  0 at 127.0.0.1:33257 connected
+tst-teb[1215846]: <I> received key = configure @ Mon Nov  9 17:44:33 2026
+tst-teb[1215846]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+tst-teb[1215846]: <I> Allocated 0.0 GB region for 128 transitions of 32 B and 256 buffers of 40 B for inbound link with DRP ID 0
+tst-teb[1215846]: <I> Inbound  link with DRP ID  0, 0x55c0e1673000 : 0x55c0e1675800 : 0x55c0e1676800 (00003800), configured in    0 ms
+Allocated 0.0 GB region for 4 64 entry batches of 40 B
+tst-teb[1215846]: <I> Outbound link with DRP ID  0, 0x55c0e1678000 : 0x55c0e167a800 (00002800), configured in    0 ms
+tst-teb[1215846]: <I> 
+tst-teb[1215846]: <I> Parameters of TEB ID 0 (127.0.0.1:44799):
+tst-teb[1215846]: <I>   CPU allocation: granted 16 CPUs on NUMA node 0: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+tst-teb[1215846]: <I>   Instrument:                   tst
+tst-teb[1215846]: <I>   Partition:                    5
+tst-teb[1215846]: <I>   Alias:                        teb0
+tst-teb[1215846]: <I>   Bit list of contributors:     0x0000000000000001, cnt: 1
+tst-teb[1215846]: <I>   Readout group contractors:    5: 0x0000000000000001  
+tst-teb[1215846]: <I>   Readout group receivers:      5: 0x0000000000000001  
+tst-teb[1215846]: <I>   Number of MEB requestors:     0
+tst-teb[1215846]: <I>   Batch duration:               0x00000040 = 64 ticks
+tst-teb[1215846]: <I>   Batch pool depth:             0x00000004 = 4
+tst-teb[1215846]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-teb[1215846]: <I>   # of contrib. buffers:        0x00000100 = 256
+tst-teb[1215846]: <I>   Max result     EbDgram size:  0x00000028 = 40
+tst-teb[1215846]: <I>   Max transition EbDgram size:  0x00000020 = 32
+tst-teb[1215846]: <I>   # of transition  buffers:     0x00000080 = 128
+tst-teb[1215846]: <I> 
+tst-teb[1215846]: <I> TEB thread started
+tst-teb[1215846]: <I> TEB is starting with process ID 1216475
+tst-teb[1215846]: <I> Teb: pinned to CPU 0
+tst-teb[1215846]: <I> EbAppBase  saw       Configure @ 1163123076.135051407 (04733a494e0ba8) from DRP ID  0 @   0x55c0e1673000 (00000000 +  0 * 00000028)
+tst-teb[1215846]: <I> Teb       sent    Configure @ 1163123076.135051407 (04733a494e0ba8), ofs 00000000, sz     40, dst 0000000000000001
+tst-teb[1215846]: <I> received key = beginrun @ Mon Nov  9 17:44:36 2026
+tst-teb[1215846]: <I> EbAppBase  saw        BeginRun @ 1163123077.260139686 (04733a4960889a) from DRP ID  0 @   0x55c0e1673028 (00000000 +  1 * 00000028)
+tst-teb[1215846]: <I> Teb       sent     BeginRun @ 1163123077.260139686 (04733a4960889a), ofs 00000028, sz     40, dst 0000000000000001
+tst-teb[1215846]: <I> received key = beginstep @ Mon Nov  9 17:44:37 2026
+tst-teb[1215846]: <I> EbAppBase  saw       BeginStep @ 1163123077.289029082 (04733a49610222) from DRP ID  0 @   0x55c0e1673050 (00000000 +  2 * 00000028)
+tst-teb[1215846]: <I> Teb       sent    BeginStep @ 1163123077.289029082 (04733a49610222), ofs 00000050, sz     40, dst 0000000000000001
+tst-teb[1215846]: <I> received key = enable @ Mon Nov  9 17:44:37 2026
+tst-teb[1215846]: <I> EbAppBase  saw          Enable @ 1163123077.292047315 (04733a49610ed4) from DRP ID  0 @   0x55c0e1673078 (00000000 +  3 * 00000028)
+tst-teb[1215846]: <I> Teb       sent       Enable @ 1163123077.292047315 (04733a49610ed4), ofs 00000078, sz     40, dst 0000000000000001
+EbLfClient 0 disconnected on far side
+tst-teb[1215846]: <C> TEB thread lost connection with a DRP
+tst-teb[1215846]: <C> Uncaught exception: Receiver thread lost connection with a DRP
+tst-teb[1215846]: <C> Stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libcollection.so(+0x10508)[0x7f780d9a9508]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libcollection.so(+0x111a8)[0x7f780d9aa1a8]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libstdc++.so.6(+0xb64f2)[0x7f780d3924f2]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libstdc++.so.6(_ZSt10unexpectedv+0x0)[0x7f780d38c2f3]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libstdc++.so.6(__cxa_rethrow+0x0)[0x7f780d392712]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/teb(+0xaaac)[0x55c0e10d0aac]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libstdc++.so.6(+0xd3b65)[0x7f780d3afb65]
+/lib64/libc.so.6(+0x8a19a)[0x7f780d08a19a]
+/lib64/libc.so.6(+0x10f100)[0x7f780d10f100]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 17:44:38 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1215846. The process was killed by signal 6

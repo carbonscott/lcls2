@@ -1,0 +1,74 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/work/fix15/rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; date -u '+%FT%TZ'; echo \"S=$S\"; echo \"G13=$G13\"; squeue -u $USER -j 44000948,44062096,43970564 -o '%.9i %.18N %.20e %.14j'"
+ },
+ {
+  "send": "git log -1 --format='%H %ad %s' --date=iso | cut -c1-138; git rev-parse --abbrev-ref HEAD; echo \"local changes (tracked and untracked): $(git status --short | wc -l)\""
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; ninja -n -C builddir | tail -1; for d in sim webgui; do diff -rq -x __pycache__ psdaq/psdaq/$d install/lib/python3.9/site-packages/psdaq/$d && echo \"installed psdaq/$d == checkout\"; done"
+ },
+ {
+  "send": "# Run h1 at this HEAD failed only drp_gpu jungfrau (per-event: UDP packets of 5 frames lost on sdfada010) and its coverage row:"
+ },
+ {
+  "send": "grep -E '^MATRIX |^MATRIX_EXIT' $Q/mx-h1.log | short; grep -h 'of 128 packets of frame' $Q/mx-h1/gpu/sdfada010/types/jungfrau/pmlogs/*/*/*jungfrau_0.log | short"
+ },
+ {
+  "send": "# No code change. The same matrix once more, the GPU DRP's types on sdfada013 (job 43970564; its GPU is shared with another user's jobs)"
+ },
+ {
+  "send": "$G13 bash $Q/cuinit.sh 2>&1 | short",
+  "expect": "(cuCtxCreate rc=[\\s\\S]*){3}|rror",
+  "timeout": 900
+ },
+ {
+  "send": "$S bash $Q/mx.sh h2 sdfada013 43970564 2>&1 | tee $Q/mx-h2.log | grep --line-buffered -E \"$MXF\" | short",
+  "expect": "^MATRIX_EXIT=\\d+",
+  "timeout": 6000
+ },
+ {
+  "send": "grep -c '^  PASS ' $Q/mx-h2.log; grep -E '^MATRIX |^whole|^MATRIX_EXIT' $Q/mx-h2.log | short; ls -l $Q/mx-h2/programs/ami-shot.png $Q/mx-h2/features/c/ami-shot.png | short"
+ },
+ {
+  "send": "python -c \"import json,sys; d=json.load(open(sys.argv[1])); print(d['sha'], 'exit', d['exit'], d['whole'], len(d['assertions']), 'assertions')\" $Q/mx-h2/matrix-summary.json | short"
+ },
+ {
+  "send": "# D2 at work: how long each drp_gpu took to say Ready for transitions on sdfada013 (up waits for it, up to 300 s)"
+ },
+ {
+  "send": "grep -h 'ready for transitions after' $Q/mx-h2.log | short"
+ },
+ {
+  "send": "# Coverage negative over this run's evidence: a COPY without the records that list det:drp:epix100 must fail naming that row"
+ },
+ {
+  "send": "$S bash $Q/covneg.sh $Q/mx-h2-ev det:drp:epix100 2>&1 | short",
+  "expect": "COVERAGE over the matrix's evidence: exit \\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "# A reviewer's forgeries, by record edits only, over this run's programs record: FG2 and FG3 now rejected (one BeginRun per record), FG1 still passes"
+ },
+ {
+  "send": "$S bash $Q/forge.sh $Q/mx-h2-ev 2>&1 | short",
+  "expect": "=== forgeries done",
+  "timeout": 1200
+ },
+ {
+  "send": "echo \"local changes: $(git status --short | wc -l)\"; git rev-parse HEAD; date '+%F %T %Z'"
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

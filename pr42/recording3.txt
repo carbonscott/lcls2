@@ -1,0 +1,543 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-10T03:34:10+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 bash --rcfile $R/work/fix15/rc.sh -i
+cwang31@sdfiana025:wt-final$ hostname; date '+%F %T %Z'; date -u '+%FT%TZ'; echo "S=$S"; echo "S2=$S2"; echo "G=$G"; squeue -u $USER -j 44000948,44062096,43970564 -o '%.9i %.18N %.20e %.14j'
+sdfiana025
+2026-11-09 19:34:12 PST
+2026-11-10T03:34:12Z
+S=srun --jobid=44000948 --overlap -w sdfmilan023 -N 1 --ntasks=1 --cpus-per-task=16 --mem=32G
+S2=srun --jobid=44000948 --overlap -w sdfmilan082 -N 1 --ntasks=1 --cpus-per-task=16 --mem=32G
+G=srun --jobid=44062096 --overlap -w sdfada010 -N 1 --ntasks=1 --cpus-per-task=2 --mem=4G --gres=gpu:l40s:1
+    JOBID           NODELIST             END_TIME           NAME
+ 43970564          sdfada013  2026-11-10T02:50:32   agentify-ada
+ 44062096          sdfada010  2026-11-10T00:04:51 agentify-gpu15
+ 44000948  sdfmilan[023,082]  2026-11-10T06:44:37      simcov-ab
+cwang31@sdfiana025:wt-final$ git log -1 --format='%H %ad %s' --date=iso | cut -c1-138; git rev-parse --abbrev-ref HEAD; echo "local changes (tracked and untracked): $(git status --short | wc -l)"
+b14885af349db9d58d24f6a5670e925286b3737b 2026-11-09 19:28:49 -0800 docs: the second daq_webgui, the coverage fallback's Python, the eviden
+pr/final
+local changes (tracked and untracked): 0
+cwang31@sdfiana025:wt-final$ # The PR head before these fixes was 7695dfdae (pushed). Three commits since: D2 (drp_gpu ready wait), D3 (one BeginRun per record), docs
+cwang31@sdfiana025:wt-final$ git log --format='%h %s' 7695dfdae..HEAD | cut -c1-138; git diff --stat 7695dfdae HEAD | short
+b14885af3 docs: the second daq_webgui, the coverage fallback's Python, the evidence line, RUNBOOK §7
+d50c276a7 coverage: a record is one run: its xtc2 files of the run must have one BeginRun
+d136e1b25 sim: daq_sim up waits for every drp_gpu type's 'Ready for transitions'
+ CHANGELOG.md                           |  3 ++
+ psdaq/psdaq/sim/RUNBOOK.md             | 68 ++++++++++++++++++++++++++--------
+ psdaq/psdaq/sim/coverage.py            | 14 ++++++-
+ psdaq/psdaq/sim/daq_sim.py             | 51 +++++++++++++++++--------
+ psdaq/psdaq/tests/test_sim_coverage.py | 44 +++++++++++++++++++---
+ psdaq/psdaq/tests/test_sim_drpgpu.py   | 53 +++++++++++++++++++++++++-
+ psdaq/psdaq/webgui/README.md           | 35 +++++++++++++++--
+ 7 files changed, 223 insertions(+), 45 deletions(-)
+cwang31@sdfiana025:wt-final$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo "DAQ env $CONDA_DEFAULT_ENV, $(python --version)"
+DAQ env daq_20250402_r9, Python 3.9.21
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ tail -1 $Q/build-H.out; head -1 $Q/build-H.out | short; ninja -n -C builddir | tail -1; for d in sim webgui control configdb; do diff -rq -x __pycache__ psdaq/psdaq/$d install/lib/python3.9/site-packages/psdaq/$d && echo "installed psdaq/$d == checkout"; done
+sim files match the checkout: coverage.py simxpm.py matrix.py daq_sim.py 
+incremental build (CUDA 12.9) on sdfada010, Slurm job 44062096 step 1, wt-final HEAD b14885af3, local changes 0, 2026-11-09 19:29:03 PST
+ninja: no work to do.
+installed psdaq/sim == checkout
+installed psdaq/webgui == checkout
+installed psdaq/control == checkout
+installed psdaq/configdb == checkout
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # The sim unit tests and test_walk_guard at this HEAD (one step on sdfmilan082, under its DAQ lock)
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $S2 bash $Q/pyt.sh all 2>&1 | grep -v -E "Warning|warnings.warn|fixture|^ *$|scope" | short
+pytest on sdfmilan082 job 44000948 step 347 wt-final HEAD b14885af3 dirty 0 2026-11-10T03:34:34Z
+$R/wt-final/install/lib/python3.9/site-packages/psdaq/sim/coverage.py
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 51%]
+........................................................................ [ 68%]
+........................................................................ [ 85%]
+.........................................s...................            [100%]
+420 passed, 1 skipped in 225.08s (0:03:45)
+PYTEST_EXIT=0 2026-11-10T03:38:21Z
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # cuInit on sdfada010's GPU (job 44062096), 3 fresh processes, no DAQ (sdfada013 took 28-37 s at 02:30Z; sdfada011 fails with 999)
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $G bash $Q/cuinit.sh 2>&1 | short
+sdfada010 step 5 2026-11-10T03:38:23Z CUDA_VISIBLE_DEVICES=0
+0, NVIDIA L40S, 00000000:C3:00.0, Enabled, 0 %, 0 MiB
+cuInit rc=0 0.08 s; cuCtxCreate rc=0 0.11 s
+cuInit rc=0 0.06 s; cuCtxCreate rc=0 0.10 s
+cuInit rc=0 0.06 s; cuCtxCreate rc=0 0.10 s
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # THE matrix: mx.sh (proof15's, only its output dir changed), the GPU DRP's types on sdfada010 (job 44062096), tag h1
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ diff $R/work/proof15/mx.sh $Q/mx.sh | short
+7c7
+< F=$R/work/proof15
+---
+> F=$R/work/fix15
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $S bash $Q/mx.sh h1 sdfada010 44062096 2>&1 | tee $Q/mx-h1.log | grep --line-buffered -E "$MXF" | short
+=== matrix h1 on sdfmilan023 job 44000948 step 350 wt-final HEAD b14885af3 dirty 0 gpu sdfada010 job 44062096 2026-11-10T03:38:33Z
+2026-11-09T19:38:33.758-08:00 MATRIX: sections types,programs,features,coverage at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked 
+2026-11-09T19:38:34.034-08:00 matrix: types: fakecam cspad hsd epixquad epixquad1kfps epixhr2x2 epixhremu epixm320 epixUHR epix100 jungfra
+2026-11-09T19:38:34.039-08:00 matrix: GPU types on sdfada010: fakecam epixuhremu epixuhrsim jungfrau epixuhr3x2 (a step of job 44062096 th
+2026-11-09T19:38:34.053-08:00 matrix: types on sdfmilan082: cspad epixquad epixhr2x2 epixm320 epix100 jungfrauemu tt ts wave8he piranha4 (
+2026-11-09T19:38:34.060-08:00 matrix: ---- type fakecam (1 of 21)
+  [sdfada010] 2026-11-09T19:38:34.372-08:00 MATRIX: sections types at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked files modifie
+  [sdfmilan082] 2026-11-09T19:38:34.414-08:00 MATRIX: sections types at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked files modif
+  [sdfada010] 2026-11-09T19:38:34.722-08:00 matrix: types: fakecam epixuhremu epixuhrsim jungfrau epixuhr3x2
+  [sdfada010] 2026-11-09T19:38:34.722-08:00 matrix: ---- type fakecam (1 of 5)
+  [sdfada010] 2026-11-09T19:38:34.726-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+  [sdfmilan082] 2026-11-09T19:38:34.817-08:00 matrix: types: cspad epixquad epixhr2x2 epixm320 epix100 jungfrauemu tt ts wave8he piranha4
+  [sdfmilan082] 2026-11-09T19:38:34.817-08:00 matrix: ---- type cspad (1 of 10)
+  [sdfada010] TYPE drp_gpu:fakecam node sdfada010 job 44062096 DAQ 2825 psana2 2825 with-data 2825 per-event PASS PASS
+  [sdfada010] 2026-11-09T19:39:25.007-08:00 matrix: ---- type epixuhremu (2 of 5)
+  [sdfada010] 2026-11-09T19:39:25.009-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+  [sdfmilan082] 2026-11-09T19:40:11.382-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 97 s)
+  [sdfada010] TYPE drp_gpu:epixuhremu node sdfada010 job 44062096 DAQ 2750 psana2 2750 with-data 2750 per-event PASS PASS
+  [sdfada010] 2026-11-09T19:40:20.330-08:00 matrix: ---- type epixuhrsim (3 of 5)
+  [sdfada010] 2026-11-09T19:40:20.332-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+  [sdfmilan082] TYPE cspad        node sdfmilan082 job 44000948 DAQ 1828 psana2 1828 with-data 1828 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:41:01.892-08:00 matrix: ---- type epixquad (2 of 10)
+  [sdfmilan082] 2026-11-09T19:41:01.894-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+  [sdfada010] TYPE drp_gpu:epixuhrsim node sdfada010 job 44062096 DAQ 1756 psana2 1756 with-data 1756 per-event PASS PASS
+  [sdfada010] 2026-11-09T19:41:09.219-08:00 matrix: ---- type jungfrau (4 of 5)
+  [sdfada010] 2026-11-09T19:41:09.220-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+2026-11-09T19:41:32.930-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 179 s)
+  [sdfmilan082] TYPE epixquad     node sdfmilan082 job 44000948 DAQ 1811 psana2 1811 with-data 1811 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:42:06.274-08:00 matrix: ---- type epixhr2x2 (3 of 10)
+  [sdfmilan082] 2026-11-09T19:42:06.275-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+  [sdfada010] TYPE drp_gpu:jungfrau node sdfada010 job 44062096 DAQ 1056 psana2 1056 with-data 1056 per-event FAIL FAIL
+  [sdfada010] 2026-11-09T19:42:15.436-08:00 matrix: ---- type epixuhr3x2 (5 of 5)
+  [sdfada010] 2026-11-09T19:42:15.438-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+TYPE fakecam      node sdfmilan023 job 44000948 DAQ 1852 psana2 1852 with-data 1852 per-event PASS PASS
+2026-11-09T19:42:23.598-08:00 matrix: ---- type hsd (3 of 21)
+2026-11-09T19:42:23.600-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE epixhr2x2    node sdfmilan082 job 44000948 DAQ 1821 psana2 1821 with-data 1821 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:43:15.221-08:00 matrix: ---- type epixm320 (4 of 10)
+  [sdfmilan082] 2026-11-09T19:43:15.223-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE hsd          node sdfmilan023 job 44000948 DAQ 2812 psana2 2812 with-data 2812 per-event PASS PASS
+2026-11-09T19:43:23.477-08:00 matrix: ---- type epixquad1kfps (5 of 21)
+2026-11-09T19:43:23.479-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfada010] TYPE drp_gpu:epixuhr3x2 node sdfada010 job 44062096 DAQ 1882 psana2 1882 with-data 1882 per-event PASS PASS
+  [sdfada010] TYPE drp_gpu:fakecam node sdfada010 job 44062096 DAQ 2825 psana2 2825 with-data 2825 per-event PASS PASS
+  [sdfada010] TYPE drp_gpu:epixuhremu node sdfada010 job 44062096 DAQ 2750 psana2 2750 with-data 2750 per-event PASS PASS
+  [sdfada010] TYPE drp_gpu:epixuhrsim node sdfada010 job 44062096 DAQ 1756 psana2 1756 with-data 1756 per-event PASS PASS
+  [sdfada010] TYPE drp_gpu:jungfrau node sdfada010 job 44062096 DAQ 1056 psana2 1056 with-data 1056 per-event FAIL FAIL
+  [sdfada010] TYPE drp_gpu:epixuhr3x2 node sdfada010 job 44062096 DAQ 1882 psana2 1882 with-data 1882 per-event PASS PASS
+  [sdfmilan082] TYPE epixm320     node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:44:23.155-08:00 matrix: ---- type epix100 (5 of 10)
+  [sdfmilan082] 2026-11-09T19:44:23.156-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE epixquad1kfps node sdfmilan023 job 44000948 DAQ 1852 psana2 1852 with-data 1852 per-event PASS PASS
+2026-11-09T19:44:29.927-08:00 matrix: ---- type epixhremu (7 of 21)
+2026-11-09T19:44:29.930-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE epix100      node sdfmilan082 job 44000948 DAQ 1917 psana2 1917 with-data 1917 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:45:22.879-08:00 matrix: ---- type jungfrauemu (6 of 10)
+  [sdfmilan082] 2026-11-09T19:45:22.881-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE epixhremu    node sdfmilan023 job 44000948 DAQ 1939 psana2 1939 with-data 1939 per-event PASS PASS
+2026-11-09T19:45:25.813-08:00 matrix: ---- type epixUHR (9 of 21)
+2026-11-09T19:45:25.815-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+TYPE epixUHR      node sdfmilan023 job 44000948 DAQ 1847 psana2 1847 with-data 1847 per-event PASS PASS
+2026-11-09T19:46:54.996-08:00 matrix: ---- type jungfrau (11 of 21)
+2026-11-09T19:46:54.998-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE jungfrauemu  node sdfmilan082 job 44000948 DAQ 1894 psana2 1894 with-data 1894 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:46:56.554-08:00 matrix: ---- type tt (7 of 10)
+  [sdfmilan082] 2026-11-09T19:46:56.556-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+  [sdfmilan082] TYPE tt           node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:47:51.864-08:00 matrix: ---- type ts (8 of 10)
+  [sdfmilan082] 2026-11-09T19:47:51.865-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE jungfrau     node sdfmilan023 job 44000948 DAQ 1102 psana2 1102 with-data 1102 per-event PASS PASS
+2026-11-09T19:48:11.533-08:00 matrix: ---- type opal (13 of 21)
+2026-11-09T19:48:11.535-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE ts           node sdfmilan082 job 44000948 DAQ 1805 psana2 1805 with-data 1805 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:48:45.126-08:00 matrix: ---- type wave8he (9 of 10)
+  [sdfmilan082] 2026-11-09T19:48:45.128-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE opal         node sdfmilan023 job 44000948 DAQ 2654 psana2 2654 with-data 2654 per-event PASS PASS
+2026-11-09T19:49:23.505-08:00 matrix: ---- type tb (15 of 21)
+2026-11-09T19:49:23.507-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE wave8he      node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] 2026-11-09T19:49:45.850-08:00 matrix: ---- type piranha4 (10 of 10)
+  [sdfmilan082] 2026-11-09T19:49:45.852-08:00 matrix: lock /tmp/agentify-daq-milan082.lock held (waited 0 s)
+TYPE tb           node sdfmilan023 job 44000948 DAQ 1913 psana2 1913 with-data 1913 per-event PASS PASS
+2026-11-09T19:50:17.764-08:00 matrix: ---- type wave8 (17 of 21)
+2026-11-09T19:50:17.766-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  [sdfmilan082] TYPE piranha4     node sdfmilan082 job 44000948 DAQ 1841 psana2 1841 with-data 1841 per-event PASS PASS
+  [sdfmilan082] TYPE cspad        node sdfmilan082 job 44000948 DAQ 1828 psana2 1828 with-data 1828 per-event PASS PASS
+  [sdfmilan082] TYPE epixquad     node sdfmilan082 job 44000948 DAQ 1811 psana2 1811 with-data 1811 per-event PASS PASS
+  [sdfmilan082] TYPE epixhr2x2    node sdfmilan082 job 44000948 DAQ 1821 psana2 1821 with-data 1821 per-event PASS PASS
+  [sdfmilan082] TYPE epixm320     node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] TYPE epix100      node sdfmilan082 job 44000948 DAQ 1917 psana2 1917 with-data 1917 per-event PASS PASS
+  [sdfmilan082] TYPE jungfrauemu  node sdfmilan082 job 44000948 DAQ 1894 psana2 1894 with-data 1894 per-event PASS PASS
+  [sdfmilan082] TYPE tt           node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] TYPE ts           node sdfmilan082 job 44000948 DAQ 1805 psana2 1805 with-data 1805 per-event PASS PASS
+  [sdfmilan082] TYPE wave8he      node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+  [sdfmilan082] TYPE piranha4     node sdfmilan082 job 44000948 DAQ 1841 psana2 1841 with-data 1841 per-event PASS PASS
+TYPE wave8        node sdfmilan023 job 44000948 DAQ 1822 psana2 1822 with-data 1822 per-event PASS PASS
+2026-11-09T19:51:18.790-08:00 matrix: ---- type hrencoder (19 of 21)
+2026-11-09T19:51:18.792-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+TYPE hrencoder    node sdfmilan023 job 44000948 DAQ 1900 psana2 1900 with-data 1900 per-event PASS PASS
+2026-11-09T19:52:14.933-08:00 matrix: ---- type epixuhr3x2 (21 of 21)
+2026-11-09T19:52:14.934-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+TYPE epixuhr3x2   node sdfmilan023 job 44000948 DAQ 2222 psana2 2222 with-data 2222 per-event PASS PASS
+2026-11-09T19:54:14.550-08:00 matrix: types on sdfmilan082: exit 0, 10 of 10 passed
+2026-11-09T19:54:14.551-08:00 matrix: GPU types on sdfada010: exit 1, 4 of 5 passed
+2026-11-09T19:54:14.551-08:00 matrix: ---- programs
+2026-11-09T19:54:14.553-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+PROGRAMS fakecam      node sdfmilan023 job 44000948 DAQ 3310 psana2 3310 with-data 3310 per-event PASS PASS
+2026-11-09T19:58:49.653-08:00 matrix: ---- feature a
+2026-11-09T19:58:49.657-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  feature a| 2026-11-09T19:58:49.985-08:00 FEATURE a: job 44000948 step 350 host sdfmilan023 HEAD b14885af349db9d58d24f6a5670e925286b3737b
+  feature a| FEATURE a PASS
+2026-11-09T20:00:14.597-08:00 matrix: ---- feature b
+2026-11-09T20:00:14.599-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  feature b| 2026-11-09T20:00:15.026-08:00 FEATURE b: job 44000948 step 350 host sdfmilan023 HEAD b14885af349db9d58d24f6a5670e925286b3737b
+  feature b| FEATURE b PASS
+2026-11-09T20:01:25.125-08:00 matrix: ---- feature c
+2026-11-09T20:01:25.127-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  feature c| 2026-11-09T20:01:25.430-08:00 FEATURE c: job 44000948 step 350 host sdfmilan023 HEAD b14885af349db9d58d24f6a5670e925286b3737b
+  feature c| FEATURE c PASS
+2026-11-09T20:02:53.339-08:00 matrix: ---- feature d
+2026-11-09T20:02:53.405-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+2026-11-09T20:02:53.515-08:00 matrix: lock /tmp/agentify-daq-milan082.lock on sdfmilan082 held (waited 0 s)
+  feature d| 2026-11-09T20:02:53.870-08:00 FEATURE d: job 44000948 step 350 host sdfmilan023 HEAD b14885af349db9d58d24f6a5670e925286b3737b
+  feature d| ---- FEATURE d: hosts
+  feature d| FEATURE d PASS
+2026-11-09T20:04:05.143-08:00 matrix: ---- feature e
+2026-11-09T20:04:05.145-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  feature e| 2026-11-09T20:04:05.479-08:00 FEATURE e: job 44000948 step 350 host sdfmilan023 HEAD b14885af349db9d58d24f6a5670e925286b3737b
+  feature e| FEATURE e PASS
+2026-11-09T20:05:41.858-08:00 matrix: ---- coverage
+  coverage| 78 rows, 62 run, 6 stand-in, 9 N/A, 0 unproven, 1 claimed without valid evidence
+==== MATRIX SUMMARY at HEAD b14885af349db9d58d24f6a5670e925286b3737b (tracked files modified: False), host sdfmilan023, job 44000948 step 
+types (26):
+TYPE fakecam      node sdfmilan023 job 44000948 DAQ 1852 psana2 1852 with-data 1852 per-event PASS PASS
+TYPE cspad        node sdfmilan082 job 44000948 DAQ 1828 psana2 1828 with-data 1828 per-event PASS PASS
+TYPE hsd          node sdfmilan023 job 44000948 DAQ 2812 psana2 2812 with-data 2812 per-event PASS PASS
+TYPE epixquad     node sdfmilan082 job 44000948 DAQ 1811 psana2 1811 with-data 1811 per-event PASS PASS
+TYPE epixquad1kfps node sdfmilan023 job 44000948 DAQ 1852 psana2 1852 with-data 1852 per-event PASS PASS
+TYPE epixhr2x2    node sdfmilan082 job 44000948 DAQ 1821 psana2 1821 with-data 1821 per-event PASS PASS
+TYPE epixhremu    node sdfmilan023 job 44000948 DAQ 1939 psana2 1939 with-data 1939 per-event PASS PASS
+TYPE epixm320     node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+TYPE epixUHR      node sdfmilan023 job 44000948 DAQ 1847 psana2 1847 with-data 1847 per-event PASS PASS
+TYPE epix100      node sdfmilan082 job 44000948 DAQ 1917 psana2 1917 with-data 1917 per-event PASS PASS
+TYPE jungfrau     node sdfmilan023 job 44000948 DAQ 1102 psana2 1102 with-data 1102 per-event PASS PASS
+TYPE jungfrauemu  node sdfmilan082 job 44000948 DAQ 1894 psana2 1894 with-data 1894 per-event PASS PASS
+TYPE opal         node sdfmilan023 job 44000948 DAQ 2654 psana2 2654 with-data 2654 per-event PASS PASS
+TYPE tt           node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+TYPE tb           node sdfmilan023 job 44000948 DAQ 1913 psana2 1913 with-data 1913 per-event PASS PASS
+TYPE ts           node sdfmilan082 job 44000948 DAQ 1805 psana2 1805 with-data 1805 per-event PASS PASS
+TYPE wave8        node sdfmilan023 job 44000948 DAQ 1822 psana2 1822 with-data 1822 per-event PASS PASS
+TYPE wave8he      node sdfmilan082 job 44000948 DAQ 1823 psana2 1823 with-data 1823 per-event PASS PASS
+TYPE hrencoder    node sdfmilan023 job 44000948 DAQ 1900 psana2 1900 with-data 1900 per-event PASS PASS
+TYPE piranha4     node sdfmilan082 job 44000948 DAQ 1841 psana2 1841 with-data 1841 per-event PASS PASS
+TYPE epixuhr3x2   node sdfmilan023 job 44000948 DAQ 2222 psana2 2222 with-data 2222 per-event PASS PASS
+TYPE drp_gpu:fakecam node sdfada010 job 44062096 DAQ 2825 psana2 2825 with-data 2825 per-event PASS PASS
+TYPE drp_gpu:epixuhremu node sdfada010 job 44062096 DAQ 2750 psana2 2750 with-data 2750 per-event PASS PASS
+TYPE drp_gpu:epixuhrsim node sdfada010 job 44062096 DAQ 1756 psana2 1756 with-data 1756 per-event PASS PASS
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 DAQ 1056 psana2 1056 with-data 1056 per-event FAIL FAIL
+TYPE drp_gpu:epixuhr3x2 node sdfada010 job 44062096 DAQ 1882 psana2 1882 with-data 1882 per-event PASS PASS
+programs:
+PROGRAMS fakecam      node sdfmilan023 job 44000948 DAQ 3310 psana2 3310 with-data 3310 per-event PASS PASS
+features:
+FEATURE a PASS  exit 0, FEATURE a PASS
+FEATURE b PASS  exit 0, FEATURE b PASS
+FEATURE c PASS  exit 0, FEATURE c PASS
+FEATURE d PASS  exit 0, FEATURE d PASS
+FEATURE e PASS  exit 0, FEATURE e PASS
+coverage: at b14885af3: 78 rows, 62 run, 6 stand-in, 9 N/A, 0 unproven, 1 claimed without valid evidence; failing rows: det:drp_gpu:jungfr
+assertions: 201, 198 passed, 3 failed
+  PASS types/fakecam/up: exit 0
+  PASS types/fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/fakecam/drp-alive: fakecam_0 drp pid 1465151 alive after the run
+  PASS types/fakecam/counts: simxpm L1Accepts 1852, TEB_WrtCt 1852, psana2 events 1852, with fakecam data 1852: equal and >= 1000
+  PASS types/fakecam/per-event: xtc2_check --det fakecam: PASS
+  PASS types/fakecam/evidence: record 20261109T194216-cycle-b14885af3-1465361
+  PASS types/fakecam/down: exit 0, down: clean
+  PASS types/cspad/up: exit 0
+  PASS types/cspad/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/cspad/drp-alive: cspad_0 drp pid 1681206 alive after the run
+  PASS types/cspad/counts: simxpm L1Accepts 1828, TEB_WrtCt 1828, psana2 events 1828, with cspad data 1828: equal and >= 1000
+  PASS types/cspad/per-event: xtc2_check --det cspad: PASS
+  PASS types/cspad/evidence: record 20261109T194054-cycle-b14885af3-1681555
+  PASS types/cspad/down: exit 0, down: clean
+  PASS types/hsd/up: exit 0
+  PASS types/hsd/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/hsd/drp-alive: hsd_0 drp pid 1467798 alive after the run
+  PASS types/hsd/counts: simxpm L1Accepts 2812, TEB_WrtCt 2812, psana2 events 2812, with hsd data 2812: equal and >= 1000
+  PASS types/hsd/per-event: xtc2_check --det hsd: PASS
+  PASS types/hsd/evidence: record 20261109T194316-cycle-b14885af3-1467844
+  PASS types/hsd/down: exit 0, down: clean
+  PASS types/epixquad/up: exit 0
+  PASS types/epixquad/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixquad/drp-alive: epixquad_0 drp pid 1685089 alive after the run
+  PASS types/epixquad/counts: simxpm L1Accepts 1811, TEB_WrtCt 1811, psana2 events 1811, with epixquad data 1811: equal and >= 1000
+  PASS types/epixquad/per-event: xtc2_check --det epixquad: PASS
+  PASS types/epixquad/evidence: record 20261109T194159-cycle-b14885af3-1685659
+  PASS types/epixquad/down: exit 0, down: clean
+  PASS types/epixquad1kfps/up: exit 0
+  PASS types/epixquad1kfps/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixquad1kfps/drp-alive: epixquad1kfps_0 drp pid 1469867 alive after the run
+  PASS types/epixquad1kfps/counts: simxpm L1Accepts 1852, TEB_WrtCt 1852, psana2 events 1852, with epixquad1kfps data 1852: equal and >= 1
+  PASS types/epixquad1kfps/per-event: xtc2_check --det epixquad1kfps: PASS
+  PASS types/epixquad1kfps/evidence: record 20261109T194423-cycle-b14885af3-1469908
+  PASS types/epixquad1kfps/down: exit 0, down: clean
+  PASS types/epixhr2x2/up: exit 0
+  PASS types/epixhr2x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixhr2x2/drp-alive: epixhr2x2_0 drp pid 1687990 alive after the run
+  PASS types/epixhr2x2/counts: simxpm L1Accepts 1821, TEB_WrtCt 1821, psana2 events 1821, with epixhr2x2 data 1821: equal and >= 1000
+  PASS types/epixhr2x2/per-event: xtc2_check --det epixhr2x2: PASS
+  PASS types/epixhr2x2/evidence: record 20261109T194308-cycle-b14885af3-1688170
+  PASS types/epixhr2x2/down: exit 0, down: clean
+  PASS types/epixhremu/up: exit 0
+  PASS types/epixhremu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixhremu/drp-alive: epixhremu_0 drp pid 1471954 alive after the run
+  PASS types/epixhremu/counts: simxpm L1Accepts 1939, TEB_WrtCt 1939, psana2 events 1939, with epixhremu data 1939: equal and >= 1000
+  PASS types/epixhremu/per-event: xtc2_check --det epixhremu: PASS
+  PASS types/epixhremu/evidence: record 20261109T194518-cycle-b14885af3-1472186
+  PASS types/epixhremu/down: exit 0, down: clean
+  PASS types/epixm320/up: exit 0
+  PASS types/epixm320/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixm320/drp-alive: epixm320_0 drp pid 1690201 alive after the run
+  PASS types/epixm320/counts: simxpm L1Accepts 1823, TEB_WrtCt 1823, psana2 events 1823, with epixm320 data 1823: equal and >= 1000
+  PASS types/epixm320/per-event: xtc2_check --det epixm320: PASS
+  PASS types/epixm320/evidence: record 20261109T194416-cycle-b14885af3-1690241
+  PASS types/epixm320/down: exit 0, down: clean
+  PASS types/epixUHR/up: exit 0
+  PASS types/epixUHR/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixUHR/drp-alive: epixUHR_0 drp pid 1474060 alive after the run
+  PASS types/epixUHR/counts: simxpm L1Accepts 1847, TEB_WrtCt 1847, psana2 events 1847, with epixUHR data 1847: equal and >= 1000
+  PASS types/epixUHR/per-event: xtc2_check --det epixUHR: PASS
+  PASS types/epixUHR/evidence: record 20261109T194648-cycle-b14885af3-1474268
+  PASS types/epixUHR/down: exit 0, down: clean
+  PASS types/epix100/up: exit 0
+  PASS types/epix100/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epix100/drp-alive: epix100_0 drp pid 1692414 alive after the run
+  PASS types/epix100/counts: simxpm L1Accepts 1917, TEB_WrtCt 1917, psana2 events 1917, with epix100 data 1917: equal and >= 1000
+  PASS types/epix100/per-event: xtc2_check --det epix100: PASS
+  PASS types/epix100/evidence: record 20261109T194515-cycle-b14885af3-1692455
+  PASS types/epix100/down: exit 0, down: clean
+  PASS types/jungfrau/up: exit 0
+  PASS types/jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/jungfrau/drp-alive: jungfrau_0 drp pid 1476658 alive after the run
+  PASS types/jungfrau/counts: simxpm L1Accepts 1102, TEB_WrtCt 1102, psana2 events 1102, with jungfrau data 1102: equal and >= 1000
+  PASS types/jungfrau/per-event: xtc2_check --det jungfrau: PASS
+  PASS types/jungfrau/evidence: record 20261109T194804-cycle-b14885af3-1476713
+  PASS types/jungfrau/down: exit 0, down: clean
+  PASS types/jungfrauemu/up: exit 0
+  PASS types/jungfrauemu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/jungfrauemu/drp-alive: jungfrauemu_0 drp pid 1694495 alive after the run
+  PASS types/jungfrauemu/counts: simxpm L1Accepts 1894, TEB_WrtCt 1894, psana2 events 1894, with jungfrauemu data 1894: equal and >= 1000
+  PASS types/jungfrauemu/per-event: xtc2_check --det jungfrauemu: PASS
+  PASS types/jungfrauemu/evidence: record 20261109T194649-cycle-b14885af3-1694542
+  PASS types/jungfrauemu/down: exit 0, down: clean
+  PASS types/opal/up: exit 0
+  PASS types/opal/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/opal/drp-alive: opal_0 drp pid 1479434 alive after the run
+  PASS types/opal/counts: simxpm L1Accepts 2654, TEB_WrtCt 2654, psana2 events 2654, with opal data 2654: equal and >= 1000
+  PASS types/opal/per-event: xtc2_check --det opal: PASS
+  PASS types/opal/evidence: record 20261109T194916-cycle-b14885af3-1479629
+  PASS types/opal/down: exit 0, down: clean
+  PASS types/tt/up: exit 0
+  PASS types/tt/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/tt/drp-alive: tt_0 drp pid 1697397 alive after the run
+  PASS types/tt/counts: simxpm L1Accepts 1823, TEB_WrtCt 1823, psana2 events 1823, with tt data 1823: equal and >= 1000
+  PASS types/tt/per-event: xtc2_check --det tt: PASS
+  PASS types/tt/evidence: record 20261109T194745-cycle-b14885af3-1697612
+  PASS types/tt/down: exit 0, down: clean
+  PASS types/tb/up: exit 0
+  PASS types/tb/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/tb/drp-alive: tb_0 drp pid 1481793 alive after the run
+  PASS types/tb/counts: simxpm L1Accepts 1913, TEB_WrtCt 1913, psana2 events 1913, with tb data 1913: equal and >= 1000
+  PASS types/tb/per-event: xtc2_check --det tb: PASS
+  PASS types/tb/evidence: record 20261109T195010-cycle-b14885af3-1481877
+  PASS types/tb/down: exit 0, down: clean
+  PASS types/ts/up: exit 0
+  PASS types/ts/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/ts/drp-alive: ts_0 drp pid 1698988 alive after the run
+  PASS types/ts/counts: simxpm L1Accepts 1805, TEB_WrtCt 1805, psana2 events 1805, with ts data 1805: equal and >= 1000
+  PASS types/ts/per-event: xtc2_check --det ts: PASS
+  PASS types/ts/evidence: record 20261109T194838-cycle-b14885af3-1699541
+  PASS types/ts/down: exit 0, down: clean
+  PASS types/wave8/up: exit 0
+  PASS types/wave8/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/wave8/drp-alive: wave8_0 drp pid 1483769 alive after the run
+  PASS types/wave8/counts: simxpm L1Accepts 1822, TEB_WrtCt 1822, psana2 events 1822, with wave8 data 1822: equal and >= 1000
+  PASS types/wave8/per-event: xtc2_check --det wave8: PASS
+  PASS types/wave8/evidence: record 20261109T195112-cycle-b14885af3-1483966
+  PASS types/wave8/down: exit 0, down: clean
+  PASS types/wave8he/up: exit 0
+  PASS types/wave8he/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/wave8he/drp-alive: wave8he_0 drp pid 1701041 alive after the run
+  PASS types/wave8he/counts: simxpm L1Accepts 1823, TEB_WrtCt 1823, psana2 events 1823, with wave8he data 1823: equal and >= 1000
+  PASS types/wave8he/per-event: xtc2_check --det wave8he: PASS
+  PASS types/wave8he/evidence: record 20261109T194939-cycle-b14885af3-1701087
+  PASS types/wave8he/down: exit 0, down: clean
+  PASS types/hrencoder/up: exit 0
+  PASS types/hrencoder/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/hrencoder/drp-alive: hrencoder_0 drp pid 1485837 alive after the run
+  PASS types/hrencoder/counts: simxpm L1Accepts 1900, TEB_WrtCt 1900, psana2 events 1900, with hrencoder data 1900: equal and >= 1000
+  PASS types/hrencoder/per-event: xtc2_check --det hrencoder: PASS
+  PASS types/hrencoder/evidence: record 20261109T195208-cycle-b14885af3-1486035
+  PASS types/hrencoder/down: exit 0, down: clean
+  PASS types/piranha4/up: exit 0
+  PASS types/piranha4/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/piranha4/drp-alive: piranha4_0 drp pid 1703129 alive after the run
+  PASS types/piranha4/counts: simxpm L1Accepts 1841, TEB_WrtCt 1841, psana2 events 1841, with piranha4 data 1841: equal and >= 1000
+  PASS types/piranha4/per-event: xtc2_check --det piranha4: PASS
+  PASS types/piranha4/evidence: record 20261109T195035-cycle-b14885af3-1703179
+  PASS types/piranha4/down: exit 0, down: clean
+  PASS types/epixuhr3x2/up: exit 0
+  PASS types/epixuhr3x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixuhr3x2/drp-alive: epixuhr3x2_0 drp pid 1487548 alive after the run
+  PASS types/epixuhr3x2/counts: simxpm L1Accepts 2222, TEB_WrtCt 2222, psana2 events 2222, with epixuhr3x2 data 2222: equal and >= 1000
+  PASS types/epixuhr3x2/per-event: xtc2_check --det epixuhr3x2: PASS
+  PASS types/epixuhr3x2/evidence: record 20261109T195407-cycle-b14885af3-1489519
+  PASS types/epixuhr3x2/down: exit 0, down: clean
+  PASS types/drp_gpu:fakecam/up: exit 0
+  PASS types/drp_gpu:fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:fakecam/drp-alive: fakecam_0 drp pid 2432500 alive after the run
+  PASS types/drp_gpu:fakecam/counts: simxpm L1Accepts 2825, TEB_WrtCt 2825, psana2 events 2825, with fakecam data 2825: equal and >= 1000
+  PASS types/drp_gpu:fakecam/per-event: xtc2_check --det fakecam: PASS
+  PASS types/drp_gpu:fakecam/evidence: record 20261109T193918-cycle-b14885af3-2432605
+  PASS types/drp_gpu:fakecam/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhremu/up: exit 0
+  PASS types/drp_gpu:epixuhremu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhremu/drp-alive: epixuhremu_0 drp pid 2434497 alive after the run
+  PASS types/drp_gpu:epixuhremu/counts: simxpm L1Accepts 2750, TEB_WrtCt 2750, psana2 events 2750, with epixuhremu data 2750: equal and >=
+  PASS types/drp_gpu:epixuhremu/per-event: xtc2_check --det epixuhremu: PASS
+  PASS types/drp_gpu:epixuhremu/evidence: record 20261109T194013-cycle-b14885af3-2434684
+  PASS types/drp_gpu:epixuhremu/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhrsim/up: exit 0
+  PASS types/drp_gpu:epixuhrsim/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhrsim/drp-alive: epixuhrsim_0 drp pid 2436843 alive after the run
+  PASS types/drp_gpu:epixuhrsim/counts: simxpm L1Accepts 1756, TEB_WrtCt 1756, psana2 events 1756, with epixuhrsim data 1756: equal and >=
+  PASS types/drp_gpu:epixuhrsim/per-event: xtc2_check --det epixuhrsim: PASS
+  PASS types/drp_gpu:epixuhrsim/evidence: record 20261109T194102-cycle-b14885af3-2436889
+  PASS types/drp_gpu:epixuhrsim/down: exit 0, down: clean
+  PASS types/drp_gpu:jungfrau/up: exit 0
+  PASS types/drp_gpu:jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:jungfrau/drp-alive: jungfrau_0 drp pid 2438566 alive after the run
+  PASS types/drp_gpu:jungfrau/counts: simxpm L1Accepts 1056, TEB_WrtCt 1056, psana2 events 1056, with jungfrau data 1056: equal and >= 100
+  FAIL types/drp_gpu:jungfrau/per-event: xtc2_check --det jungfrau: FAIL ['event 1: 524254 of 524288 pixels differ from frame 1', 'event 4
+  FAIL types/drp_gpu:jungfrau/evidence: no evidence record for det:drp_gpu:jungfrau (the cycle failed)
+  PASS types/drp_gpu:jungfrau/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhr3x2/up: exit 0
+  PASS types/drp_gpu:epixuhr3x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhr3x2/drp-alive: epixuhr3x2_0 drp pid 2441263 alive after the run
+  PASS types/drp_gpu:epixuhr3x2/counts: simxpm L1Accepts 1882, TEB_WrtCt 1882, psana2 events 1882, with epixuhr3x2 data 1882: equal and >=
+  PASS types/drp_gpu:epixuhr3x2/per-event: xtc2_check --det epixuhr3x2: PASS
+  PASS types/drp_gpu:epixuhr3x2/evidence: record 20261109T194405-cycle-b14885af3-2443394
+  PASS types/drp_gpu:epixuhr3x2/down: exit 0, down: clean
+  PASS programs/up: exit 0
+  PASS programs/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS programs/drp-alive: fakecam_0 drp pid 1492483 alive after the run
+  PASS programs/counts: simxpm L1Accepts 3310, TEB_WrtCt 3310, psana2 events 3310, with fakecam data 3310: equal and >= 1000
+  PASS programs/per-event: xtc2_check --det fakecam: PASS
+  PASS programs/evidence: record 20261109T195645-cycle-b14885af3-1492872 for 42 rows
+  PASS programs/down: exit 0, down: clean
+  PASS programs/checks: system DRP checks: PASS; ami check: PASS; gui witness: PASS; ami shot: PASS $R/work/fix15/mx-h1/programs/ami-shot.
+  PASS features/a/down: exit 0, down: clean
+  PASS features/a: exit 0, FEATURE a PASS
+  PASS features/b/down: exit 0, down: clean
+  PASS features/b: exit 0, FEATURE b PASS
+  PASS features/c/down: exit 0, down: clean
+  PASS features/c: exit 0, FEATURE c PASS
+  PASS features/d/down: exit 0, down: clean
+  PASS features/d: exit 0, FEATURE d PASS
+  PASS features/e/down: exit 0, down: clean
+  PASS features/e: exit 0, FEATURE e PASS
+  FAIL coverage: at b14885af3: 78 rows, 62 run, 6 stand-in, 9 N/A, 0 unproven, 1 claimed without valid evidence; failing rows: det:drp_gpu
+summary JSON: $R/work/fix15/mx-h1/matrix-summary.json
+whole matrix at this HEAD (with carried results): FAIL; failed: types/drp_gpu:jungfrau/per-event types/drp_gpu:jungfrau/evidence coverage
+FAILED types/drp_gpu:jungfrau/per-event: xtc2_check --det jungfrau: FAIL ['event 1: 524254 of 524288 pixels differ from frame 1', 'event 4
+FAILED types/drp_gpu:jungfrau/evidence: no evidence record for det:drp_gpu:jungfrau (the cycle failed)
+FAILED coverage: at b14885af3: 78 rows, 62 run, 6 stand-in, 9 N/A, 0 unproven, 1 claimed without valid evidence; failing rows: det:drp_gpu
+MATRIX FAIL (3 of 201 assertions failed)
+MATRIX_EXIT=1 2026-11-10T04:08:04Z
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ grep -c '^  PASS ' $Q/mx-h1.log; grep -E '^MATRIX |^whole|^MATRIX_EXIT' $Q/mx-h1.log | short; ls -l $Q/mx-h1/programs/ami-shot.png $Q/mx-h1/features/c/ami-shot.png | short
+198
+whole matrix at this HEAD (with carried results): FAIL; failed: types/drp_gpu:jungfrau/per-event types/drp_gpu:jungfrau/evidence coverage
+MATRIX FAIL (3 of 201 assertions failed)
+MATRIX_EXIT=1 2026-11-10T04:08:04Z
+-rw-rw----+ 1 cwang31 ps-data 40068 Nov  9 20:02 $R/work/fix15/mx-h1/features/c/ami-shot.png
+-rw-rw----+ 1 cwang31 ps-data 44001 Nov  9 19:56 $R/work/fix15/mx-h1/programs/ami-shot.png
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ python -c "import json,sys; d=json.load(open(sys.argv[1])); print(d['sha'], 'exit', d['exit'], d['whole'], len(d['assertions']), 'assertions')" $Q/mx-h1/matrix-summary.json | short
+b14885af349db9d58d24f6a5670e925286b3737b exit 1 {'pass': False, 'missing': [], 'stale': None, 'failed': ['types/drp_gpu:jungfrau/per-event
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ grep -h 'ready for transitions after' $Q/mx-h1.log | short
+  [sdfada010]   drp_gpu:fakecam up| 2026-11-09T19:39:04.100-08:00 daq_sim: fakecam_0 ready for transitions after 0 s (pmlogs/2026/11/09_19
+  [sdfada010]   drp_gpu:epixuhremu up| 2026-11-09T19:39:53.833-08:00 daq_sim: epixuhremu_0 ready for transitions after 0 s (pmlogs/2026/11
+  [sdfada010]   drp_gpu:epixuhrsim up| 2026-11-09T19:40:49.164-08:00 daq_sim: epixuhrsim_0 ready for transitions after 0 s (pmlogs/2026/11
+  [sdfada010]   drp_gpu:jungfrau up| 2026-11-09T19:41:42.803-08:00 daq_sim: jungfrau_0 ready for transitions after 2 s (pmlogs/2026/11/09_
+  [sdfada010]   drp_gpu:epixuhr3x2 up| 2026-11-09T19:43:40.694-08:00 daq_sim: epixuhr3x2_0 ready for transitions after 51 s (pmlogs/2026/1
+  epixuhr3x2 up| 2026-11-09T19:53:42.342-08:00 daq_sim: epixuhr3x2_0 ready for transitions after 53 s (pmlogs/2026/11/09_19:52:44_sdfmilan
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # Coverage negative over this run's evidence: a COPY without the records that list det:drp:epix100 must fail naming that row
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $S bash $Q/covneg.sh $Q/mx-h1-ev det:drp:epix100 2>&1 | short
+=== coverage negative at wt-final HEAD b14885af3 dirty 0: 31 records in $R/work/fix15/mx-h1-ev
+removed 20261109T194515-cycle-b14885af3-1692455.json (it lists det:drp:epix100; rows: 6)
+removed 20261109T200006-cycle-b14885af3-1502421.json (it lists det:drp:epix100; rows: 8)
+removed 20261109T200123-scan-b14885af3-1504023.json (it lists det:drp:epix100; rows: 7)
+COVERAGE without det:drp:epix100: exit 1
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD b14885af3
+78 rows, 61 run, 6 stand-in, 9 N/A, 0 unproven, 2 claimed without valid evidence
+FAIL: 0 error(s), 2 RUN/STAND-IN row(s) without valid evidence, 0 unproven row(s)
+COVERAGE over the matrix's evidence: exit 1
+status file claims (not counted above unless proven): 63 RUN, 6 STAND-IN, 9 N/A
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 0 unproven row(s)
+  det:drp_gpu:jungfrau: RUN row without valid evidence at HEAD b14885af3
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # A reviewer's forgeries, by record edits only, at this HEAD: FG2 and FG3 (now rejected: one BeginRun per record), FG1 (still passes)
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $S bash $Q/forge.sh $Q/mx-h1-ev 2>&1 | short
+=== forgeries at wt-final HEAD b14885af3 dirty 0 on sdfmilan023 2026-11-10T04:12:53Z: MINE 20261109T195645-cycle-b14885af3-1492872.json, O
+fg2 wrote $R/work/fix15/forge/fg2/20261109T195645-cycle-fg2-b14885af3-1492872.json files 59
+FG3 adds 11 files of the other run (its 4 xtc2 files and 7 logs)
+fg3 wrote $R/work/fix15/forge/fg3/20261109T195645-cycle-fg3-b14885af3-1492872.json files 70
+FG1 wrote $R/work/fix15/forge/fg1/20261109T170955-cycle-forged-1146979.json sha 29f1be4a7 -> b14885af3 rows 42 files 59
+== own: coverage exit 1 78 rows, 36 run, 6 stand-in, 9 N/A, 0 unproven, 27 claimed without valid evidence
+prog:groupca RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:hpsBldCopy RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:hpsBldServer RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:lclsBldServer RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:tpr_trigger RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:tprtrig RUN evidence 20261109T195645-cycle-b14885af3-1492872
+prog:wave8pvs RUN evidence 20261109T195645-cycle-b14885af3-1492872
+== fg2: coverage exit 1 78 rows, 16 run, 2 stand-in, 9 N/A, 0 unproven, 51 claimed without valid evidence
+prog:groupca RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness names 
+prog:hpsBldCopy RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness nam
+prog:hpsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness n
+prog:lclsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness 
+prog:tpr_trigger RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness na
+prog:tprtrig RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness names 
+prog:wave8pvs RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg2-b14885af3-1492872: its gui_witness witness names
+== fg3: coverage exit 1 78 rows, 0 run, 0 stand-in, 9 N/A, 0 unproven, 69 claimed without valid evidence
+prog:groupca RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tstx0000
+prog:hpsBldCopy RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tstx0
+prog:hpsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tst
+prog:lclsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run ts
+prog:tpr_trigger RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tstx
+prog:tprtrig RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tstx0000
+prog:wave8pvs RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T195645-cycle-fg3-b14885af3-1492872: its xtc2 files of run tstx000
+== fg1: coverage exit 1 78 rows, 36 run, 6 stand-in, 9 N/A, 0 unproven, 27 claimed without valid evidence
+prog:groupca RUN evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldCopy RUN evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldServer RUN evidence 20261109T170955-cycle-forged-1146979
+prog:lclsBldServer RUN evidence 20261109T170955-cycle-forged-1146979
+prog:tpr_trigger RUN evidence 20261109T170955-cycle-forged-1146979
+prog:tprtrig RUN evidence 20261109T170955-cycle-forged-1146979
+prog:wave8pvs RUN evidence 20261109T170955-cycle-forged-1146979
+=== forgeries done 2026-11-10T04:18:27Z
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ # The three deliberate breaks (sdfmilan023, under its lock): each must exit 1 naming the failed assertion
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $S bash $Q/brk.sh h1 2>&1 | short
+=== breaks h1 on sdfmilan023 job 44000948 step 366 wt-final HEAD b14885af3 dirty 0 2026-11-10T04:18:34Z
+BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/epix100/transitions: setState configured -> error; setState allocated -> connected; status stream error: epix100_0 did not re
+FAILED types/epix100/drp-alive: epix100_0 drp pid 1541234 GONE after the run (now no process)
+FAILED types/epix100/counts: simxpm L1Accepts None, TEB_WrtCt None, psana2 events None, with epix100 data None: NOT equal and >= 1000
+FAILED types/epix100/per-event: xtc2_check --det epix100: did not run
+FAILED types/epix100/evidence: no evidence record for det:drp:epix100 (the cycle failed)
+BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/fakecam/transitions: setState paused -> running; status stream error: teb0 did not respond to disable; status stream error: f
+FAILED types/fakecam/drp-alive: fakecam_0 drp pid 1545129 GONE after the run (now no process)
+FAILED types/fakecam/counts: simxpm L1Accepts 1817, TEB_WrtCt None, psana2 events 0, with fakecam data 0: NOT equal and >= 1000
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL: the file is empty (0 B)
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first la
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+=== breaks done 2026-11-10T04:22:34Z
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ echo "local changes: $(git status --short | wc -l)"; git rev-parse HEAD; date '+%F %T %Z'
+local changes: 0
+b14885af349db9d58d24f6a5670e925286b3737b
+2026-11-09 20:22:34 PST
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@indigo-galaxy:redo$ 

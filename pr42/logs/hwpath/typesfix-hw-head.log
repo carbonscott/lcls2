@@ -1,0 +1,309 @@
+== wt-final head=c370014fc dirty=0 2026-11-09T17:38:28-08:00
+-- programs: <wt>/install/bin/drp <wt>/install/bin/drp_gpu /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python 
+-- hsd python: psdaq.configdb.hsd_config.hsd_init('DAQ:SIM:HSD:1_SIM:A', '/dev/datadev_0')
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- hsd drp -D hsd -d /dev/datadev_0 -k hsd_epics_prefix=DAQ:SIM:HSD:1_SIM:A
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad1kfps python: psdaq.configdb.epixquad1kfps_config.epixquad1kfps_init('epixquad1kfps', '/dev/datadev_0', 1, None, '186M', 0)
+INFO:pyrogue.Root.DevRoot.DevRoot:Making device DevRoot
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixquad1kfps drp -D epixquad1kfps -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixUHR python: psdaq.configdb.epixUHR_config.epixUHR_init('epixUHR', '/dev/datadev_0', 1, None, '186M', 0)
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixUHR drp -D epixUHR -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- jungfrau python: psdaq.configdb.jungfrau_config.jungfrau_init('jungfrau', '/dev/datadev_0', 1, None, '186M', 0)
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+Traceback (most recent call last):
+Traceback (most recent call last):
+rc=0
+-- jungfrau drp -D jungfrau -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- fakecam python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- fakecam drp -D fakecam -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- cspad python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- cspad drp -D cspad -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixhremu python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixhremu drp -D epixhremu -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- jungfrauemu python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- jungfrauemu drp -D jungfrauemu -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- ts python: psdaq.configdb.xpmdet_config.xpmdet_init('/dev/datadev_0', 1, '186M', 0)
+raised RuntimeError Cannot determine the board type: [Errno 2] No such file or directory: '/proc/datadev_0'.  Is the datadev driver loaded, and is /dev/datadev_0 the right device?
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- ts drp -D ts -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- opal python: psdaq.configdb.opal_config.opal_init('opal', '/dev/datadev_0', 1, None, '186M', 0)
+opal_init (i2c setup:186M))
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- opal drp -D opal -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- piranha4 python: psdaq.configdb.piranha4_config.piranha4_init('piranha4', '/dev/datadev_0', 1, None, '186M', 0)
+piranha4_init (i2c_setup:186M)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- piranha4 drp -D piranha4 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- tb python: psdaq.configdb.tb_config.tb_init('tb', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- tb drp -D tb -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixquad python: psdaq.configdb.epixquad_config.epixquad_init('epixquad', '/dev/datadev_0', 1, None, '186M', 0)
+INFO:pyrogue.Root.DevRoot.DevRoot:Making device DevRoot
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixquad drp -D epixquad -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- hrencoder python: psdaq.configdb.hrencoder_config.hrencoder_init('hrencoder', '/dev/datadev_0', 1, None, '186M', 0)
+hrencoder_init
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- hrencoder drp -D hrencoder -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixm320 python: psdaq.configdb.epixm320_config.epixm320_init('epixm320', '/dev/datadev_0', 1, None, '186M', 0)
+WARNING:root:epixm320_init
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixm320 drp -D epixm320 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epix100 python: psdaq.configdb.epix100_config.epix100_init('epix100', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epix100 drp -D epix100 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8 python: psdaq.configdb.wave8_config.wave8_init('wave8', '/dev/datadev_0', 1, None, '186M', 0)
+--- lanemask 1  lane 0  timebase 186M ---
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- wave8 drp -D wave8 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- wave8he python: psdaq.configdb.wave8he_config.wave8he_init('wave8he', '/dev/datadev_0', 1, None, '186M', 0)
+--- lanemask 1  lane 0  timebase 186M ---
+raised FileNotFoundError [Errno 2] No such file or directory: '/proc/datadev_0'
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- wave8he drp -D wave8he -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- tt python: psdaq.configdb.tt_config.tt_init('tt', '/dev/datadev_0', 1, None, '186M', 0)
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- tt drp -D tt -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixuhr3x2 python: psdaq.configdb.epixuhr3x2_config.epixuhr3x2_init('epixuhr3x2', '/dev/datadev_0', 1, None, '186M', 0)
+Instantiating Readout system ROS[PID]
+raised GeneralError AxiStreamDma::openShared: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Xvc rogue.protocols.xilinx Xvc | Device._start pyrogue._Device
+rc=0
+-- epixuhr3x2 drp -D epixuhr3x2 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- epixhr2x2 python: psdaq.configdb.epixhr2x2_config.epixhr2x2_init('epixhr2x2', '/dev/datadev_0', 1, None, '186M', 0)
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "<wt>/install/lib/python3.9/site-packages/psdaq/configdb/epixhr2x2_config.py", line 9, in <module>
+    import lcls2_epix_hr_pcie
+ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'
+rc=1
+-- epixhr2x2 drp -D epixhr2x2 -d /dev/datadev_0 
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp -P tst -C localhost -D jungfrau -d /dev/datadev_0 -l 0x1 -p 7 -u jungfrau_0 -k segNums=0,slsHosts=127.0.0.1:1
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp -P tst -C localhost -D jungfrau -d /dev/datadev_0 -l 0x1 -p 7 -u jungfrau_0 -k segNums=0,slsHosts=127.0.0.1:1,sim_udp_port=31076
+tst-drp[PID]: <C> Unrecognized kwarg 'sim_udp_port=31076'
+rc=1
+-- drp_gpu -P tst -C localhost -D jungfrau -d /dev/datadev_0 -l 0x1 -p 7 -u jungfrau_0 -k segNums=0,slsHosts=127.0.0.1:1
+tst-drp_gpu[PID]: <C> Unrecognized kwarg 'segNums=0'
+rc=1
+-- drp_gpu -P tst -C localhost -D jungfrau -d /dev/datadev_0 -l 0x1 -p 7 -u jungfrau_0 -k sim_udp_port=31076
+tst-drp_gpu[PID]: <C> Unrecognized kwarg 'sim_udp_port=31076'
+rc=1
+-- drp_gpu -P tst -C localhost -D jungfrau -d /dev/datadev_0 -l 0x1 -p 7 -u jungfrau_0
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp_gpu -P tst -C localhost -D fakecam -d /dev/datadev_0 -l 0x1 -p 7 -u fakecam_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=131072
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp_gpu -P tst -C localhost -D epixuhremu -d /dev/datadev_0 -l 0x1 -p 7 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- drp_gpu -P tst -C localhost -D epixuhremu -d /dev/datadev_0 -l 0x1 -p 7 -u epixuhremu_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752,sim_dma_size=0x60000
+tst-drp_gpu[PID]: <C> Unrecognized kwarg 'sim_dma_size=0x60000'
+rc=1
+-- drp_gpu -P tst -C localhost -D epixuhrsim -d /dev/datadev_0 -l 0x1 -p 7 -u epixuhrsim_0 -k reducer=NoOpReducer,dmaBufCount=64,dmaBufSize=458752
+tst-drp_gpu[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+-- store psdaq.configdb.epixuhr3x2_config_store.beam_cdict() with EPIXUHR_CONFIG_DIR unset
+raised FileNotFoundError /cds/home/p/psrel/EpixUHR/pll/PLLConfig_Si5345_temp_250.csv not found.
+rc=0
+-- store psdaq.configdb.epixUHR_config_store.epixUHR_cdict() with EPIXUHR_CONFIG_DIR unset
+raised FileNotFoundError /cds/home/p/psrel/EpixUHR/pll/PLLConfig_Si5345_temp_250.csv not found.
+rc=0
+HW_DONE wt-final

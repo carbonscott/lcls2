@@ -1,0 +1,38 @@
+final F1 at f9a50c25804903547621091c0e89378d8bdd5293 dirty=0 untracked=0 2026-11-09T14:20:23-08:00
+build wt-uhrgpu on sdfada011 job 44016690 step 19 HEAD f9a50c25804903547621091c0e89378d8bdd5293 dirty 0 nvcc /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/cuda-12.9/bin/nvcc 2026-11-09T14:20:27-08:00
+BUILD_EXIT=0 in 18 s
+GPU libs: 8 (libAreaDetector_gpu.so libcalibTrigger_gpu.so libdrpbase_gpu.so libEpixUHR3x2_gpu.so libEpixUHRemu_gpu.so libEpixUHRsim_gpu.so libJungfrau_gpu.so libtmoTeb_gpu.so )
+G drp_gpu epixuhr3x2 done 2026-11-09T14:29:01-08:00 UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0 rc=0 rc=1 UP_EXIT=0 CYCLE_EXIT=1 DOWN_EXIT=0 
+G drp_gpu jungfrau done 2026-11-09T14:34:26-08:00 UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0 rc=0 rc=1 
+HWPATH_DIFF_EXIT=0
+G hw done 2026-11-09T14:41:49-08:00: == wt-base-t4 head=5aaf09617 dirty=0 2026-11-09T14:35:09-08:00 | == wt-uhrgpu head=f9a50c258 dirty=0 2026-11-09T14:39:51-08:00 | HWPATH_DIFF_EXIT=0
+C drp epixuhr3x2 done 2026-11-09T14:26:02-08:00 UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0 rc=0 rc=1 UP_EXIT=0 CYCLE_EXIT=1 DOWN_EXIT=0 
+C drp hsd done 2026-11-09T14:27:13-08:00 UP_EXIT=0 CYCLE_EXIT=0 DOWN_EXIT=0 rc=0 rc=1 
+C pytest done 2026-11-09T14:28:47-08:00: 164 passed in 87.25s (0:01:27) PYTEST_EXIT=0 
+coverage at f9a50c258 over 4 records
+COVERAGE_EXIT=1
+det:drp:hsd                    RUN       evidence 20261109T142658-cycle-f9a50c258-3564712
+det:drp:jungfrau               RUN       NO VALID EVIDENCE at HEAD f9a50c258
+det:drp:epixuhr3x2             RUN       evidence 20261109T142237-cycle-f9a50c258-3554117
+det:drp_gpu:epixuhr3x2         RUN       evidence 20261109T142325-cycle-f9a50c258-2091328
+det:drp_gpu:jungfrau           RUN       evidence 20261109T143354-cycle-f9a50c258-2115607
+removed 20261109T142325-cycle-f9a50c258-2091328.json (it lists det:drp_gpu:epixuhr3x2)
+COVERAGE_EXIT=1
+det:drp_gpu:epixuhr3x2         RUN       NO VALID EVIDENCE at HEAD f9a50c258
+  det:drp_gpu:epixuhr3x2: RUN row without valid evidence at HEAD f9a50c258
+== psana of wt-base-t4 5aaf09617 dirty 0: tstx00001-r0001-s000-c000.xtc2
+xtc names: [('epixuhr3x2', 'config', '0_1_0'), ('epixuhr3x2', 'noOp', '0_0_0'), ('epixuhr3x2', 'raw', '1_0_0')]
+detector classes: ['config', 'raw']
+noOp.calib of event 1 raised AttributeError 'Container' object has no attribute 'noOp'
+rc=0
+== psana of wt-uhrgpu f9a50c258 dirty 0: tstx00001-r0001-s000-c000.xtc2
+xtc names: [('epixuhr3x2', 'config', '0_1_0'), ('epixuhr3x2', 'noOp', '0_0_0'), ('epixuhr3x2', 'raw', '1_0_0')]
+detector classes: ['config', 'noOp', 'raw']
+noOp.calib of event 1: float32 (336, 576)
+rc=0
+leftover DAQ processes of this worker (both nodes):
+sdfada011
+n=0
+sdfada013
+n=0
+FINAL_DONE

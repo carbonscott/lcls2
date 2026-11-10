@@ -1,0 +1,107 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/work/proof15/rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 180
+ },
+ {
+  "send": "hostname; date '+%F %T %Z'; date -u '+%FT%TZ'; echo \"S=$S\"; echo \"S2=$S2\""
+ },
+ {
+  "send": "squeue -u $USER -j 44000948,43970564,44016690 -o '%.9i %.18N %.20e %.14j'   # the campaign's Slurm jobs (end times PST)"
+ },
+ {
+  "send": "# every node command below is its own Slurm step: $S on sdfmilan023, $S2 on sdfmilan082; the matrix adds steps on sdfmilan082 and sdfada013"
+ },
+ {
+  "send": "git log -1 --format='%H%n%ad%n%s' --date=iso | cut -c1-138; echo \"local changes (tracked and untracked): $(git status --short | wc -l)\""
+ },
+ {
+  "send": "git log --first-parent --format='%h %s' 5aaf09617..HEAD | cut -c1-138"
+ },
+ {
+  "send": "git diff --stat 29f1be4a7 HEAD   # 29f1be4a7 = the head the last full matrix ran at; this head adds only the changelog link to #42"
+ },
+ {
+  "send": "git diff --stat 5aaf09617 HEAD | tail -1   # the whole PR against its base, agentify at 5aaf09617"
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo \"DAQ env $CONDA_DEFAULT_ENV, $(python --version)\""
+ },
+ {
+  "send": "# The build at this HEAD (build_all.sh -d with CUDA 12.9 on PATH, sdfada011 step 39, before this recording): ninja has nothing left to do"
+ },
+ {
+  "send": "cat $Q/buildinc.out | cut -c1-138; ninja -n -C builddir | tail -1; ls install/bin/drp install/bin/drp_gpu; echo \"GPU libs: $(ls install/lib | grep -c '_gpu\\.so$')\""
+ },
+ {
+  "send": "for d in sim webgui control configdb; do diff -rq -x __pycache__ psdaq/psdaq/$d install/lib/python3.9/site-packages/psdaq/$d && echo \"installed psdaq/$d == checkout\"; done"
+ },
+ {
+  "send": "# The sim unit tests and test_walk_guard at this HEAD (one step on sdfmilan082, under its DAQ lock)"
+ },
+ {
+  "send": "$S2 bash $Q/pyt2.sh $R/wt-final 2>&1 | grep -v -E \"Warning|warnings.warn|fixture|^ *$|scope\" | cut -c1-138",
+  "expect": "PYTEST_EXIT=\\d+",
+  "timeout": 2400
+ },
+ {
+  "send": "# THE matrix (RUNBOOK 3p), one command in one step on sdfmilan023: mx.sh = the env lines and the daq_sim matrix line"
+ },
+ {
+  "send": "sed \"s#$R#\\$R#g\" $Q/mx.sh | fold -w 138"
+ },
+ {
+  "send": "# Run: 21 drp types over sdfmilan023+082, 5 drp_gpu types on sdfada013 (GPU), programs, features a-e, coverage. Pane: the lines $MXF picks"
+ },
+ {
+  "send": "$S bash $Q/mx.sh m1 sdfada013 43970564 2>&1 | tee $Q/mx-m1.log | grep --line-buffered -E \"$MXF\" | short",
+  "expect": "^MATRIX_EXIT=\\d+",
+  "timeout": 6000
+ },
+ {
+  "send": "grep -c '^  PASS ' $Q/mx-m1.log; grep -E '^MATRIX|^whole|^MATRIX_EXIT' $Q/mx-m1.log; ls -l $Q/mx-m1/programs/ami-shot.png $Q/mx-m1/features/c/ami-shot.png | short"
+ },
+ {
+  "send": "python -c \"import json,sys; d=json.load(open(sys.argv[1])); print(d['sha'], d['exit'], d['whole'], d['assertions'] if not isinstance(d['assertions'], list) else len(d['assertions']))\" $Q/mx-m1/matrix-summary.json | cut -c1-138"
+ },
+ {
+  "send": "# Coverage negative: a COPY of the evidence without the records that list det:drp:epix100 must fail naming that row; the evidence itself passes"
+ },
+ {
+  "send": "$S bash $Q/covneg.sh $Q/mx-m1-ev det:drp:epix100 2>&1 | short",
+  "expect": "COVERAGE over the matrix's evidence: exit \\d+",
+  "timeout": 1200
+ },
+ {
+  "send": "# The three deliberate breaks (matrix --break register|kill-drp|corrupt, sdfmilan023, its lock): each must exit nonzero naming the assertion"
+ },
+ {
+  "send": "$S bash $Q/brk.sh b1 2>&1 | short",
+  "expect": "=== breaks done",
+  "timeout": 3600
+ },
+ {
+  "send": "# Hardware path (no simulated device): the union of the branches' scripts, base 5aaf09617 vs this HEAD (hwall.sh, sdfada013 GPU step, before this recording)"
+ },
+ {
+  "send": "cat $Q/hwall15.log | cut -c1-138"
+ },
+ {
+  "send": "for f in $Q/hw/*.diff; do cmp -s $f $R/work/finalinteg/hw/$(basename $f) && echo \"$(basename $f): $(wc -l < $f) lines, the same as at 29f1be4a7\" || echo \"$(basename $f): DIFFERS from 29f1be4a7\"; done"
+ },
+ {
+  "send": "cat $Q/hw/typesfix-hwx.diff | cut -c1-138; grep -E '^(==|diff|DIFF)' $Q/hw/bh-tail2.log $Q/hw/bh-tail3.log | cut -c1-138"
+ },
+ {
+  "send": "echo \"local changes: $(git status --short | wc -l)\"; git rev-parse HEAD; date '+%F %T %Z'"
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

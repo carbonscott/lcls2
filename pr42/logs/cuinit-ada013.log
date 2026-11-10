@@ -1,0 +1,5 @@
+sdfada013 step 274 2026-11-10T02:30:14Z CUDA_VISIBLE_DEVICES=0
+0, NVIDIA L40S, 00000000:C3:00.0, Disabled, 0 %, 0 MiB
+cuInit rc=0 28.38 s; cuCtxCreate rc=0 0.41 s
+cuInit rc=0 35.79 s; cuCtxCreate rc=0 12.10 s
+cuInit rc=0 1.56 s; cuCtxCreate rc=0 0.09 s

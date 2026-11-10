@@ -1,0 +1,57 @@
+[
+ {
+  "send": "date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "echo \"listening on 31053 on this VM: $(ss -ltn | grep -c ':31053 ')\""
+ },
+ {
+  "send": "ssh sdfiana025 'cd /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/../../wt-final; git log -1 --format=\"%H %ad %s\" --date=iso | cut -c1-138; echo \"local changes: $(git status --short | wc -l)\"; date -u +%FT%TZ'"
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/web15_up.sh web3   # one Slurm step on sdfada011 (job 44016690), under its node lock: a fresh CPU DAQ and the web GUI",
+  "expect": "SESSION_UP|SESSION_DONE|exists",
+  "timeout": 1800,
+  "fail": "SESSION_DONE|exists"
+ },
+ {
+  "send": "ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p42'"
+ },
+ {
+  "send": "# sdfiana025's ~/.ssh/known_hosts holds an older ECDSA key of sdfada011, and ssh turns port forwarding off for a changed key. The inner hop"
+ },
+ {
+  "send": "# checks the node's keys as the node itself reports them (read in a Slurm step on it), in a private file, StrictHostKeyChecking=yes"
+ },
+ {
+  "send": "ssh sdfiana025 'srun --jobid=44016690 --overlap -w sdfada011 -N 1 --ntasks=1 --cpus-per-task=1 --mem=1G cat /etc/ssh/ssh_host_ecdsa_key.pub /etc/ssh/ssh_host_ed25519_key.pub < /dev/null | sed \"s/^/sdfada011 /\" > /tmp/cwang31-p42/known_hosts; ssh-keygen -lf /tmp/cwang31-p42/known_hosts'",
+  "timeout": 120
+ },
+ {
+  "send": "ssh -f -S none -L 31053:/tmp/cwang31-p42/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -o UserKnownHostsFile=/tmp/cwang31-p42/known_hosts -o StrictHostKeyChecking=yes -L /tmp/cwang31-p42/webgui.sock:127.0.0.1:31053 sdfada011'",
+  "timeout": 60
+ },
+ {
+  "send": "sleep 3; curl -s -o /dev/null -w \"GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\\n\" http://127.0.0.1:31053/"
+ },
+ {
+  "send": "./pwvenv/bin/python tunnel_drive.py http://127.0.0.1:31053/ rec/pr42-web --events 1100",
+  "expect": "PAGE_EVENTS_FINAL=|Traceback",
+  "timeout": 900,
+  "fail": "Traceback|ALL_STATES_OK=False"
+ },
+ {
+  "send": "ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/web15_down.sh web3   # on the node: simxpm's counters (daq_sim status), then daq_sim down; the up step ends",
+  "expect": "SESSION_DONE|no session",
+  "timeout": 600,
+  "always": true
+ },
+ {
+  "send": "pkill -f '^ssh .*-L 31053:/tmp/cwang31-p42'; ssh sdfiana025 \"pkill -u \\$USER -f '^ssh -N .*cwang31-p42/webgui.sock'\"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'",
+  "always": true
+ },
+ {
+  "send": "ls rec/pr42-web/; cat rec/pr42-web/result.json",
+  "always": true
+ }
+]

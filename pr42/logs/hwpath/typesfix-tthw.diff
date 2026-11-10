@@ -1,0 +1,22 @@
+2c2
+< /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/typesfix/tthw.sh: line 18: 2595732 Aborted                 timeout -k 5 90 drp -p 7 -u tt_0 -P tst -C 127.0.0.1 -D tt -d /dev/datadev_0 -l 0x1 -o $O -k ep_domain=lo,ep_provider=tcp > $O/drp.out 2>&1 < /dev/null
+---
+> /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/typesfix/tthw.sh: line 18: 2596642 Aborted                 timeout -k 5 90 drp -p 7 -u tt_0 -P tst -C 127.0.0.1 -D tt -d /dev/datadev_0 -l 0x1 -o $O -k ep_domain=lo,ep_provider=tcp > $O/drp.out 2>&1 < /dev/null
+10c10
+< entry points: ['tt_config', 'tt_connect', 'tt_init', 'tt_init_feb', 'tt_scan_keys', 'tt_unconfig', 'tt_update']
+---
+> entry points: ['tt_config', 'tt_connect', 'tt_connectionInfo', 'tt_init', 'tt_init_feb', 'tt_scan_keys', 'tt_unconfig', 'tt_update']
+36,37c36,37
+< expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[PID] UINT32 1
+< expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[PID] UINT32 2048
+---
+> expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI0 UINT32 1
+> expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI1 UINT32 2048
+39,41c39,41
+< expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 1
+< expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 1
+< expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 2048
+---
+> expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD0 UINT32 1
+> expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD1 UINT32 1
+> expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD2 UINT32 2048

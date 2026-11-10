@@ -1,0 +1,5 @@
+incremental build (CUDA 12.9) on sdfada011, Slurm job 44016690 step 39, wt-final HEAD c370014fc, local changes 0, 2026-11-09 17:34:39 PST
+BUILD_EXIT=0
+Installed 1 package in 318ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq)
+drp_gpu 16:09:17  sim files match: coverage.py simxpm.py matrix.py daq_sim.py 

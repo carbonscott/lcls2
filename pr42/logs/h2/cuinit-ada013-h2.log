@@ -1,0 +1,6 @@
+(daq_20250402_r9) cwang31@sdfiana025:wt-final$ $G13 bash $Q/cuinit.sh 2>&1 | short
+sdfada013 step 283 2026-11-10T04:23:29Z CUDA_VISIBLE_DEVICES=0
+0, NVIDIA L40S, 00000000:C3:00.0, Disabled, 0 %, 0 MiB
+cuInit rc=0 10.25 s; cuCtxCreate rc=0 0.09 s
+cuInit rc=0 1.55 s; cuCtxCreate rc=0 0.10 s
+cuInit rc=0 28.50 s; cuCtxCreate rc=0 0.12 s

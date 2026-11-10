@@ -1,0 +1,143 @@
+# ID:      epixuhremu_0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: drp_gpu -P tst -C localhost -D epixuhremu -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/mx-m2/gpu/sdfada013/types/epixuhremu/data -k ep_domain=lo,ep_provider=tcp,reducer=NoOpReducer,sim_length=96768,sim_dma_size=0x60000,sim_dma_count=64,dmaBufSize=458752,dmaBufCount=64 -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/mx-m2/gpu/sdfada013/types/epixuhremu/prom -u epixuhremu_0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_18:22:03_sdfada013:epixuhremu_0.log"
+@@@    (as /bin/env)
+@@@ The PID of new child "2026/11/09_18:22:03_sdfada013:epixuhremu_0.log" is: 2699002
+@@@ @@@ @@@ @@@ @@@
+tst-drp_gpu[2699002]: <I> logging configured
+tst-drp_gpu[2699002]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp_gpu[2699002]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp_gpu[2699002]: <I> GPU device 0: NVIDIA L40S, CC: 8.9, Bus-Id: 0000:C3:00.0
+tst-drp_gpu[2699002]: <I> Global memory: 45457 MB
+tst-drp_gpu[2699002]: <I> MemPoolGpu: granted 16 CPUs on NUMA node 0: 4,5,6,7,8,9,10,11,52,53,54,55,56,57,58,59
+tst-drp_gpu[2699002]: <I> MemPoolGpu: GPU at 0000:c3:00.0 is on NUMA node 1, REMOTE from our CPUs
+tst-drp_gpu[2699002]: <I> MemPoolGpu: datadev has no PCI address, so its locality is unknown
+tst-drp_gpu[2699002]: <I> GPU Device Attributes:
+tst-drp_gpu[2699002]: <I>   Unified addressing: 1
+tst-drp_gpu[2699002]: <I>   Concurrent kernels: 1
+tst-drp_gpu[2699002]: <I>   Compute preemption: 1
+tst-drp_gpu[2699002]: <I>   Can map host memory: 1
+tst-drp_gpu[2699002]: <I>   Number of multiprocessors: 142
+tst-drp_gpu[2699002]: <I>   Max threads per multiprocessor: 1536
+tst-drp_gpu[2699002]: <I>   Max blocks per multiprocessor: 24
+tst-drp_gpu[2699002]: <I>   Max threads per block: 1024
+tst-drp_gpu[2699002]: <I> NULL PGP device 'sim://127.0.0.1:31052' opened
+tst-drp_gpu[2699002]: <I> DMA buffer[0] dptr 0x7f8764e10000, size 458752, free list[0] 0x7f87b1869300
+tst-drp_gpu[2699002]: <I> DMA buffer[1] dptr 0x7f8764e90000, size 458752, free list[1] 0x7f87b1869304
+tst-drp_gpu[2699002]: <I> DMA buffer[2] dptr 0x7f8764f10000, size 458752, free list[2] 0x7f87b1869308
+tst-drp_gpu[2699002]: <I> DMA buffer[3] dptr 0x7f8765000000, size 458752, free list[3] 0x7f87b186930c
+tst-drp_gpu[2699002]: <I> DMA buffer[4] dptr 0x7f8765090000, size 458752, free list[4] 0x7f87b1869310
+tst-drp_gpu[2699002]: <I> DMA buffer[5] dptr 0x7f8765110000, size 458752, free list[5] 0x7f87b1869314
+tst-drp_gpu[2699002]: <I> DMA buffer[6] dptr 0x7f8765200000, size 458752, free list[6] 0x7f87b1869318
+tst-drp_gpu[2699002]: <I> DMA buffer[7] dptr 0x7f8765290000, size 458752, free list[7] 0x7f87b186931c
+tst-drp_gpu[2699002]: <I> DMA buffer[8] dptr 0x7f8765310000, size 458752, free list[8] 0x7f87b1869320
+tst-drp_gpu[2699002]: <I> DMA buffer[9] dptr 0x7f8765400000, size 458752, free list[9] 0x7f87b1869324
+tst-drp_gpu[2699002]: <I> DMA buffer[10] dptr 0x7f8765490000, size 458752, free list[10] 0x7f87b1869328
+tst-drp_gpu[2699002]: <I> DMA buffer[11] dptr 0x7f8765510000, size 458752, free list[11] 0x7f87b186932c
+tst-drp_gpu[2699002]: <I> DMA buffer[12] dptr 0x7f8765600000, size 458752, free list[12] 0x7f87b1869330
+tst-drp_gpu[2699002]: <I> DMA buffer[13] dptr 0x7f8765690000, size 458752, free list[13] 0x7f87b1869334
+tst-drp_gpu[2699002]: <I> DMA buffer[14] dptr 0x7f8765710000, size 458752, free list[14] 0x7f87b1869338
+tst-drp_gpu[2699002]: <I> DMA buffer[15] dptr 0x7f8765800000, size 458752, free list[15] 0x7f87b186933c
+tst-drp_gpu[2699002]: <I> DMA buffer[16] dptr 0x7f8765890000, size 458752, free list[16] 0x7f87b1869340
+tst-drp_gpu[2699002]: <I> DMA buffer[17] dptr 0x7f8765910000, size 458752, free list[17] 0x7f87b1869344
+tst-drp_gpu[2699002]: <I> DMA buffer[18] dptr 0x7f8765a00000, size 458752, free list[18] 0x7f87b1869348
+tst-drp_gpu[2699002]: <I> DMA buffer[19] dptr 0x7f8765a90000, size 458752, free list[19] 0x7f87b186934c
+tst-drp_gpu[2699002]: <I> DMA buffer[20] dptr 0x7f8765b10000, size 458752, free list[20] 0x7f87b1869350
+tst-drp_gpu[2699002]: <I> DMA buffer[21] dptr 0x7f8765c00000, size 458752, free list[21] 0x7f87b1869354
+tst-drp_gpu[2699002]: <I> DMA buffer[22] dptr 0x7f8765c90000, size 458752, free list[22] 0x7f87b1869358
+tst-drp_gpu[2699002]: <I> DMA buffer[23] dptr 0x7f8765d10000, size 458752, free list[23] 0x7f87b186935c
+tst-drp_gpu[2699002]: <I> DMA buffer[24] dptr 0x7f8765e00000, size 458752, free list[24] 0x7f87b1869360
+tst-drp_gpu[2699002]: <I> DMA buffer[25] dptr 0x7f8765e90000, size 458752, free list[25] 0x7f87b1869364
+tst-drp_gpu[2699002]: <I> DMA buffer[26] dptr 0x7f8765f10000, size 458752, free list[26] 0x7f87b1869368
+tst-drp_gpu[2699002]: <I> DMA buffer[27] dptr 0x7f876aa00000, size 458752, free list[27] 0x7f87b186936c
+tst-drp_gpu[2699002]: <I> DMA buffer[28] dptr 0x7f876aa90000, size 458752, free list[28] 0x7f87b1869370
+tst-drp_gpu[2699002]: <I> DMA buffer[29] dptr 0x7f876ab10000, size 458752, free list[29] 0x7f87b1869374
+tst-drp_gpu[2699002]: <I> DMA buffer[30] dptr 0x7f876ac00000, size 458752, free list[30] 0x7f87b1869378
+tst-drp_gpu[2699002]: <I> DMA buffer[31] dptr 0x7f876ac90000, size 458752, free list[31] 0x7f87b186937c
+tst-drp_gpu[2699002]: <I> DMA buffer[32] dptr 0x7f876ad10000, size 458752, free list[32] 0x7f87b1869380
+tst-drp_gpu[2699002]: <I> DMA buffer[33] dptr 0x7f876ae00000, size 458752, free list[33] 0x7f87b1869384
+tst-drp_gpu[2699002]: <I> DMA buffer[34] dptr 0x7f876ae90000, size 458752, free list[34] 0x7f87b1869388
+tst-drp_gpu[2699002]: <I> DMA buffer[35] dptr 0x7f876af10000, size 458752, free list[35] 0x7f87b186938c
+tst-drp_gpu[2699002]: <I> DMA buffer[36] dptr 0x7f876b000000, size 458752, free list[36] 0x7f87b1869390
+tst-drp_gpu[2699002]: <I> DMA buffer[37] dptr 0x7f876b090000, size 458752, free list[37] 0x7f87b1869394
+tst-drp_gpu[2699002]: <I> DMA buffer[38] dptr 0x7f876b110000, size 458752, free list[38] 0x7f87b1869398
+tst-drp_gpu[2699002]: <I> DMA buffer[39] dptr 0x7f876b200000, size 458752, free list[39] 0x7f87b186939c
+tst-drp_gpu[2699002]: <I> DMA buffer[40] dptr 0x7f876b290000, size 458752, free list[40] 0x7f87b18693a0
+tst-drp_gpu[2699002]: <I> DMA buffer[41] dptr 0x7f876b310000, size 458752, free list[41] 0x7f87b18693a4
+tst-drp_gpu[2699002]: <I> DMA buffer[42] dptr 0x7f876b400000, size 458752, free list[42] 0x7f87b18693a8
+tst-drp_gpu[2699002]: <I> DMA buffer[43] dptr 0x7f876b490000, size 458752, free list[43] 0x7f87b18693ac
+tst-drp_gpu[2699002]: <I> DMA buffer[44] dptr 0x7f876b510000, size 458752, free list[44] 0x7f87b18693b0
+tst-drp_gpu[2699002]: <I> DMA buffer[45] dptr 0x7f876b600000, size 458752, free list[45] 0x7f87b18693b4
+tst-drp_gpu[2699002]: <I> DMA buffer[46] dptr 0x7f876b690000, size 458752, free list[46] 0x7f87b18693b8
+tst-drp_gpu[2699002]: <I> DMA buffer[47] dptr 0x7f876b710000, size 458752, free list[47] 0x7f87b18693bc
+tst-drp_gpu[2699002]: <I> DMA buffer[48] dptr 0x7f876b800000, size 458752, free list[48] 0x7f87b18693c0
+tst-drp_gpu[2699002]: <I> DMA buffer[49] dptr 0x7f876b890000, size 458752, free list[49] 0x7f87b18693c4
+tst-drp_gpu[2699002]: <I> DMA buffer[50] dptr 0x7f876b910000, size 458752, free list[50] 0x7f87b18693c8
+tst-drp_gpu[2699002]: <I> DMA buffer[51] dptr 0x7f876ba00000, size 458752, free list[51] 0x7f87b18693cc
+tst-drp_gpu[2699002]: <I> DMA buffer[52] dptr 0x7f876ba90000, size 458752, free list[52] 0x7f87b18693d0
+tst-drp_gpu[2699002]: <I> DMA buffer[53] dptr 0x7f876bb10000, size 458752, free list[53] 0x7f87b18693d4
+tst-drp_gpu[2699002]: <I> DMA buffer[54] dptr 0x7f876bc00000, size 458752, free list[54] 0x7f87b18693d8
+tst-drp_gpu[2699002]: <I> DMA buffer[55] dptr 0x7f876bc90000, size 458752, free list[55] 0x7f87b18693dc
+tst-drp_gpu[2699002]: <I> DMA buffer[56] dptr 0x7f876bd10000, size 458752, free list[56] 0x7f87b18693e0
+tst-drp_gpu[2699002]: <I> DMA buffer[57] dptr 0x7f876be00000, size 458752, free list[57] 0x7f87b18693e4
+tst-drp_gpu[2699002]: <I> DMA buffer[58] dptr 0x7f876be90000, size 458752, free list[58] 0x7f87b18693e8
+tst-drp_gpu[2699002]: <I> DMA buffer[59] dptr 0x7f876bf10000, size 458752, free list[59] 0x7f87b18693ec
+tst-drp_gpu[2699002]: <I> DMA buffer[60] dptr 0x7f874c000000, size 458752, free list[60] 0x7f87b18693f0
+tst-drp_gpu[2699002]: <I> DMA buffer[61] dptr 0x7f874c090000, size 458752, free list[61] 0x7f87b18693f4
+tst-drp_gpu[2699002]: <I> DMA buffer[62] dptr 0x7f874c110000, size 458752, free list[62] 0x7f87b18693f8
+tst-drp_gpu[2699002]: <I> DMA buffer[63] dptr 0x7f874c200000, size 458752, free list[63] 0x7f87b18693fc
+tst-drp_gpu[2699002]: <I> Simulated PGP device 'sim://127.0.0.1:31052': timing frames from tcp://127.0.0.1:31052
+tst-drp_gpu[2699002]: <I> dmaCount 64,  dmaSize 393216
+tst-drp_gpu[2699002]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 393216 B
+tst-drp_gpu[2699002]: <I> nL1Buffers 64,  pebble buffer size 393216 B
+tst-drp_gpu[2699002]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[2699002]: <I> MemPoolGpu: simulated device sim://127.0.0.1:31052 feeds 64 GPU DMA buffers of 458752 B
+tst-drp_gpu[2699002]: <I> dmaCount 64,  dmaSize 458752
+tst-drp_gpu[2699002]: <I> Allocated 0.3 GB pebble for 128 transitions of 2097152 B and 64 L1Accepts of 458752 B
+tst-drp_gpu[2699002]: <I> nL1Buffers 64,  pebble buffer size 458752 B
+tst-drp_gpu[2699002]: <I> nTrBuffers 128,  transition buffer size 2097152 B
+tst-drp_gpu[2699002]: <I> Simulated DMA thread is starting with process ID 2700199
+tst-drp_gpu[2699002]: <I> MemPoolSim: simxpm registered epixuhremu_0 as XPM 0 link 0
+Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+tst-drp_gpu[2699002]: <I> XpmDetector: xpmdet_config runs against simulated device sim://127.0.0.1:31052
+Start: Started zmqServer on ports 9099-9101
+    To start a gui: python -m pyrogue gui --server='localhost:9099'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9099)
+^Ctst-drp_gpu[2699002]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2

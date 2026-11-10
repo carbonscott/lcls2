@@ -1,0 +1,136 @@
+# ID:      teb0
+# PLATFORM:5
+# HOST:    sdfada013
+# CMDLINE: teb -P tst -C localhost -k ep_domain=lo,ep_provider=tcp -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/mx-m1/gpu/sdfada013/types/epixuhremu/prom -u teb0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_17:54:04_sdfada013:teb0.log"
+@@@    (as /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/teb)
+@@@ The PID of new child "2026/11/09_17:54:04_sdfada013:teb0.log" is: 2635057
+@@@ @@@ @@@ @@@ @@@
+tst-teb[2635057]: <I> logging configured
+tst-teb[2635057]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-teb[2635057]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-teb[2635057]: <I> Prometheus run-time monitoring data is on port 9200
+EventBuilder timeout is 12000 ms, 12000000000 ns
+tst-teb[2635057]: <I> Ready for transitions
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:10 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:11 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:12 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:13 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:14 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:15 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:16 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:17 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:18 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:19 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:20 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:21 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:22 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:23 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:24 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:25 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:26 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:27 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:28 2026
+tst-teb[2635057]: <I> received key = rollcall @ Mon Nov  9 17:54:29 2026
+tst-teb[2635057]: <I> received key = alloc @ Mon Nov  9 17:54:30 2026
+tst-teb[2635057]: <I> Using requested interface lo, address 127.0.0.1
+tst-teb[2635057]: <I> received key = connect @ Mon Nov  9 17:54:33 2026
+*** EB Epoch list size 348448
+*** EB Event list size 22300672
+tst-teb[2635057]: <I> EbLfServer: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-teb[2635057]: <I> EbLfServer:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-teb[2635057]: <I> EbLfServer:   data_progress FI_PROGRESS_AUTO
+tst-teb[2635057]: <I> EbLfServer:   control_progress FI_PROGRESS_AUTO
+tst-teb[2635057]: <I> EbLfServer:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-teb[2635057]: <I> EbLfServer:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-teb[2635057]: <I> Inbound  link with DRP ID  0 connected
+tst-teb[2635057]: <I> Outbound link with DRP ID  0 at 127.0.0.1:40799 connected
+tst-teb[2635057]: <I> received key = configure @ Mon Nov  9 17:54:34 2026
+tst-teb[2635057]: <I> Trigger loaded from libtmoTeb.so using configDb tst/BEAM/tmoteb_0
+tst-teb[2635057]: <I> Allocated 0.0 GB region for 128 transitions of 32 B and 64 buffers of 40 B for inbound link with DRP ID 0
+tst-teb[2635057]: <I> Inbound  link with DRP ID  0, 0x5627f2b5f000 : 0x5627f2b5fa00 : 0x5627f2b60a00 (00001a00), configured in    0 ms
+Allocated 0.0 GB region for 1 64 entry batches of 40 B
+tst-teb[2635057]: <I> Outbound link with DRP ID  0, 0x5627f2b62000 : 0x5627f2b62a00 (00000a00), configured in    0 ms
+tst-teb[2635057]: <I> 
+tst-teb[2635057]: <I> Parameters of TEB ID 0 (127.0.0.1:43517):
+tst-teb[2635057]: <I>   CPU allocation: granted 16 CPUs on NUMA node 0: 4,5,6,7,8,9,10,11,52,53,54,55,56,57,58,59
+tst-teb[2635057]: <I>   Instrument:                   tst
+tst-teb[2635057]: <I>   Partition:                    5
+tst-teb[2635057]: <I>   Alias:                        teb0
+tst-teb[2635057]: <I>   Bit list of contributors:     0x0000000000000001, cnt: 1
+tst-teb[2635057]: <I>   Readout group contractors:    5: 0x0000000000000001  
+tst-teb[2635057]: <I>   Readout group receivers:      5: 0x0000000000000001  
+tst-teb[2635057]: <I>   Number of MEB requestors:     0
+tst-teb[2635057]: <I>   Batch duration:               0x00000040 = 64 ticks
+tst-teb[2635057]: <I>   Batch pool depth:             0x00000001 = 1
+tst-teb[2635057]: <I>   Max # of entries / batch:     0x00000040 = 64
+tst-teb[2635057]: <I>   # of contrib. buffers:        0x00000040 = 64
+tst-teb[2635057]: <I>   Max result     EbDgram size:  0x00000028 = 40
+tst-teb[2635057]: <I>   Max transition EbDgram size:  0x00000020 = 32
+tst-teb[2635057]: <I>   # of transition  buffers:     0x00000080 = 128
+tst-teb[2635057]: <I> 
+tst-teb[2635057]: <I> TEB thread started
+tst-teb[2635057]: <I> TEB is starting with process ID 2636461
+tst-teb[2635057]: <I> Teb: pinned to CPU 4
+tst-teb[2635057]: <I> received key = disconnect @ Mon Nov  9 17:55:34 2026
+
+BatchManager dump:
+  Region base 0x5627f2b62000  size 2560  maxBatchSize 2560  maxEntrySize 40
+int Pds::Eb::EbLfServer::pend(fi_cq_data_entry*, int):
+  Error decoding Rx CQ error: rc -11: fi_cq_readerr: Error available(-259)
+int Pds::Eb::EbLfServer::pend(fi_cq_data_entry*, int): Returning rc -11 after CQ error dump
+teb0[2635057]: <C> FATAL: Segmentation Fault - stack trace follows
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libcollection.so(+0x10508)[0x7fdbdfb38508]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libcollection.so(+0x10585)[0x7fdbdfb38585]
+/lib64/libc.so.6(+0x3ebf0)[0x7fdbdf23ebf0]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libfabric.so.1(+0x10f1a8)[0x7fdbdf17e1a8]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libfabric.so.1(+0x10b34d)[0x7fdbdf17a34d]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libutilities.so(_ZN3Pds7Fabrics10EventQueue5eventEPjPvPb+0x1f)[0x7fdbdfad493f]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libutilities.so(_ZN3Pds2Eb10EbLfServer6pollEQEv+0x2b)[0x7fdbdfad855b]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libutilities.so(_ZN3Pds2Eb10EbLfServer4pendEP16fi_cq_data_entryi+0x200)[0x7fdbdfad8bd0]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libeventBuilder.so(_ZN3Pds2Eb9EbAppBase7processEv+0x27)[0x7fdbdfb1c987]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/teb(+0xa9a0)[0x5627f29559a0]
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/libstdc++.so.6(+0xd3b65)[0x7fdbdf53eb65]
+/lib64/libc.so.6(+0x8a19a)[0x7fdbdf28a19a]
+/lib64/libc.so.6(+0x10f100)[0x7fdbdf30f100]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 17:55:35 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 2635057. Normal exit status = 1

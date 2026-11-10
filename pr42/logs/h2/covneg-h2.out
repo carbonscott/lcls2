@@ -1,0 +1,13 @@
+=== coverage negative at wt-final HEAD b14885af3 dirty 0: 32 records in $R/work/fix15/mx-h2-ev
+removed 20261109T202933-cycle-b14885af3-1794453.json (it lists det:drp:epix100; rows: 6)
+removed 20261109T204123-cycle-b14885af3-1587649.json (it lists det:drp:epix100; rows: 8)
+removed 20261109T204237-scan-b14885af3-1589265.json (it lists det:drp:epix100; rows: 7)
+COVERAGE without det:drp:epix100: exit 1
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD b14885af3
+78 rows, 62 run, 6 stand-in, 9 N/A, 0 unproven, 1 claimed without valid evidence
+FAIL: 0 error(s), 1 RUN/STAND-IN row(s) without valid evidence, 0 unproven row(s)
+COVERAGE over the matrix's evidence: exit 0
+78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+status file claims (not counted above unless proven): 63 RUN, 6 STAND-IN, 9 N/A
+PASS

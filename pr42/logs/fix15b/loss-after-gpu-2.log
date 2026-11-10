@@ -1,0 +1,109 @@
+2026-11-09T21:24:00.875-08:00 MATRIX: sections types at HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (tracked files modified: False) host sdfada010 job 44062096 step 14 workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2
+2026-11-09T21:24:01.186-08:00 matrix: types: jungfrau
+2026-11-09T21:24:01.186-08:00 matrix: ---- type jungfrau (1 of 1)
+2026-11-09T21:24:01.191-08:00 matrix: lock /tmp/agentify-daq-ada010.lock held (waited 0 s)
+  drp_gpu:jungfrau up| 2026-11-09T21:24:01.409-08:00 daq_sim: up on sdfada010 (job 44062096 step 14), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau
+  drp_gpu:jungfrau up| 2026-11-09T21:24:01.409-08:00 daq_sim: preflight (fail-closed isolation check) ...
+  drp_gpu:jungfrau up| 2026-11-09T21:24:22.869-08:00 daq_sim: preflight rc=0: 21:24:22 PREFLIGHT PASS  (logs/preflight.log)
+  drp_gpu:jungfrau up| 2026-11-09T21:24:25.262-08:00 daq_sim: config DB seeded: Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+  drp_gpu:jungfrau up| 2026-11-09T21:24:25.262-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+  drp_gpu:jungfrau up| 2026-11-09T21:24:25.262-08:00 daq_sim: config DB seeded: tst/BEAM/jungfrau_0 key=2 written
+  drp_gpu:jungfrau up| 2026-11-09T21:24:26.892-08:00 daq_sim: procmgr start daq_sim.cnf
+  drp_gpu:jungfrau up| 2026-11-09T21:24:33.793-08:00 daq_sim: jungfrau_0 ready for transitions after 2 s (pmlogs/2026/11/09_21:24:27_sdfada010:jungfrau_0.log)
+  drp_gpu:jungfrau up| 2026-11-09T21:24:33.896-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  drp_gpu:jungfrau up|   host         sdfada010 (Slurm job 44062096)
+  drp_gpu:jungfrau up|   control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  drp_gpu:jungfrau up|   configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, jungfrau_0 sim_seed=0x1234)
+  drp_gpu:jungfrau up|   rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  drp_gpu:jungfrau up|   simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 100 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  drp_gpu:jungfrau up|   procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/daq_sim.cnf  pids {'control': 2669842, 'teb0': 2669843, 'jungfrau_0': 2669844}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/pmlogs
+  drp_gpu:jungfrau up|   data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data  (xtc2 written when recording)
+  drp_gpu:jungfrau up|   prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  drp_gpu:jungfrau up|   webgui       port 31053 (not started: up --webgui)
+  drp_gpu:jungfrau up|   drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau
+  drp_gpu:jungfrau up|   stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:34.718-08:00 start state: reset
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:34.719-08:00 setRecord(True) -> OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:35.721-08:00 setState unallocated  -> unallocated  OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:35.721-08:00 selectPlatform(control, drp, teb) -> OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:35.859-08:00 [warning] ami NOT supported in absence of MEB
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:35.862-08:00 setState allocated    -> allocated    OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:36.270-08:00 setState connected    -> connected    OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:39.737-08:00 setState configured   -> configured   OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.817-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.831-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.836-08:00 setState starting     -> starting     OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.838-08:00 setState paused       -> paused       OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.848-08:00 setState running      -> running      OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:40.848-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:51.614-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1069 (wanted >= 1000)
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:51.618-08:00 setState paused       -> paused       OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.753-08:00 counts after Disable: {'simxpm NumL0Acc': 1078, 'simxpm NumL0Inp': 1078, 'simxpm NumL0Acc group 5': 1078, 'simxpm links': {'jungfrau_0': {'group': 5, 'l1acc': 1078, 'link': 0}}, 'TEB_EvtCt': 1078, 'TEB_TrCt': 15, 'TEB_WrtCt': 1078, 'DRP_Damage': 0, 'DRP_RecordSize': 2260847534, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.756-08:00 setState starting     -> starting     OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.763-08:00 setState configured   -> configured   OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.822-08:00 setState connected    -> connected    OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.892-08:00 setState allocated    -> allocated    OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.919-08:00 setState unallocated  -> unallocated  OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:52.920-08:00 setState reset        -> reset        OK
+  drp_gpu:jungfrau cycle| 2026-11-09T21:24:58.585-08:00 final state reset (start reset)
+  drp_gpu:jungfrau cycle| transitions (request -> read back):
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:34.719-08:00 -> 2026-11-09T21:24:35.721-08:00  unallocated  unallocated
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:35.721-08:00 -> 2026-11-09T21:24:35.862-08:00  allocated    allocated
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:35.862-08:00 -> 2026-11-09T21:24:36.270-08:00  connected    connected
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:36.270-08:00 -> 2026-11-09T21:24:39.737-08:00  configured   configured
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:39.737-08:00 -> 2026-11-09T21:24:40.836-08:00  starting     starting
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:40.836-08:00 -> 2026-11-09T21:24:40.838-08:00  paused       paused
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:40.838-08:00 -> 2026-11-09T21:24:40.848-08:00  running      running
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:51.614-08:00 -> 2026-11-09T21:24:51.618-08:00  paused       paused
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.753-08:00 -> 2026-11-09T21:24:52.756-08:00  starting     starting
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.756-08:00 -> 2026-11-09T21:24:52.763-08:00  configured   configured
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.763-08:00 -> 2026-11-09T21:24:52.822-08:00  connected    connected
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.822-08:00 -> 2026-11-09T21:24:52.892-08:00  allocated    allocated
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.892-08:00 -> 2026-11-09T21:24:52.919-08:00  unallocated  unallocated
+  drp_gpu:jungfrau cycle|   2026-11-09T21:24:52.919-08:00 -> 2026-11-09T21:24:52.920-08:00  reset        reset
+  drp_gpu:jungfrau cycle| counts:
+  drp_gpu:jungfrau cycle|   simxpm NumL0Acc        1078
+  drp_gpu:jungfrau cycle|   simxpm NumL0Inp        1078
+  drp_gpu:jungfrau cycle|   simxpm NumL0Acc group 5 1078
+  drp_gpu:jungfrau cycle|   simxpm links           {'jungfrau_0': {'group': 5, 'l1acc': 1078, 'link': 0}}
+  drp_gpu:jungfrau cycle|   TEB_EvtCt              1078
+  drp_gpu:jungfrau cycle|   TEB_TrCt               15
+  drp_gpu:jungfrau cycle|   TEB_WrtCt              1078
+  drp_gpu:jungfrau cycle|   DRP_Damage             0
+  drp_gpu:jungfrau cycle|   DRP_RecordSize         2260847534
+  drp_gpu:jungfrau cycle|   drp_num_dma_errors     0
+  drp_gpu:jungfrau cycle|   drp_num_missing_rogs   0
+  drp_gpu:jungfrau cycle|   drp_num_th_error       0
+  drp_gpu:jungfrau cycle|   drp_num_pgp_jump       0
+  drp_gpu:jungfrau cycle|   xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (2260847582 B)
+  drp_gpu:jungfrau cycle|   psana2 events          1078
+  drp_gpu:jungfrau cycle|   psana2 with data       1078
+  drp_gpu:jungfrau cycle|   psana2 checks          PASS
+  drp_gpu:jungfrau cycle|   psana2 seq             1..1078
+  drp_gpu:jungfrau cycle|   psana2 seeds           {'0x1234': 1078}
+  drp_gpu:jungfrau cycle|   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+  drp_gpu:jungfrau cycle| 2026-11-09T21:25:00.196-08:00 evidence 20261109T212500-cycle-b3d052088-2670171: det:drp_gpu:jungfrau prog:control prog:drp_gpu prog:pykcuxpm prog:pyxpm prog:teb
+  drp_gpu:jungfrau cycle| 2026-11-09T21:25:00.254-08:00 cycle PASS
+  drp_gpu:jungfrau down| 2026-11-09T21:25:00.527-08:00 daq_sim: procmgr stop daq_sim.cnf
+  drp_gpu:jungfrau down| 2026-11-09T21:25:05.752-08:00 daq_sim: stopping simsls pid 2669793: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simsls --port 31054 --seed 4660
+  drp_gpu:jungfrau down| 2026-11-09T21:25:06.153-08:00 daq_sim: stopping simxpm pid 2669765: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+  drp_gpu:jungfrau down| 2026-11-09T21:25:06.254-08:00 daq_sim: stopping lgbk pid 2669760: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+  drp_gpu:jungfrau down| 2026-11-09T21:25:06.354-08:00 daq_sim: stopping configdb pid 2669700: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+  drp_gpu:jungfrau down| 2026-11-09T21:25:07.470-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31054, 31055]
+  drp_gpu:jungfrau down| 2026-11-09T21:25:07.475-08:00 daq_sim: down: clean
+2026-11-09T21:25:07.483-08:00 matrix: lock /tmp/agentify-daq-ada010.lock released
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1078 psana2 1078 with-data 1078 per-event PASS PASS
+==== MATRIX SUMMARY at HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (tracked files modified: False), host sdfada010, job 44062096 step 14, 2026-11-09T21:24:00.875-08:00 .. 2026-11-09T21:25:07.484-08:00
+types (1):
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1078 psana2 1078 with-data 1078 per-event PASS PASS
+assertions: 7, 7 passed, 0 failed
+  PASS types/drp_gpu:jungfrau/up: exit 0
+  PASS types/drp_gpu:jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:jungfrau/drp-alive: jungfrau_0 drp pid 2669844 alive after the run
+  PASS types/drp_gpu:jungfrau/counts: simxpm L1Accepts 1078, TEB_WrtCt 1078, psana2 events 1078, with jungfrau data 1078: equal and >= 1000
+  PASS types/drp_gpu:jungfrau/per-event: xtc2_check --det jungfrau: PASS
+  PASS types/drp_gpu:jungfrau/evidence: record 20261109T212500-cycle-b3d052088-2670171
+  PASS types/drp_gpu:jungfrau/down: exit 0, down: clean
+summary JSON: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/matrix-summary.json
+whole matrix at this HEAD (with carried results): FAIL; not run: types/fakecam types/epixuhremu types/epixuhrsim types/jungfrau types/epixuhr3x2 features/a features/b features/c features/d features/e programs coverage
+MATRIX PASS (7 assertions)

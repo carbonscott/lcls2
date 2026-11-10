@@ -1,0 +1,174 @@
+2026-11-09T20:52:49.780-08:00 FEATURE c: job 44000948 step 373 host sdfmilan082 HEAD b14885af349db9d58d24f6a5670e925286b3737b (files changed: 0)
+  up| 2026-11-09T20:52:50.175-08:00 daq_sim: up on sdfmilan082 (job 44000948 step 373), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3
+  up| 2026-11-09T20:52:50.175-08:00 daq_sim: preflight (fail-closed isolation check) ...
+  up| 2026-11-09T20:53:11.889-08:00 daq_sim: preflight rc=0: 20:53:11 PREFLIGHT PASS  (logs/preflight.log)
+  up| 2026-11-09T20:53:12.670-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+  up| 2026-11-09T20:53:12.670-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+  up| 2026-11-09T20:53:13.902-08:00 daq_sim: AMI from /sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526: ports 31150-31159 on 127.0.0.1, worker reads psana://shmem=tstsim5
+  up| 2026-11-09T20:53:13.903-08:00 daq_sim: procmgr start daq_sim.cnf
+  up| 2026-11-09T20:53:19.156-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  up|   host         sdfmilan082 (Slurm job 44000948)
+  up|   control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  up|   configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  up|   rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  up|   simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 100 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  up|   procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/daq_sim.cnf  pids {'control': 1838763, 'teb0': 1838764, 'fakecam_0': 1838765, 'meb0': 1838766, 'shmc0': 1838767, 'ami-manager': 1838768, 'ami-global': 1838769, 'ami-node_0': 1838770, 'ami-worker_0': 1838771, 'ami-client': 1838761}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/pmlogs
+  up|   data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/data  (xtc2 written when recording)
+  up|   prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  up|   webgui       port 31053 (not started: up --webgui)
+  up|   drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3 --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3
+  up|   stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3
+  cycle| 2026-11-09T20:53:19.981-08:00 start state: reset
+  cycle| 2026-11-09T20:53:19.982-08:00 setRecord(True) -> OK
+  cycle| 2026-11-09T20:53:20.988-08:00 setState unallocated  -> unallocated  OK
+  cycle| 2026-11-09T20:53:20.989-08:00 selectPlatform(control, drp, meb, teb) -> OK
+  cycle| 2026-11-09T20:53:21.329-08:00 setState allocated    -> allocated    OK
+  cycle| 2026-11-09T20:53:23.137-08:00 setState connected    -> connected    OK
+  cycle| 2026-11-09T20:53:24.377-08:00 setState configured   -> configured   OK
+  cycle| 2026-11-09T20:53:25.439-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  cycle| 2026-11-09T20:53:25.446-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  cycle| 2026-11-09T20:53:25.451-08:00 setState starting     -> starting     OK
+  cycle| 2026-11-09T20:53:29.408-08:00 AMI tcp://127.0.0.1:31150: check graph added
+  cycle| 2026-11-09T20:53:29.413-08:00 setState paused       -> paused       OK
+  cycle| 2026-11-09T20:53:29.417-08:00 setState running      -> running      OK
+  cycle| 2026-11-09T20:53:29.418-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+  cycle| 2026-11-09T20:53:29.456-08:00 AMI shot: ami-client pid 1839091 loading a viewer of fakecam:raw:raw (logs/ami-shot)
+  cycle| libevent Warn: Can't change lock callbacks once they have been initialized.
+  cycle| libevent Warn: Can't change condition callbacks once they have been initialized.
+  cycle| 2026-11-09T20:53:40.635-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1064 (wanted >= 1000)
+  cycle| 2026-11-09T20:53:51.594-08:00 AMI shot: PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/ami-shot.png: window "fakecam:raw:raw" of ami-client pid 1839091, 65+ colours
+  cycle| 2026-11-09T20:53:51.600-08:00 setState paused       -> paused       OK
+  cycle| 2026-11-09T20:53:52.738-08:00 counts after Disable: {'simxpm NumL0Acc': 2219, 'simxpm NumL0Inp': 2219, 'simxpm NumL0Acc group 5': 2219, 'simxpm links': {'fakecam_0': {'group': 5, 'l1acc': 2219, 'link': 0}}, 'TEB_EvtCt': 2219, 'TEB_TrCt': 27, 'TEB_WrtCt': 2219, 'MEB_EvtCt': 2219, 'MEB_TrCt': 27, 'MEB_ReqCt': 2227, 'DRP_Damage': 0, 'DRP_RecordSize': 927270, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+  cycle| 2026-11-09T20:53:53.780-08:00 AMI fetched 4096 rows, ami_pixsum 35894672
+  cycle| 2026-11-09T20:53:53.785-08:00 setState starting     -> starting     OK
+  cycle| 2026-11-09T20:53:53.796-08:00 setState configured   -> configured   OK
+  cycle| 2026-11-09T20:53:53.801-08:00 setState connected    -> connected    OK
+  cycle| 2026-11-09T20:53:54.467-08:00 setState allocated    -> allocated    OK
+  cycle| 2026-11-09T20:53:54.517-08:00 setState unallocated  -> unallocated  OK
+  cycle| 2026-11-09T20:53:54.519-08:00 setState reset        -> reset        OK
+  cycle| Problem reading dgram header.
+  cycle| 2026-11-09T20:53:59.873-08:00 final state reset (start reset)
+  cycle| transitions (request -> read back):
+  cycle|   2026-11-09T20:53:19.982-08:00 -> 2026-11-09T20:53:20.988-08:00  unallocated  unallocated
+  cycle|   2026-11-09T20:53:20.989-08:00 -> 2026-11-09T20:53:21.329-08:00  allocated    allocated
+  cycle|   2026-11-09T20:53:21.329-08:00 -> 2026-11-09T20:53:23.137-08:00  connected    connected
+  cycle|   2026-11-09T20:53:23.137-08:00 -> 2026-11-09T20:53:24.377-08:00  configured   configured
+  cycle|   2026-11-09T20:53:24.377-08:00 -> 2026-11-09T20:53:25.451-08:00  starting     starting
+  cycle|   2026-11-09T20:53:29.408-08:00 -> 2026-11-09T20:53:29.413-08:00  paused       paused
+  cycle|   2026-11-09T20:53:29.413-08:00 -> 2026-11-09T20:53:29.417-08:00  running      running
+  cycle|   2026-11-09T20:53:51.595-08:00 -> 2026-11-09T20:53:51.600-08:00  paused       paused
+  cycle|   2026-11-09T20:53:53.780-08:00 -> 2026-11-09T20:53:53.785-08:00  starting     starting
+  cycle|   2026-11-09T20:53:53.785-08:00 -> 2026-11-09T20:53:53.796-08:00  configured   configured
+  cycle|   2026-11-09T20:53:53.796-08:00 -> 2026-11-09T20:53:53.801-08:00  connected    connected
+  cycle|   2026-11-09T20:53:53.801-08:00 -> 2026-11-09T20:53:54.467-08:00  allocated    allocated
+  cycle|   2026-11-09T20:53:54.467-08:00 -> 2026-11-09T20:53:54.517-08:00  unallocated  unallocated
+  cycle|   2026-11-09T20:53:54.517-08:00 -> 2026-11-09T20:53:54.519-08:00  reset        reset
+  cycle| counts:
+  cycle|   ami shot               PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/ami-shot.png: window "fakecam:raw:raw" of ami-client pid 1839091, 65+ colours
+  cycle|   simxpm NumL0Acc        2219
+  cycle|   simxpm NumL0Inp        2219
+  cycle|   simxpm NumL0Acc group 5 2219
+  cycle|   simxpm links           {'fakecam_0': {'group': 5, 'l1acc': 2219, 'link': 0}}
+  cycle|   TEB_EvtCt              2219
+  cycle|   TEB_TrCt               27
+  cycle|   TEB_WrtCt              2219
+  cycle|   MEB_EvtCt              2219
+  cycle|   MEB_TrCt               27
+  cycle|   MEB_ReqCt              2227
+  cycle|   DRP_Damage             0
+  cycle|   DRP_RecordSize         927270
+  cycle|   drp_num_dma_errors     0
+  cycle|   drp_num_missing_rogs   0
+  cycle|   drp_num_th_error       0
+  cycle|   drp_num_pgp_jump       0
+  cycle|   xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (927318 B)
+  cycle|   psana2 events          2219
+  cycle|   psana2 with data       2219
+  cycle|   psana2 checks          PASS
+  cycle|   psana2 seq             1..2219
+  cycle|   psana2 seeds           {'0x1234': 2219}
+  cycle|   shmemClient L1Accepts  1110
+  cycle|   shmemClient BeginRun   1
+  cycle|   ami rows               4096
+  cycle|   ami events             1090
+  cycle|   ami matched            1090
+  cycle|   ami pixsum             35894672
+  cycle|   psana2 pixsum (same events) 35894672
+  cycle|   ami seq range          21..2199
+  cycle|   ami served by          --pidfile ami ami-client ami-global ami-manager ami-node ami-worker
+  cycle|   ami check              PASS
+  cycle|   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+  cycle| 2026-11-09T20:54:00.220-08:00 evidence 20261109T205400-cycle-b14885af3-1838846: det:drp:fakecam prog:ami-client prog:ami-global prog:ami-manager prog:ami-node prog:ami-worker prog:control prog:drp prog:monReqServer prog:pykcuxpm prog:pyxpm prog:shmemClient prog:teb
+  cycle| 2026-11-09T20:54:00.466-08:00 cycle PASS
+2026-11-09T20:54:00.576-08:00 cycle exit 0
+  down| 2026-11-09T20:54:00.870-08:00 daq_sim: procmgr stop daq_sim.cnf
+  down| 2026-11-09T20:54:07.248-08:00 daq_sim: stopping simxpm pid 1838302: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+  down| 2026-11-09T20:54:07.349-08:00 daq_sim: stopping lgbk pid 1838300: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+  down| 2026-11-09T20:54:07.850-08:00 daq_sim: stopping configdb pid 1838283: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+  down| 2026-11-09T20:54:07.988-08:00 daq_sim: removed /dev/shm/PdsMonitorSharedMemory_tstsim5
+  down| 2026-11-09T20:54:07.997-08:00 daq_sim: stopping leftover (tagged) pid 1839081: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_202
+  down| 2026-11-09T20:54:08.097-08:00 daq_sim: stopping leftover (tagged) pid 1839321: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_202
+  down| 2026-11-09T20:54:08.706-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31150, 31151, 31152, 31153, 31154, 31155, 31156, 31157, 31158, 31159]
+  down| 2026-11-09T20:54:08.714-08:00 daq_sim: down: clean
+2026-11-09T20:54:08.722-08:00 down exit 0
+Problem reading dgram header.
+---- FEATURE c report
+job 44000948 step 373 host sdfmilan082 HEAD b14885af349db9d58d24f6a5670e925286b3737b (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3
+run tstx00001/r0001 started 2026-11-09T20:52:49.780-08:00
+transitions (client request -> state read back):
+  2026-11-09T20:53:19.982-08:00 -> 2026-11-09T20:53:20.988-08:00  unallocated  unallocated  
+  2026-11-09T20:53:20.989-08:00 -> 2026-11-09T20:53:21.329-08:00  allocated    allocated    
+  2026-11-09T20:53:21.329-08:00 -> 2026-11-09T20:53:23.137-08:00  connected    connected    
+  2026-11-09T20:53:23.137-08:00 -> 2026-11-09T20:53:24.377-08:00  configured   configured   
+  2026-11-09T20:53:24.377-08:00 -> 2026-11-09T20:53:25.451-08:00  starting     starting     
+  2026-11-09T20:53:29.408-08:00 -> 2026-11-09T20:53:29.413-08:00  paused       paused       
+  2026-11-09T20:53:29.413-08:00 -> 2026-11-09T20:53:29.417-08:00  running      running      
+  2026-11-09T20:53:51.595-08:00 -> 2026-11-09T20:53:51.600-08:00  paused       paused       
+  2026-11-09T20:53:53.780-08:00 -> 2026-11-09T20:53:53.785-08:00  starting     starting     
+  2026-11-09T20:53:53.785-08:00 -> 2026-11-09T20:53:53.796-08:00  configured   configured   
+  2026-11-09T20:53:53.796-08:00 -> 2026-11-09T20:53:53.801-08:00  connected    connected    
+  2026-11-09T20:53:53.801-08:00 -> 2026-11-09T20:53:54.467-08:00  allocated    allocated    
+  2026-11-09T20:53:54.467-08:00 -> 2026-11-09T20:53:54.517-08:00  unallocated  unallocated  
+  2026-11-09T20:53:54.517-08:00 -> 2026-11-09T20:53:54.519-08:00  reset        reset        
+transition frames simxpm sent the DRPs (13 lines of logs/simxpm.log):
+  2026-11-09 20:53:21,271 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {"fakecam_0": {"group": null, "l1acc": 0, "link": 0}}
+  2026-11-09 20:53:23,333 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733d2064b458 time 1163134403.333129352 to 1 link(s)
+  2026-11-09 20:53:24,334 simxpm INFO Configure rog 0x20 pulseId 0x04733d207526e4 time 1163134404.334036131 to 1 link(s)
+  2026-11-09 20:53:24,435 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733d2076d18f time 1163134404.435461645 to 1 link(s)
+  2026-11-09 20:53:25,436 simxpm INFO BeginRun rog 0x20 pulseId 0x04733d2087444b time 1163134405.436413275 to 1 link(s)
+  2026-11-09 20:53:29,410 simxpm INFO BeginStep rog 0x20 pulseId 0x04733d20c89050 time 1163134409.410050626 to 1 link(s)
+  2026-11-09 20:53:29,414 simxpm INFO Enable rog 0x20 pulseId 0x04733d20c8a431 time 1163134409.414775411 to 1 link(s)
+  2026-11-09 20:53:29,417 simxpm INFO L0 enable 0x20 -> 0x20
+  2026-11-09 20:53:51,596 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 2219, 0, 0]; per link {"fakecam_0": {"group": 5, "l1acc": 2219, "link": 0}}
+  2026-11-09 20:53:51,597 simxpm INFO Disable rog 0x20 pulseId 0x04733d22352832 time 1163134431.597322536 to 1 link(s)
+  2026-11-09 20:53:53,782 simxpm INFO EndStep rog 0x20 pulseId 0x04733d2259105e time 1163134433.782433672 to 1 link(s)
+  2026-11-09 20:53:53,792 simxpm INFO EndRun rog 0x20 pulseId 0x04733d22593bd0 time 1163134433.792760556 to 1 link(s)
+  2026-11-09 20:53:53,797 simxpm INFO Unconfigure rog 0x20 pulseId 0x04733d22595004 time 1163134433.797563743 to 1 link(s)
+counts:
+  ami shot                   PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/ami-shot.png: window "fakecam:raw:raw" of ami-client pid 1839091, 65+ colours
+  simxpm NumL0Acc            2219
+  simxpm NumL0Acc group 5    2219
+  simxpm links               {'fakecam_0': {'group': 5, 'l1acc': 2219, 'link': 0}}
+  TEB_EvtCt                  2219
+  TEB_TrCt                   27
+  TEB_WrtCt                  2219
+  MEB_EvtCt                  2219
+  psana2 events              2219
+  psana2 with data           2219
+  psana2 checks              PASS
+  psana2 seq                 1..2219
+  psana2 seeds               {'0x1234': 2219}
+  shmemClient L1Accepts      1110
+  shmemClient BeginRun       1
+  ami rows                   4096
+  ami events                 1090
+  ami matched                1090
+  ami pixsum                 35894672
+  psana2 pixsum (same events) 35894672
+  ami seq range              21..2199
+  ami served by              --pidfile ami ami-client ami-global ami-manager ami-node ami-worker
+  ami check                  PASS
+  drp fakecam_0              group 5: DAQ (simxpm L1Accepts sent) 2219 psana2 events 2219 with data 2219 per-event check PASS (tstx00001-r0001-s000-c000.xtc2)
+  per-DRP checks             PASS
+  ami screenshot             /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/fc-3/ami-shot.png
+FEATURE c PASS

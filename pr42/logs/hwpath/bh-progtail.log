@@ -1,0 +1,18 @@
+host=sdfada013 date=2026-11-09T17:50:46-08:00 /dev/tpra: ls: cannot access '/dev/tpra': No such file or directory
+== wt-base-t4 5aaf09617 dirty=0 Client.cc f4a4d899df3f5fe5b1803d0cff59be6146f39191 libtpr 5429c0d74f22
+$ env -u PSDAQ_SIM_TPR wt-base-t4/install/bin/tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+timeout: the monitored command dumped core
+EXIT=134
+$ ldd wt-base-t4/install/bin/tprtrig | grep libtpr
+	libtpr.so => /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/lib/libtpr.so (0x00007efef7e2c000)
+== wt-final c370014fc dirty=0 Client.cc a98a653ec43f7cf9390e8ee3f21e6d60ae91940f libtpr ab90ec369d0f
+$ env -u PSDAQ_SIM_TPR wt-final/install/bin/tprtrig -t a -c 0 -o 1 -d 2 -w 10 -p 5
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+timeout: the monitored command dumped core
+EXIT=134
+$ ldd wt-final/install/bin/tprtrig | grep libtpr
+	libtpr.so => /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/libtpr.so (0x00007ff246034000)
+2026-11-09T17:50:47-08:00

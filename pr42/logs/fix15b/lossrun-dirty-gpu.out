@@ -1,0 +1,5 @@
+=== loss dirty-gpu: drp drp_gpu jungfrau x1, lock /tmp/agentify-daq-ada010.lock, rmem_max 212992, simsls 53eff1c1 on sdfada010 job 44062096 step 12 wt-final HEAD b14885af3 dirty 7 2026-11-10T05:19:33Z
+RUN dirty-gpu-1 exit 1 in 78 s: data port 31056; simsls sent {'frames': 1086, 'packets': 139008}; receiver drops 0 (max queue 16640 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-dirty-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-dirty-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+=== loss dirty-gpu done on sdfada010 job 44062096 step 12 wt-final HEAD b14885af3 dirty 7 2026-11-10T05:20:51Z

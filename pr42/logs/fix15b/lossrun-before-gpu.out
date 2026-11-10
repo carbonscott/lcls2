@@ -1,0 +1,11 @@
+=== loss before-gpu: drp drp_gpu jungfrau x3, lock /tmp/agentify-daq-ada010.lock, rmem_max 212992, simsls 038fb891 on sdfada010 job 44062096 step 10 wt-final HEAD b14885af3 dirty 0 2026-11-10T05:14:04Z
+RUN before-gpu-1 exit 1 in 90 s: data port 31056; simsls sent {'frames': 1048, 'packets': 134144}; receiver drops 850 (max queue 232960 B); incomplete-frame lines 5; 'DRP_Damage': 82; node RcvbufErrors +850
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+RUN before-gpu-2 exit 1 in 77 s: data port 31056; simsls sent {'frames': 1084, 'packets': 138752}; receiver drops 33 (max queue 0 B); incomplete-frame lines 3; 'DRP_Damage': 3; node RcvbufErrors +33
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+RUN before-gpu-3 exit 1 in 77 s: data port 31056; simsls sent {'frames': 1081, 'packets': 138368}; receiver drops 62 (max queue 16640 B); incomplete-frame lines 2; 'DRP_Damage': 2; node RcvbufErrors +62
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-3/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-gpu-3/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s
+=== loss before-gpu done on sdfada010 job 44062096 step 10 wt-final HEAD b14885af3 dirty 0 2026-11-10T05:18:08Z

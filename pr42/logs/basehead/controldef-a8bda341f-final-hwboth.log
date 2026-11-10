@@ -1,0 +1,63 @@
+DIFF_EXIT=1
+== wt-prog1-base head=8830147da dirty=0
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D simbld+scbld+DAQ:SIM:BLD
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D ebeam
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+python -c 
+import numpy as np
+from psdaq.control.ControlDef import MyFloatPv
+m = MyFloatPv('step_value')
+for v in (3.5, 4, '5', None, True, np.float64(700000.0), np.int64(7)):
+   m.update(v)
+   print(type(v).__name__, repr(v), '->', m.position)
+
+float 3.5 -> 3.5
+int 4 -> 4.0
+str '5' -> 4.0
+NoneType None -> 4.0
+bool True -> 4.0
+float64 700000.0 -> 4.0
+int64 7 -> 4.0
+rc=0
+
+== wt-feat head=8cef0d1d9 dirty=0
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D simbld+scbld+DAQ:SIM:BLD
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D ebeam
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+python -c 
+import numpy as np
+from psdaq.control.ControlDef import MyFloatPv
+m = MyFloatPv('step_value')
+for v in (3.5, 4, '5', None, True, np.float64(700000.0), np.int64(7)):
+   m.update(v)
+   print(type(v).__name__, repr(v), '->', m.position)
+
+float 3.5 -> 3.5
+int 4 -> 4.0
+str '5' -> 4.0
+NoneType None -> 4.0
+bool True -> 4.0
+float64 700000.0 -> 700000.0
+int64 7 -> 7.0
+rc=0
+
+24,25c24,25
+< float64 700000.0 -> 4.0
+< int64 7 -> 4.0
+---
+> float64 700000.0 -> 700000.0
+> int64 7 -> 7.0

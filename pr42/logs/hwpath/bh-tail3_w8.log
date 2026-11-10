@@ -1,0 +1,39 @@
+== wt-base-t4 5aaf09617 tracked-dirty=0
+$ wave8pvs --l 0   (DAQ env, /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/wave8pvs)
+ModuleNotFoundError: No module named 'rogue.hardware.pgp'; 'rogue.hardware' is not a package
+EXIT=1
+$ ps-4.5.16/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.1 source, wt-base-t4/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.1/wave8/firmware/python/wave8/Top.py", line 56, in __init__
+    super().__init__(name=name, description=description, **kwargs)
+EXIT=1
+TypeError: __init__() got an unexpected keyword argument 'dataCapture'
+$ ps-4.5.23/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.0 source, wt-base-t4/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.0/wave8/firmware/python/wave8/Top.py", line 78, in __init__
+    self.pgpVc0 = rogue.hardware.axi.AxiStreamDma(dev,256*lane+0,True) # Registers for wave8 board
+EXIT=1
+rogue.GeneralError: AxiStreamDma::AxiStreamDma: General Error: Failed to open device file: /dev/datadev_0
+$ ps-4.5.16/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.0 source, wt-base-t4/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.0/wave8/firmware/python/wave8/Top.py", line 78, in __init__
+    self.pgpVc0 = rogue.hardware.axi.AxiStreamDma(dev,256*lane+0,True) # Registers for wave8 board
+EXIT=1
+rogue.GeneralError: AxiStreamDma::AxiStreamDma: General Error: Failed to open device file: /dev/datadev_0
+== wt-final c370014fc tracked-dirty=0
+$ wave8pvs --l 0   (DAQ env, /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/wave8pvs)
+ModuleNotFoundError: No module named 'rogue.hardware.pgp'; 'rogue.hardware' is not a package
+EXIT=1
+$ ps-4.5.16/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.1 source, wt-final/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.1/wave8/firmware/python/wave8/Top.py", line 80, in __init__
+    self.pgpVc0 = rogue.hardware.axi.AxiStreamDma(dev,256*lane+0,True) # Registers for wave8 board
+EXIT=1
+rogue.GeneralError: AxiStreamDma::AxiStreamDma: General Error: Failed to open device file: /dev/datadev_0
+$ ps-4.5.23/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.0 source, wt-final/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.0/wave8/firmware/python/wave8/Top.py", line 78, in __init__
+    self.pgpVc0 = rogue.hardware.axi.AxiStreamDma(dev,256*lane+0,True) # Registers for wave8 board
+EXIT=1
+rogue.GeneralError: AxiStreamDma::AxiStreamDma: General Error: Failed to open device file: /dev/datadev_0
+$ ps-4.5.16/bin/python -m psdaq.cas.wave8pvs --l 0   (PYTHONPATH: site wave8-1.0.0 source, wt-final/psdaq)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/tail3/w8src/wave8-1.0.0/wave8/firmware/python/wave8/Top.py", line 78, in __init__
+    self.pgpVc0 = rogue.hardware.axi.AxiStreamDma(dev,256*lane+0,True) # Registers for wave8 board
+EXIT=1
+rogue.GeneralError: AxiStreamDma::AxiStreamDma: General Error: Failed to open device file: /dev/datadev_0
+2026-11-09T17:52:37-08:00

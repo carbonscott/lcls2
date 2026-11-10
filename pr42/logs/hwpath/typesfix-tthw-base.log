@@ -1,0 +1,89 @@
+== wt-base-t4 head=5aaf09617 dirty=0 2026-11-09T17:41:45-08:00
+-- drp -D tt -d /dev/datadev_0
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/typesfix/tthw.sh: line 18: 2595732 Aborted                 timeout -k 5 90 drp -p 7 -u tt_0 -P tst -C 127.0.0.1 -D tt -d /dev/datadev_0 -l 0x1 -o $O -k ep_domain=lo,ep_provider=tcp > $O/drp.out 2>&1 < /dev/null
+rc=134
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+-- tt_config.py: entry points, tt_init on /dev/datadev_0
+entry points: ['tt_config', 'tt_connect', 'tt_init', 'tt_init_feb', 'tt_scan_keys', 'tt_unconfig', 'tt_update']
+FAIL GeneralError: AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0 at _AxiPcieDma.py:16
+-- tt_config_store.py: the config its write_to_daq_config_db writes
+alg:RO.alg:RO CHARSTR 'config'
+alg:RO.doc:RO CHARSTR ''
+alg:RO.version:RO ['INT32', 3] [2, 0, 0]
+detId:RO CHARSTR 'sim-tt'
+detName:RO CHARSTR 'tt_0'
+detType:RO CHARSTR 'timetool'
+doc:RO CHARSTR 'No comment'
+expert.ClinkFeb.ClinkTop.ClinkCh.BaudRate UINT32 9600
+expert.ClinkFeb.ClinkTop.ClinkCh.Blowoff UINT8 0
+expert.ClinkFeb.ClinkTop.ClinkCh.DataEn UINT8 1
+expert.ClinkFeb.ClinkTop.ClinkCh.DataMode UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.FrameMode UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.LinkMode UINT32 3
+expert.ClinkFeb.ClinkTop.ClinkCh.SerThrottle UINT32 30000
+expert.ClinkFeb.ClinkTop.ClinkCh.SwControlEn UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.SwControlValue UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.TapCount UINT32 8
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.CLM UINT32 2
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.CLS UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.DST UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.FFM UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.FRS UINT32 2
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.LPC UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[PID] UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[PID] UINT32 2048
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAC UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAD[PID] UINT32 2048
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SAM UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SBH UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SBR UINT32 9600
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SBV UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SCD UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SEM UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SET UINT32 5000
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SMM UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SPF UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SSB UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SSF UINT32 2
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.STG UINT32 2
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.STM UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.SVM UINT32 0
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.USD UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.USL UINT32 1
+expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.USS UINT32 1
+expert.ClinkFeb.ClinkTop.PllConfig0 CHARSTR '80MHz'
+expert.ClinkFeb.ClinkTop.PllConfig1 CHARSTR '80MHz'
+expert.ClinkFeb.ClinkTop.PllConfig2 CHARSTR '80MHz'
+expert.ClinkFeb.TrigCtrl.EnableTrig UINT8 1
+expert.ClinkFeb.TrigCtrl.InvCC UINT8 0
+expert.ClinkFeb.TrigCtrl.TrigMap UINT32 0
+expert.ClinkFeb.TrigCtrl.TrigMask UINT32 1
+expert.ClinkFeb.TrigCtrl.TrigPulseWidth FLOAT 32.768
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet0 CHARSTR '7f7f7f7f'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet1 CHARSTR '7f7f7f7f'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet2 CHARSTR '7f7f7f7f'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet3 CHARSTR '7f7f7f7f'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet4 CHARSTR '81818181'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet5 CHARSTR '81818181'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet6 CHARSTR '81818181'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.CoefficientSet7 CHARSTR '81818181'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FIR.LoadCoefficients CHARSTR '1'
+expert.TimeToolKcu1500.Application.AppLane.Fex.FrameIIR.TimeConstant UINT32 8
+expert.TimeToolKcu1500.Application.AppLane.Fex.FrameSubtractor.SubtractionActive UINT32 0
+expert.TimeToolKcu1500.Application.AppLane.Fex.background_prescaler.DialInPreScaling UINT32 3
+expert.TimeToolKcu1500.Application.AppLane.Prescale.DialInPreScaling UINT32 2
+expert.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer.Partition UINT32 0
+expert.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer.PauseThreshold UINT32 16
+expert.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer.TriggerDelay UINT32 42
+firmwareBuild:RO CHARSTR '-'
+firmwareVersion:RO UINT32 0
+help:RO CHARSTR '-- user interface --\nstart_ns : nanoseconds from fiducial to exposure start\ng
+user.gate_ns UINT32 1000
+user.start_ns UINT32 107649
+TTHW_DONE wt-base-t4

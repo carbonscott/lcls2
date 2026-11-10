@@ -1,0 +1,72 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-10T02:16:53+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ echo "listening on 31053 on this VM: $(ss -ltn | grep -c ':31053 ')"
+listening on 31053 on this VM: 0
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'cd /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/../../wt-final; git log -1 --format="%H %ad %s" --date=iso | cut -c1-138; echo "local changes: $(git status --short | wc -l)"; date -u +%FT%TZ'
+7695dfdae197a888c5be12c5b824fed38faa9bc0 2026-11-09 18:01:50 -0800 docs: changelog: the last three entries of this branch link #42
+local changes: 0
+2026-11-10T02:16:56Z
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/web15_up.sh web3   # one Slurm step on sdfada011 (job 44016690), under its node lock: a fresh CPU DAQ and the web GUI
+=== web GUI DAQ on sdfada011, Slurm job 44016690 step 76, wt-final HEAD 7695dfdae, local changes 0, lock /tmp/agentify-daq-ada011.lock hel
+2026-11-09T18:17:31.803-08:00 daq_sim: preflight rc=0: 18:17:31 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-09T18:17:39.679-08:00 daq_sim: web GUI up: http://127.0.0.1:31053/ (pid 4114369) control state reset
+2026-11-09T18:17:39.681-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  webgui       http://127.0.0.1:31053/  (pid 4114369; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+SESSION_UP
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'mkdir -p -m 700 /tmp/cwang31-p42'
+exedev@indigo-galaxy:redo$ # sdfiana025's ~/.ssh/known_hosts holds an older ECDSA key of sdfada011, and ssh turns port forwarding off for a changed key. The inner hop
+exedev@indigo-galaxy:redo$ # checks the node's keys as the node itself reports them (read in a Slurm step on it), in a private file, StrictHostKeyChecking=yes
+exedev@indigo-galaxy:redo$ ssh sdfiana025 'srun --jobid=44016690 --overlap -w sdfada011 -N 1 --ntasks=1 --cpus-per-task=1 --mem=1G cat /etc/ssh/ssh_host_ecdsa_key.pub /etc/ssh/ssh_host_ed25519_key.pub < /dev/null | sed "s/^/sdfada011 /" > /tmp/cwang31-p42/known_hosts; ssh-keygen -lf /tmp/cwang31-p42/known_hosts'
+256 SHA256:5dqktoifpIHF4Z//ug4B93Heoq2ek4aLghgHvmoM3ak sdfada011 (ECDSA)
+256 SHA256:vvUeIRILsINOA8XrKLf1gfmUb1Zw7I22XhaXX7JWtpY sdfada011 (ED25519)
+exedev@indigo-galaxy:redo$ ssh -f -S none -L 31053:/tmp/cwang31-p42/webgui.sock sdfiana025 'ssh -N -o StreamLocalBindUnlink=yes -o UserKnownHostsFile=/tmp/cwang31-p42/known_hosts -o StrictHostKeyChecking=yes -L /tmp/cwang31-p42/webgui.sock:127.0.0.1:31053 sdfada011'
+exedev@indigo-galaxy:redo$ sleep 3; curl -s -o /dev/null -w "GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\n" http://127.0.0.1:31053/
+o /dev/null -w "GET http://127.0.0.1:31053/ on this VM -> HTTP %{http_code}\n" http://127.0.0.1:31053/
+GET http://127.0.0.1:31053/ on this VM -> HTTP 200
+exedev@indigo-galaxy:redo$ ./pwvenv/bin/python tunnel_drive.py http://127.0.0.1:31053/ rec/pr42-web --events 1100
+2026-11-10T02:17:54.261+00:00 browser: headless Chromium 149.0.7827.55 on indigo-galaxy, URL http://127.0.0.1:31053/
+2026-11-10T02:17:54.261+00:00 open -> page ready; state RESET; backend 'backend: daqcontrol'
+2026-11-10T02:17:55.361+00:00 click Select     -> page state UNALLOCATED  OK (2026-11-10T02:17:56.512+00:00)
+2026-11-10T02:17:56.662+00:00 click Apply      -> page state ALLOCATED    OK (2026-11-10T02:17:57.196+00:00)
+2026-11-10T02:17:57.278+00:00 recording on (aria-pressed true)
+2026-11-10T02:17:57.284+00:00 choose CONNECTED   -> page state CONNECTED    OK (2026-11-10T02:17:57.762+00:00)
+2026-11-10T02:17:57.762+00:00 choose CONFIGURED  -> page state CONFIGURED   OK (2026-11-10T02:17:59.154+00:00)
+2026-11-10T02:17:59.154+00:00 choose STARTING    -> page state STARTING     OK (2026-11-10T02:18:00.362+00:00)
+2026-11-10T02:18:00.362+00:00 choose PAUSED      -> page state PAUSED       OK (2026-11-10T02:18:00.496+00:00)
+2026-11-10T02:18:00.496+00:00 choose RUNNING     -> page state RUNNING      OK (2026-11-10T02:18:00.673+00:00)
+2026-11-10T02:18:02.829+00:00 RUNNING: page events 1321 (source pva) >= 1100
+2026-11-10T02:18:04.938+00:00 RUNNING +2 s: page events 3321
+2026-11-10T02:18:04.955+00:00 choose PAUSED      -> page state PAUSED       OK (2026-11-10T02:18:05.097+00:00)
+2026-11-10T02:18:08.584+00:00 after Disable: page events 4459, data-final 1, source pva
+2026-11-10T02:18:08.873+00:00 choose STARTING    -> page state STARTING     OK (2026-11-10T02:18:09.085+00:00)
+2026-11-10T02:18:09.085+00:00 choose CONFIGURED  -> page state CONFIGURED   OK (2026-11-10T02:18:09.278+00:00)
+2026-11-10T02:18:09.280+00:00 choose CONNECTED   -> page state CONNECTED    OK (2026-11-10T02:18:09.562+00:00)
+2026-11-10T02:18:09.562+00:00 choose ALLOCATED   -> page state ALLOCATED    OK (2026-11-10T02:18:09.985+00:00)
+2026-11-10T02:18:09.985+00:00 choose RESET       -> page state RESET        OK (2026-11-10T02:18:10.259+00:00)
+2026-11-10T02:18:10.276+00:00 after RESET: page events 4459, data-final 1; error window lines: 0 []
+PAGE_EVENTS_FINAL=4459  ALL_STATES_OK=True  video page@13145c5d52b5663fd2e049a09e1eaaf5.webm
+exedev@indigo-galaxy:redo$ ssh sdfiana025 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/proof15/web15_down.sh web3   # on the node: simxpm's counters (daq_sim status), then daq_sim down; the up step ends
+== daq_sim status on sdfada011 step 78
+  webgui     pid 4114369  alive
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+  webgui     http://127.0.0.1:31053/ state reset  events 4459 (source pva, final True)
+  simxpm     PART:5:NumL0Acc = Mon Nov  9 18:18:17 2026 4459.0
+  simxpm     PART:5:NumL0Inp = Mon Nov  9 18:18:17 2026 4459.0
+== daq_sim down
+2026-11-09T18:18:17.877-08:00 daq_sim: stopping webgui pid 4114369: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+2026-11-09T18:18:18.077-08:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-09T18:18:23.303-08:00 daq_sim: stopping simxpm pid 4113837: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+2026-11-09T18:18:23.404-08:00 daq_sim: stopping lgbk pid 4113835: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -
+2026-11-09T18:18:23.704-08:00 daq_sim: stopping configdb pid 4113818: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/pytho
+2026-11-09T18:18:24.620-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31053]
+2026-11-09T18:18:24.622-08:00 daq_sim: down: clean
+DOWN_EXIT=0
+== the up step:
+UP_EXIT=0 2026-11-10T02:18:24Z
+SESSION_DONE
+exedev@indigo-galaxy:redo$ pkill -f '^ssh .*-L 31053:/tmp/cwang31-p42'; ssh sdfiana025 "pkill -u \$USER -f '^ssh -N .*cwang31-p42/webgui.sock'"; pgrep -af '^ssh .*-L 31053:' || echo 'tunnel closed (both hops)'
+tunnel closed (both hops)
+exedev@indigo-galaxy:redo$ ls rec/pr42-web/; cat rec/pr42-web/result.json
+01-open.png  02-rollcall.png  03-running.png  04-disabled.png  05-reset.png  page@13145c5d52b5663fd2e049a09e1eaaf5.webm  result.json
+{"events": "4459", "ok": true, "video": "/home/exedev/projects/lcls2/redo/rec/pr42-web/page@13145c5d52b5663fd2e049a09e1eaaf5.webm"}exedev@indigo-galaxy:redo$ 

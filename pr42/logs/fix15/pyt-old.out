@@ -1,0 +1,66 @@
+pytest on sdfmilan023 job 44000948 step 341 wt-final HEAD 7695dfdae dirty 6 2026-11-10T03:22:39Z
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/python3.9/site-packages/psdaq/sim/coverage.py
+        oxtc = write_run(o / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+        w = gui_witness(oxtc, ['simxpm'], section='servers')
+        server_entry(w, w['servers']['simxpm'])
+        ofiles = [write_witness(o / 'gui_witness.json', w)] + served_file(o, 'simxpm', XPM_SERVED)
+        mxtc = write_run(tmp_path / 'mine' / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')],
+                         shift=-3600)                       # this record's own run, an hour earlier
+    
+        def check(tag, files):
+            status = write_status(tmp_path / f'{tag}.json', {row: entry})
+            record([row], files, tmp_path / tag)
+            code, out = run_check(status, tmp_path / tag)
+            print(tag, line_of(out, row))
+            return code, line_of(out, row)
+    
+        code, line = check('control', [oxtc] + ofiles)
+        assert 'stand-in simxpm (its PVs); evidence ' in line and 'NO VALID' not in line
+        code, line = check('fg2', [mxtc] + ofiles)
+        assert code == 1 and 'names no listed xtc2 file of run tstx00001/r0001' in line
+        code, line = check('fg3', [mxtc, oxtc] + ofiles)
+>       assert code == 1 and 'NO VALID EVIDENCE' in line
+E       AssertionError: assert (1 == 1 and 'NO VALID EVIDENCE' in 'prog:pykcuxpm                  STAND-IN  stand-in simxpm (its PVs); evidence 20261109T192241-test-7695dfdae-1427052')
+
+psdaq/psdaq/tests/test_sim_coverage.py:1219: AssertionError
+----------------------------- Captured stdout call -----------------------------
+control prog:pykcuxpm                  STAND-IN  stand-in simxpm (its PVs); evidence 20261109T192241-test-7695dfdae-1427052
+fg2 prog:pykcuxpm                  STAND-IN  stand-in simxpm (its PVs); NO VALID EVIDENCE at HEAD 7695dfdae; rejected 20261109T192241-test-7695dfdae-1427052: its gui_witness witness names no listed xtc2 file of run tstx00001/r0001
+fg3 prog:pykcuxpm                  STAND-IN  stand-in simxpm (its PVs); evidence 20261109T192241-test-7695dfdae-1427052
+=========================== short test summary info ============================
+FAILED psdaq/psdaq/tests/test_sim_coverage.py::test_another_runs_files_and_witness_spliced_into_a_record_are_rejected
+1 failed, 230 deselected in 1.82s
+OLD_EXIT=1
+pytest on sdfmilan023 job 44000948 step 342 wt-final HEAD 7695dfdae dirty 6 2026-11-10T03:22:46Z
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/python3.9/site-packages/psdaq/sim/coverage.py
+>           assert t.get('ready_s', 0) >= 120, det
+E           AssertionError: fakecam
+E           assert 0 >= 120
+E            +  where 0 = <built-in method get of dict object at 0x7fce193f5e40>('ready_s', 0)
+E            +    where <built-in method get of dict object at 0x7fce193f5e40> = {'kwargs': 'reducer=NoOpReducer,sim_length={length},sim_dma_count=64,dmaBufSize=131072,dmaBufCount=64'}.get
+
+psdaq/psdaq/tests/test_sim_drpgpu.py:149: AssertionError
+________________ test_wait_drps_ready_waits_for_the_newest_log _________________
+
+tmp_path = PosixPath('/lscratch/cwang31/tmp/pytest-of-cwang31/pytest-16/test_wait_drps_ready_waits_for0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fce06af6700>
+
+    def test_wait_drps_ready_waits_for_the_newest_log(tmp_path, monkeypatch):
+        """The wait ends when the DRP's newest procmgr log says it, not an earlier 'up''s log; a
+        DRP that never does fails after ready_s with the type's 'ready_why'; a dead one at once."""
+        det = 'fakecam'
+        work, state, d = _ready_state(tmp_path, monkeypatch, det)
+        old = d / f'09_18:20:55_node:{det}_0.log'
+        old.write_text('<I> Ready for transitions\n')
+        os.utime(old, (1, 1))
+        new = d / f'10_03:00:00_node:{det}_0.log'
+        new.write_text('<I> GPU device 0: NVIDIA L40S\n')
+>       why = daq_sim.GPU_SIM_TYPES[det]['ready_why']
+E       KeyError: 'ready_why'
+
+psdaq/psdaq/tests/test_sim_drpgpu.py:178: KeyError
+=========================== short test summary info ============================
+FAILED psdaq/psdaq/tests/test_sim_drpgpu.py::test_every_gpu_type_waits_for_ready_for_transitions
+FAILED psdaq/psdaq/tests/test_sim_drpgpu.py::test_wait_drps_ready_waits_for_the_newest_log
+2 failed, 11 deselected in 0.85s
+OLD_EXIT=1

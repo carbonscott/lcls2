@@ -1,0 +1,113 @@
+daq_sim coverage at b14885af349db9d58d24f6a5670e925286b3737b (HEAD of /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final)
+rows from: psdaq/drp/PGPDetectorApp.cc (21 types), psdaq/drpGpu/PGPDetectorApp.cc (5 types), psdaq/psdaq/cnf (68 configs, 52 programs)
+status: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq/psdaq/sim/coverage_status.json
+evidence: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15/forge/fg1 (1 records)
+row                            status    evidence / reason
+det:drp:fakecam                RUN       evidence 20261109T170955-cycle-forged-1146979
+det:drp:cspad                  RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:hsd                    RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixquad               RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixquad1kfps          RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixhr2x2              RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixhremu              RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixm320               RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixUHR                RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epix100                RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:jungfrau               RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:jungfrauemu            RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:opal                   RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:tt                     RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:tb                     RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:ts                     RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:wave8                  RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:wave8he                RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:hrencoder              RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:piranha4               RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp:epixuhr3x2             RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp_gpu:fakecam            RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp_gpu:epixuhremu         RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp_gpu:epixuhrsim         RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp_gpu:epixuhr3x2         RUN       NO VALID EVIDENCE at HEAD b14885af3
+det:drp_gpu:jungfrau           RUN       NO VALID EVIDENCE at HEAD b14885af3
+prog:ami-client                RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:ami-global                RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:ami-manager               RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:ami-node                  RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:ami-worker                RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:bldcas                    RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:cLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpcam*; no role in a DAQ run
+prog:control                   RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:control_gui               RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:daqstat                   RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:deadca                    RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:drp                       RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:drp_bld                   RUN       NO VALID EVIDENCE at HEAD b14885af3
+prog:drp_gpu                   RUN       NO VALID EVIDENCE at HEAD b14885af3
+prog:drp_pva                   RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:drp_udpencoder            RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:dtica                     RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:epics_exporter            RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:epicsArch                 RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:groupca                   RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldCopy                RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldServer              RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:hpsdbuscas                RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:hsd134PVs                 STAND-IN  stand-in simhsd (hsd134PVs's PVs over PVA: the 44 names its C++ sources (meson.build hsd134PVs_sources: hsd134PVs.cc, PV134Stats.cc, PVCtrlsBase.cc, PV134Ctrls.cc) connect to under -P <digitizer> for its 2 chips A and B (FWBUILD, FWVERSION, PADDR, PLINK, KEEPROWS it puts; CONFIG, READY, RESET, PGPCONFIG it monitors; MONTIMING ... FEXOOR, PADDR_U it posts), all of which simhsd serves (hsdpvs's ChipServer per chip) and whose monitoring it posts once a second (MONTIMING, MONPGP, MONRAWBUF, MONFEXBUF) as hsd134PVs posts the digitizer's); evidence 20261109T170955-cycle-forged-1146979
+prog:hsd64PVs                  N/A       R7, classes absent from the tree: lab3-hsd64.cnf:31 (also lab3-hsd64_cg.cnf:32, lab3-simvalid.cnf:40) runs 'hsd64PVs -P DAQ:LAB2:HSD:DEV06_3E -d /dev/pcie_adc_3e -I', but psdaq/psdaq/hsd/src/hsd64PVs.cc:11,13,14 include Module64.hh, PV64Stats.hh and PV64Ctrls.hh, which the tree does not have (git ls-files lists none), and psdaq/psdaq/hsd/meson.build builds no hsd64PVs: 'meson compile -C builddir hsd64PVs' fails with "target not found" and compiling hsd64PVs.cc fails with "fatal error: psdaq/hsd/src/Module64.hh: No such file or directory"
+prog:hsdca                     N/A       no source in the tree: lab3-hsd64.cnf:30 runs 'hsdca', but psdaq/pyproject.toml:44 comments its entry point out (#hsdca = "psdaq.cas.hsdca:main") and psdaq/psdaq/cas/hsdca.py does not exist
+prog:hsdcas                    N/A       no source in the tree: lab3-hsd64.cnf:29 runs 'hsdcas', but psdaq/pyproject.toml:45 comments its entry point out (#hsdcas = "psdaq.cas.hsdcas:main") and psdaq/psdaq/cas/hsdcas.py does not exist
+prog:hsdpva                    RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:hsdpvs                    STAND-IN  stand-in simhsd (hsdpvs's PVs over PVA: every name its ChipServer adds under each -P prefix (CONFIG, READY, PGPCONFIG, FWBUILD, ..., MONTIMING, ..., RESET), which simhsd builds with hsdpvs.ChipServer itself; the cycle's witness gets each of them from simhsd and reads its monitoring change while the run runs); evidence 20261109T170955-cycle-forged-1146979
+prog:lclsBldServer             RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:monReqServer              RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:partca                    RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:procstat                  RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:pvant                     RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:pvatable                  RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:pykcuxpm                  STAND-IN  stand-in simxpm (the XPM PVs of pvctrls.py and pvstats.py and the control -X ZMQ PULL port, which pykcuxpm serves from a KCU card with the same PVCtrls/PVStats classes as pyxpm (pykcuxpm.py:18-19,111-114); not pvxtpg.py's XTPG PVs); evidence 20261109T170955-cycle-forged-1146979
+prog:pyxpm                     STAND-IN  stand-in simxpm (pyxpm's XPM PVs over PVA (pvctrls.py/pvstats.py names) and its control -X ZMQ PULL port); evidence 20261109T170955-cycle-forged-1146979
+prog:qLoopTest                 N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): makes the card firmware send test frames on /dev/pgpdaq*; no role in a DAQ run
+prog:qRead                     N/A       pgpGen4Daq card diagnostic (lab3-cam.cnf): reads and prints raw DMA buffers from /dev/pgpdaq*; no role in a DAQ run
+prog:shmemClient               RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:sim_udpencoder            RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:teb                       RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:tmo_acr_opal_feedback     N/A       no source in the tree: srcf-tmo.cnf:174 runs 'python tmo_acr_opal_feedback.py -P TMO:ACR' from the hutch's working dir; no file of that name exists in the tree
+prog:tpr_trigger               RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:tprca                     RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:tprcas                    STAND-IN  stand-in simtpr (tprcas's PVs over PVA: every name of the table its main() builds for -P <prefix> (ACCSEL ... EVTCNT, CH0..CH13 settings and RATE), which simtpr serves with tprcas's types and start values; the cycle's witness gets each of them from simtpr and reads EVTCNT advance while the run runs); evidence 20261109T170955-cycle-forged-1146979
+prog:tprioc                    STAND-IN  stand-in simtpr (tprioc's PVs over PVA: the 237 names its C++ source (psdaq/psdaq/app/tprca.cc, meson.build executable('tprioc', 'tprca.cc')) makes under -n <prefix> (TprControl's ACCSEL ... EVTCNT, RXERRSCL, VSNERR, FRAMEVSN, TXCLKRATE; ChannelControl's MODE ... RATE for CH0..CH13, TprBase::NCHANNELS 14), all of which simtpr serves (tprcas's table and the 10 names tprioc adds to it), posting once a second what tprioc posts from the TPR (LINKSTATE, FRAMERATE, RXCLKRATE, TXCLKRATE, EVTCNT, each channel's RATE)); evidence 20261109T170955-cycle-forged-1146979
+prog:tprtrig                   RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:wave8pvs                  RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:xpmpva                    RUN       evidence 20261109T170955-cycle-forged-1146979
+prog:xpmpvas                   N/A       no source in the tree: lab3-xtpg.cnf:26 runs 'xpmpvas -P DAQ:LAB2:XPM:<shelf>', but no file, entry point or build target of that name exists (git grep -w xpmpvas finds only that config and the coverage tests)
+prog:xpmPVs                    N/A       R7, not built by the tree: lab3-xtpg.cnf:28 runs 'xpmPVs -a 10.0.3.104 -P DAQ:LAB2', but psdaq/psdaq/meson.build:18 comments its directory out (#subdir('xpm'); psdaq/psdaq/CMakeLists.txt:10 #add_subdirectory(xpm)) and psdaq/psdaq/xpm/meson.build:31 builds only xpm_simple (xpmPVs is only in xpm/CMakeLists.txt:44): 'meson compile -C builddir xpmPVs' fails with "ERROR: Can't invoke target `xpmPVs`: target not found"
+78 rows, 36 run, 6 stand-in, 9 N/A, 0 unproven, 27 claimed without valid evidence
+status file claims (not counted above unless proven): 63 RUN, 6 STAND-IN, 9 N/A
+FAIL: 0 error(s), 27 RUN/STAND-IN row(s) without valid evidence, 0 unproven row(s)
+  det:drp:cspad: RUN row without valid evidence at HEAD b14885af3
+  det:drp:hsd: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixquad: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixquad1kfps: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixhr2x2: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixhremu: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixm320: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixUHR: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epix100: RUN row without valid evidence at HEAD b14885af3
+  det:drp:jungfrau: RUN row without valid evidence at HEAD b14885af3
+  det:drp:jungfrauemu: RUN row without valid evidence at HEAD b14885af3
+  det:drp:opal: RUN row without valid evidence at HEAD b14885af3
+  det:drp:tt: RUN row without valid evidence at HEAD b14885af3
+  det:drp:tb: RUN row without valid evidence at HEAD b14885af3
+  det:drp:ts: RUN row without valid evidence at HEAD b14885af3
+  det:drp:wave8: RUN row without valid evidence at HEAD b14885af3
+  det:drp:wave8he: RUN row without valid evidence at HEAD b14885af3
+  det:drp:hrencoder: RUN row without valid evidence at HEAD b14885af3
+  det:drp:piranha4: RUN row without valid evidence at HEAD b14885af3
+  det:drp:epixuhr3x2: RUN row without valid evidence at HEAD b14885af3
+  det:drp_gpu:fakecam: RUN row without valid evidence at HEAD b14885af3
+  det:drp_gpu:epixuhremu: RUN row without valid evidence at HEAD b14885af3
+  det:drp_gpu:epixuhrsim: RUN row without valid evidence at HEAD b14885af3
+  det:drp_gpu:epixuhr3x2: RUN row without valid evidence at HEAD b14885af3
+  det:drp_gpu:jungfrau: RUN row without valid evidence at HEAD b14885af3
+  prog:drp_bld: RUN row without valid evidence at HEAD b14885af3
+  prog:drp_gpu: RUN row without valid evidence at HEAD b14885af3

@@ -1,0 +1,62 @@
+== wt-final head=c370014fc dirty=0
+drp -p 7 -u fakecam_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -D fakecam -o /tmp/hw-X
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp -p 7 -u epix100_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -D epix100 -o /tmp/hw-X
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+env PSDAQ_SIM_CORRUPT_SEQ=5 drp -p 7 -u fakecam_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -D fakecam -o /tmp/hw-X
+tst-drp[PID]: <I> logging configured
+tst-drp[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D simbld+scbld+DAQ:SIM:BLD
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_bld -p 7 -u bld_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -k interface=lo -D ebeam
+tst-drp_bld[PID]: <W> logging configured
+tst-drp_bld[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp_bld[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_pva -p 7 -u pvcam_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X pva/DAQ:SIM:CAM:IMAGE
+tst-drp_pva[PID]: <I> logging configured
+tst-drp_pva[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp_pva[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+epicsArch -p 7 -u epics_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X /tmp/hw-X/pv.txt
+tst-epicsArch[PID]: <I> logging configured
+tst-epicsArch[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-epicsArch[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+drp_udpencoder -p 7 -u encoder_0 -P tst -C 127.0.0.1 -d /dev/datadev_0 -l 0x1 -o /tmp/hw-X -L 31299
+tst-drp_udpencoder[PID]: <I> logging configured
+tst-drp_udpencoder[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+tst-drp_udpencoder[PID]: <C> Error opening /dev/datadev_0: No such file or directory
+timeout: the monitored command dumped core
+rc=134
+sim_udpencoder -p 0 -a 127.0.0.1 -d 31299
+Could not open tpr: No such file or directory
+terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >'
+timeout: the monitored command dumped core
+rc=134
+monReqServer -p 7 -P tst -C 127.0.0.1 -u meb0 -d -n 8 -q 2 -t hwstack11
+tst-monReqServer[PID]: <I> logging configured
+tst-monReqServer[PID]: <I> Partition Tag: 'hwstack11'
+tst-monReqServer[PID]: <W> SMT is on: the 16 granted CPUs are only 8 physical cores, so any hot thread past the first 8 shares a core
+EventBuilder timeout is 12000 ms, 12000000000 ns
+tst-monReqServer[PID]: <I> Ready for transitions
+tst-monReqServer[PID]: <W> Shutting down on TERM signal
+rc=124

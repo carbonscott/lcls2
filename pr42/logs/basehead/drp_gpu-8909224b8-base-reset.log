@@ -1,0 +1,59 @@
+drp_gpu-fakecam on sdfada013, Slurm job 43970564 step 186, wt-base-t4 HEAD 5aaf09617, local changes 0, 2026-11-09 12:34:32 PST
+the step's GPU: 0, NVIDIA L40S
+node lock held from 12:34:38: up, cycle, down
+UP_EXIT=0
+daq_sim: preflight rc=0: 12:35:00 PREFLIGHT PASS  (logs/preflight.log)
+daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+daq_sim: UP. Endpoints (also in endpoints.json):
+CYCLE_EXIT=0
+final state reset (start reset)
+  simxpm NumL0Acc        1875
+  TEB_WrtCt              1875
+  DRP_Damage             0
+  xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/types4/base-F1/wd-drp_gpu-fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c
+  psana2 events          1875
+  psana2 with data       1875
+  psana2 checks          PASS
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+evidence 20261109T123533-cycle-5aaf09617-1785206: det:drp_gpu:fakecam prog:control prog:drp_gpu prog:pyxpm prog:teb
+cycle PASS
+-- after the cycle's Reset: procmgr status of the DRP, and its log's tail
+  control    pid 1785071  RUNNING
+  teb0       pid 1785072  RUNNING
+  fakecam_0  pid -        SHUTDOWN
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+drp log: wd-drp_gpu-fakecam/pmlogs/2026/11/09_12:35:03_sdfada013:fakecam_0.log
+DRP logs of this DAQ: 1 (a restart after a crash would add one); segfault/abort lines in them: 1
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/drp_gpu(+0x2c941)[0x55683e2c0941]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/drp_gpu(+0x2825c)[0x55683e2bc25c]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/drp_gpu(+0x10b0e)[0x55683e2a4b0e]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/lib/libcollection.so(_ZN13CollectionApp3runEv+0x7a4)[0x7fa370dc87a4]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/drp_gpu(+0xf7f1)[0x55683e2a37f1]
+/lib64/libc.so.6(+0x295d0)[0x7fa36b0295d0]
+/lib64/libc.so.6(__libc_start_main+0x80)[0x7fa36b029680]
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/drp_gpu(+0x10712)[0x55683e2a4712]
+--- Resolve frames with: addr2line -f -C -i -e <file> <+offset>
+@@@ Current time: Mon Nov  9 12:35:29 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1785073. Normal exit status = 1
+DOWN_EXIT=0
+daq_sim: down: clean
+after down: drp log tail: @@@ Received a sigChild for process 1785073. Normal exit status = 1
+sls shared memory left: 0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det fakecam --seed 0x1234 
+  experiment tstx00001 run 1 detector fakecam raw shape [128]
+  L1Accept events 1875; with fakecam data 1875; events matching the pattern of seed 0x1234: 1875
+  check: every pixel of fakecam.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, seq n, pulseId
+  PASS
+rc=0
+== xtc2_check tstx00001-r0001-s000-c000.xtc2 --drp drp_gpu --det fakecam --seed 0x1234 --self-test-offset 1
+  experiment tstx00001 run 1 detector fakecam raw shape [128]
+  L1Accept events 1875; with fakecam data 1875; events matching the pattern of seed 0x1234: 0
+  check: every pixel of fakecam.noOp.calib (drp_gpu: calibrated on the GPU, NoOpReducer) vs the calibration of the TDet words of seed, seq n, pulseId, self-test offset 1
+  problem: event 1: 60 of 128 pixels differ
+  problem: event 2: 60 of 128 pixels differ
+  FAIL
+rc=1
+RUN_DONE drp_gpu-fakecam 12:35:47

@@ -1,0 +1,29 @@
+Building analysis software
+Building DAQ software
+Installation directory: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install
+ninja: Entering directory `/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/builddir'
+ninja: no work to do.
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/ninja -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/builddir -j 12
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 3ms
+   Building psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final
+      Built psana @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final
+Prepared 1 package in 3.38s
+Uninstalled 1 package in 1.00s
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 6.60s
+ ~ psana==4.3.4 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final)
+Using CPython 3.9.21 interpreter at: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3
+Resolved 1 package in 1ms
+   Building psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq
+      Built psdaq @ file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq
+Prepared 1 package in 960ms
+Uninstalled 1 package in 64ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 318ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq)

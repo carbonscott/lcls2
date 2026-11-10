@@ -1,0 +1,12 @@
+=== hwall on sdfada013 job 43970564 step 268 base 5aaf09617 head c370014fc dirty 0 2026-11-10T01:35:18Z
+typesfix-hw: DIFF_EXIT=0 (0 diff lines; base 309 lines, head 309)
+typesfix-hwx: DIFF_EXIT=1 (4 diff lines; base 13 lines, head 13)
+typesfix-tthw: DIFF_EXIT=1 (22 diff lines; base 89 lines, head 89)
+uhrgpu-hw: DIFF_EXIT=0 (0 diff lines; base 317 lines, head 317)
+uhr3x2-hwpath: DIFF_EXIT=0 (0 diff lines; base 222 lines, head 222)
+stack-hwpath: DIFF_EXIT=0 (0 diff lines; base 62 lines, head 62)
+bh_progtail: exit 0 (0 same, 0 differ)
+bh_tail2: exit 0 (2 same, 4 differ)
+bh_tail3: exit 0 (2 same, 1 differ)
+bh_tail3_w8: exit 0 (0 same, 0 differ)
+=== hwall done 2026-11-10T01:52:37Z

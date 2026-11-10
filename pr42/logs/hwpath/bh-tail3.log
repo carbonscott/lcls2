@@ -1,0 +1,77 @@
+network namespace for the hardware command: unshare -rn
+== wt-base-t4 5aaf09617 tracked-dirty=0 hpsBldServer=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/bin/hpsBldServer
+$ hpsBldServer -h
+EXIT=0
+hpsBldServer: invalid option -- 'h'
+Usage: hpsBldServer [options]
+Options: -a <ip address, dotted notation> (HPS interface)
+         -i <ip_address, dotted notation> ( MC interface)
+         -p <words> (max packet size)
+$ unshare -rn strace hpsBldServer -i lo -n DAQ:LAB2:HPSEX -p 0x1e0 -a 10.0.3.105   (lab3-bld.cnf:63 with -i lo; no network in the namespace)
+EXIT=255
+namespace: lo UNKNOWN 127.0.0.1/8 ::1/128  routes: []
+Error connecting UDP socket: Network is unreachable
+Using interface lo (127.0.0.1)
+Using interface 10.0.3.105 (10.0.3.105)
+rcvbuf = 0x2000000 (0x1000000)
+connects:       1 10.0.3.105:8198 
+sends:  results: 
+$ strace hpsBldServer -i lo -n DAQ:LAB2:HPSEX -p 0x1e0 -a 127.0.0.1   (loopback, nothing listens on 8193/8198)
+EXIT=6
+terminate called after throwing an instance of 'char const*'
+bld_control received signal: Aborted
+BLD disabled
+connects:       1 127.0.0.1:8198 
+sends: 
+$ hpsBldCopy
+EXIT=255
+Usage: hpsBldCopy [options]
+Options: -i <ip interface, name or dotted notation>
+         -I <bld service name>
+         -O <bld service name>
+         -o <events delay>
+$ python: pyhpsbld.hps_init's signature
+ModuleNotFoundError: No module named 'psdaq.pyxpm.surf'
+$ bldcas -P DAQ:LAB2 HPSEX (lab3-bld.cnf:59 with bld_cp=[]), own PVA ports; its table and its PVs' values
+ImportError: cannot import name 'gui_witness' from 'psdaq.sim' (/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-base-t4/install/lib/python3.9/site-packages/psdaq/sim/__init__.py)
+== wt-final c370014fc tracked-dirty=0 hpsBldServer=/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/bin/hpsBldServer
+$ hpsBldServer -h
+EXIT=0
+hpsBldServer: invalid option -- 'h'
+Usage: hpsBldServer [options]
+Options: -a <ip address, dotted notation> (HPS interface)
+         -i <ip_address, dotted notation> ( MC interface)
+         -p <words> (max packet size)
+         -r <port> (HPS register (RSSI) port, default 8193)
+         -d <port> (HPS diagnostic bus port, default 8198)
+$ unshare -rn strace hpsBldServer -i lo -n DAQ:LAB2:HPSEX -p 0x1e0 -a 10.0.3.105   (lab3-bld.cnf:63 with -i lo; no network in the namespace)
+EXIT=255
+namespace: lo UNKNOWN 127.0.0.1/8 ::1/128  routes: []
+Error connecting UDP socket: Network is unreachable
+Using interface lo (127.0.0.1)
+Using interface 10.0.3.105 (10.0.3.105)
+rcvbuf = 0x2000000 (0x1000000)
+connects:       1 10.0.3.105:8198 
+sends:  results: 
+$ strace hpsBldServer -i lo -n DAQ:LAB2:HPSEX -p 0x1e0 -a 127.0.0.1   (loopback, nothing listens on 8193/8198)
+EXIT=124
+Using interface lo (127.0.0.1)
+Using interface 127.0.0.1 (127.0.0.1)
+rcvbuf = 0x2000000 (0x1000000)Rogue/pyrogue version v6.1.3. https://github.com/slaclab/rogue
+connects:       1 127.0.0.1:8198 
+sends:     278 127.0.0.1:8193 
+$ hpsBldCopy
+EXIT=255
+Usage: hpsBldCopy [options]
+Options: -i <ip interface, name or dotted notation>
+         -I <bld service name>
+         -O <bld service name>
+         -o <events delay>
+$ python: pyhpsbld.hps_init's signature
+(name, ipAddr, pktSize, port=8193)
+$ bldcas -P DAQ:LAB2 HPSEX (lab3-bld.cnf:59 with bld_cp=[]), own PVA ports; its table and its PVs' values
+{'DAQ:LAB2:HPSEX:ADDR': 4026499073, 'DAQ:LAB2:HPSEX:PORT': 11001}
+diff usage.txt: 5a6,7|>          -r <port> (HPS register (RSSI) port, default 8193)|>          -d <port> (HPS diagnostic bus port, default 8198)|
+diff copy.txt: same
+diff bldcas.out: same
+2026-11-09T17:51:57-08:00

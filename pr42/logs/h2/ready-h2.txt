@@ -1,0 +1,1 @@
+each drp_gpu said `Ready for transitions` after fakecam 31 s, epixuhremu 20 s, epixuhrsim 7 s, jungfrau 20 s, epixuhr3x2 73 s, and `up` waited for it

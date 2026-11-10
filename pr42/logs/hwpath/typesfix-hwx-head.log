@@ -1,0 +1,13 @@
+== wt-final head=c370014fc dirty=0 2026-11-09T17:41:35-08:00
+-- drp -D epixhr2x2 -d sim://127.0.0.1:31999, PSDAQ_SIM_PYTHONPATH unset, PSDAQ_SIM_ROGUE_SEEDS = head's seeds/epixhr2x2.json (base has none)
+ModuleNotFoundError: No module named 'lcls2_epix_hr_pcie'
+tst-drp[PID]: <C> **** python error
+rc=134
+-- hardware path with the packages importable (PYTHONPATH, no sim): entry points, epixhr2x2_init('/dev/datadev_0')
+WARNING:root:epixhr2x2_init
+entry points: ['epixhr2x2_config', 'epixhr2x2_connect', 'epixhr2x2_connectionInfo', 'epixhr2x2_disable', 'epixhr2x2_enable', 'epixhr2x2_external_trigger', 'epixhr2x2_init', 'epixhr2x2_init_feb', 'epixhr2x2_internal_trigger', 'epixhr2x2_scan_keys', 'epixhr2x2_unconfig', 'epixhr2x2_update']
+raised GeneralError AxiMemMap::AxiMemMap: General Error: Failed to open device file: /dev/datadev_0
+psdaq.sim modules loaded: []
+AxiMemMap rogue.hardware.axi AxiMemMap | AxiStreamDma AxiStreamDma | Device._start pyrogue._Device
+rc=0
+HWX_DONE wt-final

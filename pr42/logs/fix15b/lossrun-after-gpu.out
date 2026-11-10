@@ -1,0 +1,11 @@
+=== loss after-gpu: drp drp_gpu jungfrau x3, lock /tmp/agentify-daq-ada010.lock, rmem_max 212992, simsls 53eff1c1 on sdfada010 job 44062096 step 14 wt-final HEAD b3d052088 dirty 0 2026-11-10T05:22:43Z
+RUN after-gpu-1 exit 0 in 77 s: data port 31056; simsls sent {'frames': 1081, 'packets': 138368}; receiver drops 0 (max queue 16640 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+RUN after-gpu-2 exit 0 in 77 s: data port 31056; simsls sent {'frames': 1078, 'packets': 137984}; receiver drops 0 (max queue 0 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+RUN after-gpu-3 exit 0 in 77 s: data port 31056; simsls sent {'frames': 1082, 'packets': 138496}; receiver drops 0 (max queue 33280 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-3/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+TYPE drp_gpu:jungfrau node sdfada010 job 44062096 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-gpu-3/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s0
+=== loss after-gpu done on sdfada010 job 44062096 step 14 wt-final HEAD b3d052088 dirty 0 2026-11-10T05:26:34Z

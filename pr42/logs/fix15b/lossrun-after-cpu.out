@@ -1,0 +1,5 @@
+=== loss after-cpu: drp drp jungfrau x1, lock /tmp/agentify-daq-milan082.lock, rmem_max 212992, simsls 53eff1c1 on sdfmilan082 job 44000948 step 385 wt-final HEAD b3d052088 dirty 0 2026-11-10T05:26:22Z
+RUN after-cpu-1 exit 0 in 75 s: data port 31056; simsls sent {'frames': 1091, 'packets': 139648}; receiver drops 0 (max queue 16640 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-after-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000
+=== loss after-cpu done on sdfmilan082 job 44000948 step 385 wt-final HEAD b3d052088 dirty 0 2026-11-10T05:27:37Z

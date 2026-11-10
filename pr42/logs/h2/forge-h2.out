@@ -1,0 +1,38 @@
+=== forgeries at wt-final HEAD b14885af3 dirty 0 on sdfmilan023 2026-11-10T04:52:58Z: MINE 20261109T203837-cycle-b14885af3-1579403.json, O
+fg2 wrote $R/work/fix15/forge/fg2/20261109T203837-cycle-fg2-b14885af3-1579403.json files 59
+FG3 adds 11 files of the other run (its 4 xtc2 files and 7 logs)
+fg3 wrote $R/work/fix15/forge/fg3/20261109T203837-cycle-fg3-b14885af3-1579403.json files 70
+FG1 wrote $R/work/fix15/forge/fg1/20261109T170955-cycle-forged-1146979.json sha 29f1be4a7 -> b14885af3 rows 42 files 59
+== own: coverage exit 1 78 rows, 36 run, 6 stand-in, 9 N/A, 0 unproven, 27 claimed without valid evidence
+prog:groupca RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:hpsBldCopy RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:hpsBldServer RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:lclsBldServer RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:tpr_trigger RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:tprtrig RUN evidence 20261109T203837-cycle-b14885af3-1579403
+prog:wave8pvs RUN evidence 20261109T203837-cycle-b14885af3-1579403
+== fg2: coverage exit 1 78 rows, 16 run, 2 stand-in, 9 N/A, 0 unproven, 51 claimed without valid evidence
+prog:groupca RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness names 
+prog:hpsBldCopy RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness nam
+prog:hpsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness n
+prog:lclsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness 
+prog:tpr_trigger RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness na
+prog:tprtrig RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness names 
+prog:wave8pvs RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg2-b14885af3-1579403: its gui_witness witness names
+== fg3: coverage exit 1 78 rows, 0 run, 0 stand-in, 9 N/A, 0 unproven, 69 claimed without valid evidence
+prog:groupca RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tstx0000
+prog:hpsBldCopy RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tstx0
+prog:hpsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tst
+prog:lclsBldServer RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run ts
+prog:tpr_trigger RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tstx
+prog:tprtrig RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tstx0000
+prog:wave8pvs RUN NO VALID EVIDENCE at HEAD b14885af3; rejected 20261109T203837-cycle-fg3-b14885af3-1579403: its xtc2 files of run tstx000
+== fg1: coverage exit 1 78 rows, 36 run, 6 stand-in, 9 N/A, 0 unproven, 27 claimed without valid evidence
+prog:groupca RUN evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldCopy RUN evidence 20261109T170955-cycle-forged-1146979
+prog:hpsBldServer RUN evidence 20261109T170955-cycle-forged-1146979
+prog:lclsBldServer RUN evidence 20261109T170955-cycle-forged-1146979
+prog:tpr_trigger RUN evidence 20261109T170955-cycle-forged-1146979
+prog:tprtrig RUN evidence 20261109T170955-cycle-forged-1146979
+prog:wave8pvs RUN evidence 20261109T170955-cycle-forged-1146979
+=== forgeries done 2026-11-10T04:57:49Z

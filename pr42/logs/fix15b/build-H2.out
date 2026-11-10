@@ -1,0 +1,8 @@
+# fix15b: the stdout of 'srun ... -w sdfada010 ... work/fix15b/build.sh H2' (job 44062096 step 13) as the agent's terminal got it;
+# build.sh's own log is build-H2.log. Saved here after the run (the recording's build-state step at 05:28Z found no build-H2.out).
+incremental build (CUDA 12.9) on sdfada010, Slurm job 44062096 step 13, wt-final HEAD b3d052088, local changes 0, 2026-11-09 21:22:26 PST
+BUILD_EXIT=0 in 13 s
+Installed 1 package in 296ms
+ ~ psdaq==4.3 (from file:///sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/psdaq)
+drp: install/bin/drp   drp_gpu: 16:09:17 install/bin/drp_gpu   GPU libs: 8
+sim files match the checkout: coverage.py simxpm.py matrix.py daq_sim.py simsls.py feature.py 

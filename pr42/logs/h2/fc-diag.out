@@ -1,0 +1,5 @@
+=== feature c x3 on sdfmilan082 job 44000948 step 373 HEAD b14885af3 dirty 0 2026-11-10T04:49:58Z
+feature c run 1: exit 0, down exit 0 (2026-11-09T20:51:26.216-08:00 daq_sim: down: clean); MEB_EvtCt              2321; 'MEB_EvtCt': 2321; FEATURE c PASS
+feature c run 2: exit 0, down exit 0 (2026-11-09T20:52:49.499-08:00 daq_sim: down: clean); MEB_EvtCt              2200; 'MEB_EvtCt': 2200; FEATURE c PASS
+feature c run 3: exit 0, down exit 0 (2026-11-09T20:54:13.525-08:00 daq_sim: down: clean); MEB_EvtCt              2219; 'MEB_EvtCt': 2219; FEATURE c PASS
+=== done 2026-11-10T04:54:13Z

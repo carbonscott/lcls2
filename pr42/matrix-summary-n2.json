@@ -1,0 +1,3148 @@
+{
+ "sha": "b3d052088615373e813d6027f1bd9fcdab169a14",
+ "break": null,
+ "types": {
+  "fakecam": {
+   "name": "types/fakecam",
+   "type": "fakecam",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/fakecam",
+   "started": "2026-11-09T22:02:57.838-08:00",
+   "assertions": [
+    {
+     "name": "types/fakecam/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/fakecam/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/fakecam/drp-alive",
+     "ok": true,
+     "detail": "fakecam_0 drp pid 1785597 alive after the run"
+    },
+    {
+     "name": "types/fakecam/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2000, TEB_WrtCt 2000, psana2 events 2000, with fakecam data 2000: equal and >= 1000"
+    },
+    {
+     "name": "types/fakecam/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det fakecam: PASS"
+    },
+    {
+     "name": "types/fakecam/evidence",
+     "ok": true,
+     "detail": "record 20261109T220343-cycle-b3d052088-1785644"
+    },
+    {
+     "name": "types/fakecam/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220343-cycle-b3d052088-1785644",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2000,
+   "l1": 2000,
+   "psana2": 2000,
+   "with_data": 2000,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:03:50.856-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "cspad": {
+   "name": "types/cspad",
+   "type": "cspad",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/cspad",
+   "started": "2026-11-09T22:02:58.649-08:00",
+   "assertions": [
+    {
+     "name": "types/cspad/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/cspad/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/cspad/drp-alive",
+     "ok": true,
+     "detail": "cspad_0 drp pid 2003859 alive after the run"
+    },
+    {
+     "name": "types/cspad/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2099, TEB_WrtCt 2099, psana2 events 2099, with cspad data 2099: equal and >= 1000"
+    },
+    {
+     "name": "types/cspad/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det cspad: PASS"
+    },
+    {
+     "name": "types/cspad/evidence",
+     "ok": true,
+     "detail": "record 20261109T220345-cycle-b3d052088-2004081"
+    },
+    {
+     "name": "types/cspad/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220345-cycle-b3d052088-2004081",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2099,
+   "l1": 2099,
+   "psana2": 2099,
+   "with_data": 2099,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:03:52.076-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "hsd": {
+   "name": "types/hsd",
+   "type": "hsd",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/hsd",
+   "started": "2026-11-09T22:03:50.856-08:00",
+   "assertions": [
+    {
+     "name": "types/hsd/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/hsd/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/hsd/drp-alive",
+     "ok": true,
+     "detail": "hsd_0 drp pid 1787666 alive after the run"
+    },
+    {
+     "name": "types/hsd/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1961, TEB_WrtCt 1961, psana2 events 1961, with hsd data 1961: equal and >= 1000"
+    },
+    {
+     "name": "types/hsd/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det hsd: PASS"
+    },
+    {
+     "name": "types/hsd/evidence",
+     "ok": true,
+     "detail": "record 20261109T220446-cycle-b3d052088-1787714"
+    },
+    {
+     "name": "types/hsd/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220446-cycle-b3d052088-1787714",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/hsd/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1961,
+   "l1": 1961,
+   "psana2": 1961,
+   "with_data": 1961,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:04:53.477-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixquad": {
+   "name": "types/epixquad",
+   "type": "epixquad",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixquad",
+   "started": "2026-11-09T22:03:52.076-08:00",
+   "assertions": [
+    {
+     "name": "types/epixquad/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixquad/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixquad/drp-alive",
+     "ok": true,
+     "detail": "epixquad_0 drp pid 2005544 alive after the run"
+    },
+    {
+     "name": "types/epixquad/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1974, TEB_WrtCt 1974, psana2 events 1974, with epixquad data 1974: equal and >= 1000"
+    },
+    {
+     "name": "types/epixquad/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixquad: PASS"
+    },
+    {
+     "name": "types/epixquad/evidence",
+     "ok": true,
+     "detail": "record 20261109T220452-cycle-b3d052088-2005962"
+    },
+    {
+     "name": "types/epixquad/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220452-cycle-b3d052088-2005962",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1974,
+   "l1": 1974,
+   "psana2": 1974,
+   "with_data": 1974,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:05:00.198-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixquad1kfps": {
+   "name": "types/epixquad1kfps",
+   "type": "epixquad1kfps",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixquad1kfps",
+   "started": "2026-11-09T22:04:53.477-08:00",
+   "assertions": [
+    {
+     "name": "types/epixquad1kfps/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixquad1kfps/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixquad1kfps/drp-alive",
+     "ok": true,
+     "detail": "epixquad1kfps_0 drp pid 1789751 alive after the run"
+    },
+    {
+     "name": "types/epixquad1kfps/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1678, TEB_WrtCt 1678, psana2 events 1678, with epixquad1kfps data 1678: equal and >= 1000"
+    },
+    {
+     "name": "types/epixquad1kfps/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixquad1kfps: PASS"
+    },
+    {
+     "name": "types/epixquad1kfps/evidence",
+     "ok": true,
+     "detail": "record 20261109T220551-cycle-b3d052088-1789793"
+    },
+    {
+     "name": "types/epixquad1kfps/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220551-cycle-b3d052088-1789793",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixquad1kfps/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1678,
+   "l1": 1678,
+   "psana2": 1678,
+   "with_data": 1678,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:05:58.616-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixhr2x2": {
+   "name": "types/epixhr2x2",
+   "type": "epixhr2x2",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixhr2x2",
+   "started": "2026-11-09T22:05:00.198-08:00",
+   "assertions": [
+    {
+     "name": "types/epixhr2x2/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixhr2x2/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixhr2x2/drp-alive",
+     "ok": true,
+     "detail": "epixhr2x2_0 drp pid 2008173 alive after the run"
+    },
+    {
+     "name": "types/epixhr2x2/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1851, TEB_WrtCt 1851, psana2 events 1851, with epixhr2x2 data 1851: equal and >= 1000"
+    },
+    {
+     "name": "types/epixhr2x2/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixhr2x2: PASS"
+    },
+    {
+     "name": "types/epixhr2x2/evidence",
+     "ok": true,
+     "detail": "record 20261109T220602-cycle-b3d052088-2008228"
+    },
+    {
+     "name": "types/epixhr2x2/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220602-cycle-b3d052088-2008228",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixhr2x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1851,
+   "l1": 1851,
+   "psana2": 1851,
+   "with_data": 1851,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:06:09.726-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixhremu": {
+   "name": "types/epixhremu",
+   "type": "epixhremu",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixhremu",
+   "started": "2026-11-09T22:05:58.616-08:00",
+   "assertions": [
+    {
+     "name": "types/epixhremu/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixhremu/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixhremu/drp-alive",
+     "ok": true,
+     "detail": "epixhremu_0 drp pid 1791824 alive after the run"
+    },
+    {
+     "name": "types/epixhremu/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1782, TEB_WrtCt 1782, psana2 events 1782, with epixhremu data 1782: equal and >= 1000"
+    },
+    {
+     "name": "types/epixhremu/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixhremu: PASS"
+    },
+    {
+     "name": "types/epixhremu/evidence",
+     "ok": true,
+     "detail": "record 20261109T220645-cycle-b3d052088-1792047"
+    },
+    {
+     "name": "types/epixhremu/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220645-cycle-b3d052088-1792047",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1782,
+   "l1": 1782,
+   "psana2": 1782,
+   "with_data": 1782,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:06:52.948-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixm320": {
+   "name": "types/epixm320",
+   "type": "epixm320",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixm320",
+   "started": "2026-11-09T22:06:09.726-08:00",
+   "assertions": [
+    {
+     "name": "types/epixm320/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixm320/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixm320/drp-alive",
+     "ok": true,
+     "detail": "epixm320_0 drp pid 2010258 alive after the run"
+    },
+    {
+     "name": "types/epixm320/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1783, TEB_WrtCt 1783, psana2 events 1783, with epixm320 data 1783: equal and >= 1000"
+    },
+    {
+     "name": "types/epixm320/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixm320: PASS"
+    },
+    {
+     "name": "types/epixm320/evidence",
+     "ok": true,
+     "detail": "record 20261109T220710-cycle-b3d052088-2010440"
+    },
+    {
+     "name": "types/epixm320/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220710-cycle-b3d052088-2010440",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1783,
+   "l1": 1783,
+   "psana2": 1783,
+   "with_data": 1783,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:07:17.528-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixUHR": {
+   "name": "types/epixUHR",
+   "type": "epixUHR",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixUHR",
+   "started": "2026-11-09T22:06:52.948-08:00",
+   "assertions": [
+    {
+     "name": "types/epixUHR/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixUHR/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixUHR/drp-alive",
+     "ok": true,
+     "detail": "epixUHR_0 drp pid 1794805 alive after the run"
+    },
+    {
+     "name": "types/epixUHR/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1756, TEB_WrtCt 1756, psana2 events 1756, with epixUHR data 1756: equal and >= 1000"
+    },
+    {
+     "name": "types/epixUHR/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixUHR: PASS"
+    },
+    {
+     "name": "types/epixUHR/evidence",
+     "ok": true,
+     "detail": "record 20261109T220807-cycle-b3d052088-1794941"
+    },
+    {
+     "name": "types/epixUHR/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220807-cycle-b3d052088-1794941",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixUHR/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1756,
+   "l1": 1756,
+   "psana2": 1756,
+   "with_data": 1756,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:08:14.260-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epix100": {
+   "name": "types/epix100",
+   "type": "epix100",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epix100",
+   "started": "2026-11-09T22:07:17.528-08:00",
+   "assertions": [
+    {
+     "name": "types/epix100/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epix100/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epix100/drp-alive",
+     "ok": true,
+     "detail": "epix100_0 drp pid 2012481 alive after the run"
+    },
+    {
+     "name": "types/epix100/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1824, TEB_WrtCt 1824, psana2 events 1824, with epix100 data 1824: equal and >= 1000"
+    },
+    {
+     "name": "types/epix100/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epix100: PASS"
+    },
+    {
+     "name": "types/epix100/evidence",
+     "ok": true,
+     "detail": "record 20261109T220809-cycle-b3d052088-2012524"
+    },
+    {
+     "name": "types/epix100/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220809-cycle-b3d052088-2012524",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1824,
+   "l1": 1824,
+   "psana2": 1824,
+   "with_data": 1824,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:08:16.754-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "jungfrau": {
+   "name": "types/jungfrau",
+   "type": "jungfrau",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/jungfrau",
+   "started": "2026-11-09T22:08:14.261-08:00",
+   "assertions": [
+    {
+     "name": "types/jungfrau/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/jungfrau/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/jungfrau/drp-alive",
+     "ok": true,
+     "detail": "jungfrau_0 drp pid 1799434 alive after the run"
+    },
+    {
+     "name": "types/jungfrau/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1092, TEB_WrtCt 1092, psana2 events 1092, with jungfrau data 1092: equal and >= 1000"
+    },
+    {
+     "name": "types/jungfrau/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det jungfrau: PASS"
+    },
+    {
+     "name": "types/jungfrau/evidence",
+     "ok": true,
+     "detail": "record 20261109T220921-cycle-b3d052088-1799509"
+    },
+    {
+     "name": "types/jungfrau/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220921-cycle-b3d052088-1799509",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1092,
+   "l1": 1092,
+   "psana2": 1092,
+   "with_data": 1092,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:09:29.021-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "jungfrauemu": {
+   "name": "types/jungfrauemu",
+   "type": "jungfrauemu",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/jungfrauemu",
+   "started": "2026-11-09T22:08:16.755-08:00",
+   "assertions": [
+    {
+     "name": "types/jungfrauemu/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/jungfrauemu/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/jungfrauemu/drp-alive",
+     "ok": true,
+     "detail": "jungfrauemu_0 drp pid 2014558 alive after the run"
+    },
+    {
+     "name": "types/jungfrauemu/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1817, TEB_WrtCt 1817, psana2 events 1817, with jungfrauemu data 1817: equal and >= 1000"
+    },
+    {
+     "name": "types/jungfrauemu/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det jungfrauemu: PASS"
+    },
+    {
+     "name": "types/jungfrauemu/evidence",
+     "ok": true,
+     "detail": "record 20261109T220940-cycle-b3d052088-2014604"
+    },
+    {
+     "name": "types/jungfrauemu/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220940-cycle-b3d052088-2014604",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1817,
+   "l1": 1817,
+   "psana2": 1817,
+   "with_data": 1817,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:09:47.030-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "opal": {
+   "name": "types/opal",
+   "type": "opal",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/opal",
+   "started": "2026-11-09T22:09:29.022-08:00",
+   "assertions": [
+    {
+     "name": "types/opal/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/opal/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/opal/drp-alive",
+     "ok": true,
+     "detail": "opal_0 drp pid 1804218 alive after the run"
+    },
+    {
+     "name": "types/opal/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1464, TEB_WrtCt 1464, psana2 events 1464, with opal data 1464: equal and >= 1000"
+    },
+    {
+     "name": "types/opal/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det opal: PASS"
+    },
+    {
+     "name": "types/opal/evidence",
+     "ok": true,
+     "detail": "record 20261109T221024-cycle-b3d052088-1804900"
+    },
+    {
+     "name": "types/opal/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221024-cycle-b3d052088-1804900",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/opal/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1464,
+   "l1": 1464,
+   "psana2": 1464,
+   "with_data": 1464,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:10:31.299-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "tt": {
+   "name": "types/tt",
+   "type": "tt",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/tt",
+   "started": "2026-11-09T22:09:47.031-08:00",
+   "assertions": [
+    {
+     "name": "types/tt/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/tt/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/tt/drp-alive",
+     "ok": true,
+     "detail": "tt_0 drp pid 2017531 alive after the run"
+    },
+    {
+     "name": "types/tt/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2798, TEB_WrtCt 2798, psana2 events 2798, with tt data 2798: equal and >= 1000"
+    },
+    {
+     "name": "types/tt/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det tt: PASS"
+    },
+    {
+     "name": "types/tt/evidence",
+     "ok": true,
+     "detail": "record 20261109T221035-cycle-b3d052088-2017570"
+    },
+    {
+     "name": "types/tt/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221035-cycle-b3d052088-2017570",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/tt/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2798,
+   "l1": 2798,
+   "psana2": 2798,
+   "with_data": 2798,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:10:41.982-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "tb": {
+   "name": "types/tb",
+   "type": "tb",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/tb",
+   "started": "2026-11-09T22:10:31.299-08:00",
+   "assertions": [
+    {
+     "name": "types/tb/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/tb/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/tb/drp-alive",
+     "ok": true,
+     "detail": "tb_0 drp pid 1808035 alive after the run"
+    },
+    {
+     "name": "types/tb/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1853, TEB_WrtCt 1853, psana2 events 1853, with tb data 1853: equal and >= 1000"
+    },
+    {
+     "name": "types/tb/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det tb: PASS"
+    },
+    {
+     "name": "types/tb/evidence",
+     "ok": true,
+     "detail": "record 20261109T221118-cycle-b3d052088-1808611"
+    },
+    {
+     "name": "types/tb/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221118-cycle-b3d052088-1808611",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/tb/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1853,
+   "l1": 1853,
+   "psana2": 1853,
+   "with_data": 1853,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:11:24.765-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "ts": {
+   "name": "types/ts",
+   "type": "ts",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/ts",
+   "started": "2026-11-09T22:10:41.982-08:00",
+   "assertions": [
+    {
+     "name": "types/ts/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/ts/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/ts/drp-alive",
+     "ok": true,
+     "detail": "ts_0 drp pid 2019071 alive after the run"
+    },
+    {
+     "name": "types/ts/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1825, TEB_WrtCt 1825, psana2 events 1825, with ts data 1825: equal and >= 1000"
+    },
+    {
+     "name": "types/ts/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det ts: PASS"
+    },
+    {
+     "name": "types/ts/evidence",
+     "ok": true,
+     "detail": "record 20261109T221128-cycle-b3d052088-2019261"
+    },
+    {
+     "name": "types/ts/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221128-cycle-b3d052088-2019261",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/ts/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1825,
+   "l1": 1825,
+   "psana2": 1825,
+   "with_data": 1825,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:11:35.474-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "wave8": {
+   "name": "types/wave8",
+   "type": "wave8",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/wave8",
+   "started": "2026-11-09T22:11:24.765-08:00",
+   "assertions": [
+    {
+     "name": "types/wave8/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/wave8/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/wave8/drp-alive",
+     "ok": true,
+     "detail": "wave8_0 drp pid 1810082 alive after the run"
+    },
+    {
+     "name": "types/wave8/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1794, TEB_WrtCt 1794, psana2 events 1794, with wave8 data 1794: equal and >= 1000"
+    },
+    {
+     "name": "types/wave8/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det wave8: PASS"
+    },
+    {
+     "name": "types/wave8/evidence",
+     "ok": true,
+     "detail": "record 20261109T221218-cycle-b3d052088-1810135"
+    },
+    {
+     "name": "types/wave8/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221218-cycle-b3d052088-1810135",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1794,
+   "l1": 1794,
+   "psana2": 1794,
+   "with_data": 1794,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:12:24.939-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "wave8he": {
+   "name": "types/wave8he",
+   "type": "wave8he",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/wave8he",
+   "started": "2026-11-09T22:11:35.474-08:00",
+   "assertions": [
+    {
+     "name": "types/wave8he/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/wave8he/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/wave8he/drp-alive",
+     "ok": true,
+     "detail": "wave8he_0 drp pid 2021121 alive after the run"
+    },
+    {
+     "name": "types/wave8he/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2794, TEB_WrtCt 2794, psana2 events 2794, with wave8he data 2794: equal and >= 1000"
+    },
+    {
+     "name": "types/wave8he/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det wave8he: PASS"
+    },
+    {
+     "name": "types/wave8he/evidence",
+     "ok": true,
+     "detail": "record 20261109T221231-cycle-b3d052088-2021166"
+    },
+    {
+     "name": "types/wave8he/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221231-cycle-b3d052088-2021166",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2794,
+   "l1": 2794,
+   "psana2": 2794,
+   "with_data": 2794,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:12:37.989-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "hrencoder": {
+   "name": "types/hrencoder",
+   "type": "hrencoder",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/hrencoder",
+   "started": "2026-11-09T22:12:24.939-08:00",
+   "assertions": [
+    {
+     "name": "types/hrencoder/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/hrencoder/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/hrencoder/drp-alive",
+     "ok": true,
+     "detail": "hrencoder_0 drp pid 1812146 alive after the run"
+    },
+    {
+     "name": "types/hrencoder/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2910, TEB_WrtCt 2910, psana2 events 2910, with hrencoder data 2910: equal and >= 1000"
+    },
+    {
+     "name": "types/hrencoder/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det hrencoder: PASS"
+    },
+    {
+     "name": "types/hrencoder/evidence",
+     "ok": true,
+     "detail": "record 20261109T221312-cycle-b3d052088-1812191"
+    },
+    {
+     "name": "types/hrencoder/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221312-cycle-b3d052088-1812191",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2910,
+   "l1": 2910,
+   "psana2": 2910,
+   "with_data": 2910,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:13:19.545-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "piranha4": {
+   "name": "types/piranha4",
+   "type": "piranha4",
+   "node": "sdfmilan082",
+   "job": "44000948",
+   "step": "395",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/piranha4",
+   "started": "2026-11-09T22:12:37.989-08:00",
+   "assertions": [
+    {
+     "name": "types/piranha4/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/piranha4/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/piranha4/drp-alive",
+     "ok": true,
+     "detail": "piranha4_0 drp pid 2023186 alive after the run"
+    },
+    {
+     "name": "types/piranha4/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1862, TEB_WrtCt 1862, psana2 events 1862, with piranha4 data 1862: equal and >= 1000"
+    },
+    {
+     "name": "types/piranha4/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det piranha4: PASS"
+    },
+    {
+     "name": "types/piranha4/evidence",
+     "ok": true,
+     "detail": "record 20261109T221327-cycle-b3d052088-2023365"
+    },
+    {
+     "name": "types/piranha4/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221327-cycle-b3d052088-2023365",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/hosts/sdfmilan082/types/piranha4/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1862,
+   "l1": 1862,
+   "psana2": 1862,
+   "with_data": 1862,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:13:34.057-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "epixuhr3x2": {
+   "name": "types/epixuhr3x2",
+   "type": "epixuhr3x2",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "step": "394",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixuhr3x2",
+   "started": "2026-11-09T22:13:19.545-08:00",
+   "assertions": [
+    {
+     "name": "types/epixuhr3x2/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/epixuhr3x2/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/epixuhr3x2/drp-alive",
+     "ok": true,
+     "detail": "epixuhr3x2_0 drp pid 1814222 alive after the run"
+    },
+    {
+     "name": "types/epixuhr3x2/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 2881, TEB_WrtCt 2881, psana2 events 2881, with epixuhr3x2 data 2881: equal and >= 1000"
+    },
+    {
+     "name": "types/epixuhr3x2/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixuhr3x2: PASS"
+    },
+    {
+     "name": "types/epixuhr3x2/evidence",
+     "ok": true,
+     "detail": "record 20261109T221511-cycle-b3d052088-1815877"
+    },
+    {
+     "name": "types/epixuhr3x2/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T221511-cycle-b3d052088-1815877",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/types/epixuhr3x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 2881,
+   "l1": 2881,
+   "psana2": 2881,
+   "with_data": 2881,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:15:18.015-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "drp_gpu:fakecam": {
+   "name": "types/drp_gpu:fakecam",
+   "type": "drp_gpu:fakecam",
+   "node": "sdfada010",
+   "job": "44062096",
+   "step": "18",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/fakecam",
+   "started": "2026-11-09T22:02:58.525-08:00",
+   "assertions": [
+    {
+     "name": "types/drp_gpu:fakecam/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/drp-alive",
+     "ok": true,
+     "detail": "fakecam_0 drp pid 2764340 alive after the run"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1985, TEB_WrtCt 1985, psana2 events 1985, with fakecam data 1985: equal and >= 1000"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det fakecam: PASS"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/evidence",
+     "ok": true,
+     "detail": "record 20261109T220342-cycle-b3d052088-2764398"
+    },
+    {
+     "name": "types/drp_gpu:fakecam/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220342-cycle-b3d052088-2764398",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1985,
+   "l1": 1985,
+   "psana2": 1985,
+   "with_data": 1985,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:03:49.963-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "drp_gpu:epixuhremu": {
+   "name": "types/drp_gpu:epixuhremu",
+   "type": "drp_gpu:epixuhremu",
+   "node": "sdfada010",
+   "job": "44062096",
+   "step": "18",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhremu",
+   "started": "2026-11-09T22:03:49.963-08:00",
+   "assertions": [
+    {
+     "name": "types/drp_gpu:epixuhremu/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/drp-alive",
+     "ok": true,
+     "detail": "epixuhremu_0 drp pid 2766205 alive after the run"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1811, TEB_WrtCt 1811, psana2 events 1811, with epixuhremu data 1811: equal and >= 1000"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixuhremu: PASS"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/evidence",
+     "ok": true,
+     "detail": "record 20261109T220439-cycle-b3d052088-2766401"
+    },
+    {
+     "name": "types/drp_gpu:epixuhremu/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220439-cycle-b3d052088-2766401",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1811,
+   "l1": 1811,
+   "psana2": 1811,
+   "with_data": 1811,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:04:46.996-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "drp_gpu:epixuhrsim": {
+   "name": "types/drp_gpu:epixuhrsim",
+   "type": "drp_gpu:epixuhrsim",
+   "node": "sdfada010",
+   "job": "44062096",
+   "step": "18",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhrsim",
+   "started": "2026-11-09T22:04:46.996-08:00",
+   "assertions": [
+    {
+     "name": "types/drp_gpu:epixuhrsim/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/drp-alive",
+     "ok": true,
+     "detail": "epixuhrsim_0 drp pid 2768835 alive after the run"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1781, TEB_WrtCt 1781, psana2 events 1781, with epixuhrsim data 1781: equal and >= 1000"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixuhrsim: PASS"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/evidence",
+     "ok": true,
+     "detail": "record 20261109T220531-cycle-b3d052088-2768891"
+    },
+    {
+     "name": "types/drp_gpu:epixuhrsim/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220531-cycle-b3d052088-2768891",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhrsim/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1781,
+   "l1": 1781,
+   "psana2": 1781,
+   "with_data": 1781,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:05:37.897-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "drp_gpu:jungfrau": {
+   "name": "types/drp_gpu:jungfrau",
+   "type": "drp_gpu:jungfrau",
+   "node": "sdfada010",
+   "job": "44062096",
+   "step": "18",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/jungfrau",
+   "started": "2026-11-09T22:05:37.897-08:00",
+   "assertions": [
+    {
+     "name": "types/drp_gpu:jungfrau/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/drp-alive",
+     "ok": true,
+     "detail": "jungfrau_0 drp pid 2771039 alive after the run"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1092, TEB_WrtCt 1092, psana2 events 1092, with jungfrau data 1092: equal and >= 1000"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det jungfrau: PASS"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/evidence",
+     "ok": true,
+     "detail": "record 20261109T220638-cycle-b3d052088-2771263"
+    },
+    {
+     "name": "types/drp_gpu:jungfrau/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220638-cycle-b3d052088-2771263",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1092,
+   "l1": 1092,
+   "psana2": 1092,
+   "with_data": 1092,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:06:45.466-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "drp_gpu:epixuhr3x2": {
+   "name": "types/drp_gpu:epixuhr3x2",
+   "type": "drp_gpu:epixuhr3x2",
+   "node": "sdfada010",
+   "job": "44062096",
+   "step": "18",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhr3x2",
+   "started": "2026-11-09T22:06:45.466-08:00",
+   "assertions": [
+    {
+     "name": "types/drp_gpu:epixuhr3x2/up",
+     "ok": true,
+     "detail": "exit 0"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/transitions",
+     "ok": true,
+     "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/drp-alive",
+     "ok": true,
+     "detail": "epixuhr3x2_0 drp pid 2773832 alive after the run"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/counts",
+     "ok": true,
+     "detail": "simxpm L1Accepts 1817, TEB_WrtCt 1817, psana2 events 1817, with epixuhr3x2 data 1817: equal and >= 1000"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/per-event",
+     "ok": true,
+     "detail": "xtc2_check --det epixuhr3x2: PASS"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/evidence",
+     "ok": true,
+     "detail": "record 20261109T220832-cycle-b3d052088-2777117"
+    },
+    {
+     "name": "types/drp_gpu:epixuhr3x2/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    }
+   ],
+   "cycle exit": 0,
+   "evidence": "20261109T220832-cycle-b3d052088-2777117",
+   "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/gpu/sdfada010/types/epixuhr3x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+   "daq": 1817,
+   "l1": 1817,
+   "psana2": 1817,
+   "with_data": 1817,
+   "per_event": "PASS",
+   "run_id": "tstx00001/r0001",
+   "ended": "2026-11-09T22:08:38.926-08:00",
+   "pass": true,
+   "carried": false
+  }
+ },
+ "programs": {
+  "name": "programs",
+  "type": "fakecam",
+  "node": "sdfmilan023",
+  "job": "44000948",
+  "step": "394",
+  "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/programs",
+  "started": "2026-11-09T22:15:18.018-08:00",
+  "assertions": [
+   {
+    "name": "programs/up",
+    "ok": true,
+    "detail": "exit 0"
+   },
+   {
+    "name": "programs/transitions",
+    "ok": true,
+    "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+   },
+   {
+    "name": "programs/drp-alive",
+    "ok": true,
+    "detail": "fakecam_0 drp pid 1818508 alive after the run"
+   },
+   {
+    "name": "programs/counts",
+    "ok": true,
+    "detail": "simxpm L1Accepts 1851, TEB_WrtCt 1851, psana2 events 1851, with fakecam data 1851: equal and >= 1000"
+   },
+   {
+    "name": "programs/per-event",
+    "ok": true,
+    "detail": "xtc2_check --det fakecam: PASS"
+   },
+   {
+    "name": "programs/evidence",
+    "ok": true,
+    "detail": "record 20261109T221711-cycle-b3d052088-1818759 for 42 rows"
+   },
+   {
+    "name": "programs/down",
+    "ok": true,
+    "detail": "exit 0, down: clean"
+   },
+   {
+    "name": "programs/checks",
+    "ok": true,
+    "detail": "system DRP checks: PASS; ami check: PASS; gui witness: PASS; ami shot: PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/programs/ami-shot.png: window \"fakecam:raw:raw\" of ami-client pid 1819888, 65+ colours; MEB_EvtCt 1851"
+   }
+  ],
+  "cycle exit": 0,
+  "evidence": "20261109T221711-cycle-b3d052088-1818759",
+  "run_file": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/programs/data/tst/tstx00001/xtc/tstx00001-r0001-s003-c000.xtc2",
+  "daq": 1851,
+  "l1": 1851,
+  "psana2": 1851,
+  "with_data": 1851,
+  "per_event": "PASS",
+  "run_id": "tstx00001/r0001",
+  "ended": "2026-11-09T22:18:45.290-08:00",
+  "pass": true,
+  "carried": false
+ },
+ "features": {
+  "a": {
+   "feature": "a",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/a",
+   "started": "2026-11-09T22:18:45.290-08:00",
+   "assertions": [
+    {
+     "name": "features/a/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    },
+    {
+     "name": "features/a",
+     "ok": true,
+     "detail": "exit 0, FEATURE a PASS"
+    }
+   ],
+   "verdict": "PASS",
+   "report": [
+    "---- FEATURE a report",
+    "job 44000948 step 394 host sdfmilan023 HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/a",
+    "run tstx00001/r0001 started 2026-11-09T22:18:45.568-08:00",
+    "transitions (client request -> state read back):",
+    "  2026-11-09T22:19:28.611-08:00 -> 2026-11-09T22:19:30.616-08:00  unallocated  unallocated",
+    "  2026-11-09T22:19:30.617-08:00 -> 2026-11-09T22:19:32.765-08:00  allocated    allocated",
+    "  2026-11-09T22:19:32.765-08:00 -> 2026-11-09T22:19:34.561-08:00  connected    connected",
+    "  2026-11-09T22:19:34.561-08:00 -> 2026-11-09T22:19:35.862-08:00  configured   configured",
+    "  2026-11-09T22:19:35.862-08:00 -> 2026-11-09T22:19:36.977-08:00  starting     starting",
+    "  2026-11-09T22:19:36.977-08:00 -> 2026-11-09T22:19:36.982-08:00  paused       paused",
+    "  2026-11-09T22:19:36.983-08:00 -> 2026-11-09T22:19:36.989-08:00  running      running",
+    "  2026-11-09T22:19:39.806-08:00 -> 2026-11-09T22:19:39.817-08:00  paused       paused",
+    "  2026-11-09T22:19:40.966-08:00 -> 2026-11-09T22:19:40.972-08:00  starting     starting",
+    "  2026-11-09T22:19:40.972-08:00 -> 2026-11-09T22:19:40.983-08:00  configured   configured",
+    "  2026-11-09T22:19:40.983-08:00 -> 2026-11-09T22:19:41.026-08:00  connected    connected",
+    "  2026-11-09T22:19:41.026-08:00 -> 2026-11-09T22:19:43.096-08:00  allocated    allocated",
+    "  2026-11-09T22:19:43.096-08:00 -> 2026-11-09T22:19:43.145-08:00  unallocated  unallocated",
+    "  2026-11-09T22:19:43.145-08:00 -> 2026-11-09T22:19:43.147-08:00  reset        reset",
+    "transition frames simxpm sent the DRPs (17 lines of logs/simxpm.log):",
+    "  2026-11-09 22:19:22,597 simxpm INFO group 5: L0Select 0 FixedRate 0 -> 1000 Hz (marker 928571 Hz is above --max-rate 2000)",
+    "  2026-11-09 22:19:22,597 simxpm INFO group 5: L0Select 0 FixedRate 3 -> 1020.41 Hz",
+    "  2026-11-09 22:19:22,598 simxpm INFO group 6: L0Select 0 FixedRate 0 -> 1000 Hz (marker 928571 Hz is above --max-rate 2000)",
+    "  2026-11-09 22:19:22,598 simxpm INFO group 6: L0Select 0 FixedRate 4 -> 102.041 Hz",
+    "  2026-11-09 22:19:32,704 simxpm INFO L0 disable 0x60 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {\"epix100_0\": {\"group\": null, \"l1acc\": 0, \"link\": 2}, \"hrencoder_0\": {\"group\": null, \"l1acc\": 0, \"link\": 0}, \"wave8_0\": {\"group\": null, \"l1acc\": 0, \"link\": 1}}",
+    "  2026-11-09 22:19:34,807 simxpm INFO ClearReadout rog 0x60 pulseId 0x04733e6c592ad9 time 1163139574.807060158 to 3 link(s)",
+    "  2026-11-09 22:19:35,808 simxpm INFO Configure rog 0x60 pulseId 0x04733e6c699d89 time 1163139575.807999642 to 3 link(s)",
+    "  2026-11-09 22:19:35,953 simxpm INFO ClearReadout rog 0x60 pulseId 0x04733e6c6c0397 time 1163139575.953969498 to 3 link(s)",
+    "  2026-11-09 22:19:36,954 simxpm INFO BeginRun rog 0x60 pulseId 0x04733e6c7c7611 time 1163139576.954859792 to 3 link(s)",
+    "  2026-11-09 22:19:36,979 simxpm INFO BeginStep rog 0x60 pulseId 0x04733e6c7cdbe4 time 1163139576.979064609 to 3 link(s)",
+    "  2026-11-09 22:19:36,984 simxpm INFO Enable rog 0x60 pulseId 0x04733e6c7cf246 time 1163139576.984385411 to 3 link(s)",
+    "  2026-11-09 22:19:36,987 simxpm INFO L0 enable 0x60 -> 0x60; group 5 at 1020.41 Hz; group 6 at 102.041 Hz",
+    "  2026-11-09 22:19:39,807 simxpm INFO L0 disable 0x60 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 2881, 289, 0]; per link {\"epix100_0\": {\"group\": 6, \"l1acc\": 289, \"link\": 2}, \"hrencoder_0\": {\"group\": 5, \"l1acc\": 2881, \"link\": 0}, \"wave8_0\": {\"group\": 6, \"l1acc\": 289, \"link\": 1}}",
+    "  2026-11-09 22:19:39,813 simxpm INFO Disable rog 0x60 pulseId 0x04733e6cab6ef5 time 1163139579.813348507 to 3 link(s)",
+    "  2026-11-09 22:19:40,968 simxpm INFO EndStep rog 0x60 pulseId 0x04733e6cbe69e7 time 1163139580.968388967 to 3 link(s)",
+    "  2026-11-09 22:19:40,980 simxpm INFO EndRun rog 0x60 pulseId 0x04733e6cbe9be1 time 1163139580.980269082 to 3 link(s)",
+    "  2026-11-09 22:19:40,984 simxpm INFO Unconfigure rog 0x60 pulseId 0x04733e6cbeae6c time 1163139580.984677278 to 3 link(s)",
+    "counts:",
+    "  simxpm NumL0Acc            2881",
+    "  simxpm NumL0Acc group 6    289",
+    "  simxpm NumL0Acc group 5    2881",
+    "  simxpm links               {'epix100_0': {'group': 6, 'l1acc': 289, 'link': 2}, 'hrencoder_0': {'group': 5, 'l1acc': 2881, 'link': 0}, 'wave8_0': {'group': 6, 'l1acc': 289, 'link': 1}}",
+    "  TEB_EvtCt                  2881",
+    "  TEB_TrCt                   7",
+    "  TEB_WrtCt                  2881",
+    "  psana2 events              2881",
+    "  psana2 with data           2881",
+    "  psana2 checks              PASS",
+    "  psana2 seq                 1..2881",
+    "  psana2 seeds               {'0x1234': 2881}",
+    "  drp hrencoder_0            group 5: DAQ (simxpm L1Accepts sent) 2881 psana2 events 2881 with data 2881 per-event check PASS (tstx00001-r0001-s002-c000.xtc2)",
+    "  drp epix100_0              group 6: DAQ (simxpm L1Accepts sent) 289 psana2 events 289 with data 289 per-event check PASS (tstx00001-r0001-s001-c000.xtc2)",
+    "  drp wave8_0                group 6: DAQ (simxpm L1Accepts sent) 289 psana2 events 289 with data 289 per-event check PASS (tstx00001-r0001-s000-c000.xtc2)",
+    "  readout groups             group 5 at 1.02 kHz: 2881 L1Accepts, group 6 at 102 Hz: 289 L1Accepts",
+    "  per-DRP checks             PASS",
+    "FEATURE a PASS"
+   ],
+   "ended": "2026-11-09T22:20:06.989-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "b": {
+   "feature": "b",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/b",
+   "started": "2026-11-09T22:20:06.989-08:00",
+   "assertions": [
+    {
+     "name": "features/b/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    },
+    {
+     "name": "features/b",
+     "ok": true,
+     "detail": "exit 0, FEATURE b PASS"
+    }
+   ],
+   "verdict": "PASS",
+   "report": [
+    "---- FEATURE b report",
+    "job 44000948 step 394 host sdfmilan023 HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/b",
+    "run tstx00001/r0001 started 2026-11-09T22:20:07.265-08:00",
+    "transitions (client request -> state read back):",
+    "  2026-11-09T22:20:45.618-08:00 -> 2026-11-09T22:20:45.618-08:00  [rollcall]   unallocated",
+    "  2026-11-09T22:20:43.610-08:00 -> 2026-11-09T22:20:45.618-08:00  unallocated  unallocated",
+    "  2026-11-09T22:20:45.762-08:00 -> 2026-11-09T22:20:45.762-08:00  [alloc]      allocated",
+    "  2026-11-09T22:20:45.619-08:00 -> 2026-11-09T22:20:45.763-08:00  allocated    allocated",
+    "  2026-11-09T22:20:47.716-08:00 -> 2026-11-09T22:20:47.716-08:00  [connect]    connected",
+    "  2026-11-09T22:20:45.763-08:00 -> 2026-11-09T22:20:47.716-08:00  connected    connected",
+    "  2026-11-09T22:20:49.394-08:00 -> 2026-11-09T22:20:49.394-08:00  [configure]  configured",
+    "  2026-11-09T22:20:50.495-08:00 -> 2026-11-09T22:20:50.495-08:00  [beginrun]   starting",
+    "  2026-11-09T22:20:50.500-08:00 -> 2026-11-09T22:20:50.500-08:00  [beginstep]  paused",
+    "  2026-11-09T22:20:50.547-08:00 -> 2026-11-09T22:20:50.547-08:00  [enable]     running",
+    "  2026-11-09T22:20:52.544-08:00 -> 2026-11-09T22:20:52.544-08:00  [disable]    paused",
+    "  2026-11-09T22:20:52.547-08:00 -> 2026-11-09T22:20:52.547-08:00  [endstep]    starting",
+    "  2026-11-09T22:20:52.551-08:00 -> 2026-11-09T22:20:52.551-08:00  [beginstep]  paused",
+    "  2026-11-09T22:20:52.595-08:00 -> 2026-11-09T22:20:52.595-08:00  [enable]     running",
+    "  2026-11-09T22:20:54.594-08:00 -> 2026-11-09T22:20:54.594-08:00  [disable]    paused",
+    "  2026-11-09T22:20:54.598-08:00 -> 2026-11-09T22:20:54.598-08:00  [endstep]    starting",
+    "  2026-11-09T22:20:54.602-08:00 -> 2026-11-09T22:20:54.602-08:00  [beginstep]  paused",
+    "  2026-11-09T22:20:54.647-08:00 -> 2026-11-09T22:20:54.647-08:00  [enable]     running",
+    "  2026-11-09T22:20:56.645-08:00 -> 2026-11-09T22:20:56.645-08:00  [disable]    paused",
+    "  2026-11-09T22:20:56.648-08:00 -> 2026-11-09T22:20:56.648-08:00  [endstep]    starting",
+    "  2026-11-09T22:20:56.662-08:00 -> 2026-11-09T22:20:56.662-08:00  [endrun]     configured",
+    "  2026-11-09T22:20:56.702-08:00 -> 2026-11-09T22:20:56.702-08:00  [unconfigure] connected",
+    "  2026-11-09T22:20:58.742-08:00 -> 2026-11-09T22:20:58.742-08:00  [disconnect] allocated",
+    "  2026-11-09T22:20:58.672-08:00 -> 2026-11-09T22:20:58.743-08:00  allocated    allocated",
+    "  2026-11-09T22:20:58.793-08:00 -> 2026-11-09T22:20:58.793-08:00  [dealloc]    unallocated",
+    "  2026-11-09T22:20:58.743-08:00 -> 2026-11-09T22:20:58.793-08:00  unallocated  unallocated",
+    "  2026-11-09T22:20:58.794-08:00 -> 2026-11-09T22:20:58.794-08:00  [reset]      reset",
+    "  2026-11-09T22:20:58.793-08:00 -> 2026-11-09T22:20:58.795-08:00  reset        reset",
+    "transition frames simxpm sent the DRPs (28 lines of logs/simxpm.log):",
+    "  2026-11-09 22:20:45,702 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {\"epix100_0\": {\"group\": null, \"l1acc\": 0, \"link\": 1}, \"tb_0\": {\"group\": null, \"l1acc\": 0, \"link\": 0}}",
+    "  2026-11-09 22:20:48,330 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e71115770 time 1163139648.330327212 to 2 link(s)",
+    "  2026-11-09 22:20:49,331 simxpm INFO Configure rog 0x20 pulseId 0x04733e7121ca39 time 1163139649.331290231 to 2 link(s)",
+    "  2026-11-09 22:20:49,476 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e71242d34 time 1163139649.476529541 to 2 link(s)",
+    "  2026-11-09 22:20:50,477 simxpm INFO BeginRun rog 0x20 pulseId 0x04733e71349fc0 time 1163139650.477436218 to 2 link(s)",
+    "  2026-11-09 22:20:50,497 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e7134f27c time 1163139650.497104118 to 2 link(s)",
+    "  2026-11-09 22:20:50,543 simxpm INFO Enable rog 0x20 pulseId 0x04733e7135b6b4 time 1163139650.543747554 to 2 link(s)",
+    "  2026-11-09 22:20:50,547 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:20:52,534 simxpm INFO step done for group 5 at 200 L1Accepts",
+    "  2026-11-09 22:20:52,536 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 200, 0, 0]; per link {\"epix100_0\": {\"group\": 5, \"l1acc\": 200, \"link\": 1}, \"tb_0\": {\"group\": 5, \"l1acc\": 200, \"link\": 0}}",
+    "  2026-11-09 22:20:52,542 simxpm INFO Disable rog 0x20 pulseId 0x04733e71568cdc time 1163139652.542011397 to 2 link(s)",
+    "  2026-11-09 22:20:52,545 simxpm INFO EndStep rog 0x20 pulseId 0x04733e71569bd9 time 1163139652.545574078 to 2 link(s)",
+    "  2026-11-09 22:20:52,548 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e7156aa0d time 1163139652.548950726 to 2 link(s)",
+    "  2026-11-09 22:20:52,594 simxpm INFO Enable rog 0x20 pulseId 0x04733e715767c4 time 1163139652.594048096 to 2 link(s)",
+    "  2026-11-09 22:20:52,595 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:20:54,584 simxpm INFO step done for group 5 at 400 L1Accepts",
+    "  2026-11-09 22:20:54,586 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 400, 0, 0]; per link {\"epix100_0\": {\"group\": 5, \"l1acc\": 400, \"link\": 1}, \"tb_0\": {\"group\": 5, \"l1acc\": 400, \"link\": 0}}",
+    "  2026-11-09 22:20:54,592 simxpm INFO Disable rog 0x20 pulseId 0x04733e71783e59 time 1163139654.592412411 to 2 link(s)",
+    "  2026-11-09 22:20:54,595 simxpm INFO EndStep rog 0x20 pulseId 0x04733e71784c9f time 1163139654.595805389 to 2 link(s)",
+    "  2026-11-09 22:20:54,600 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e71785eed time 1163139654.600156704 to 2 link(s)",
+    "  2026-11-09 22:20:54,645 simxpm INFO Enable rog 0x20 pulseId 0x04733e71791bf3 time 1163139654.645090621 to 2 link(s)",
+    "  2026-11-09 22:20:54,647 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:20:56,635 simxpm INFO step done for group 5 at 600 L1Accepts",
+    "  2026-11-09 22:20:56,637 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 600, 0, 0]; per link {\"epix100_0\": {\"group\": 5, \"l1acc\": 600, \"link\": 1}, \"tb_0\": {\"group\": 5, \"l1acc\": 600, \"link\": 0}}",
+    "  2026-11-09 22:20:56,643 simxpm INFO Disable rog 0x20 pulseId 0x04733e7199f2ff time 1163139656.643565458 to 2 link(s)",
+    "  2026-11-09 22:20:56,646 simxpm INFO EndStep rog 0x20 pulseId 0x04733e719a0086 time 1163139656.646781213 to 2 link(s)",
+    "  2026-11-09 22:20:56,660 simxpm INFO EndRun rog 0x20 pulseId 0x04733e719a3b8f time 1163139656.660814876 to 2 link(s)",
+    "  2026-11-09 22:20:56,663 simxpm INFO Unconfigure rog 0x20 pulseId 0x04733e719a4818 time 1163139656.663794567 to 2 link(s)",
+    "counts:",
+    "  simxpm NumL0Acc            600",
+    "  simxpm NumL0Acc group 5    600",
+    "  simxpm links               {'epix100_0': {'group': 5, 'l1acc': 600, 'link': 1}, 'tb_0': {'group': 5, 'l1acc': 600, 'link': 0}}",
+    "  TEB_EvtCt                  600",
+    "  TEB_TrCt                   22",
+    "  TEB_WrtCt                  600",
+    "  scan exit                  0",
+    "  drp tb_0                   DAQ (simxpm L1Accepts sent) 600 psana2 events 600 with data 600 per step [200, 200, 200] per-event check PASS (tstx00001-r0001-s000-c000.xtc2)",
+    "  drp epix100_0              DAQ (simxpm L1Accepts sent) 600 psana2 events 600 with data 600 per step [200, 200, 200] per-event check PASS (tstx00001-r0001-s001-c000.xtc2)",
+    "  psana2 steps               3 (step_value and step_docstring in tb_0's stream)",
+    "  step 1                     step_value 700000.0 step_docstring {\"detname\": \"epix100_0\", \"scantype\": \"timing\", \"step\": 700000.0} events 200",
+    "  step 2                     step_value 710000.0 step_docstring {\"detname\": \"epix100_0\", \"scantype\": \"timing\", \"step\": 710000.0} events 200",
+    "  step 3                     step_value 720000.0 step_docstring {\"detname\": \"epix100_0\", \"scantype\": \"timing\", \"step\": 720000.0} events 200",
+    "  epix100_update start_ns    [700000, 710000, 720000]",
+    "FEATURE b PASS"
+   ],
+   "ended": "2026-11-09T22:21:15.740-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "c": {
+   "feature": "c",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/c",
+   "started": "2026-11-09T22:21:15.740-08:00",
+   "assertions": [
+    {
+     "name": "features/c/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    },
+    {
+     "name": "features/c",
+     "ok": true,
+     "detail": "exit 0, FEATURE c PASS"
+    }
+   ],
+   "verdict": "PASS",
+   "report": [
+    "---- FEATURE c report",
+    "job 44000948 step 394 host sdfmilan023 HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/c",
+    "run tstx00001/r0001 started 2026-11-09T22:21:16.020-08:00",
+    "transitions (client request -> state read back):",
+    "  2026-11-09T22:21:46.814-08:00 -> 2026-11-09T22:21:47.818-08:00  unallocated  unallocated",
+    "  2026-11-09T22:21:47.819-08:00 -> 2026-11-09T22:21:48.161-08:00  allocated    allocated",
+    "  2026-11-09T22:21:48.161-08:00 -> 2026-11-09T22:21:49.971-08:00  connected    connected",
+    "  2026-11-09T22:21:49.971-08:00 -> 2026-11-09T22:21:51.218-08:00  configured   configured",
+    "  2026-11-09T22:21:51.218-08:00 -> 2026-11-09T22:21:52.293-08:00  starting     starting",
+    "  2026-11-09T22:21:56.595-08:00 -> 2026-11-09T22:21:56.600-08:00  paused       paused",
+    "  2026-11-09T22:21:56.600-08:00 -> 2026-11-09T22:21:56.604-08:00  running      running",
+    "  2026-11-09T22:22:19.832-08:00 -> 2026-11-09T22:22:19.838-08:00  paused       paused",
+    "  2026-11-09T22:22:22.022-08:00 -> 2026-11-09T22:22:22.026-08:00  starting     starting",
+    "  2026-11-09T22:22:22.027-08:00 -> 2026-11-09T22:22:22.037-08:00  configured   configured",
+    "  2026-11-09T22:22:22.037-08:00 -> 2026-11-09T22:22:22.042-08:00  connected    connected",
+    "  2026-11-09T22:22:22.042-08:00 -> 2026-11-09T22:22:22.473-08:00  allocated    allocated",
+    "  2026-11-09T22:22:22.473-08:00 -> 2026-11-09T22:22:22.520-08:00  unallocated  unallocated",
+    "  2026-11-09T22:22:22.520-08:00 -> 2026-11-09T22:22:22.522-08:00  reset        reset",
+    "transition frames simxpm sent the DRPs (13 lines of logs/simxpm.log):",
+    "  2026-11-09 22:21:48,101 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {\"fakecam_0\": {\"group\": null, \"l1acc\": 0, \"link\": 0}}",
+    "  2026-11-09 22:21:50,173 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e750994e3 time 1163139710.173468333 to 1 link(s)",
+    "  2026-11-09 22:21:51,174 simxpm INFO Configure rog 0x20 pulseId 0x04733e751a0773 time 1163139711.174379710 to 1 link(s)",
+    "  2026-11-09 22:21:51,276 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e751bb5ac time 1163139711.276649688 to 1 link(s)",
+    "  2026-11-09 22:21:52,277 simxpm INFO BeginRun rog 0x20 pulseId 0x04733e752c285e time 1163139712.277592326 to 1 link(s)",
+    "  2026-11-09 22:21:56,597 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e75732310 time 1163139716.597026532 to 1 link(s)",
+    "  2026-11-09 22:21:56,601 simxpm INFO Enable rog 0x20 pulseId 0x04733e757335bc time 1163139716.601465059 to 1 link(s)",
+    "  2026-11-09 22:21:56,603 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:22:19,833 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 2324, 0, 0]; per link {\"fakecam_0\": {\"group\": 5, \"l1acc\": 2324, \"link\": 0}}",
+    "  2026-11-09 22:22:19,834 simxpm INFO Disable rog 0x20 pulseId 0x04733e76f0fac4 time 1163139739.834002642 to 1 link(s)",
+    "  2026-11-09 22:22:22,024 simxpm INFO EndStep rog 0x20 pulseId 0x04733e7714f896 time 1163139742.024259393 to 1 link(s)",
+    "  2026-11-09 22:22:22,033 simxpm INFO EndRun rog 0x20 pulseId 0x04733e7715202b time 1163139742.033668605 to 1 link(s)",
+    "  2026-11-09 22:22:22,038 simxpm INFO Unconfigure rog 0x20 pulseId 0x04733e771532ed time 1163139742.038127783 to 1 link(s)",
+    "counts:",
+    "  ami shot                   PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/c/ami-shot.png: window \"fakecam:raw:raw\" of ami-client pid 1832135, 65+ colours",
+    "  simxpm NumL0Acc            2324",
+    "  simxpm NumL0Acc group 5    2324",
+    "  simxpm links               {'fakecam_0': {'group': 5, 'l1acc': 2324, 'link': 0}}",
+    "  TEB_EvtCt                  2324",
+    "  TEB_TrCt                   28",
+    "  TEB_WrtCt                  2324",
+    "  MEB_EvtCt                  2324",
+    "  psana2 events              2324",
+    "  psana2 with data           2324",
+    "  psana2 checks              PASS",
+    "  psana2 seq                 1..2324",
+    "  psana2 seeds               {'0x1234': 2324}",
+    "  shmemClient L1Accepts      1162",
+    "  shmemClient BeginRun       1",
+    "  ami rows                   4096",
+    "  ami events                 1150",
+    "  ami matched                1150",
+    "  ami pixsum                 37683214",
+    "  psana2 pixsum (same events) 37683214",
+    "  ami seq range              22..2320",
+    "  ami served by              --pidfile ami ami-client ami-global ami-manager ami-node ami-worker",
+    "  ami check                  PASS",
+    "  drp fakecam_0              group 5: DAQ (simxpm L1Accepts sent) 2324 psana2 events 2324 with data 2324 per-event check PASS (tstx00001-r0001-s000-c000.xtc2)",
+    "  per-DRP checks             PASS",
+    "  ami screenshot             /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/c/ami-shot.png",
+    "FEATURE c PASS"
+   ],
+   "ended": "2026-11-09T22:22:41.011-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "d": {
+   "feature": "d",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/d",
+   "started": "2026-11-09T22:22:41.011-08:00",
+   "assertions": [
+    {
+     "name": "features/d/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    },
+    {
+     "name": "features/d",
+     "ok": true,
+     "detail": "exit 0, FEATURE d PASS"
+    }
+   ],
+   "verdict": "PASS",
+   "report": [
+    "---- FEATURE d report",
+    "job 44000948 step 394 host sdfmilan023 HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/d",
+    "run tstx00001/r0001 started 2026-11-09T22:22:41.441-08:00",
+    "transitions (client request -> state read back):",
+    "  2026-11-09T22:23:13.991-08:00 -> 2026-11-09T22:23:15.001-08:00  unallocated  unallocated",
+    "  2026-11-09T22:23:15.002-08:00 -> 2026-11-09T22:23:15.378-08:00  allocated    allocated",
+    "  2026-11-09T22:23:15.378-08:00 -> 2026-11-09T22:23:17.134-08:00  connected    connected",
+    "  2026-11-09T22:23:17.134-08:00 -> 2026-11-09T22:23:18.420-08:00  configured   configured",
+    "  2026-11-09T22:23:18.420-08:00 -> 2026-11-09T22:23:19.515-08:00  starting     starting",
+    "  2026-11-09T22:23:19.515-08:00 -> 2026-11-09T22:23:19.519-08:00  paused       paused",
+    "  2026-11-09T22:23:19.519-08:00 -> 2026-11-09T22:23:19.523-08:00  running      running",
+    "  2026-11-09T22:23:30.422-08:00 -> 2026-11-09T22:23:30.426-08:00  paused       paused",
+    "  2026-11-09T22:23:31.587-08:00 -> 2026-11-09T22:23:31.592-08:00  starting     starting",
+    "  2026-11-09T22:23:31.592-08:00 -> 2026-11-09T22:23:31.601-08:00  configured   configured",
+    "  2026-11-09T22:23:31.601-08:00 -> 2026-11-09T22:23:31.605-08:00  connected    connected",
+    "  2026-11-09T22:23:31.605-08:00 -> 2026-11-09T22:23:31.740-08:00  allocated    allocated",
+    "  2026-11-09T22:23:31.740-08:00 -> 2026-11-09T22:23:31.786-08:00  unallocated  unallocated",
+    "  2026-11-09T22:23:31.786-08:00 -> 2026-11-09T22:23:31.787-08:00  reset        reset",
+    "transition frames simxpm sent the DRPs (13 lines of logs/simxpm.log):",
+    "  2026-11-09 22:23:15,317 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {\"fakecam_0\": {\"group\": null, \"l1acc\": 0, \"link\": 0}, \"fakecam_1\": {\"group\": null, \"l1acc\": 0, \"link\": 1}}",
+    "  2026-11-09 22:23:17,377 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e7aa2929e time 1163139797.377939597 to 2 link(s)",
+    "  2026-11-09 22:23:18,378 simxpm INFO Configure rog 0x20 pulseId 0x04733e7ab302e0 time 1163139798.378302545 to 2 link(s)",
+    "  2026-11-09 22:23:18,496 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e7ab4f282 time 1163139798.496121391 to 2 link(s)",
+    "  2026-11-09 22:23:19,497 simxpm INFO BeginRun rog 0x20 pulseId 0x04733e7ac56547 time 1163139799.497081419 to 2 link(s)",
+    "  2026-11-09 22:23:19,516 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e7ac5b670 time 1163139799.516374592 to 2 link(s)",
+    "  2026-11-09 22:23:19,520 simxpm INFO Enable rog 0x20 pulseId 0x04733e7ac5c60b time 1163139799.520083736 to 2 link(s)",
+    "  2026-11-09 22:23:19,522 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:23:30,423 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 1091, 0, 0]; per link {\"fakecam_0\": {\"group\": 5, \"l1acc\": 1091, \"link\": 0}, \"fakecam_1\": {\"group\": 5, \"l1acc\": 1091, \"link\": 1}}",
+    "  2026-11-09 22:23:30,424 simxpm INFO Disable rog 0x20 pulseId 0x04733e7b78f520 time 1163139810.424295057 to 2 link(s)",
+    "  2026-11-09 22:23:31,588 simxpm INFO EndStep rog 0x20 pulseId 0x04733e7b8c18a2 time 1163139811.588978105 to 2 link(s)",
+    "  2026-11-09 22:23:31,598 simxpm INFO EndRun rog 0x20 pulseId 0x04733e7b8c4277 time 1163139811.598922367 to 2 link(s)",
+    "  2026-11-09 22:23:31,603 simxpm INFO Unconfigure rog 0x20 pulseId 0x04733e7b8c5392 time 1163139811.602989167 to 2 link(s)",
+    "counts:",
+    "  simxpm NumL0Acc            1091",
+    "  simxpm NumL0Acc group 5    1091",
+    "  simxpm links               {'fakecam_0': {'group': 5, 'l1acc': 1091, 'link': 0}, 'fakecam_1': {'group': 5, 'l1acc': 1091, 'link': 1}}",
+    "  TEB_EvtCt                  1091",
+    "  TEB_TrCt                   16",
+    "  TEB_WrtCt                  1091",
+    "  psana2 events              1091",
+    "  psana2 with data           1091",
+    "  psana2 checks              PASS",
+    "  psana2 seq                 1..1091",
+    "  psana2 seeds               {'0x1234': 1091}",
+    "  drp fakecam_0              on sdfmilan023: group 5: DAQ (simxpm L1Accepts sent) 1091 psana2 events 1091 with data 1091 per-event check PASS (tstx00001-r0001-s000-c000.xtc2)",
+    "  drp fakecam_1              on sdfmilan082: group 5: DAQ (simxpm L1Accepts sent) 1091 psana2 events 1091 with data 1091 per-event check PASS (tstx00001-r0001-s001-c000.xtc2)",
+    "  per-DRP checks             PASS",
+    "FEATURE d PASS"
+   ],
+   "ended": "2026-11-09T22:23:52.661-08:00",
+   "pass": true,
+   "carried": false
+  },
+  "e": {
+   "feature": "e",
+   "node": "sdfmilan023",
+   "job": "44000948",
+   "workdir": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/e",
+   "started": "2026-11-09T22:23:52.661-08:00",
+   "assertions": [
+    {
+     "name": "features/e/down",
+     "ok": true,
+     "detail": "exit 0, down: clean"
+    },
+    {
+     "name": "features/e",
+     "ok": true,
+     "detail": "exit 0, FEATURE e PASS"
+    }
+   ],
+   "verdict": "PASS",
+   "report": [
+    "---- FEATURE e report",
+    "job 44000948 step 394 host sdfmilan023 HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (files changed: 0) workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/features/e",
+    "run tstx00001/r0001 started 2026-11-09T22:23:52.919-08:00",
+    "transitions (client request -> state read back):",
+    "  2026-11-09T22:24:24.940-08:00 -> 2026-11-09T22:24:25.964-08:00  unallocated  unallocated",
+    "  2026-11-09T22:24:25.965-08:00 -> 2026-11-09T22:24:27.378-08:00  allocated    allocated",
+    "  2026-11-09T22:24:27.378-08:00 -> 2026-11-09T22:24:29.979-08:00  connected    connected",
+    "  2026-11-09T22:24:29.979-08:00 -> 2026-11-09T22:24:31.402-08:00  configured   configured",
+    "  2026-11-09T22:24:31.402-08:00 -> 2026-11-09T22:24:32.539-08:00  starting     starting",
+    "  2026-11-09T22:24:32.539-08:00 -> 2026-11-09T22:24:32.548-08:00  paused       paused",
+    "  2026-11-09T22:24:32.548-08:00 -> 2026-11-09T22:24:32.557-08:00  running      running",
+    "  2026-11-09T22:24:43.467-08:00 -> 2026-11-09T22:24:43.524-08:00  paused       paused",
+    "  2026-11-09T22:24:44.679-08:00 -> 2026-11-09T22:24:44.686-08:00  starting     starting",
+    "  2026-11-09T22:24:44.686-08:00 -> 2026-11-09T22:24:44.696-08:00  configured   configured",
+    "  2026-11-09T22:24:44.696-08:00 -> 2026-11-09T22:24:44.705-08:00  connected    connected",
+    "  2026-11-09T22:24:44.705-08:00 -> 2026-11-09T22:24:53.474-08:00  allocated    allocated",
+    "  2026-11-09T22:24:53.474-08:00 -> 2026-11-09T22:24:53.524-08:00  unallocated  unallocated",
+    "  2026-11-09T22:24:53.524-08:00 -> 2026-11-09T22:24:53.525-08:00  reset        reset",
+    "transition frames simxpm sent the DRPs (13 lines of logs/simxpm.log):",
+    "  2026-11-09 22:24:27,319 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 0, 0, 0]; per link {\"bld_0\": {\"group\": null, \"l1acc\": 0, \"link\": 3}, \"encoder_0\": {\"group\": null, \"l1acc\": 0, \"link\": 1}, \"epics_0\": {\"group\": null, \"l1acc\": 0, \"link\": 2}, \"fakecam_0\": {\"group\": null, \"l1acc\": 0, \"link\": 5}, \"pvcam_0\": {\"group\": null, \"l1acc\": 0, \"link\": 4}, \"sim_udpencoder_5\": {\"group\": 5, \"l1acc\": 0, \"link\": 0}}",
+    "  2026-11-09 22:24:30,348 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e7f51a946 time 1163139870.348299683 to 6 link(s)",
+    "  2026-11-09 22:24:31,348 simxpm INFO Configure rog 0x20 pulseId 0x04733e7f6218c8 time 1163139871.348483787 to 6 link(s)",
+    "  2026-11-09 22:24:31,517 simxpm INFO ClearReadout rog 0x20 pulseId 0x04733e7f64df61 time 1163139871.517403007 to 6 link(s)",
+    "  2026-11-09 22:24:32,518 simxpm INFO BeginRun rog 0x20 pulseId 0x04733e7f7551e2 time 1163139872.518299924 to 6 link(s)",
+    "  2026-11-09 22:24:32,541 simxpm INFO BeginStep rog 0x20 pulseId 0x04733e7f75b380 time 1163139872.541505595 to 6 link(s)",
+    "  2026-11-09 22:24:32,549 simxpm INFO Enable rog 0x20 pulseId 0x04733e7f75d64e time 1163139872.549779158 to 6 link(s)",
+    "  2026-11-09 22:24:32,556 simxpm INFO L0 enable 0x20 -> 0x20",
+    "  2026-11-09 22:24:43,468 simxpm INFO L0 disable 0x20 -> 0x00; NumL0Acc [0, 0, 0, 0, 0, 1092, 0, 0]; per link {\"bld_0\": {\"group\": 5, \"l1acc\": 1092, \"link\": 3}, \"encoder_0\": {\"group\": 5, \"l1acc\": 1092, \"link\": 1}, \"epics_0\": {\"group\": 5, \"l1acc\": 1092, \"link\": 2}, \"fakecam_0\": {\"group\": 5, \"l1acc\": 1092, \"link\": 5}, \"pvcam_0\": {\"group\": 5, \"l1acc\": 1092, \"link\": 4}, \"sim_udpencoder_5\": {\"group\": 5, \"l1acc\": 1092, \"link\": 0}}",
+    "  2026-11-09 22:24:43,469 simxpm INFO Disable rog 0x20 pulseId 0x04733e80294649 time 1163139883.469417175 to 6 link(s)",
+    "  2026-11-09 22:24:44,681 simxpm INFO EndStep rog 0x20 pulseId 0x04733e803d2fa3 time 1163139884.681130965 to 6 link(s)",
+    "  2026-11-09 22:24:44,694 simxpm INFO EndRun rog 0x20 pulseId 0x04733e803d68d3 time 1163139884.694725390 to 6 link(s)",
+    "  2026-11-09 22:24:44,698 simxpm INFO Unconfigure rog 0x20 pulseId 0x04733e803d76b9 time 1163139884.698028537 to 6 link(s)",
+    "counts:",
+    "  simxpm NumL0Acc            1092",
+    "  simxpm NumL0Acc group 5    1092",
+    "  simxpm links               {'bld_0': {'group': 5, 'l1acc': 1092, 'link': 3}, 'encoder_0': {'group': 5, 'l1acc': 1092, 'link': 1}, 'epics_0': {'group': 5, 'l1acc': 1092, 'link': 2}, 'fakecam_0': {'group': 5, 'l1acc': 1092, 'link': 5}, 'pvcam_0': {'group': 5, 'l1acc': 1092, 'link': 4}, 'sim_udpencoder_5': {'group': 5, 'l1acc': 1092, 'link': 0}}",
+    "  TEB_EvtCt                  1092",
+    "  TEB_TrCt                   16",
+    "  TEB_WrtCt                  1092",
+    "  drp_match_count encoder_0  1092",
+    "  bld_miss_count bld_0       0",
+    "  drp_match_count pvcam_0    1090",
+    "  psana2 events              1092",
+    "  psana2 with data           1092",
+    "  psana2 checks              PASS",
+    "  psana2 seq                 1..1092",
+    "  psana2 seeds               {'0x1234': 1092}",
+    "  sysdrp events              1092",
+    "  sysdrp streams             {'encoder': 'tstx00001-r0001-s000-c000.xtc2', 'sim_count': 'tstx00001-r0001-s001-c000.xtc2', 'sim_const': 'tstx00001-r0001-s001-c000.xtc2', 'sim_l0acc': 'tstx00001-r0001-s001-c000.xtc2', 'pvcam': 'tstx00001-r0001-s002-c000.xtc2', 'fakecam': 'tstx00001-r0001-s003-c000.xtc2', 'simbld': 'tstx00001-r0001-s004-c000.xtc2'}",
+    "  sysdrp pva events          1092",
+    "  sysdrp pva with data       1090",
+    "  sysdrp pva matched         1090",
+    "  sysdrp pva shape           [8, 16]",
+    "  sysdrp udp events          1092",
+    "  sysdrp udp with data       1092",
+    "  sysdrp udp matched         1092",
+    "  sysdrp udp frameCount - seq 65535",
+    "  sysdrp bld events          1092",
+    "  sysdrp bld problems        0",
+    "  sysdrp bld with data       1092",
+    "  sysdrp bld matched         1092",
+    "  sysdrp pva missing         2",
+    "  sysdrp pva missing seqs    [510, 512]",
+    "  sysdrp udp missing         0",
+    "  sysdrp udp missing seqs    []",
+    "  sysdrp bld missing         0",
+    "  sysdrp bld missing seqs    []",
+    "  sysdrp epics events        1092",
+    "  sysdrp epics const events  1092",
+    "  sysdrp epics count events  1092",
+    "  sysdrp epics count range   [139.0, 247.0]",
+    "  sysdrp epics l0acc events  1092",
+    "  sysdrp epics l0acc range   [0.0, 1067.0]",
+    "  system DRP checks          PASS",
+    "  drp fakecam_0              group 5: DAQ (simxpm L1Accepts sent) 1092 psana2 events 1092 with data 1092 per-event check PASS (tstx00001-r0001-s003-c000.xtc2)",
+    "  drp pvcam_0                group 5: DAQ (simxpm L1Accepts sent) 1092 psana2 events 1092",
+    "  drp encoder_0              group 5: DAQ (simxpm L1Accepts sent) 1092 psana2 events 1092",
+    "  drp epics_0                group 5: DAQ (simxpm L1Accepts sent) 1092 psana2 events 1092",
+    "  drp bld_0                  group 5: DAQ (simxpm L1Accepts sent) 1092 psana2 events 1092",
+    "  bld bld_0 data             DAQ (simxpm L1Accepts sent) 1092 - bld_miss_count 0 = 1092; psana2 simbld events 1092 with data 1092, 0 with a wrong value",
+    "  per-DRP checks             PASS",
+    "FEATURE e PASS"
+   ],
+   "ended": "2026-11-09T22:25:25.687-08:00",
+   "pass": true,
+   "carried": false
+  }
+ },
+ "coverage": {
+  "started": "2026-11-09T22:25:25.687-08:00",
+  "ended": "2026-11-09T22:27:17.039-08:00",
+  "sha": "b3d052088615373e813d6027f1bd9fcdab169a14",
+  "rows": 78,
+  "count": {
+   "RUN": 63,
+   "STAND-IN": 6,
+   "N/A": 9,
+   "UNPROVEN": 0,
+   "INVALID": 0
+  },
+  "failing": [],
+  "problems": [],
+  "assertions": [
+   {
+    "name": "coverage",
+    "ok": true,
+    "detail": "at b3d052088: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence"
+   }
+  ],
+  "pass": true,
+  "carried": false
+ },
+ "runs": [
+  {
+   "started": "2026-11-09T22:02:57.524-08:00",
+   "ended": "2026-11-09T22:27:17.040-08:00",
+   "host": "sdfmilan023",
+   "hosts": [
+    "sdfmilan023",
+    "sdfmilan082"
+   ],
+   "gpu_host": "sdfada010",
+   "job": "44000948",
+   "step": "394",
+   "argv": [
+    "matrix",
+    "-w",
+    "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2",
+    "--hosts",
+    "sdfmilan023,sdfmilan082",
+    "--locks",
+    "/tmp/agentify-daq-milan023.lock,/tmp/agentify-daq-milan082.lock",
+    "--gpu-host",
+    "sdfada010",
+    "--gpu-job",
+    "44062096",
+    "--gpu-gres",
+    "gpu:l40s:1",
+    "--gpu-lock",
+    "/tmp/agentify-daq-ada010.lock",
+    "--ami-src",
+    "/sdf/group/lcls/ds/ana/sw/conda2/rel/ami_091526",
+    "--evidence",
+    "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2-ev",
+    "--lock-timeout",
+    "5400"
+   ],
+   "sections": [
+    "types",
+    "programs",
+    "features",
+    "coverage"
+   ],
+   "types": [
+    "fakecam",
+    "cspad",
+    "hsd",
+    "epixquad",
+    "epixquad1kfps",
+    "epixhr2x2",
+    "epixhremu",
+    "epixm320",
+    "epixUHR",
+    "epix100",
+    "jungfrau",
+    "jungfrauemu",
+    "opal",
+    "tt",
+    "tb",
+    "ts",
+    "wave8",
+    "wave8he",
+    "hrencoder",
+    "piranha4",
+    "epixuhr3x2",
+    "drp_gpu:fakecam",
+    "drp_gpu:epixuhremu",
+    "drp_gpu:epixuhrsim",
+    "drp_gpu:jungfrau",
+    "drp_gpu:epixuhr3x2"
+   ],
+   "programs": true,
+   "features": [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e"
+   ],
+   "break": null,
+   "break_env": null,
+   "exit": 0
+  }
+ ],
+ "dirty": false,
+ "updated": "2026-11-09T22:27:17.040-08:00",
+ "whole": {
+  "pass": true,
+  "missing": [],
+  "stale": null,
+  "failed": []
+ },
+ "exit": 0,
+ "assertions": [
+  {
+   "name": "types/fakecam/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/fakecam/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/fakecam/drp-alive",
+   "ok": true,
+   "detail": "fakecam_0 drp pid 1785597 alive after the run"
+  },
+  {
+   "name": "types/fakecam/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2000, TEB_WrtCt 2000, psana2 events 2000, with fakecam data 2000: equal and >= 1000"
+  },
+  {
+   "name": "types/fakecam/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det fakecam: PASS"
+  },
+  {
+   "name": "types/fakecam/evidence",
+   "ok": true,
+   "detail": "record 20261109T220343-cycle-b3d052088-1785644"
+  },
+  {
+   "name": "types/fakecam/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/cspad/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/cspad/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/cspad/drp-alive",
+   "ok": true,
+   "detail": "cspad_0 drp pid 2003859 alive after the run"
+  },
+  {
+   "name": "types/cspad/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2099, TEB_WrtCt 2099, psana2 events 2099, with cspad data 2099: equal and >= 1000"
+  },
+  {
+   "name": "types/cspad/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det cspad: PASS"
+  },
+  {
+   "name": "types/cspad/evidence",
+   "ok": true,
+   "detail": "record 20261109T220345-cycle-b3d052088-2004081"
+  },
+  {
+   "name": "types/cspad/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/hsd/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/hsd/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/hsd/drp-alive",
+   "ok": true,
+   "detail": "hsd_0 drp pid 1787666 alive after the run"
+  },
+  {
+   "name": "types/hsd/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1961, TEB_WrtCt 1961, psana2 events 1961, with hsd data 1961: equal and >= 1000"
+  },
+  {
+   "name": "types/hsd/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det hsd: PASS"
+  },
+  {
+   "name": "types/hsd/evidence",
+   "ok": true,
+   "detail": "record 20261109T220446-cycle-b3d052088-1787714"
+  },
+  {
+   "name": "types/hsd/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixquad/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixquad/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixquad/drp-alive",
+   "ok": true,
+   "detail": "epixquad_0 drp pid 2005544 alive after the run"
+  },
+  {
+   "name": "types/epixquad/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1974, TEB_WrtCt 1974, psana2 events 1974, with epixquad data 1974: equal and >= 1000"
+  },
+  {
+   "name": "types/epixquad/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixquad: PASS"
+  },
+  {
+   "name": "types/epixquad/evidence",
+   "ok": true,
+   "detail": "record 20261109T220452-cycle-b3d052088-2005962"
+  },
+  {
+   "name": "types/epixquad/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixquad1kfps/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixquad1kfps/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixquad1kfps/drp-alive",
+   "ok": true,
+   "detail": "epixquad1kfps_0 drp pid 1789751 alive after the run"
+  },
+  {
+   "name": "types/epixquad1kfps/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1678, TEB_WrtCt 1678, psana2 events 1678, with epixquad1kfps data 1678: equal and >= 1000"
+  },
+  {
+   "name": "types/epixquad1kfps/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixquad1kfps: PASS"
+  },
+  {
+   "name": "types/epixquad1kfps/evidence",
+   "ok": true,
+   "detail": "record 20261109T220551-cycle-b3d052088-1789793"
+  },
+  {
+   "name": "types/epixquad1kfps/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixhr2x2/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixhr2x2/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixhr2x2/drp-alive",
+   "ok": true,
+   "detail": "epixhr2x2_0 drp pid 2008173 alive after the run"
+  },
+  {
+   "name": "types/epixhr2x2/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1851, TEB_WrtCt 1851, psana2 events 1851, with epixhr2x2 data 1851: equal and >= 1000"
+  },
+  {
+   "name": "types/epixhr2x2/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixhr2x2: PASS"
+  },
+  {
+   "name": "types/epixhr2x2/evidence",
+   "ok": true,
+   "detail": "record 20261109T220602-cycle-b3d052088-2008228"
+  },
+  {
+   "name": "types/epixhr2x2/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixhremu/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixhremu/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixhremu/drp-alive",
+   "ok": true,
+   "detail": "epixhremu_0 drp pid 1791824 alive after the run"
+  },
+  {
+   "name": "types/epixhremu/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1782, TEB_WrtCt 1782, psana2 events 1782, with epixhremu data 1782: equal and >= 1000"
+  },
+  {
+   "name": "types/epixhremu/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixhremu: PASS"
+  },
+  {
+   "name": "types/epixhremu/evidence",
+   "ok": true,
+   "detail": "record 20261109T220645-cycle-b3d052088-1792047"
+  },
+  {
+   "name": "types/epixhremu/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixm320/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixm320/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixm320/drp-alive",
+   "ok": true,
+   "detail": "epixm320_0 drp pid 2010258 alive after the run"
+  },
+  {
+   "name": "types/epixm320/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1783, TEB_WrtCt 1783, psana2 events 1783, with epixm320 data 1783: equal and >= 1000"
+  },
+  {
+   "name": "types/epixm320/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixm320: PASS"
+  },
+  {
+   "name": "types/epixm320/evidence",
+   "ok": true,
+   "detail": "record 20261109T220710-cycle-b3d052088-2010440"
+  },
+  {
+   "name": "types/epixm320/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixUHR/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixUHR/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixUHR/drp-alive",
+   "ok": true,
+   "detail": "epixUHR_0 drp pid 1794805 alive after the run"
+  },
+  {
+   "name": "types/epixUHR/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1756, TEB_WrtCt 1756, psana2 events 1756, with epixUHR data 1756: equal and >= 1000"
+  },
+  {
+   "name": "types/epixUHR/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixUHR: PASS"
+  },
+  {
+   "name": "types/epixUHR/evidence",
+   "ok": true,
+   "detail": "record 20261109T220807-cycle-b3d052088-1794941"
+  },
+  {
+   "name": "types/epixUHR/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epix100/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epix100/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epix100/drp-alive",
+   "ok": true,
+   "detail": "epix100_0 drp pid 2012481 alive after the run"
+  },
+  {
+   "name": "types/epix100/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1824, TEB_WrtCt 1824, psana2 events 1824, with epix100 data 1824: equal and >= 1000"
+  },
+  {
+   "name": "types/epix100/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epix100: PASS"
+  },
+  {
+   "name": "types/epix100/evidence",
+   "ok": true,
+   "detail": "record 20261109T220809-cycle-b3d052088-2012524"
+  },
+  {
+   "name": "types/epix100/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/jungfrau/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/jungfrau/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/jungfrau/drp-alive",
+   "ok": true,
+   "detail": "jungfrau_0 drp pid 1799434 alive after the run"
+  },
+  {
+   "name": "types/jungfrau/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1092, TEB_WrtCt 1092, psana2 events 1092, with jungfrau data 1092: equal and >= 1000"
+  },
+  {
+   "name": "types/jungfrau/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det jungfrau: PASS"
+  },
+  {
+   "name": "types/jungfrau/evidence",
+   "ok": true,
+   "detail": "record 20261109T220921-cycle-b3d052088-1799509"
+  },
+  {
+   "name": "types/jungfrau/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/jungfrauemu/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/jungfrauemu/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/jungfrauemu/drp-alive",
+   "ok": true,
+   "detail": "jungfrauemu_0 drp pid 2014558 alive after the run"
+  },
+  {
+   "name": "types/jungfrauemu/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1817, TEB_WrtCt 1817, psana2 events 1817, with jungfrauemu data 1817: equal and >= 1000"
+  },
+  {
+   "name": "types/jungfrauemu/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det jungfrauemu: PASS"
+  },
+  {
+   "name": "types/jungfrauemu/evidence",
+   "ok": true,
+   "detail": "record 20261109T220940-cycle-b3d052088-2014604"
+  },
+  {
+   "name": "types/jungfrauemu/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/opal/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/opal/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/opal/drp-alive",
+   "ok": true,
+   "detail": "opal_0 drp pid 1804218 alive after the run"
+  },
+  {
+   "name": "types/opal/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1464, TEB_WrtCt 1464, psana2 events 1464, with opal data 1464: equal and >= 1000"
+  },
+  {
+   "name": "types/opal/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det opal: PASS"
+  },
+  {
+   "name": "types/opal/evidence",
+   "ok": true,
+   "detail": "record 20261109T221024-cycle-b3d052088-1804900"
+  },
+  {
+   "name": "types/opal/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/tt/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/tt/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/tt/drp-alive",
+   "ok": true,
+   "detail": "tt_0 drp pid 2017531 alive after the run"
+  },
+  {
+   "name": "types/tt/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2798, TEB_WrtCt 2798, psana2 events 2798, with tt data 2798: equal and >= 1000"
+  },
+  {
+   "name": "types/tt/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det tt: PASS"
+  },
+  {
+   "name": "types/tt/evidence",
+   "ok": true,
+   "detail": "record 20261109T221035-cycle-b3d052088-2017570"
+  },
+  {
+   "name": "types/tt/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/tb/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/tb/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/tb/drp-alive",
+   "ok": true,
+   "detail": "tb_0 drp pid 1808035 alive after the run"
+  },
+  {
+   "name": "types/tb/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1853, TEB_WrtCt 1853, psana2 events 1853, with tb data 1853: equal and >= 1000"
+  },
+  {
+   "name": "types/tb/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det tb: PASS"
+  },
+  {
+   "name": "types/tb/evidence",
+   "ok": true,
+   "detail": "record 20261109T221118-cycle-b3d052088-1808611"
+  },
+  {
+   "name": "types/tb/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/ts/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/ts/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/ts/drp-alive",
+   "ok": true,
+   "detail": "ts_0 drp pid 2019071 alive after the run"
+  },
+  {
+   "name": "types/ts/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1825, TEB_WrtCt 1825, psana2 events 1825, with ts data 1825: equal and >= 1000"
+  },
+  {
+   "name": "types/ts/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det ts: PASS"
+  },
+  {
+   "name": "types/ts/evidence",
+   "ok": true,
+   "detail": "record 20261109T221128-cycle-b3d052088-2019261"
+  },
+  {
+   "name": "types/ts/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/wave8/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/wave8/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/wave8/drp-alive",
+   "ok": true,
+   "detail": "wave8_0 drp pid 1810082 alive after the run"
+  },
+  {
+   "name": "types/wave8/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1794, TEB_WrtCt 1794, psana2 events 1794, with wave8 data 1794: equal and >= 1000"
+  },
+  {
+   "name": "types/wave8/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det wave8: PASS"
+  },
+  {
+   "name": "types/wave8/evidence",
+   "ok": true,
+   "detail": "record 20261109T221218-cycle-b3d052088-1810135"
+  },
+  {
+   "name": "types/wave8/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/wave8he/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/wave8he/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/wave8he/drp-alive",
+   "ok": true,
+   "detail": "wave8he_0 drp pid 2021121 alive after the run"
+  },
+  {
+   "name": "types/wave8he/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2794, TEB_WrtCt 2794, psana2 events 2794, with wave8he data 2794: equal and >= 1000"
+  },
+  {
+   "name": "types/wave8he/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det wave8he: PASS"
+  },
+  {
+   "name": "types/wave8he/evidence",
+   "ok": true,
+   "detail": "record 20261109T221231-cycle-b3d052088-2021166"
+  },
+  {
+   "name": "types/wave8he/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/hrencoder/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/hrencoder/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/hrencoder/drp-alive",
+   "ok": true,
+   "detail": "hrencoder_0 drp pid 1812146 alive after the run"
+  },
+  {
+   "name": "types/hrencoder/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2910, TEB_WrtCt 2910, psana2 events 2910, with hrencoder data 2910: equal and >= 1000"
+  },
+  {
+   "name": "types/hrencoder/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det hrencoder: PASS"
+  },
+  {
+   "name": "types/hrencoder/evidence",
+   "ok": true,
+   "detail": "record 20261109T221312-cycle-b3d052088-1812191"
+  },
+  {
+   "name": "types/hrencoder/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/piranha4/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/piranha4/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/piranha4/drp-alive",
+   "ok": true,
+   "detail": "piranha4_0 drp pid 2023186 alive after the run"
+  },
+  {
+   "name": "types/piranha4/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1862, TEB_WrtCt 1862, psana2 events 1862, with piranha4 data 1862: equal and >= 1000"
+  },
+  {
+   "name": "types/piranha4/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det piranha4: PASS"
+  },
+  {
+   "name": "types/piranha4/evidence",
+   "ok": true,
+   "detail": "record 20261109T221327-cycle-b3d052088-2023365"
+  },
+  {
+   "name": "types/piranha4/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/epixuhr3x2/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/epixuhr3x2/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/epixuhr3x2/drp-alive",
+   "ok": true,
+   "detail": "epixuhr3x2_0 drp pid 1814222 alive after the run"
+  },
+  {
+   "name": "types/epixuhr3x2/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 2881, TEB_WrtCt 2881, psana2 events 2881, with epixuhr3x2 data 2881: equal and >= 1000"
+  },
+  {
+   "name": "types/epixuhr3x2/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixuhr3x2: PASS"
+  },
+  {
+   "name": "types/epixuhr3x2/evidence",
+   "ok": true,
+   "detail": "record 20261109T221511-cycle-b3d052088-1815877"
+  },
+  {
+   "name": "types/epixuhr3x2/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/drp-alive",
+   "ok": true,
+   "detail": "fakecam_0 drp pid 2764340 alive after the run"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1985, TEB_WrtCt 1985, psana2 events 1985, with fakecam data 1985: equal and >= 1000"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det fakecam: PASS"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/evidence",
+   "ok": true,
+   "detail": "record 20261109T220342-cycle-b3d052088-2764398"
+  },
+  {
+   "name": "types/drp_gpu:fakecam/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/drp-alive",
+   "ok": true,
+   "detail": "epixuhremu_0 drp pid 2766205 alive after the run"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1811, TEB_WrtCt 1811, psana2 events 1811, with epixuhremu data 1811: equal and >= 1000"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixuhremu: PASS"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/evidence",
+   "ok": true,
+   "detail": "record 20261109T220439-cycle-b3d052088-2766401"
+  },
+  {
+   "name": "types/drp_gpu:epixuhremu/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/drp-alive",
+   "ok": true,
+   "detail": "epixuhrsim_0 drp pid 2768835 alive after the run"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1781, TEB_WrtCt 1781, psana2 events 1781, with epixuhrsim data 1781: equal and >= 1000"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixuhrsim: PASS"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/evidence",
+   "ok": true,
+   "detail": "record 20261109T220531-cycle-b3d052088-2768891"
+  },
+  {
+   "name": "types/drp_gpu:epixuhrsim/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/drp-alive",
+   "ok": true,
+   "detail": "jungfrau_0 drp pid 2771039 alive after the run"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1092, TEB_WrtCt 1092, psana2 events 1092, with jungfrau data 1092: equal and >= 1000"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det jungfrau: PASS"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/evidence",
+   "ok": true,
+   "detail": "record 20261109T220638-cycle-b3d052088-2771263"
+  },
+  {
+   "name": "types/drp_gpu:jungfrau/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/drp-alive",
+   "ok": true,
+   "detail": "epixuhr3x2_0 drp pid 2773832 alive after the run"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1817, TEB_WrtCt 1817, psana2 events 1817, with epixuhr3x2 data 1817: equal and >= 1000"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det epixuhr3x2: PASS"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/evidence",
+   "ok": true,
+   "detail": "record 20261109T220832-cycle-b3d052088-2777117"
+  },
+  {
+   "name": "types/drp_gpu:epixuhr3x2/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "programs/up",
+   "ok": true,
+   "detail": "exit 0"
+  },
+  {
+   "name": "programs/transitions",
+   "ok": true,
+   "detail": "14 transitions reset .. running .. reset, each read back as requested, no error message"
+  },
+  {
+   "name": "programs/drp-alive",
+   "ok": true,
+   "detail": "fakecam_0 drp pid 1818508 alive after the run"
+  },
+  {
+   "name": "programs/counts",
+   "ok": true,
+   "detail": "simxpm L1Accepts 1851, TEB_WrtCt 1851, psana2 events 1851, with fakecam data 1851: equal and >= 1000"
+  },
+  {
+   "name": "programs/per-event",
+   "ok": true,
+   "detail": "xtc2_check --det fakecam: PASS"
+  },
+  {
+   "name": "programs/evidence",
+   "ok": true,
+   "detail": "record 20261109T221711-cycle-b3d052088-1818759 for 42 rows"
+  },
+  {
+   "name": "programs/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "programs/checks",
+   "ok": true,
+   "detail": "system DRP checks: PASS; ami check: PASS; gui witness: PASS; ami shot: PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/mx-n2/programs/ami-shot.png: window \"fakecam:raw:raw\" of ami-client pid 1819888, 65+ colours; MEB_EvtCt 1851"
+  },
+  {
+   "name": "features/a/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "features/a",
+   "ok": true,
+   "detail": "exit 0, FEATURE a PASS"
+  },
+  {
+   "name": "features/b/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "features/b",
+   "ok": true,
+   "detail": "exit 0, FEATURE b PASS"
+  },
+  {
+   "name": "features/c/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "features/c",
+   "ok": true,
+   "detail": "exit 0, FEATURE c PASS"
+  },
+  {
+   "name": "features/d/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "features/d",
+   "ok": true,
+   "detail": "exit 0, FEATURE d PASS"
+  },
+  {
+   "name": "features/e/down",
+   "ok": true,
+   "detail": "exit 0, down: clean"
+  },
+  {
+   "name": "features/e",
+   "ok": true,
+   "detail": "exit 0, FEATURE e PASS"
+  },
+  {
+   "name": "coverage",
+   "ok": true,
+   "detail": "at b3d052088: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence"
+  }
+ ]
+}

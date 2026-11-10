@@ -1,0 +1,5 @@
+=== loss before-cpu: drp drp jungfrau x1, lock /tmp/agentify-daq-milan082.lock, rmem_max 212992, simsls 038fb891 on sdfmilan082 job 44000948 step 382 wt-final HEAD b14885af3 dirty 0 2026-11-10T05:14:03Z
+RUN before-cpu-1 exit 0 in 78 s: data port 31056; simsls sent {'frames': 1097, 'packets': 140416}; receiver drops 0 (max queue 16640 B); incomplete-frame lines 0; 'DRP_Damage': 0; node RcvbufErrors +0
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s00
+TYPE jungfrau     node sdfmilan082 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/loss-before-cpu-1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s00
+=== loss before-cpu done on sdfmilan082 job 44000948 step 382 wt-final HEAD b14885af3 dirty 0 2026-11-10T05:15:21Z

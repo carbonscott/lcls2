@@ -1,0 +1,108 @@
+2026-11-09T22:01:19.679-08:00 MATRIX: sections types at HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (tracked files modified: False) host sdfmilan023 job 44000948 step 393 workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt --break corrupt
+2026-11-09T22:01:20.060-08:00 matrix: deliberate break: PSDAQ_SIM_CORRUPT_SEQ=500
+2026-11-09T22:01:20.060-08:00 matrix: types: fakecam
+2026-11-09T22:01:20.060-08:00 matrix: ---- type fakecam (1 of 1)
+2026-11-09T22:01:20.064-08:00 matrix: lock /tmp/agentify-daq-milan023.lock held (waited 0 s)
+  fakecam up| 2026-11-09T22:01:20.334-08:00 daq_sim: up on sdfmilan023 (job 44000948 step 393), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam
+  fakecam up| 2026-11-09T22:01:20.334-08:00 daq_sim: preflight (fail-closed isolation check) ...
+  fakecam up| 2026-11-09T22:01:42.378-08:00 daq_sim: preflight rc=0: 22:01:42 PREFLIGHT PASS  (logs/preflight.log)
+  fakecam up| 2026-11-09T22:01:43.457-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+  fakecam up| 2026-11-09T22:01:43.457-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+  fakecam up| 2026-11-09T22:01:44.879-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-09T22:01:49.977-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  fakecam up|   host         sdfmilan023 (Slurm job 44000948)
+  fakecam up|   control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  fakecam up|   configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  fakecam up|   rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  fakecam up|   simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  fakecam up|   procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/daq_sim.cnf  pids {'control': 1781480, 'teb0': 1781481, 'fakecam_0': 1781482}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/pmlogs
+  fakecam up|   data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/data  (xtc2 written when recording)
+  fakecam up|   prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  fakecam up|   webgui       port 31053 (not started: up --webgui)
+  fakecam up|   drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam
+  fakecam up|   stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam
+  fakecam cycle| 2026-11-09T22:01:50.828-08:00 start state: reset
+  fakecam cycle| 2026-11-09T22:01:50.829-08:00 setRecord(True) -> OK
+  fakecam cycle| 2026-11-09T22:01:51.837-08:00 setState unallocated  -> unallocated  OK
+  fakecam cycle| 2026-11-09T22:01:51.838-08:00 selectPlatform(control, drp, teb) -> OK
+  fakecam cycle| 2026-11-09T22:01:52.178-08:00 [warning] ami NOT supported in absence of MEB
+  fakecam cycle| 2026-11-09T22:01:52.184-08:00 setState allocated    -> allocated    OK
+  fakecam cycle| 2026-11-09T22:01:53.928-08:00 setState connected    -> connected    OK
+  fakecam cycle| 2026-11-09T22:01:55.191-08:00 setState configured   -> configured   OK
+  fakecam cycle| 2026-11-09T22:01:56.267-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  fakecam cycle| 2026-11-09T22:01:56.277-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  fakecam cycle| 2026-11-09T22:01:56.282-08:00 setState starting     -> starting     OK
+  fakecam cycle| 2026-11-09T22:01:56.286-08:00 setState paused       -> paused       OK
+  fakecam cycle| 2026-11-09T22:01:56.289-08:00 setState running      -> running      OK
+  fakecam cycle| 2026-11-09T22:01:56.290-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+  fakecam cycle| 2026-11-09T22:01:58.133-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1580 (wanted >= 1000)
+  fakecam cycle| 2026-11-09T22:01:58.137-08:00 setState paused       -> paused       OK
+  fakecam cycle| 2026-11-09T22:01:59.299-08:00 counts after Disable: {'simxpm NumL0Acc': 1848, 'simxpm NumL0Inp': 1848, 'simxpm NumL0Acc group 5': 1848, 'simxpm links': {'fakecam_0': {'group': 5, 'l1acc': 1848, 'link': 0}}, 'TEB_EvtCt': 1848, 'TEB_TrCt': 6, 'TEB_WrtCt': 1848, 'DRP_Damage': 0, 'DRP_RecordSize': 773172, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+  fakecam cycle| 2026-11-09T22:01:59.302-08:00 setState starting     -> starting     OK
+  fakecam cycle| 2026-11-09T22:01:59.310-08:00 setState configured   -> configured   OK
+  fakecam cycle| 2026-11-09T22:01:59.313-08:00 setState connected    -> connected    OK
+  fakecam cycle| 2026-11-09T22:01:59.348-08:00 setState allocated    -> allocated    OK
+  fakecam cycle| 2026-11-09T22:01:59.397-08:00 setState unallocated  -> unallocated  OK
+  fakecam cycle| 2026-11-09T22:01:59.399-08:00 setState reset        -> reset        OK
+  fakecam cycle| 2026-11-09T22:02:03.658-08:00 final state reset (start reset)
+  fakecam cycle| transitions (request -> read back):
+  fakecam cycle|   2026-11-09T22:01:50.829-08:00 -> 2026-11-09T22:01:51.837-08:00  unallocated  unallocated
+  fakecam cycle|   2026-11-09T22:01:51.838-08:00 -> 2026-11-09T22:01:52.184-08:00  allocated    allocated
+  fakecam cycle|   2026-11-09T22:01:52.184-08:00 -> 2026-11-09T22:01:53.928-08:00  connected    connected
+  fakecam cycle|   2026-11-09T22:01:53.928-08:00 -> 2026-11-09T22:01:55.191-08:00  configured   configured
+  fakecam cycle|   2026-11-09T22:01:55.191-08:00 -> 2026-11-09T22:01:56.282-08:00  starting     starting
+  fakecam cycle|   2026-11-09T22:01:56.282-08:00 -> 2026-11-09T22:01:56.286-08:00  paused       paused
+  fakecam cycle|   2026-11-09T22:01:56.286-08:00 -> 2026-11-09T22:01:56.289-08:00  running      running
+  fakecam cycle|   2026-11-09T22:01:58.134-08:00 -> 2026-11-09T22:01:58.137-08:00  paused       paused
+  fakecam cycle|   2026-11-09T22:01:59.299-08:00 -> 2026-11-09T22:01:59.302-08:00  starting     starting
+  fakecam cycle|   2026-11-09T22:01:59.302-08:00 -> 2026-11-09T22:01:59.310-08:00  configured   configured
+  fakecam cycle|   2026-11-09T22:01:59.310-08:00 -> 2026-11-09T22:01:59.313-08:00  connected    connected
+  fakecam cycle|   2026-11-09T22:01:59.313-08:00 -> 2026-11-09T22:01:59.348-08:00  allocated    allocated
+  fakecam cycle|   2026-11-09T22:01:59.348-08:00 -> 2026-11-09T22:01:59.397-08:00  unallocated  unallocated
+  fakecam cycle|   2026-11-09T22:01:59.398-08:00 -> 2026-11-09T22:01:59.399-08:00  reset        reset
+  fakecam cycle| counts:
+  fakecam cycle|   simxpm NumL0Acc        1848
+  fakecam cycle|   simxpm NumL0Inp        1848
+  fakecam cycle|   simxpm NumL0Acc group 5 1848
+  fakecam cycle|   simxpm links           {'fakecam_0': {'group': 5, 'l1acc': 1848, 'link': 0}}
+  fakecam cycle|   TEB_EvtCt              1848
+  fakecam cycle|   TEB_TrCt               6
+  fakecam cycle|   TEB_WrtCt              1848
+  fakecam cycle|   DRP_Damage             0
+  fakecam cycle|   DRP_RecordSize         773172
+  fakecam cycle|   drp_num_dma_errors     0
+  fakecam cycle|   drp_num_missing_rogs   0
+  fakecam cycle|   drp_num_th_error       0
+  fakecam cycle|   drp_num_pgp_jump       0
+  fakecam cycle|   xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (773220 B)
+  fakecam cycle|   psana2 events          1848
+  fakecam cycle|   psana2 with data       1848
+  fakecam cycle|   psana2 checks          FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x286f44e1 != 0x286f441e']
+  fakecam cycle|   psana2 seq             1..1848
+  fakecam cycle|   psana2 seeds           {'0x1234': 1848}
+  fakecam cycle|   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: False
+  fakecam cycle| 2026-11-09T22:02:03.664-08:00 cycle FAIL
+  fakecam down| 2026-11-09T22:02:04.006-08:00 daq_sim: procmgr stop daq_sim.cnf
+  fakecam down| 2026-11-09T22:02:09.234-08:00 daq_sim: stopping simxpm pid 1781444: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+  fakecam down| 2026-11-09T22:02:09.334-08:00 daq_sim: stopping lgbk pid 1781442: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+  fakecam down| 2026-11-09T22:02:09.836-08:00 daq_sim: stopping configdb pid 1781425: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+  fakecam down| 2026-11-09T22:02:10.754-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+  fakecam down| 2026-11-09T22:02:10.762-08:00 daq_sim: down: clean
+2026-11-09T22:02:10.772-08:00 matrix: lock /tmp/agentify-daq-milan023.lock released
+TYPE fakecam      node sdfmilan023 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1848 psana2 1848 with-data 1848 per-event FAIL FAIL
+==== MATRIX SUMMARY at HEAD b3d052088615373e813d6027f1bd9fcdab169a14 (tracked files modified: False), host sdfmilan023, job 44000948 step 393, 2026-11-09T22:01:19.679-08:00 .. 2026-11-09T22:02:10.773-08:00
+deliberate break: --break corrupt (PSDAQ_SIM_CORRUPT_SEQ=500)
+types (1):
+TYPE fakecam      node sdfmilan023 job 44000948 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1848 psana2 1848 with-data 1848 per-event FAIL FAIL
+assertions: 7, 5 passed, 2 failed
+  PASS types/fakecam/up: exit 0
+  PASS types/fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/fakecam/drp-alive: fakecam_0 drp pid 1781482 alive after the run
+  PASS types/fakecam/counts: simxpm L1Accepts 1848, TEB_WrtCt 1848, psana2 events 1848, with fakecam data 1848: equal and >= 1000
+  FAIL types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x286f44e1 != 0x286f441e']
+  FAIL types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+  PASS types/fakecam/down: exit 0, down: clean
+summary JSON: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/fix15b/brk-n1/break-corrupt/matrix-summary.json
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x286f44e1 != 0x286f441e']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (2 of 7 assertions failed)

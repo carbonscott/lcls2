@@ -1,0 +1,18 @@
+pytest on sdfmilan082 job 44000948 step 340 wt-final HEAD 7695dfdae dirty 6 2026-11-10T03:22:39Z
+/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-final/install/lib/python3.9/site-packages/psdaq/sim/coverage.py
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pytest_asyncio/plugin.py:208: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+........................................................................ [ 29%]
+........................................................................ [ 59%]
+........................................................................ [ 88%]
+............................                                             [100%]
+=============================== warnings summary ===============================
+psdaq/tests/test_sim_coverage.py::test_a_bld_server_is_run_when_its_packets_on_its_group_hold_the_run_s_timing
+  /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/wheel/bdist_wheel.py:4: DeprecationWarning: The 'wheel' package is no longer the canonical location of the 'bdist_wheel' command, and will be removed in a future release. Please update to setuptools v70.1 or later which contains an integrated version of this command.
+    warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+244 passed, 1 warning in 136.19s (0:02:16)
+PYTEST_EXIT=0 2026-11-10T03:24:57Z

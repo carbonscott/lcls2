@@ -1,0 +1,163 @@
+# ID:      meb0
+# PLATFORM:5
+# HOST:    sdfmilan048
+# CMDLINE: monReqServer -P tst -C localhost -k ep_domain=lo,ep_provider=tcp -M /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof41/rec/wd-baseg-1/prom -d -n 8 -q 2 -t tstsim5 -u meb0 -p 5
+# CONDA_PREFIX:/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9
+# CONFIGDB_AUTH:*****
+# SUBMODULEDIR:/sdf/group/lcls/ds/ana/sw/conda2-v4/rel/lcls2_submodules_10292026
+# TESTRELDIR:/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/wt-prog1/install
+# RDMAV_FORK_SAFE:1
+# RDMAV_HUGEPAGES_SAFE:1
+# OPENBLAS_NUM_THREADS:1
+# OMP_NUM_THREADS:1
+# NUMEXPR_NUM_THREADS:1
+# PS_PARALLEL:none
+# EPICS_PVA_AUTO_ADDR_LIST:NO
+# EPICS_PVA_ADDR_LIST:127.0.0.1
+# EPICS_PVA_SERVER_PORT:15075
+# EPICS_PVA_BROADCAST_PORT:15076
+# EPICS_PVAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_PVAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_PVAS_SERVER_PORT:15075
+# EPICS_PVAS_BROADCAST_PORT:15076
+# EPICS_CA_AUTO_ADDR_LIST:NO
+# EPICS_CA_ADDR_LIST:127.0.0.1
+# EPICS_CA_SERVER_PORT:15064
+# EPICS_CA_REPEATER_PORT:15065
+# EPICS_CAS_INTF_ADDR_LIST:127.0.0.1
+# EPICS_CAS_BEACON_ADDR_LIST:127.0.0.1
+# EPICS_CAS_AUTO_BEACON_ADDR_LIST:NO
+# EPICS_CAS_SERVER_PORT:15064
+# HTTP_PROXY:http://127.0.0.1:9
+# HTTPS_PROXY:http://127.0.0.1:9
+# http_proxy:http://127.0.0.1:9
+# https_proxy:http://127.0.0.1:9
+# FI_PROVIDER:tcp
+# CONDA_REL:daq_20250402_r9
+# GIT_DESCRIBE:none
+@@@ Restarting child "2026/11/09_08:11:56_sdfmilan048:meb0.log"
+@@@    (as /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/logs/proof41/rec/bin-baseg/monReqServer)
+@@@ The PID of new child "2026/11/09_08:11:56_sdfmilan048:meb0.log" is: 3354280
+@@@ @@@ @@@ @@@ @@@
+tst-monReqServer[3354280]: <I> logging configured
+tst-monReqServer[3354280]: <I> Partition Tag: 'tstsim5'
+tst-monReqServer[3354280]: <C> Inadequate RTPRIO limit: got 0, require 99
+tst-monReqServer[3354280]: <I> Prometheus run-time monitoring data is on port 9201
+EventBuilder timeout is 12000 ms, 12000000000 ns
+tst-monReqServer[3354280]: <I> Ready for transitions
+tst-monReqServer[3354280]: <I> received key = rollcall @ Mon Nov  9 08:12:02 2026
+tst-monReqServer[3354280]: <I> received key = alloc @ Mon Nov  9 08:12:03 2026
+tst-monReqServer[3354280]: <I> Using requested interface lo, address 127.0.0.1
+tst-monReqServer[3354280]: <I> received key = connect @ Mon Nov  9 08:12:05 2026
+tst-monReqServer[3354280]: <I> EbLfClient: libfabric 2.1.0, provider 'tcp' 201.0, domain 'lo', fabric '127.0.0.1/32'
+tst-monReqServer[3354280]: <I> EbLfClient:   rx_size 256, tx_size 256, inject_size 128, cq_data_size 8
+tst-monReqServer[3354280]: <I> EbLfClient:   data_progress FI_PROGRESS_AUTO
+tst-monReqServer[3354280]: <I> EbLfClient:   control_progress FI_PROGRESS_AUTO
+tst-monReqServer[3354280]: <I> EbLfClient:   mr_mode FI_MR_LOCAL, FI_MR_VIRT_ADDR, FI_MR_ALLOCATED, FI_MR_PROV_KEY
+tst-monReqServer[3354280]: <I> EbLfClient:   msg_order FI_ORDER_RAR, FI_ORDER_RAW, FI_ORDER_RAS, FI_ORDER_WAW, FI_ORDER_WAS, FI_ORDER_SAW, FI_ORDER_SAS, FI_ORDER_RMA_RAR, FI_ORDER_RMA_RAW, FI_ORDER_RMA_WAW, FI_ORDER_ATOMIC_RAR, FI_ORDER_ATOMIC_RAW, FI_ORDER_ATOMIC_WAW
+tst-monReqServer[3354280]: <I> Outbound link with TEB ID  0 at 127.0.0.1:38139 connected
+*** EB Epoch list size 240
+*** EB Event list size 240
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  0 connected
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  1 connected
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  2 connected
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  3 connected
+tst-monReqServer[3354280]: <I> received key = configure @ Mon Nov  9 08:12:06 2026
+tst-monReqServer[3354280]: <I> Allocated 0.0 GB region for 24 transitions of 262144 B and 8 buffers of 65536 B for inbound link with DRP ID 0
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  0, 0x7fc810868000 : 0x7fc8108e8000 : 0x7fc810ee8000 (00680000), configured in    0 ms
+tst-monReqServer[3354280]: <I> Allocated 0.0 GB region for 24 transitions of 262144 B and 8 buffers of 65536 B for inbound link with DRP ID 1
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  1, 0x7fc8101e6000 : 0x7fc810266000 : 0x7fc810866000 (00680000), configured in    0 ms
+tst-monReqServer[3354280]: <I> Allocated 0.0 GB region for 24 transitions of 1048576 B and 8 buffers of 65536 B for inbound link with DRP ID 2
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  2, 0x7fc80e964000 : 0x7fc80e9e4000 : 0x7fc8101e4000 (01880000), configured in    0 ms
+tst-monReqServer[3354280]: <I> Allocated 0.2 GB region for 24 transitions of 8388608 B and 8 buffers of 65536 B for inbound link with DRP ID 3
+tst-monReqServer[3354280]: <I> Inbound  link with DRP ID  3, 0x7fc8028e2000 : 0x7fc802962000 : 0x7fc80e962000 (0c080000), configured in    0 ms
+Opened queue /PdsToMonitorEvQueue_tstsim5_2 (78)
+Opened queue /PdsToMonitorEvQueue_tstsim5_0 (79)
+Opened queue /PdsToMonitorEvQueue_tstsim5_1 (80)
+Opened queue /PdsRequestQueue_tstsim5 (83)
+Opened queue /PdsShuffleQueue_tstsim5 (84)
+Replacing 1 entries
+Replacing 7 entries
+tst-monReqServer[3354280]: <I> 
+Awaiting XtcMonitor clients on port 32768 (85)
+tst-monReqServer[3354280]: <I> Parameters of MEB ID 0 (127.0.0.1:46801):
+tst-monReqServer[3354280]: <I>   Instrument:                 tst
+tst-monReqServer[3354280]: <I>   Partition:                  5
+tst-monReqServer[3354280]: <I>   Alias:                      meb0
+tst-monReqServer[3354280]: <I>   Bit list of contributors:   0x000000000000000f, cnt: 4
+tst-monReqServer[3354280]: <I>   Readout group contractors:    5: 0x000000000000000f  
+tst-monReqServer[3354280]: <I>   # of TEB requestees:        1
+Opened queue /PdsFromMonitorDiscovery_tstsim5 (86)
+tst-monReqServer[3354280]: <I>   Buffer duration:            1
+tst-monReqServer[3354280]: <I>   Max # of entries / buffer:  0x00000001 = 1
+tst-monReqServer[3354280]: <I>   # of event      buffers:    0x00000008 = 8
+tst-monReqServer[3354280]: <I>   # of transition buffers:    0x00000018 = 24
+tst-monReqServer[3354280]: <I>   Max buffer size:            0x00980000 = 9961472
+tst-monReqServer[3354280]: <I>   # of event message queues:  0x00000002 = 2
+tst-monReqServer[3354280]: <I>   Distribute:                 yes
+tst-monReqServer[3354280]: <I>   Tag:                        tstsim5
+tst-monReqServer[3354280]: <I> 
+tst-monReqServer[3354280]: <I> MEB thread started
+tst-monReqServer[3354280]: <I> MEB is starting with process ID 3354711
+tst-monReqServer[3354280]: <I> Meb: pinned to CPU 0
+Initialized client 0 [socket 87]
+tst-monReqServer[3354280]: <I> EbAppBase  saw       Configure @ 1163088728.019432407 (047331ac8330d2) from DRP ID  1 @   0x7fc810266000 (00080000 +  0 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       Configure @ 1163088728.019432407 (047331ac8330d2) from DRP ID  3 @   0x7fc802962000 (00080000 +  0 * 00800000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       Configure @ 1163088728.019432407 (047331ac8330d2) from DRP ID  0 @   0x7fc8108e8000 (00080000 +  0 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       Configure @ 1163088728.019432407 (047331ac8330d2) from DRP ID  2 @   0x7fc80e9e4000 (00080000 +  0 * 00100000)
+tst-monReqServer[3354280]: <I> MEB built            Configure @ 1163088728.019432407 (047331ac8330d2) from buffer  0 @   0x562bda47f580
+tst-monReqServer[3354280]: <I> received key = beginrun @ Mon Nov  9 08:12:08 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw        BeginRun @ 1163088729.167056324 (047331ac960c90) from DRP ID  3 @   0x7fc803162000 (00080000 +  1 * 00800000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw        BeginRun @ 1163088729.167056324 (047331ac960c90) from DRP ID  1 @   0x7fc8102a6000 (00080000 +  1 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw        BeginRun @ 1163088729.167056324 (047331ac960c90) from DRP ID  2 @   0x7fc80eae4000 (00080000 +  1 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw        BeginRun @ 1163088729.167056324 (047331ac960c90) from DRP ID  0 @   0x7fc810928000 (00080000 +  1 * 00040000)
+tst-monReqServer[3354280]: <I> MEB built             BeginRun @ 1163088729.167056324 (047331ac960c90) from buffer  1 @   0x562bda47f5e0
+Initialized client 1 [socket 88]
+tst-monReqServer[3354280]: <I> received key = beginstep @ Mon Nov  9 08:12:25 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw       BeginStep @ 1163088745.425357069 (047331ada136dc) from DRP ID  1 @   0x7fc8102e6000 (00080000 +  2 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       BeginStep @ 1163088745.425357069 (047331ada136dc) from DRP ID  2 @   0x7fc80ebe4000 (00080000 +  2 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       BeginStep @ 1163088745.425357069 (047331ada136dc) from DRP ID  0 @   0x7fc810968000 (00080000 +  2 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw       BeginStep @ 1163088745.425357069 (047331ada136dc) from DRP ID  3 @   0x7fc803962000 (00080000 +  2 * 00800000)
+tst-monReqServer[3354280]: <I> MEB built            BeginStep @ 1163088745.425357069 (047331ada136dc) from buffer  2 @   0x562bda47f640
+tst-monReqServer[3354280]: <I> received key = enable @ Mon Nov  9 08:12:25 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw          Enable @ 1163088745.434333941 (047331ada15ca0) from DRP ID  1 @   0x7fc810326000 (00080000 +  3 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          Enable @ 1163088745.434333941 (047331ada15ca0) from DRP ID  2 @   0x7fc80ece4000 (00080000 +  3 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          Enable @ 1163088745.434333941 (047331ada15ca0) from DRP ID  0 @   0x7fc8109a8000 (00080000 +  3 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          Enable @ 1163088745.434333941 (047331ada15ca0) from DRP ID  3 @   0x7fc804162000 (00080000 +  3 * 00800000)
+tst-monReqServer[3354280]: <I> MEB built               Enable @ 1163088745.434333941 (047331ada15ca0) from buffer  3 @   0x562bda47f6a0
+tst-monReqServer[3354280]: <I> received key = disable @ Mon Nov  9 08:12:40 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw         Disable @ 1163088760.562398831 (047331ae99f452) from DRP ID  0 @   0x7fc810de8000 (00080000 + 20 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         Disable @ 1163088760.562398831 (047331ae99f452) from DRP ID  1 @   0x7fc810766000 (00080000 + 20 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         Disable @ 1163088760.562398831 (047331ae99f452) from DRP ID  2 @   0x7fc80fde4000 (00080000 + 20 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         Disable @ 1163088760.562398831 (047331ae99f452) from DRP ID  3 @   0x7fc80c962000 (00080000 + 20 * 00800000)
+tst-monReqServer[3354280]: <I> MEB built              Disable @ 1163088760.562398831 (047331ae99f452) from buffer 20 @   0x562bda47f6a0
+tst-monReqServer[3354280]: <I> received key = endstep @ Mon Nov  9 08:12:42 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw         EndStep @ 1163088762.656226855 (047331aebc5c7d) from DRP ID  0 @   0x7fc810e28000 (00080000 + 21 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         EndStep @ 1163088762.656226855 (047331aebc5c7d) from DRP ID  1 @   0x7fc8107a6000 (00080000 + 21 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         EndStep @ 1163088762.656226855 (047331aebc5c7d) from DRP ID  2 @   0x7fc80fee4000 (00080000 + 21 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw         EndStep @ 1163088762.656226855 (047331aebc5c7d) from DRP ID  3 @   0x7fc80d162000 (00080000 + 21 * 00800000)
+tst-monReqServer[3354280]: <I> MEB built              EndStep @ 1163088762.656226855 (047331aebc5c7d) from buffer 21 @   0x562bda47f700
+tst-monReqServer[3354280]: <I> received key = endrun @ Mon Nov  9 08:12:42 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw          EndRun @ 1163088762.670757181 (047331aebc999d) from DRP ID  2 @   0x7fc80ffe4000 (00080000 + 22 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          EndRun @ 1163088762.670757181 (047331aebc999d) from DRP ID  0 @   0x7fc810e68000 (00080000 + 22 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          EndRun @ 1163088762.670757181 (047331aebc999d) from DRP ID  3 @   0x7fc80d962000 (00080000 + 22 * 00800000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw          EndRun @ 1163088762.670757181 (047331aebc999d) from DRP ID  1 @   0x7fc8107e6000 (00080000 + 22 * 00040000)
+tst-monReqServer[3354280]: <I> MEB built               EndRun @ 1163088762.670757181 (047331aebc999d) from buffer 22 @   0x562bda47f760
+tst-monReqServer[3354280]: <I> received key = unconfigure @ Mon Nov  9 08:12:42 2026
+tst-monReqServer[3354280]: <I> EbAppBase  saw     Unconfigure @ 1163088762.679516979 (047331aebcbe77) from DRP ID  0 @   0x7fc810ea8000 (00080000 + 23 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw     Unconfigure @ 1163088762.679516979 (047331aebcbe77) from DRP ID  1 @   0x7fc810826000 (00080000 + 23 * 00040000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw     Unconfigure @ 1163088762.679516979 (047331aebcbe77) from DRP ID  2 @   0x7fc8100e4000 (00080000 + 23 * 00100000)
+tst-monReqServer[3354280]: <I> EbAppBase  saw     Unconfigure @ 1163088762.679516979 (047331aebcbe77) from DRP ID  3 @   0x7fc80e162000 (00080000 + 23 * 00800000)
+tst-monReqServer[3354280]: <I> MEB built          Unconfigure @ 1163088762.679516979 (047331aebcbe77) from buffer 23 @   0x562bda47f7c0
+tst-monReqServer[3354280]: <I> received key = disconnect @ Mon Nov  9 08:12:42 2026
+EbLfClient 0 disconnected on far side
+tst-monReqServer[3354280]: <C> MEB thread lost connection with a DRP
+handling signal 6 app 0x562bda47bad0
+done with signal 6
+@@@ Current time: Mon Nov  9 08:12:42 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 3354280. The process was killed by signal 6
