@@ -372,6 +372,11 @@ def test_feature_c_checks(monkeypatch, tmp_path):
         bad = dict(rec, counts=dict(rec['counts'], **dict([change])))
         assert any(words in p for p in feature.check_c(work, state, bad)[1]), change
     assert 'up --ami' in ' '.join(feature.check_c(work, dict(state, ami=False), rec)[1])
+    unread = dict(rec, counts={k: v for k, v in rec['counts'].items() if k != 'MEB_EvtCt'})
+    assert any('the MEB served no event' in p for p in feature.check_c(work, state, unread)[1])
+    unread['counts']['prometheus unread'] = '127.0.0.1:9202 no answer in 5 tries over 20 s (timeout)'
+    assert any(p.startswith('MEB_EvtCt not read: ') and '127.0.0.1:9202 no answer' in p
+               for p in feature.check_c(work, state, unread)[1])
     png.unlink()
     assert any(p.startswith('ami shot: PASS') for p in feature.check_c(work, state, rec)[1])
 
@@ -464,3 +469,39 @@ def test_a_types_own_inherited_variable_wins():
     assert daq_sim.inherit_env({}, 'fakecam', {'PSDAQ_SIM_PYTHONPATH_fakecam': '/d'}) == {}
     for t in ('tt', 'epixhr2x2'):
         assert daq_sim.SIM_TYPES[t]['inherit'] == ('PSDAQ_SIM_PYTHONPATH',)
+
+
+def test_run_counts_asks_again_an_exporter_that_does_not_answer(monkeypatch, tmp_path):
+    """Run h2 at b14885af3 lost MEB_EvtCt to one 3 s scrape after Disable: _run_counts asks an
+    exporter that does not answer again (here the MEB's: twice no answer, then its counters), and
+    names one that never answers in 'prometheus unread'."""
+    work = daq_sim.Work(str(tmp_path))
+    monkeypatch.setattr(daq_sim, 'pv_get', lambda name, timeout=3.0: 0)
+    monkeypatch.setattr(daq_sim, 'prometheus_targets', lambda d: [('127.0.0.1', 9200), ('127.0.0.1', 9202)])
+    asked = []
+
+    def scrape(port, names, host='127.0.0.1', errors=None):
+        asked.append(port)
+        if port == 9202 and asked.count(9202) <= 2:
+            errors.append('timeout: timed out')
+            return {}
+        return {9200: {'TEB_EvtCt': 2121.0}, 9202: {'MEB_EvtCt': 2121.0}}[port]
+    monkeypatch.setattr(daq_sim, 'scrape', scrape)
+    monkeypatch.setattr(daq_sim, 'SCRAPE_RETRY_S', 2.0)
+    out = daq_sim._run_counts(work, 5)
+    assert out['MEB_EvtCt'] == 2121 and out['TEB_EvtCt'] == 2121 and 'prometheus unread' not in out
+    assert asked == [9200, 9202, 9202, 9202]
+
+    def silent_meb(port, names, host='127.0.0.1', errors=None):
+        asked.append(port)
+        if port == 9202:
+            errors.append('timeout: timed out')
+            return {}
+        return {'TEB_EvtCt': 7.0}
+    asked.clear()
+    monkeypatch.setattr(daq_sim, 'scrape', silent_meb)
+    monkeypatch.setattr(daq_sim, 'SCRAPE_RETRY_S', 1.0)
+    out = daq_sim._run_counts(work, 5)
+    assert 'MEB_EvtCt' not in out and out['TEB_EvtCt'] == 7 and asked.count(9200) == 1
+    assert out['prometheus unread'].startswith('127.0.0.1:9202 no answer in 2 tries')
+    assert 'timed out' in out['prometheus unread']

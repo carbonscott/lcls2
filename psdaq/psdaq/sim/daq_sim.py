@@ -1769,14 +1769,18 @@ def prometheus_targets(promdir):
     return out
 
 
-def scrape(port, names, host='127.0.0.1'):
-    """{metric{labels}: value} for metric names in 'names', from host:port."""
+def scrape(port, names, host='127.0.0.1', errors=None):
+    """{metric{labels}: value} for metric names in 'names', from host:port; {} when the exporter
+    does not answer in 3 s, and then why is appended to 'errors' (a list), if given."""
+    import http.client
     import urllib.request
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     out = {}
     try:
         text = opener.open(f'http://{host}:{port}/metrics', timeout=3).read().decode()
-    except OSError:
+    except (OSError, http.client.HTTPException) as e:
+        if errors is not None:
+            errors.append(f'{type(e).__name__}: {getattr(e, "reason", None) or e}')
         return out
     for line in text.splitlines():
         m = re.match(r'([A-Za-z_]+)(\{[^}]*\})?\s+(\S+)', line)
@@ -2102,9 +2106,43 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
         print(f'{now()} evidence NOT recorded: {type(e).__name__}: {e}', flush=True)
 
 
+# How long _run_counts tries again an exporter that did not answer.  Run h2 of the matrix at
+# b14885af3 lost feature c's MEB_EvtCt to its one 3 s try: the counts after Disable took 4.1 s, not
+# the usual 1.1, and had the TEB's and the DRP's counters but not the MEB's.
+SCRAPE_RETRY_S = 20.0
+
+
+def scrape_all(targets, names, retry_s=None):
+    """({(host, port): {metric: value}} of the exporters that answered, {(host, port): why} of those
+    that did not within retry_s (default SCRAPE_RETRY_S)): one that does not answer is asked again
+    after 0.5, 1, 2, 4, 4 ... s, each try with scrape's 3 s timeout."""
+    retry_s = SCRAPE_RETRY_S if retry_s is None else retry_s
+    got, why, tries = {}, {}, {}
+    pending = list(targets)
+    t0 = time.monotonic()
+    delay = 0.5
+    while pending:
+        for t in list(pending):
+            errors = []
+            out = scrape(t[1], names, t[0], errors=errors)
+            tries[t] = tries.get(t, 0) + 1
+            if errors:
+                why[t] = errors[-1]
+            else:
+                got[t] = out
+                pending.remove(t)
+        if not pending or time.monotonic() + delay > t0 + retry_s:
+            break
+        time.sleep(delay)
+        delay = min(delay * 2, 4.0)
+    took = time.monotonic() - t0
+    return got, {t: f'no answer in {tries[t]} tries over {took:.0f} s ({why[t]})' for t in pending}
+
+
 def _run_counts(work, plat):
     """Counts right after Disable: simxpm's NumL0Acc and the TEB/DRP Prometheus counters (they
-    vanish at Disconnect)."""
+    vanish at Disconnect).  An exporter that does not answer is asked again for up to
+    SCRAPE_RETRY_S; one that never does is named in 'prometheus unread'."""
     time.sleep(1.0)                     # The last L1Accepts drain through the TEB
     out = {}
     v = pv_get(f'{PVBASE}:XPM:{XPM}:PART:{plat}:NumL0Acc')
@@ -2123,13 +2161,17 @@ def _run_counts(work, plat):
     except (ValueError, TypeError, KeyError):
         out['simxpm links'] = f'unreadable: {v}'
 
-    for host, port in prometheus_targets(work.path('prom')):
-        for k, val in scrape(port, COUNTERS + PER_DRP_COUNTERS, host).items():
+    targets = prometheus_targets(work.path('prom'))
+    got, missed = scrape_all(targets, COUNTERS + PER_DRP_COUNTERS)
+    for t in targets:
+        for k, val in got.get(t, {}).items():
             name = k.split('{')[0]
             if name in PER_DRP_COUNTERS:    # one per system DRP: keep its alias
                 m = re.search(r'alias="([^"]*)"', k)
                 name = f'{name} {m.group(1) if m else k}'
             out[name] = int(val)
+    if missed:
+        out['prometheus unread'] = '; '.join(f'{h}:{p} {why}' for (h, p), why in missed.items())
     print(f'{now()} counts after Disable: {out}', flush=True)
     return out
 
@@ -2652,7 +2694,8 @@ def _sysdrp_counts(work, state, experiment, run, bld=False):
 
 
 def _meb_counts(work, state):
-    """The MEB's served-event count is MEB_EvtCt (Prometheus, read after Disable in _run_counts);
+    """The MEB's served-event count is MEB_EvtCt (Prometheus, read after Disable in _run_counts,
+    which tries again for up to SCRAPE_RETRY_S an exporter that does not answer);
     this adds what shmemClient (-v, one line per datagram) printed from its queue."""
     import glob
     logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:shmc0.log')), key=os.path.getmtime)

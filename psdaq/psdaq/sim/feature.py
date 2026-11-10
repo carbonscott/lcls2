@@ -269,7 +269,10 @@ def check_c(work, state, rec, breakage=None, recompute=False):
     if counts.get('per-DRP checks') != 'PASS':
         problems.append(f'per-DRP checks: {counts.get("per-DRP checks")}')
     meb, kept = counts.get('MEB_EvtCt'), counts.get('ami events')
-    if not isinstance(meb, int) or meb <= 0:
+    if meb is None and counts.get('prometheus unread'):
+        problems.append(f'MEB_EvtCt not read: the exporters that did not answer after Disable: '
+                        f'{counts["prometheus unread"]}')
+    elif not isinstance(meb, int) or meb <= 0:
         problems.append(f'MEB_EvtCt {meb}: the MEB served no event')
     elif isinstance(kept, int) and kept > meb:
         problems.append(f'AMI kept {kept} events, more than the MEB served ({meb})')
