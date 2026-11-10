@@ -1,0 +1,34 @@
+ok   hand-tt-correct              expect correct     judge correct     Report identifies tt_0 aborting configure due to TriggerDelay register write-verify failur
+ok   hand-tt-partial              expect partial     judge partial     Report blames tt_0 at the configure stage but only says it timed out/didn't respond, witho
+ok   hand-tt-wrong                expect wrong       judge wrong       Report blames teb0 losing connection to DRP during enable; key says tt_0 failed configure 
+ok   hand-tt-falsepass            expect wrong       judge wrong       Report blames teb0 crashing first and explicitly dismisses tt_0's Verify error during conf
+ok   hand-tt-falsefail            expect correct     judge correct     Report identifies the timetool DRP failing during configure because a written trigger dela
+ok   hand-conn-correct            expect correct     judge correct     Report identifies fakecam_0 aborting in connect due to TDetSemi.Length_0 register write-ve
+MISS hand-conn-wrongstep          expect partial     judge correct     Report blames fakecam_0 failing to configure due to register Length_0 failing verify. Comp
+ok   hand-kill-correct            expect correct     judge correct     Report identifies fakecam_0 killed by signal 9 while running, with later disable failing b
+ok   hand-kill-victim             expect wrong       judge wrong       Report blames teb0 aborting with signal 6 after an exception; key says fakecam_0 DRP was k
+ok   hand-kill-partial            expect partial     judge partial     Right component (fakecam_0) and a disable-stage failure, but only 'did not respond'; misse
+ok   hand-start-correct           expect correct     judge correct     Report identifies tt_0 crashing at startup with TypeError unexpected keyword argument 'siz
+ok   hand-start-partial           expect partial     judge partial     Identifies tt_0 and the alloc stage, but only says it didn't respond to rollcall; omits th
+ok   hand-start-unknown           expect unknown     judge unknown     The report says it could not determine why the DRP was absent and asserts no specific caus
+ok   hand-name-correct            expect correct     judge correct     Report identifies tt_0 aborting during configure with the illegal XtcData::Name error on R
+ok   hand-ok-correct              expect correct     judge correct     Report concludes no fault in the session (configure, enable, disable clean) and lists the 
+ok   hand-ok-alarm-exit           expect false-alarm judge false-alarm Report presents the tt_0 double free crash as the cause of failure with high confidence, b
+ok   hand-ok-alarm-rtprio         expect false-alarm judge false-alarm Report presents an RTPRIO limit critical error as the cause of failure, while the key says
+ok   hand-ro-issue                expect correct     judge correct     Report identifies hsd_0 aborting in configure due to PgpQPllReset register failing write-v
+ok   hand-rt-nologs               expect partial     judge partial     Right component and stage (configure) but only says it did not respond; misses the write-v
+ok   pilot-skills-kill-drp        expect correct     judge correct     Report identifies fakecam_0 DRP killed by external SIGKILL (signal 9) right after enable/r
+ok   pilot-skills-cfg-verify-tt   expect correct     judge correct     Report identifies tt_0 crashing at Configure with a TriggerDelay register write-verify (re
+ok   pilot-skills-healthy-tt      expect correct     judge correct     Report says the run itself was clean and data-taking fine; the tt_0 double-free at shutdow
+ok   pilot-none-kill-drp          expect correct     judge correct     Report identifies fakecam_0 killed by external SIGKILL right after Enable while running, w
+ok   pilot-none-cfg-verify-tt     expect correct     judge correct     Report identifies tt_0 aborting at configure from TriggerEventBuffer[0].TriggerDelay write
+ok   pilot-none-healthy-tt        expect correct     judge correct     Report says the run completed cleanly and the double free occurred at shutdown after the r
+ok   adv-second-place             expect partial     judge partial     Main conclusion blames teb0 internal bug; the true cause (fakecam_0 killed by signal 9) ap
+MISS adv-wrong-launch             expect wrong       judge correct     Report identifies tt_0 failing a register verify during configure, in a launch at 20:23:10
+ok   adv-utc-right                expect correct     judge correct     Report identifies launch 09_12:22:37, configure stage, tt_0 aborting with a Verify error (
+ok   adv-count-all                expect correct     judge correct     Report lists all nine failed launches with the same stages, causes and side effects as the
+ok   adv-count-half               expect partial     judge partial     Report lists 5 of 9 failed launches, all with correct causes, but omits 12:24:58, 12:49:29
+ok   adv-count-one                expect wrong       judge wrong       Report lists only one of nine failed launches (12:12:52) and claims the others were fine; 
+ok   adv-healthy-window-alarm     expect false-alarm judge false-alarm Key says no fault in the 16:00-16:30 launches; report claims DAQ broken based on failures 
+
+judge sonnet agrees with the hand labels on 30 of 32
