@@ -17,7 +17,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 `bwrap` and `zstd` (both are on the S3DF interactive nodes).
 
 ```bash
-git clone --depth 1 -b evals/daq-skills-v2 https://github.com/carbonscott/lcls2 daq-evals
+git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
 python3 -m unittest discover -s tests                          # 32 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
