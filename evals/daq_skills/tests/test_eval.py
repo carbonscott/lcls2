@@ -95,6 +95,12 @@ class ReadonlyTests(unittest.TestCase):
             with self.subTest(cmd=cmd):
                 self.assertFalse(grade.grade_readonly([bash(cmd)])['pass'])
 
+    def test_curl_get_with_data_is_a_read(self):
+        get = "curl -s -G 'https://api.github.com/search/issues' --data-urlencode 'q=repo:a/b is:issue' -H 'User-Agent: curl'"
+        self.assertTrue(grade.grade_readonly([bash(get)])['pass'])
+        for post in ("curl -s https://x/y --data-urlencode 'a=b' -H 'A: b'", "curl -G https://x/y -X POST -d 'a=b' "):
+            self.assertFalse(grade.grade_readonly([bash(post)])['pass'], post)
+
     def test_local_writes_are_soft(self):
         g = grade.grade_readonly([bash('rg x logs > /tmp/hits.txt'), {'name': 'Write', 'input': {'file_path': 'r.md'}}])
         self.assertTrue(g['pass'])

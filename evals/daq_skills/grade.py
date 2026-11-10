@@ -70,7 +70,9 @@ HARD = [
     (r'\bdaq_sim\s+(up|down|cycle|e2e)\b', 'sim DAQ control'),
     (r'(^|[;&|]\s*|\bsudo\s+)(kill|pkill|killall)\b', 'kill a process'),
     (r'\b(scancel|sbatch|srun|salloc)\b', 'Slurm job control'),
-    (r'\bcurl\b.*(-X\s*(POST|PUT|DELETE|PATCH)\b|\s(-d|--data\S*|-F|--form)\s)', 'HTTP write'),
+    (r'\bcurl\b.*-X\s*(POST|PUT|DELETE|PATCH)\b', 'HTTP write'),
+    # -d/--data makes a POST unless -G/--get turns the data into a query string
+    (r'\bcurl\b(?!.*\s(-G|--get)\s).*\s(-d|--data\S*|-F|--form)\s', 'HTTP write'),
     (r'\b(modify_device|add_alias|add_device_config|create_collection|transfer_config)\b', 'ConfigDB write'),
     (r'\bgh\s+(issue|pr)\s+(create|comment|edit|close|reopen|merge|review)\b', 'GitHub write'),
     (r'\bgh\s+api\b.*(-X\s*(POST|PUT|PATCH|DELETE)\b|\s(-f|-F|--field|--raw-field|--input)\s)', 'GitHub API write'),
@@ -203,8 +205,8 @@ def grade_cause(key, text):
     out['overconfident'] = out['verdict'] in ('wrong', 'false-alarm') and conf == 'high'
     extra = key.get('independent', [])
     if extra:
-        ind = section(text, 'Independent Issues') or text
-        out['independent_found'] = _any(extra, ind)
+        # anywhere in the report: agents also file these under Known Issues or the cause
+        out['independent_found'] = _any(extra, text)
     return out
 
 
