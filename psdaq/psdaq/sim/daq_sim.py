@@ -933,6 +933,18 @@ def start_service(work, state, name, argv, env):
     return p
 
 
+def inherit_env(sim_type, det, environ):
+    """What the type's DRP inherits from 'up' (its 'inherit' variables), {name: value or None}.  A set
+    <name>_<det> (e.g. PSDAQ_SIM_PYTHONPATH_tt) becomes <name> in environ first, so one environment can
+    give each type its own value (tt and epixhr2x2 need different ones, and daq_sim matrix runs both);
+    neither is ever set by 'up' itself (R6: env-only, off by default)."""
+    for k in sim_type.get('inherit', ()):
+        per = environ.get(f'{k}_{det}')
+        if per is not None:
+            environ[k] = per
+    return {k: environ.get(k) for k in sim_type.get('inherit', ())}
+
+
 def cmd_up(args):
     host = check_host(args.any_host)
     segments = getattr(args, 'segments', 1)
@@ -1018,6 +1030,7 @@ def cmd_up(args):
 
     if two:                             # EPICS lists name A's IP, NO_PROXY both hosts (twonode.apply_env)
         twonode.apply_env(os.environ, a_host, b_host, ips)
+    det_env = inherit_env(sim_type, DETECTOR, os.environ)
     env = dict(os.environ)
     env[TAG] = work.dir
     env['PYTHONUNBUFFERED'] = '1'
@@ -1037,13 +1050,13 @@ def cmd_up(args):
              'tpr': tpr, 'hps': hps, 'wave8pvs': w8, 'two': two,
              'remote': ({f'{DETECTOR}_{i}': two['hosts'][1] for i in range(1, segments)} |
                         {x['alias']: two['hosts'][1] for x in also}) if two else {},
-             'det_env': {k: os.environ.get(k) for k in sim_type.get('inherit', ())}}
+             'det_env': det_env}
     work.save(state)
     say(f'up on {host} (job {os.environ.get("SLURM_JOB_ID")} step {os.environ.get("SLURM_STEP_ID")}), '
         f'platform {args.platform}, workdir {work.dir}')
     for k, v in state['det_env'].items():   # what the type's drp inherits; unset is reported
-        say(f'{DETECTOR}: {k}={v!r}' if v else
-            f'{DETECTOR}: {k} is not set (RUNBOOK {sim_type.get("runbook", "§3e")})')
+        say((f'{DETECTOR}: {k}={v!r}' + (f' (from {k}_{DETECTOR})' if os.environ.get(f'{k}_{DETECTOR}') else ''))
+            if v else f'{DETECTOR}: {k} is not set (RUNBOOK {sim_type.get("runbook", "§3e")})')
 
     try:
         if not args.skip_preflight:

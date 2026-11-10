@@ -447,3 +447,20 @@ def test_tcp_peers_from_ss_lines():
     got = twonode.established('10.0.0.2', '10.0.0.1', lines)
     assert [g[2] for g in got] == ['users:(("drp",pid=1,fd=3))', 'users:(("teb",pid=2,fd=4))']
     assert twonode.established('10.0.0.1', '10.0.0.2', lines) == []
+
+
+def test_a_types_own_inherited_variable_wins():
+    """<VAR>_<type> (PSDAQ_SIM_PYTHONPATH_tt) is up --det <type>'s <VAR>, so one environment serves tt and epixhr2x2,
+    which need different PSDAQ_SIM_PYTHONPATHs; a type that inherits nothing gets nothing; nothing is set unasked."""
+    st = {'inherit': ('PSDAQ_SIM_PYTHONPATH',)}
+    env = {'PSDAQ_SIM_PYTHONPATH_tt': '/a', 'PSDAQ_SIM_PYTHONPATH_epixhr2x2': '/b'}
+    assert daq_sim.inherit_env(st, 'tt', env) == {'PSDAQ_SIM_PYTHONPATH': '/a'} and env['PSDAQ_SIM_PYTHONPATH'] == '/a'
+    env = {'PSDAQ_SIM_PYTHONPATH_tt': '/a', 'PSDAQ_SIM_PYTHONPATH_epixhr2x2': '/b'}
+    assert daq_sim.inherit_env(st, 'epixhr2x2', env) == {'PSDAQ_SIM_PYTHONPATH': '/b'}
+    env = {'PSDAQ_SIM_PYTHONPATH': '/c'}
+    assert daq_sim.inherit_env(st, 'tt', env) == {'PSDAQ_SIM_PYTHONPATH': '/c'}
+    env = {}
+    assert daq_sim.inherit_env(st, 'tt', env) == {'PSDAQ_SIM_PYTHONPATH': None} and env == {}
+    assert daq_sim.inherit_env({}, 'fakecam', {'PSDAQ_SIM_PYTHONPATH_fakecam': '/d'}) == {}
+    for t in ('tt', 'epixhr2x2'):
+        assert daq_sim.SIM_TYPES[t]['inherit'] == ('PSDAQ_SIM_PYTHONPATH',)

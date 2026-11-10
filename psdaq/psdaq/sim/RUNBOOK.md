@@ -787,7 +787,10 @@ export PSDAQ_SIM_PYTHONPATH="$H/python:$H/submodules/surf/python:$H/submodules/a
 QT_QPA_PLATFORM=offscreen python -B -m psdaq.sim.rogue_drive --type epixhr2x2
 ```
 
-epixhr2x2 runs in a DAQ with it (§3k), and so does tt (§3l). On hardware the same surf error
+epixhr2x2 runs in a DAQ with it (§3k), and so does tt (§3l). The two need different values (with
+both in one, tt's `tt_init` fails: `No module named 'lcls2_pgp_fw_lib.hardware'`), so `up --det <type>`
+takes `PSDAQ_SIM_PYTHONPATH_<type>`, when set, as its `PSDAQ_SIM_PYTHONPATH` (`daq_sim.inherit_env`):
+one environment then serves both, as `daq_sim matrix` needs (§3p). On hardware the same surf error
 stops `tt_init`. Before 99cc4db8d neither type had the `<type>_connectionInfo(root, alloc_json)`
 that `BEBDetector::connectionInfo` calls at Alloc. For tt, the one-argument `tt_connect(cl)`
 has not matched the DRP's two-argument call since 3b829abf4, and d6b1e7552 renamed that call
