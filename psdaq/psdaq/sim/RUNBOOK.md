@@ -27,9 +27,9 @@ Everything in `psdaq/psdaq/sim/`:
 | `rogue_drive.py` | Debugging aid: runs a BEB type's config entry points against `rogue_dev`, without a DRP (§3e). |
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
-| `matrix.py` | `daq_sim matrix` (§3k): the whole matrix in one command, every detector type, the system features and coverage, with an exit code that is the verdict. |
-| `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3h). |
-| `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3h). |
+| `matrix.py` | `daq_sim matrix` (§3p): the whole matrix in one command, every detector type, the system features and coverage, with an exit code that is the verdict. |
+| `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3m). |
+| `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3m). |
 | `../../drpGpu/MemPool.cc` (`drp_gpu -d sim://`) | The GPU DRP's simulated device: `MemPoolSim`'s frames copied into the GPU's DMA buffers (§3h). |
 | `procmgrd.s3df.conf` | procmgr rcfile for S3DF: the rhel9 procServ. |
 | `../webgui/server.py` (console script `daq_webgui`) | The web GUI server; `up --webgui` starts it on 127.0.0.1:31053. |
@@ -696,7 +696,7 @@ Options:
 | `-v` | Show where each row comes from (`file:line`, or the configs that start it). |
 | `--json` | Print the result as JSON. |
 
-`daq_sim matrix` (§3k) is the one command for the whole hardware-free matrix: it runs every
+`daq_sim matrix` (§3p) is the one command for the whole hardware-free matrix: it runs every
 detector type and the system features, which write the evidence, and then this check. Until every
 row has a run, both commands end in FAIL.
 
@@ -1266,7 +1266,7 @@ Fault run that fails Configure and names the register:
 `Verify error for block ...TriggerEventBuffer[0].TriggerDelay ... Got: 0xff, Exp: 0x17`, then
 `**** python error` and signal 6 in the drp's log).
 
-## 3h. MEB, AMI and the system DRPs: `up --meb --ami --pva --epics --udp --gui`
+## 3m. MEB, AMI and the system DRPs: `up --meb --ami --pva --epics --udp --gui`
 
 Each option adds programs the procmgr configs start to the generated `.cnf`, on the same node and
 on loopback, in the partition's readout group; `daq_sim cycle` then checks what each recorded and
@@ -1322,7 +1322,7 @@ Disable, the MEB's served-event count `MEB_EvtCt`. The client's PVA server takes
 daq_sim cycle -w $WD --events 1000 --ami-shot $WD/ami.png
 ```
 
-## 3i. System features: `daq_sim feature a|b|c|d|e`
+## 3n. System features: `daq_sim feature a|b|c|d|e`
 
 Each feature is one command, run inside a Slurm step on the node as in §2. It brings the DAQ up
 (`up --detach` with the feature's options), drives one run, takes the DAQ down (always, unless
@@ -1338,7 +1338,7 @@ daq_sim feature a -w $WD       # readout groups at different rates
 daq_sim feature b -w $WD       # a 3-step scan through generic_timing_scan.py
 daq_sim feature e -w $WD       # drp_pva, drp_bld, drp_udpencoder, epicsArch with a PGP DRP
 daq_sim feature c -w $WD       # the MEB serving AMI; AMI's GUI shows the camera ($DAQ_SIM_AMI_SRC or --ami-src)
-daq_sim feature d --hosts nodeA,nodeB     # two nodes of this job, run on nodeA (§3j); NOT AVAILABLE otherwise
+daq_sim feature d --hosts nodeA,nodeB     # two nodes of this job, run on nodeA (§3o); NOT AVAILABLE otherwise
 daq_sim feature d --hosts nodeA,nodeB --break kill-remote-drp   # the DRP on nodeB killed while Running: FAIL
 daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail (no DAQ)
 ```
@@ -1348,8 +1348,8 @@ daq_sim feature a -w $WD --check-only --break drop-l1     # the checks can fail 
 | a | `--det hrencoder --also epix100:<p+1> --also wave8:<p+1> --fixed-rate <p>:3 --fixed-rate <p+1>:4` | one cycle of `--events` (1000) L1Accepts of group p | hrencoder_0 (group p, 1.02 kHz marker), epix100_0 and wave8_0 (group p+1, 102 Hz): each DRP's DAQ count == psana2's events in its stream == events with its data, each passing the type's per-event check (`xtc2_check`); each group took its marker's share (group p+1 1/10 of group p's, within 10 %) |
 | b | `--det tb --also epix100 --rate 100` | `python -m psdaq.cas.generic_timing_scan -p <p> -C localhost --detname epix100_0 --scantype timing --events <N> --record 1 --config BEAM --linear 700000 730000 10000`, from connected | psana2 reads 3 steps in tb's stream, `step_value` 700000, 710000, 720000 and a `step_docstring` naming each; each DRP has `--events` (200) L1Accepts in every step, all with data; each DRP's DAQ count == psana2's; every event passes its per-event check; `epix100_update` applied 700000, 710000, 720000 in order (its DRP's log) |
 | e | `--pva --epics --udp --bld --rate 100` | one cycle | sysdrp_check reads drp_pva's, drp_udpencoder's, epicsArch's and drp_bld's data event by event; each system DRP's DAQ count == psana2's events in its stream; drp_bld's L1Accepts less its `bld_miss_count` == psana2's events with BLD data |
-| c | `--ami --rate 100` (`--ami-src` passed on; §3h) | one cycle with `--ami-shot <WD>/ami-shot.png` | fakecam_0's DAQ count == psana2's events in its stream == events with its data, each passing the per-event check; the MEB served events (`MEB_EvtCt` > 0 and at least the events AMI kept); every event AMI computed from the MEB matches psana2's event with the same timestamp (`ami_check`: seq and pixel, at least 100 events, AMI's pixel sum == psana2's over them); a second `ami-client` showed the camera image while Running (the screenshot path is in the report) |
-| d | `--hosts A,B --segments 2 --rate 100` (§3j): control, the TEB, simxpm and fakecam_0 on A, fakecam_1 on B | one cycle of `--events` (1000) L1Accepts | the cycle passed; each DRP's DAQ count (the L1Accepts simxpm sent its link) == psana2's events in its own stream (fakecam_1's: the stream whose Configure has segment 1, read through that segment) == events with its data, each passing the per-event check; while Running, `ss -tnp` on each host (on B in a step of the job there) shows established TCP connections to the other host owned by DAQ processes (`drp`, `teb`, `control`, `python3`). The report also gives each host's address, interface and processes, the step that ran procmgrd on B, and both hosts' EPICS lists. NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (squeue's node list of `SLURM_JOB_ID`, expanded by `scontrol show hostnames`). `--break kill-remote-drp` (a live run, no `--check-only`) SIGKILLs fakecam_1 on B once Running (`cycle --kill-drp fakecam_1`, through a step on B) and must FAIL |
+| c | `--ami --rate 100` (`--ami-src` passed on; §3m) | one cycle with `--ami-shot <WD>/ami-shot.png` | fakecam_0's DAQ count == psana2's events in its stream == events with its data, each passing the per-event check; the MEB served events (`MEB_EvtCt` > 0 and at least the events AMI kept); every event AMI computed from the MEB matches psana2's event with the same timestamp (`ami_check`: seq and pixel, at least 100 events, AMI's pixel sum == psana2's over them); a second `ami-client` showed the camera image while Running (the screenshot path is in the report) |
+| d | `--hosts A,B --segments 2 --rate 100` (§3o): control, the TEB, simxpm and fakecam_0 on A, fakecam_1 on B | one cycle of `--events` (1000) L1Accepts | the cycle passed; each DRP's DAQ count (the L1Accepts simxpm sent its link) == psana2's events in its own stream (fakecam_1's: the stream whose Configure has segment 1, read through that segment) == events with its data, each passing the per-event check; while Running, `ss -tnp` on each host (on B in a step of the job there) shows established TCP connections to the other host owned by DAQ processes (`drp`, `teb`, `control`, `python3`). The report also gives each host's address, interface and processes, the step that ran procmgrd on B, and both hosts' EPICS lists. NOT AVAILABLE unless `--hosts` names two different hosts of this Slurm job's allocation (squeue's node list of `SLURM_JOB_ID`, expanded by `scontrol show hostnames`). `--break kill-remote-drp` (a live run, no `--check-only`) SIGKILLs fakecam_1 on B once Running (`cycle --kill-drp fakecam_1`, through a step on B) and must FAIL |
 
 The step values are recorded by the timing DRP, as at the hutches: `TimingBEB::scanEnabled()`
 (tb) and `TimingSystem::scanEnabled()` (ts) are true, `Epix100::scanEnabled()` is false, so a scan
@@ -1397,7 +1397,7 @@ expects the BLD values of seq + 1. Each must print `FEATURE <x> FAIL` and exit 1
 `--check-only` without a break re-runs the checks on the recorded files (for c, `ami_check`
 again on the fetched result).
 
-## 3j. Two nodes: `daq_sim up --hosts A,B`
+## 3o. Two nodes: `daq_sim up --hosts A,B`
 
 `daq_sim up --hosts nodeA,nodeB [--segments N] [--also TYPE[:GROUP] ...]`, run in a Slurm step on
 nodeA, brings up one partition over two hosts of the same Slurm job (`psdaq.sim.twonode`). Both
@@ -1437,18 +1437,18 @@ resolver; no host name or address is written in the code.
   `--tpr`, `--webgui` and `--fixed-rate` are refused with `--hosts`. preflight.sh runs on nodeA
   with sim_env.sh's loopback lists; it does not check the two-host lists.
 
-`daq_sim feature d --hosts nodeA,nodeB` (§3i) runs it with `--segments 2` and checks it.
+`daq_sim feature d --hosts nodeA,nodeB` (§3n) runs it with `--segments 2` and checks it.
 `daq_sim up --hosts A,B --dry-run` still prints the earlier plan (`multi_host_plan`: both
 addresses in the lists, the `--also` DRPs on B). What `up --hosts` runs is the `.cnf` and
 environment above. `test_sim_features.py` checks the host checks, the `.cnf` and the address
 lists without a DAQ.
 
-## 3k. The whole matrix, one command: `daq_sim matrix`
+## 3p. The whole matrix, one command: `daq_sim matrix`
 
-`daq_sim matrix` runs, unattended, a cycle of every detector type, one run of the programs (§3h),
+`daq_sim matrix` runs, unattended, a cycle of every detector type, one run of the programs (§3m),
 the system features and the coverage check, and exits 0 only if every assertion passes. Run it in
 one `srun` step on the node (it takes about an hour; a shell that cuts commands off needs `nohup`
-and a log, §1; AMI as in §3h, from `--ami-src DIR` or `$DAQ_SIM_AMI_SRC`):
+and a log, §1; AMI as in §3m, from `--ami-src DIR` or `$DAQ_SIM_AMI_SRC`):
 
 ```bash
 # one srun step on the node (JOB, ROOT and WD as in §1 and §2)
@@ -1462,8 +1462,8 @@ It brings up one DAQ at a time, each in its own work dir under `-w`, and always 
 | section | what runs, in `<WD>/...` | assertions (each named, each PASS or FAIL) |
 |---|---|---|
 | `types` | for each detector type: `daq_sim up --det <T> --detach`, one recorded `daq_sim cycle --events 1000`, `daq_sim down`, in `types/<T>` | `types/<T>/up`; `.../transitions` (every state read back as requested, no error message, back to the start state); `.../drp-alive` (the DRP `up` started is still alive after the run); `.../counts` (simxpm's L1Accepts == `TEB_WrtCt` == psana2's events == psana2's events with `<T>`'s data, all >= 1000); `.../per-event` (`xtc2_check` compared every event's data, through the type's own psana interface, with what the simulated device was set to send); `.../evidence` (the cycle wrote a record for `det:drp:<T>` that coverage accepts); `.../down` (`down: clean`) |
-| `programs` | `daq_sim up --ami --pva --epics --udp --gui --pvservers --tpr --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter, daqstat on simslurm, and the PV-server stand-ins simhsd, simtpr and simdti with hsdpva, pvatable, tprca and dtica on them, xpmpva and deadca on simxpm, bldcas and hpsdbuscas, tprtrig and tpr_trigger on simulated TPR cards: §3h), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
-| `features` | `daq_sim feature <x>` (§3i), x = a .. e, in `features/<x>` (c with `--ami-src`, d with `--hosts`) | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature `psdaq.sim.feature` cannot run here is `NOT AVAILABLE`, a failed assertion, and starts nothing: d (two nodes, §3j) unless `--hosts` names two hosts of this Slurm job |
+| `programs` | `daq_sim up --ami --pva --epics --udp --gui --pvservers --tpr --rate 100 --detach` (the MEB, AMI, drp_pva, epicsArch, drp_udpencoder with sim_udpencoder, control_gui, groupca, pvant, procstat, epics_exporter, daqstat on simslurm, and the PV-server stand-ins simhsd, simtpr and simdti with hsdpva, pvatable, tprca and dtica on them, xpmpva and deadca on simxpm, bldcas and hpsdbuscas, tprtrig and tpr_trigger on simulated TPR cards: §3m), one recorded `cycle --ami-shot programs/ami-shot.png`, `down`, in `programs` | as a type's, for fakecam_0, and `programs/checks`: the cycle's checks of the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all PASS; its `evidence` needs every row of the record accepted (these runs are the programs' evidence for coverage) |
+| `features` | `daq_sim feature <x>` (§3n), x = a .. e, in `features/<x>` (c with `--ami-src`, d with `--hosts`) | `features/<x>` (`FEATURE <x> PASS`, exit 0), `features/<x>/down`. A feature `psdaq.sim.feature` cannot run here is `NOT AVAILABLE`, a failed assertion, and starts nothing: d (two nodes, §3o) unless `--hosts` names two hosts of this Slurm job |
 | `coverage` | `daq_sim coverage` (§3d), after the runs above wrote their evidence | `coverage` (PASS: every row RUN, STAND-IN or N/A with valid evidence at HEAD) |
 
 The types are every `det:drp` row that `coverage_status.json` marks RUN, in the order
@@ -1618,9 +1618,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 
   Isolation relies on every peer being on this node and on the non-default EPICS ports.
 - **HTTP.** The node has an IP route to pswww. The dead proxy stops only HTTP clients that honour the proxy env.
-- **Partition size.** One node. Up to three PGP DRPs of different types (`--also`, §3i) or four
+- **Partition size.** One node. Up to three PGP DRPs of different types (`--also`, §3n) or four
   segments of one type, one lane each. Rates above about 1 kHz are untested; simxpm ticks at
-  most at 2 kHz, so fixed-rate markers faster than 1.02 kHz keep `--rate`. Two nodes (§3j):
+  most at 2 kHz, so fixed-rate markers faster than 1.02 kHz keep `--rate`. Two nodes (§3o):
   control, the TEB and PGP DRPs only (no MEB, AMI, system DRPs or GUIs yet), one host's address in
   the EPICS lists.
 - **BEB types.** `rogue_dev` serves the registers a config script touches, plus what the seeds
@@ -1676,10 +1676,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   ami-client's own PVA server gets ports 31210 + 2 p and 31211 + 2 p. With two PVA servers on
   15076, drp_pva's PV once failed to connect within its 3 s at Configure.
 - **System DRPs.** drp_pva records one camera PV that simxpm updates for every L1Accept; drp_bld
-  records simxpm's BLD source (`--bld`, §3i), one packet per L1Accept tick on loopback
+  records simxpm's BLD source (`--bld`, §3n), one packet per L1Accept tick on loopback
   multicast. drp_pva takes PV updates only once it has handled Enable, and at the default 1 kHz
   its PVA monitor fell behind for the first ~50 L1Accepts of a run (they were recorded without
-  the image); run `--pva` at `--rate 100`, near a camera's rate, as §3h does. Even then an update
+  the image); run `--pva` at `--rate 100`, near a camera's rate, as §3m does. Even then an update
   can miss its L1Accept (2 of 1119 in one run); the check counts them and requires drp_pva's own
   count to agree. drp_pva's monitor (`MonTracker`) drops an update that arrives while its
   constructor still runs (`shared_from_this()` throws `bad_weak_ptr`), and pvAccessCPP then

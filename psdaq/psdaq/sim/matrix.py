@@ -30,7 +30,7 @@ Sections, in this order (--only picks some, repeated or comma-separated):
             epicsArch, drp_udpencoder and sim_udpencoder, the PyQt GUIs, the PV-server stand-ins
             simhsd, simtpr and simdti and the GUIs on them, tprtrig, tpr_trigger and lclsBldServer on simulated
             TPR cards, the HPS BLD chain; with $PSDAQ_SIM_WAVE8PVS_ENV and $PSDAQ_SIM_WAVE8PVS_SRC set, also
-            wave8pvs in that env; RUNBOOK 3h), in
+            wave8pvs in that env; RUNBOOK 3m), in
             <WORKDIR>/programs: up, one recorded cycle with --ami-shot, down.  Assertions
             programs/<what>: those of a type for fakecam_0, and 'checks' (the cycle's checks of
             the system DRPs, AMI against psana2, the GUIs' witness and the AMI screenshot all
@@ -95,7 +95,7 @@ from psdaq.sim import coverage
 from psdaq.sim import daq_sim as ds
 
 SECTIONS = ('types', 'programs', 'features', 'coverage')
-# The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3h)
+# The programs run: every program option of daq_sim up, at a camera's rate (RUNBOOK 3m)
 PROGRAM_OPTIONS = ('--ami', '--pva', '--epics', '--udp', '--gui', '--pvservers', '--tpr', '--hps', '--rate', '100')
 PROGRAM_CHECKS = ('system DRP checks', 'ami check', 'gui witness', 'ami shot')
 FEATURES = ('a', 'b', 'c', 'd', 'e')             # the contract's system features (a)-(e)
