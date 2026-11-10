@@ -170,7 +170,7 @@ SIM_TYPES = {
     # control's rollcall waits, so 'up' waits for it ('ready_s')
     'epixuhr3x2': {'kwargs': 'sim_dma_size=0x80000,sim_dma_count=256,sim_seed={seed:#x}',
                    'config_files': ('psdaq.sim.epixuhr_files', 'epixuhr', 'EPIXUHR_CONFIG_DIR'),
-                   'ready_s': 180},
+                   'ready_s': 180, 'ready_why': "its init builds the readout system's Root, about 40 s here"},
     # XpmDetector types: xpmdet_config programs an emulated TDet timing receiver (rogue_dev,
     # seeds/xpmdet.json), as for fakecam.  epixhremu replays the frame of an xtc2 file that 'up'
     # writes from the seed (psdaq.sim.epixhremu_frame), 221,184 B per event, so its DMA (and so
@@ -208,37 +208,51 @@ SIM_TYPES = {
 # sim_dma_size by that much; dmaBufCount 64 gives the 64 pebble buffers the TEB contributor's
 # batches of 64 need.  The NoOpReducer records the calibrated pixels as the GPU computed them
 # (psana: <type>_noOp_0_0_0.calib).
+# Every drp_gpu says 'Ready for transitions' (drpGpu/PGPDetectorApp.cc) only after its CUDA
+# start (MemPoolGpu: cuInit, the context, the GPU's DMA buffers) and its detector's init, and
+# control's rollcall finds only a DRP that has.  cuInit alone took 28 to 37 s in fresh processes
+# on an L40S shared with another user's jobs (persistence mode off), longer than rollcall waits,
+# so 'up' waits for every GPU type ('ready_s'); 'ready_why' is what its timeout says.
+GPU_READY = {'ready_s': 300,
+             'ready_why': "drp_gpu says it only after its CUDA start (cuInit, the GPU's context and "
+                          "DMA buffers; cuInit took 28 to 37 s on a GPU shared with other jobs) and "
+                          "its detector's init: see the DRP's log, and nvidia-smi for the GPU's other "
+                          "processes"}
 GPU_SIM_TYPES = {
     # Gpu::AreaDetector: the TDetSemi words as uint16 pixels, 2 per word, through the same
     # xpmdet_config as drp -D fakecam
     'fakecam':    {'kwargs': 'reducer=NoOpReducer,sim_length={length},sim_dma_count=64,'
-                             'dmaBufSize=131072,dmaBufCount=64'},
+                             'dmaBufSize=131072,dmaBufCount=64', **GPU_READY},
     # The ePixUHR emulator firmware is a TDet block: its payload is the TDetSemi words of
     # MemPoolSim::fill, 96768 of them = the 336 x 576 uint16 pixels of a panel
     'epixuhremu': {'kwargs': 'reducer=NoOpReducer,sim_length=96768,sim_dma_size=0x60000,'
-                             'sim_dma_count=64,dmaBufSize=458752,dmaBufCount=64'},
+                             'sim_dma_count=64,dmaBufSize=458752,dmaBufCount=64', **GPU_READY},
     # Gpu::EpixUHRsim: its SimDetector makes 16 random 336 x 576 frames and calibration
     # constants on the GPU; simxpm's frames only time them.  It writes both to 'ref' at
     # BeginRun, which xtc2_check calibrates every event's frame from
     'epixuhrsim': {'kwargs': 'reducer=NoOpReducer,sim_dma_count=64,dmaBufSize=458752,'
                              'dmaBufCount=64,sim_ref={work}/epixuhrsim-ref.bin',
-                   'ref': 'epixuhrsim-ref.bin'},
+                   'ref': 'epixuhrsim-ref.bin', **GPU_READY},
     # Gpu::Jungfrau configures through Drp::Jungfrau, so its module is simsls as for drp (and
     # the same config DB entry); its frame, the module's 128 UDP packets as MemPoolSim batches
     # them (1055848 B), and the 32 B DMA frame fit dmaBufSize 0x120000
     'jungfrau':   {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x110000,sim_dma_count=64,'
                              'dmaBufSize=1179648,dmaBufCount=64,segNums=0,'
                              'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
-                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets'], 'rate': SIM_TYPES['jungfrau']['rate']},
+                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets'], 'rate': SIM_TYPES['jungfrau']['rate'],
+                   **GPU_READY},
     # Gpu::EpixUHR3x2 configures through Drp::EpixUHR3x2, so the readout system, its config DB
-    # entry and files and the wait for its init are drp's (SIM_TYPES); MemPoolSim sends the same
+    # entry and files and the wait for its init are drp's (SIM_TYPES), after the CUDA start (the
+    # longer of the two waits); MemPoolSim sends the same
     # 336 x 576 panel (tdest 3).  At BeginRun it fetches the panel's pedestals and gains from the
     # calibration DB (psdaq.configdb.epixuhr_calib, psalg.calibdb): here calibws_server, a
     # stand-in on loopback that LCLS_CALIB_HTTP points the DRP at
     'epixuhr3x2': {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x60000,sim_dma_count=64,'
                              'dmaBufSize=458752,dmaBufCount=64,sim_seed={seed:#x}',
                    'config_files': SIM_TYPES['epixuhr3x2']['config_files'],
-                   'ready_s': SIM_TYPES['epixuhr3x2']['ready_s'],
+                   'ready_s': max(GPU_READY['ready_s'], SIM_TYPES['epixuhr3x2']['ready_s']),
+                   'ready_why': GPU_READY['ready_why'] + "; for this type also its readout system's "
+                                "init (" + SIM_TYPES['epixuhr3x2']['ready_why'] + ")",
                    'env': {'LCLS_CALIB_HTTP': 'http://127.0.0.1:{calibws}'},
                    'services': {'calibws': ['-m', 'psdaq.sim.calibws_server', '--port', '{calibws}',
                                             '--seed', '{seed}', '--det-type', 'epixuhr3x2',
@@ -1300,7 +1314,7 @@ def cmd_up(args):
         if gui:
             _wait_control_gui(work, 120)
         if sim_type.get('ready_s'):
-            _wait_drps_ready(work, state, sim_type['ready_s'])
+            _wait_drps_ready(work, state, sim_type['ready_s'], sim_type.get('ready_why', ''))
         if w8:                          # its imports from the site env and its PVs take a while
             _wait_wave8pvs(work, 300)
         dstate = _control_state(args.platform)
@@ -1551,27 +1565,32 @@ def _wait_ca(name, timeout, proc=None):
         if (proc is not None and proc.poll() is not None) or time.monotonic() > end:
             raise Fail(f'{name} does not answer over CA')
         time.sleep(0.5)
-def _wait_drps_ready(work, state, timeout):
+def _wait_drps_ready(work, state, timeout, why=''):
     """Wait until each DRP's log says 'Ready for transitions' (PGPDetectorApp, once its detector's
-    init has returned): control's rollcall finds only a DRP that is."""
+    init has returned; drp_gpu's after its CUDA start too): control's rollcall finds only a DRP
+    that is.  Only the alias's newest procmgr log counts (an earlier 'up' in the same workdir left
+    its own); the timeout names what the DRP was doing ('why', the type's 'ready_why')."""
     import glob
-    end = time.monotonic() + timeout
+    t0 = time.monotonic()
+    end = t0 + timeout
     pending = [i for i in procs(state) if i.startswith(DETECTOR + '_')]
     while pending:
         for alias in list(pending):
-            for log in glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')):
-                with open(log, errors='replace') as f:
+            logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')), key=os.path.getmtime)
+            if logs:
+                with open(logs[-1], errors='replace') as f:
                     if 'Ready for transitions' in f.read():
                         pending.remove(alias)
-                        say(f'{alias} ready for transitions ({os.path.relpath(log, work.dir)})')
-                        break
+                        say(f'{alias} ready for transitions after {time.monotonic() - t0:.0f} s '
+                            f'({os.path.relpath(logs[-1], work.dir)})')
         if not pending:
             return
         status, text = procmgr_status(state)
         dead = [i for i in pending if status.get(i, ('?',))[0] != 'RUNNING']
         if dead or time.monotonic() > end:
             raise Fail(f'{", ".join(dead or pending)} not ready for transitions '
-                       f'{"(not RUNNING)" if dead else f"after {timeout} s"}\n{text}')
+                       f'{"(not RUNNING)" if dead else f"after {timeout} s"}'
+                       f'{f": {why}" if why else ""}\n{text}')
         time.sleep(2)
 
 

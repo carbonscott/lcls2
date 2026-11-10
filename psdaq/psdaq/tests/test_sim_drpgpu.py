@@ -7,7 +7,9 @@ EpixUHRsim writes for it, the types daq_sim accepts for each DRP, and the covera
 drp_gpu .cnf proves (never a drp row, and no drp_gpu row from a drp .cnf).
 """
 
+import os
 import struct
+import types
 
 import numpy as np
 import pytest
@@ -71,8 +73,9 @@ def test_epixuhr3x2_drp_gpu_settings():
     need = 2 * 336 * 576 + 32 + (1 + 5) * 64               # EpixUHR3x2.cu minDmaSize
     assert frame + 4 <= int(kw['sim_dma_size'], 0) and int(kw['sim_dma_size'], 0) + 32 <= int(kw['dmaBufSize'])
     assert need <= int(kw['dmaBufSize']) and kw['reducer'] == 'NoOpReducer'
-    for k in ('config_files', 'ready_s'):
-        assert t[k] == daq_sim.SIM_TYPES['epixuhr3x2'][k]
+    assert t['config_files'] == daq_sim.SIM_TYPES['epixuhr3x2']['config_files']
+    assert t['ready_s'] >= daq_sim.SIM_TYPES['epixuhr3x2']['ready_s']     # its CUDA start, then drp's init
+    assert daq_sim.SIM_TYPES['epixuhr3x2']['ready_why'] in t['ready_why']
     assert P['calibws'] not in (P[k] for k in P if k != 'calibws') and t['ports'] == ('calibws',)
     assert {k: v.format(**P) for k, v in t['env'].items()} == {'LCLS_CALIB_HTTP': 'http://127.0.0.1:%d' % P['calibws']}
     argv = [a.format(seed=0x1234, work='/w', **P) for a in t['services']['calibws']]
@@ -136,3 +139,49 @@ def test_config_rows_of_a_drp_gpu_cnf(tmp_path, det):
                                                  'prog:drp_gpu', 'prog:teb']
     cnf = write_daq_sim_cnf(str(tmp_path / 'cpu.cnf'), 'fakecam')
     assert not [r for r in coverage.config_rows(cnf) if 'drp_gpu' in r]
+
+
+def test_every_gpu_type_waits_for_ready_for_transitions():
+    """drp_gpu says 'Ready for transitions' only after its CUDA start, and cuInit took 28 to 37 s
+    on a shared GPU: 'up' waits for it for every GPU type, long enough for that, and its timeout
+    names the cause.  (fakecam, epixuhremu, epixuhrsim and jungfrau had no wait and missed rollcall.)"""
+    for det, t in daq_sim.GPU_SIM_TYPES.items():
+        assert t.get('ready_s', 0) >= 120, det
+        assert 'cuInit' in t.get('ready_why', ''), det
+
+
+def _ready_state(tmp_path, monkeypatch, det, status='RUNNING'):
+    monkeypatch.setattr(daq_sim, 'DETECTOR', daq_sim.DETECTOR)
+    monkeypatch.setattr(daq_sim, 'DRP', daq_sim.DRP)
+    monkeypatch.setattr(daq_sim, 'PROCS', daq_sim.PROCS)
+    clock = iter(range(0, 100000, 50))  # daq_sim's own clock only: 50 s per reading, no sleeping
+    monkeypatch.setattr(daq_sim, 'time', types.SimpleNamespace(monotonic=lambda: next(clock), sleep=lambda s: None))
+    daq_sim.use_det(det, 'drp_gpu')
+    monkeypatch.setattr(daq_sim, 'procmgr_status',
+                        lambda state: ({i: (status, '1') for i in daq_sim.procs(state)}, 'procmgr status'))
+    work = daq_sim.Work(str(tmp_path))
+    d = tmp_path / 'pmlogs' / '2026' / '11'
+    d.mkdir(parents=True)
+    return work, {'workdir': str(tmp_path)}, d
+
+
+def test_wait_drps_ready_waits_for_the_newest_log(tmp_path, monkeypatch):
+    """The wait ends when the DRP's newest procmgr log says it, not an earlier 'up''s log; a
+    DRP that never does fails after ready_s with the type's 'ready_why'; a dead one at once."""
+    det = 'fakecam'
+    work, state, d = _ready_state(tmp_path, monkeypatch, det)
+    old = d / f'09_18:20:55_node:{det}_0.log'
+    old.write_text('<I> Ready for transitions\n')
+    os.utime(old, (1, 1))
+    new = d / f'10_03:00:00_node:{det}_0.log'
+    new.write_text('<I> GPU device 0: NVIDIA L40S\n')
+    why = daq_sim.GPU_SIM_TYPES[det]['ready_why']
+    with pytest.raises(daq_sim.Fail) as e:
+        daq_sim._wait_drps_ready(work, state, daq_sim.GPU_SIM_TYPES[det]['ready_s'], why)
+    assert f'{det}_0 not ready for transitions after 300 s: ' in str(e.value) and 'cuInit' in str(e.value)
+    new.write_text('<I> GPU device 0: NVIDIA L40S\n<I> Ready for transitions\n')
+    daq_sim._wait_drps_ready(work, state, 300, why)
+    work, state, d = _ready_state(tmp_path / 'dead', monkeypatch, det, status='EXITED')
+    (d / f'10_03:00:00_node:{det}_0.log').write_text('cuInit failed\n')
+    with pytest.raises(daq_sim.Fail, match=f'{det}_0 not ready for transitions .not RUNNING.'):
+        daq_sim._wait_drps_ready(work, state, 300, why)

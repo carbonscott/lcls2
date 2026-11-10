@@ -926,6 +926,16 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=8 --mem=16G \
 procServ resets `LD_LIBRARY_PATH`, so `--cuda-lib` (or `$DAQ_SIM_CUDA_LIB`) becomes the
 `env:` of the drp_gpu entry of `daq_sim.cnf`. The step's GPU is the one drp_gpu uses.
 
+drp_gpu says `Ready for transitions` only after its CUDA start (cuInit, the GPU's context and
+DMA buffers) and its detector's init, and control's rollcall finds only a DRP that has. So `up`
+waits for that line in the DRP's newest procmgr log for every GPU type (`ready_s`, 300 s; it
+prints `<type>_0 ready for transitions after <n> s`). On a GPU shared with another user's jobs
+(persistence mode off) cuInit alone took 28 to 37 s in fresh processes, and before this wait three
+GPU types missed rollcall (`drp/<type>_0 did not respond to rollcall`). If it never comes, `up`
+fails with `<type>_0 not ready for transitions after 300 s: drp_gpu says it only after its CUDA
+start ...`; time cuInit on the node in a fresh process to see whether the GPU is the cause:
+`python -c "import ctypes,time; t=time.time(); ctypes.CDLL('libcuda.so.1').cuInit(0); print(time.time()-t)"`.
+
 **What runs.** `drp_gpu -D <type> -d sim://...` (`psdaq/drpGpu/MemPool.cc`):
 - `MemPoolGpu` takes the simulator mode's memory (registers in pinned host memory, DMA buffers
   on the GPU) and creates the drp's `MemPoolSim` on it, which receives simxpm's timing frames
