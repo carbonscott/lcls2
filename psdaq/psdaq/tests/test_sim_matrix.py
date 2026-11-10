@@ -36,7 +36,8 @@ def test_types_are_the_run_rows_in_factory_order_then_the_other_sim_types():
     run = [r.split(':')[2] for r in rows if r.startswith('det:drp:') and status.get(r, {}).get('status') == 'RUN']
     assert names[:len(run)] == run                      # factory order
     assert set(names) == set(run) | set(daq_sim.SIM_TYPES) and len(names) == len(set(names))
-    assert all(t in daq_sim.SIM_TYPES for t in names) and cannot == []
+    assert all(t in daq_sim.SIM_TYPES for t in names)
+    assert cannot == [r for r in rows if r.startswith('det:drp_gpu:') and status.get(r, {}).get('status') == 'RUN']
 
 
 def test_a_run_row_the_matrix_cannot_run_is_reported(tmp_path):
@@ -47,7 +48,7 @@ def test_a_run_row_the_matrix_cannot_run_is_reported(tmp_path):
     path = tmp_path / 'status.json'
     path.write_text(json.dumps(status))
     got, cannot = matrix.run_types(REPO, str(path))
-    assert cannot == [gpu] and (gpu.split(':')[2], gpu) not in got
+    assert gpu in cannot and (gpu.split(':')[2], gpu) not in got
 
 
 def test_features_not_in_psdaq_sim_feature_are_not_available(tmp_path, monkeypatch):

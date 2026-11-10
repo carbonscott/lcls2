@@ -100,7 +100,8 @@ listed .xtc2 files.  Rows that need one:
                      'before' and 'after' tables' 'procmgr_pids' (what 'procmgr status' gave right
                      after each walk) must give the id that same child pid.
                      The values a GUI, monitor or client read (not procstat's statuses, daqstat's
-                     Slurm states, a TPR card's registers or an R3b program's own PVs) are checked
+                     Slurm states, a TPR card's registers, an R3b program's own PVs, lclsBldServer's
+                     packets, the HPS chain's or wave8pvs's own PVs) are checked
                      against what the PVs' servers logged they served (psdaq.sim.served_log, logs the stand-ins write
                      and the record lists; a served-value log counts only at <service>.served.jsonl
                      next to a listed <service>.log that runs the program its first line names, with
@@ -934,8 +935,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
     """Why a gui_witness does not show prog read live values of the run, or None: entry_problem, then, for a
     'programs' entry of a GUI or monitor (not a TPR program, R8), procmgr_span_problem (own: the texts of prog's
     logs in the record), and for an entry with PV values a stand-in served (not procstat, daqstat (R5), a TPR
-    program (R8) or a program's own PVs (R3b)), served_problem (served: served_logs of the record; caps: their
-    size caps)."""
+    program (R8), a program's own PVs (R3b), lclsBldServer, the HPS chain (R9) or wave8pvs (R6b), each of
+    which its own check covers), served_problem (served: served_logs of the record; caps: their size caps)."""
     p = entry_problem(prog, w, run_id, mine, runs, section, run_ids, row_prog, logs)
     if p:
         return p
@@ -944,9 +945,12 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
         p = procmgr_span_problem(prog, w, own, runs, mine)
         if p:
             return p
-    if e.get('kind') in ('procmgr', 'slurm', 'tpr') or (section == 'servers' and prog == row_prog):
+    if e.get('kind') in ('procmgr', 'slurm', 'tpr', 'bld', 'hps', 'pvs') or \
+            (section == 'servers' and prog == row_prog):
         return None     # procstat's statuses, daqstat's Slurm states (R5), a TPR card's registers (R8), a program's
-                        # own PVs (R3b): no stand-in served them
+                        # own PVs (R3b), lclsBldServer's card and packets (bld_problem), the HPS chain's packets
+                        # and hpsBldServer's own PVs (hps_problem, R9), wave8pvs's own PVs (pvs_problem, R6b):
+                        # no stand-in served them
     return served_problem(prog, e, section, served or {}, w.get('partition'), caps)
 
 

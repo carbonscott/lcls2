@@ -421,7 +421,7 @@ def test_two_host_cnf_puts_the_other_drps_on_the_second_host(tmp_path):
            'nic': {'nodeA': 'eth9', 'nodeB': 'eth7'}}
     args = argparse.Namespace(platform=5, slow_update=1, length=64, seed=0x1234)
     P = daq_sim.ports(5)
-    common = dict(instr=daq_sim.INSTRUMENT, ep=daq_sim.EP, prom=work.path('prom'), det='fakecam',
+    common = dict(instr=daq_sim.INSTRUMENT, ep=daq_sim.EP, prom=work.path('prom'), det='fakecam', drp='drp', env='',
                   frames=P['frames'], data=work.path('data'), length=64, v='',
                   simk=daq_sim.SIM_TYPES['fakecam']['kwargs'].format(length=64, seed=0x1234, work=work.dir))
     cnf = daq_sim.two_host_cnf(two, args, 'http://10.0.0.1:31050/ws/', daq_sim.parse_also(['hrencoder:5'], 5), 2,

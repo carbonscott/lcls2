@@ -21,7 +21,7 @@ def write_cnf(path, extra):
             when='now', platform=5, alias='BEAM', instr='tst', xpm=0, pvbase='DAQ:SIM', trigger='tmoteb',
             slow=1, configdb='http://127.0.0.1:1/ws/configDB', lgbk='http://127.0.0.1:2/',
             activedet='/dev/null', ep=daq_sim.EP, prom='/tmp', det='fakecam', frames=3, data='/tmp',
-            length=64, v='', segments=extra,
+            length=64, v='', drp='drp', env='', segments=extra,
             simk=daq_sim.SIM_TYPES['fakecam']['kwargs'].format(length=64, seed=0x1234)))
     return path
 

@@ -548,8 +548,9 @@ A record proves a row only if all of these hold, and the row's line names the fi
     read`, `shows groupca read no live value of a PV a served-value log holds`, `the record lists
     no served-value log`). simhsd, simtpr and simdti start their counts at a random second, so
     another run's values do not fit this one's log. procstat's statuses, daqstat's Slurm states
-    (R5), a TPR card's registers (R8) and an R3b program's own PVs are not values a stand-in
-    serves, so this rule does not apply to them. A served-value log counts only at
+    (R5), a TPR card's registers (R8), an R3b program's own PVs, lclsBldServer's packets, the HPS
+    chain's packets and PVs (R9) and wave8pvs's own PVs (R6b) are not values a stand-in serves, so
+    this rule does not apply to them (each has its own check, below). A served-value log counts only at
     `logs/<service>.served.jsonl` next to `logs/<service>.log`, a log the record lists, which runs
     the program the served log's first line names and whose `# PID:` line (`daq_sim up` writes it
     when it starts the service, and removes an older served log first) is the pid that first line
