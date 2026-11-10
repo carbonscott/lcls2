@@ -358,7 +358,7 @@ def test_matrix_over_two_hosts_shares_the_types(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(daq_sim, 'ensure_env', lambda argv: None)
     here = []
 
-    def run_type(a, t, wd, env, kill=False):
+    def run_type(a, t, wd, env, kill=False, drp='drp'):
         here.append((t, a.lock))
         return dict(result(f'types/{t}/up', True), name=f'types/{t}', type=t, node='nodeA', job='42')
     monkeypatch.setattr(matrix, 'run_type', run_type)
@@ -390,3 +390,50 @@ def test_matrix_over_two_hosts_shares_the_types(tmp_path, monkeypatch, capsys):
     with pytest.raises(daq_sim.Fail, match='run the matrix on --hosts\'s first host nodeB'):
         matrix.cmd_matrix(args(workdir=str(tmp_path / 'm'), hosts='nodeB,nodeA', locks='/l1,/l2', only=['types']))
     assert twonode.short('nodeA.example') == 'nodeA'
+
+
+def test_matrix_runs_the_gpu_types_on_the_gpu_host(tmp_path, monkeypatch, capsys):
+    """--gpu-host G: the GPU_SIM_TYPES run as one 'matrix --only types --drp drp_gpu' in a step of G's job
+    (srun --jobid --gres), meanwhile; their results join this run's as drp_gpu:<T>, and a det:drp_gpu RUN row is
+    then runnable."""
+    monkeypatch.setattr(matrix, 'run_types', lambda repo, status=None: ([('t1', None)], ['det:drp_gpu:g1']))
+    monkeypatch.setattr(daq_sim, 'SIM_TYPES', dict(daq_sim.SIM_TYPES, t1={}))
+    monkeypatch.setattr(daq_sim, 'GPU_SIM_TYPES', {'g1': {}, 'g2': {}})
+    monkeypatch.setattr(daq_sim, 'ensure_env', lambda argv: None)
+    here = []
+
+    def run_type(a, t, wd, env, kill=False, drp='drp'):
+        here.append((t, drp))
+        return dict(result(f'types/{t}/up', True), name=f'types/{t}', type=t, node='nodeA', job='42')
+    monkeypatch.setattr(matrix, 'run_type', run_type)
+    seen = {}
+
+    class Proc:
+        def wait(self, timeout=None):
+            return 0
+
+    def remote_gpu_types(a, host, job, types, wd, env):
+        seen.update(host=host, job=job, types=types, wd=wd)
+        summ = os.path.join(str(tmp_path), 'g.json')
+        json.dump({'types': {f'drp_gpu:{t}': dict(result(f'types/drp_gpu:{t}/up', True), name=f'types/drp_gpu:{t}',
+                                                  type=f'drp_gpu:{t}', node='gpuhost', job='77', carried=False)
+                             for t in types}}, open(summ, 'w'))
+        p = Proc()
+        p.echo = type('T', (), {'join': lambda self, t=None: None})()
+        return p, summ
+    monkeypatch.setattr(matrix, 'remote_gpu_types', remote_gpu_types)
+    a = args(workdir=str(tmp_path / 'm'), gpu_host='gpuhost', gpu_job='77', only=['types'])
+    rc = matrix.cmd_matrix(a)
+    out = capsys.readouterr().out
+    assert rc == 0 and here == [('t1', 'drp')]
+    assert seen['host'] == 'gpuhost' and seen['job'] == '77' and seen['types'] == ['g1', 'g2']
+    assert seen['wd'] == str(tmp_path / 'm' / 'gpu' / 'gpuhost')
+    s = json.load(open(str(tmp_path / 'm' / 'matrix-summary.json')))
+    assert list(s['types']) == ['t1', 'drp_gpu:g1', 'drp_gpu:g2'] and s['types']['drp_gpu:g2']['node'] == 'gpuhost'
+    assert 'runnable' not in out and 'TYPE drp_gpu:g1' in out
+    argv = matrix.gpu_step_argv('gpuhost', '77', 'gpu:l40s:1', ['daq_sim'])
+    assert argv[:3] == ['srun', '--jobid=77', '--overlap'] and '--gres=gpu:l40s:1' in argv and argv[-1] == 'daq_sim'
+    assert matrix.type_key('g1', 'drp_gpu') == 'drp_gpu:g1' and matrix.type_key('t1') == 't1'
+    # without --gpu-host the det:drp_gpu RUN row stays one the matrix cannot run
+    rc = matrix.cmd_matrix(args(workdir=str(tmp_path / 'n'), only=['types']))
+    assert rc == 1 and 'types/det:drp_gpu:g1/runnable' in capsys.readouterr().out

@@ -61,8 +61,12 @@ by LOCK_B (each a file on its own host), while A runs its own; their results joi
 type's line naming its node.  The programs run and features a, b, c and e run on A under LOCK_A;
 feature d (daq_sim feature d --hosts A,B) holds LOCK_A and then LOCK_B (taken by flock(1) in a step
 on B) from its 'up' to its 'down'.  Coverage then reads the evidence of all of them (both hosts
-write to the same evidence dir, which they must share).  --gpu-host G names a GPU host for the
-GPU DRP's types (det:drp_gpu rows); daq_sim up at this HEAD runs none, so the summary says so.
+write to the same evidence dir, which they must share).  --gpu-host G runs the GPU DRP's types
+(daq_sim.GPU_SIM_TYPES, the det:drp_gpu rows) on G, meanwhile: one more 'daq_sim matrix --only types
+--drp drp_gpu' in a step on G of the Slurm job that holds G (--gpu-job, default the one squeue shows
+running there; --gpu-gres, default gpu:1), in <WORKDIR>/gpu/<G>, each DAQ under --gpu-lock (a file
+on G).  drp_gpu finds its CUDA runtime through $DAQ_SIM_CUDA_LIB (daq_sim up --cuda-lib), which the
+step inherits.  Their results join this run's as types drp_gpu:<T>, each line naming its node.
 
 Deliberate breaks show that the matrix fails, naming the failed assertion.  Each runs one type
 (default below, or --types) in <WORKDIR>/break-<kind> (its own summary; no feature, no
@@ -143,7 +147,16 @@ def add_arguments(p):
     p.add_argument('--locks', default=None, metavar='LOCK_A,LOCK_B',
                    help='with --hosts: each host\'s lock file (a file on that host), LOCK_A in --lock\'s place')
     p.add_argument('--gpu-host', default=None, metavar='HOST',
-                   help='a GPU host for the det:drp_gpu types (module doc)')
+                   help='run the GPU DRP\'s types (det:drp_gpu) on HOST, in a step of the job that holds it '
+                        '(module doc)')
+    p.add_argument('--gpu-job', default=None, metavar='JOBID',
+                   help='with --gpu-host: the Slurm job that holds it (default: the one squeue shows running there)')
+    p.add_argument('--gpu-gres', default='gpu:1', help='with --gpu-host: the step\'s --gres (default %(default)s)')
+    p.add_argument('--gpu-lock', default=None,
+                   help='with --gpu-host: flock(2) this file on that host around each DAQ (default none)')
+    p.add_argument('--drp', default='drp', choices=('drp', 'drp_gpu'),
+                   help='the DRP the types section runs (drp_gpu: the GPU_SIM_TYPES, in a step that holds a GPU; '
+                        '--gpu-host runs it so) (default %(default)s)')
     p.add_argument('--lock', default=os.environ.get('DAQ_SIM_MATRIX_LOCK'),
                    help='flock(2) this file around each DAQ (default $DAQ_SIM_MATRIX_LOCK, else none)')
     p.add_argument('--lock-timeout', type=int, default=3600, help='s to wait for --lock (default %(default)d)')
@@ -291,6 +304,56 @@ def remote_types(args, host, lock, types, wd, env):
     return p, summ
 
 
+def gpu_job(host):
+    """The id of the Slurm job of this user that runs on host (squeue), or None."""
+    r = subprocess.run(['squeue', '-h', '-u', os.environ.get('USER', ''), '-t', 'R', '-w', host, '-o', '%i'],
+                       capture_output=True, text=True, timeout=60, env=_no_step_env(),
+                       stdin=subprocess.DEVNULL)
+    jobs = r.stdout.split()
+    return jobs[0] if r.returncode == 0 and jobs else None
+
+
+def _no_step_env(environ=None):
+    from psdaq.sim import twonode
+    return twonode.srun_env(environ)
+
+
+def gpu_step_argv(host, job, gres, argv):
+    """srun of argv as one task in a new step of Slurm job `job` on host, holding a GPU (--gres)."""
+    return ['srun', f'--jobid={job}', '--overlap', '-w', host, '-N', '1', '--ntasks=1', '--cpus-per-task=16',
+            '--mem=64G', f'--gres={gres}', '--kill-on-bad-exit=1'] + list(argv)
+
+
+def remote_gpu_types(args, host, job, types, wd, env):
+    """Start 'daq_sim matrix --only types --drp drp_gpu' for types on the GPU host, in a step of its job there;
+    (Popen, summary path).  Its output is echoed with a prefix by a thread."""
+    summ = os.path.join(wd, 'matrix-summary.json')
+    argv = [sys.executable, '-m', 'psdaq.sim.daq_sim', 'matrix', '-w', wd, '-p', str(args.platform), '--only',
+            'types', '--drp', 'drp_gpu', '--types', ','.join(types), '--events', str(args.events), '--summary',
+            summ, '--lock-timeout', str(args.lock_timeout)] + (['--lock', args.gpu_lock] if args.gpu_lock else []) + \
+        [o for k in ('repo', 'status', 'evidence') if getattr(args, k, None) for o in (f'--{k}', getattr(args, k))]
+    os.makedirs(wd, exist_ok=True)
+    if os.path.exists(summ):
+        os.unlink(summ)
+    say(f'GPU types on {host}: {" ".join(types)} (a step of job {job} there, --gres={args.gpu_gres}, {wd})')
+    p = subprocess.Popen(gpu_step_argv(host, job, args.gpu_gres, argv), stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT, text=True, bufsize=1, errors='replace',
+                         env=_no_step_env(env), stdin=subprocess.DEVNULL)
+
+    def echo():
+        for line in p.stdout:
+            print(f'  [{host}] {line.rstrip()}', flush=True)
+    t = threading.Thread(target=echo, daemon=True)
+    t.start()
+    p.echo = t
+    return p, summ
+
+
+def type_key(det, drp='drp'):
+    """A type's name in the summary: the type for drp, drp_gpu:<type> for the GPU DRP."""
+    return det if drp == 'drp' else f'{drp}:{det}'
+
+
 def fresh(wd):
     """An empty work dir: one left up by an earlier run is taken down first."""
     st = ds.Work(wd).load()
@@ -363,9 +426,11 @@ def feature_unavailable(x, hosts=None):
 
 # --- one DAQ: a type, or the programs run ---------------------------------------------------
 
-def run_type(args, det, wd, env, kill=False):
-    """One type's DAQ: up --det, a recorded cycle, down; assertions types/<det>/<what>."""
-    return run_daq(args, f'types/{det}', det, wd, env, [], [], kill=kill)
+def run_type(args, det, wd, env, kill=False, drp='drp'):
+    """One type's DAQ: up --det (--drp drp_gpu for the GPU DRP), a recorded cycle, down; assertions
+    types/<det>/<what> (types/drp_gpu:<det>/<what>)."""
+    return run_daq(args, f'types/{type_key(det, drp)}', det, wd, env, [] if drp == 'drp' else ['--drp', drp], [],
+                   kill=kill, drp=drp)
 
 
 def run_programs(args, wd, env):
@@ -377,10 +442,10 @@ def run_programs(args, wd, env):
     return run_daq(args, 'programs', 'fakecam', wd, env, up, ['--ami-shot', os.path.join(wd, 'ami-shot.png')])
 
 
-def run_daq(args, name, det, wd, env, up_extra, cycle_extra, kill=False):
+def run_daq(args, name, det, wd, env, up_extra, cycle_extra, kill=False, drp='drp'):
     """One DAQ: up, cycle, down (holding the lock), then the assertions <name>/<what>."""
     host, job = socket.gethostname().split('.')[0], os.environ.get('SLURM_JOB_ID')
-    res = {'name': name, 'type': det, 'node': host, 'job': job, 'step': os.environ.get('SLURM_STEP_ID'),
+    res = {'name': name, 'type': type_key(det, drp), 'node': host, 'job': job, 'step': os.environ.get('SLURM_STEP_ID'),
            'workdir': wd, 'started': ds.now(), 'assertions': []}
     tag = name.split('/')[-1]
 
@@ -416,7 +481,7 @@ def run_daq(args, name, det, wd, env, up_extra, cycle_extra, kill=False):
         check('lock', False, str(e))
     if cycled:
         rec = last_record(os.path.join(wd, 'logs', 'cycle.jsonl'))
-        type_checks(res, det, wd, rec, cycle_out, args.events, check, programs=name == 'programs')
+        type_checks(res, det, wd, rec, cycle_out, args.events, check, programs=name == 'programs', drp=drp)
     checks = TYPE_CHECKS + (('checks',) if name == 'programs' else ())
     order = checks[:1] + ('lock',) + checks[1:]
     res['assertions'].sort(key=lambda a: order.index(a['name'].rsplit('/', 1)[1]))
@@ -427,7 +492,7 @@ def run_daq(args, name, det, wd, env, up_extra, cycle_extra, kill=False):
     return res
 
 
-def type_checks(res, det, wd, rec, cycle_out, events, check, programs=False):
+def type_checks(res, det, wd, rec, cycle_out, events, check, programs=False, drp='drp'):
     """The assertions read from the cycle's record (logs/cycle.jsonl) and output; for the
     programs run also 'checks' (every check of its programs) and evidence for all its rows."""
     if rec is None:
@@ -476,12 +541,12 @@ def type_checks(res, det, wd, rec, cycle_out, events, check, programs=False):
     ev_lines = [l for l in cycle_out if re.search(r' evidence \S+: ', l)]
     rows = [l for l in ev_lines if 'would reject' not in l]
     rejects = [l.split('coverage would reject it for ', 1)[1] for l in ev_lines if 'would reject' in l]
-    mine = [l for l in rows if f'det:drp:{det}' in l.split(': ', 1)[-1].split()]
-    rejected = rejects if programs else [r for r in rejects if r.startswith(f'det:drp:{det}:')]
+    mine = [l for l in rows if f'det:{drp}:{det}' in l.split(': ', 1)[-1].split()]
+    rejected = rejects if programs else [r for r in rejects if r.startswith(f'det:{drp}:{det}:')]
     eid = re.search(r' evidence (\S+): ', mine[-1]).group(1) if mine else None
     ok = bool(mine) and not rejected
     detail = (f'record {eid}' + (f' for {len(mine[-1].split(": ", 1)[-1].split())} rows' if programs else '')
-              if mine else 'no evidence record for det:drp:' + det + (' (the cycle failed)' if not rec.get('ok') else ''))
+              if mine else f'no evidence record for det:{drp}:' + det + (' (the cycle failed)' if not rec.get('ok') else ''))
     if rejects:
         detail += '; coverage would reject it for ' + '; '.join(r[:200] for r in rejects[:3])
     res['evidence'] = eid
@@ -712,10 +777,20 @@ def cmd_matrix(args, argv=()):
             say(f'{k} was set in the environment: removed (use --break)')
     all_types, cannot = run_types(repo, args.status)
     all_names = [t for t, _ in all_types]
-    types = csv(args.types) or ([BREAK_TYPES[args.breakage]] if args.breakage else all_names)
-    unknown = [t for t in types if t not in ds.SIM_TYPES]
+    gpu_host = getattr(args, 'gpu_host', None) if not args.breakage else None
+    gpu_types = []
+    if args.drp == 'drp_gpu':                   # this run is the GPU host's (--gpu-host's step)
+        all_names, cannot = list(ds.GPU_SIM_TYPES), []
+    elif gpu_host:                              # the GPU DRP's types run there; its RUN rows are runnable
+        gpu_types = list(ds.GPU_SIM_TYPES)
+        cannot = [r for r in cannot if not (r.startswith('det:drp_gpu:') and r.split(':')[2] in ds.GPU_SIM_TYPES)]
+        all_names = all_names + [type_key(t, 'drp_gpu') for t in gpu_types]
+    known = ds.GPU_SIM_TYPES if args.drp == 'drp_gpu' else ds.SIM_TYPES
+    types = csv(args.types) or ([BREAK_TYPES[args.breakage]] if args.breakage else
+                                [t for t in all_names if t in known])
+    unknown = [t for t in types if t not in known]
     if unknown:
-        raise ds.Fail(f'--types {",".join(unknown)}: daq_sim up --det runs {",".join(ds.SIM_TYPES)}')
+        raise ds.Fail(f'--types {",".join(unknown)}: daq_sim up --drp {args.drp} --det runs {",".join(known)}')
     note = ''
     if args.breakage == 'register':
         if len(types) != 1:
@@ -739,16 +814,28 @@ def cmd_matrix(args, argv=()):
             for r in cannot:
                 results['extra'].append({'name': f'types/{r}/runnable', 'ok': False,
                                          'detail': 'RUN in the status file, but daq_sim up --det cannot run it'})
-        say(f'types: {" ".join(types)}')
-        mine, theirs, rp = types, [], None
+        say(f'types: {" ".join(types)}' + (f'; GPU types on {gpu_host}: {" ".join(gpu_types)}' if gpu_types else ''))
+        mine, theirs, rp, gp = types, [], None, None
+        if gpu_types and not args.types:        # the GPU host's types, meanwhile, in a step of its job
+            job = getattr(args, 'gpu_job', None) or gpu_job(gpu_host)
+            if job is None:
+                for t in gpu_types:
+                    results['types'][type_key(t, 'drp_gpu')] = {
+                        'name': f'types/{type_key(t, "drp_gpu")}', 'type': type_key(t, 'drp_gpu'), 'node': gpu_host,
+                        'job': None, 'started': ds.now(), 'ended': ds.now(), 'pass': False,
+                        'assertions': [{'name': f'types/{type_key(t, "drp_gpu")}/up', 'ok': False,
+                                        'detail': f'no running Slurm job of this user on {gpu_host} (--gpu-job)'}]}
+            else:
+                gp, gsumm = remote_gpu_types(args, gpu_host, job, gpu_types,
+                                             os.path.join(wd, 'gpu', gpu_host.split('.')[0]), env)
         if shard and len(types) > 1:            # every other type on the second host, in a step there
             mine, theirs = types[0::2], types[1::2]
             rp, rsumm = remote_types(args, hosts[1], locks[1], theirs,
                                      os.path.join(wd, 'hosts', twonode.short(hosts[1])), env)
         for t in mine:
             say(f'---- type {t} ({types.index(t) + 1} of {len(types)})')
-            results['types'][t] = run_type(args, t, os.path.join(wd, 'types', t), env,
-                                           kill=args.breakage == 'kill-drp')
+            results['types'][type_key(t, args.drp)] = run_type(args, t, os.path.join(wd, 'types', t), env,
+                                                               kill=args.breakage == 'kill-drp', drp=args.drp)
         if rp is not None:
             say(f'waiting for the types on {hosts[1]}')
             try:
@@ -769,7 +856,30 @@ def cmd_matrix(args, argv=()):
                                                                      f'gave no result for {t}'}], 'pass': False}
             say(f'types on {hosts[1]}: exit {rc_r}, {sum(1 for t in theirs if results["types"][t].get("pass"))} '
                 f'of {len(theirs)} passed')
-        results['types'] = {t: results['types'][t] for t in types if t in results['types']}
+        if gp is not None:
+            say(f'waiting for the GPU types on {gpu_host}')
+            try:
+                rc_g = gp.wait(len(gpu_types) * 1800 + 600)
+            except subprocess.TimeoutExpired:
+                gp.kill()
+                rc_g = gp.wait()
+            gp.echo.join(10)
+            got = (last_record_json(gsumm) or {}).get('types') or {}
+            for t in gpu_types:
+                k = type_key(t, 'drp_gpu')
+                if k in got and not got[k].get('carried'):
+                    results['types'][k] = {kk: v for kk, v in got[k].items() if kk != 'carried'}
+                else:
+                    results['types'][k] = {'name': f'types/{k}', 'type': k, 'node': gpu_host.split('.')[0],
+                                           'job': None, 'started': ds.now(), 'ended': ds.now(), 'pass': False,
+                                           'assertions': [{'name': f'types/{k}/up', 'ok': False,
+                                                           'detail': f'the GPU types run on {gpu_host} (exit {rc_g}) '
+                                                                     f'gave no result for {t}'}]}
+            say(f'GPU types on {gpu_host}: exit {rc_g}, '
+                f'{sum(1 for t in gpu_types if results["types"][type_key(t, "drp_gpu")].get("pass"))} of '
+                f'{len(gpu_types)} passed')
+        order = [type_key(t, args.drp) for t in types] + [type_key(t, 'drp_gpu') for t in gpu_types]
+        results['types'] = {t: results['types'][t] for t in order if t in results['types']}
     if 'programs' in sections:
         say('---- programs')
         results['programs'] = run_programs(args, os.path.join(wd, 'programs'), env)
@@ -784,12 +894,6 @@ def cmd_matrix(args, argv=()):
     if 'coverage' in sections:
         say('---- coverage')
         results['coverage'] = run_coverage(args)
-    if getattr(args, 'gpu_host', None):         # the GPU DRP's types: none runs at this HEAD
-        gpu = [r for r in cannot if r.startswith('det:drp_gpu:')]
-        say(f'gpu host {args.gpu_host}: ' + (f'{" ".join(gpu)} RUN in the status file, but daq_sim up here has no '
-                                             f'GPU DRP (types/<row>/runnable fails)' if gpu else
-                                             'no det:drp_gpu row is RUN in the status file at this HEAD, so nothing '
-                                             'runs there (the GPU DRP\'s types are UNPROVEN here)'))
 
     summary = merge(summary_path, sha, args.breakage, results)
     whole = None if args.breakage else whole_verdict(summary, all_names, cannot)

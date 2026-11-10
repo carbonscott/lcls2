@@ -1471,7 +1471,8 @@ It brings up one DAQ at a time, each in its own work dir under `-w`, and always 
 
 The types are every `det:drp` row that `coverage_status.json` marks RUN, in the order
 `PGPDetectorApp.cc` registers them, then any other type `up --det` runs. A RUN row that `up --det`
-cannot run (a `drp_gpu` type, for now) fails as `types/<row>/runnable`. For each type the matrix
+cannot run fails as `types/<row>/runnable`: a `det:drp_gpu` row, unless `--gpu-host` runs the GPU DRP's
+types (below). For each type the matrix
 prints the line the coverage goal asks for:
 
 ```
@@ -1492,7 +1493,8 @@ coverage's counts, every assertion and the runs.
 | `--ami-src DIR` | The AMI source tree of the programs run and of feature c (default: `daq_sim up`'s, `$DAQ_SIM_AMI_SRC`, else `ami-*` on PATH). |
 | `--hosts A,B` | Feature d's two nodes; without two hosts of this Slurm job's allocation, d is `NOT AVAILABLE`. With `--locks`, the matrix runs over both (below). |
 | `--locks LOCK_A,LOCK_B` | With `--hosts`: each host's lock file, a file on that host. LOCK_A takes `--lock`'s place on A; B's type runs take LOCK_B; feature d holds LOCK_A, then LOCK_B (`flock(1)` in a step on B), from its `up` to its `down`. |
-| `--gpu-host G` | A GPU host for the `det:drp_gpu` types. `daq_sim up` at this HEAD runs none, so the matrix only says so. |
+| `--gpu-host G` | Run the GPU DRP's types (`daq_sim.GPU_SIM_TYPES`, the `det:drp_gpu` rows) on G, meanwhile: one more `daq_sim matrix --only types --drp drp_gpu` in a step on G of the Slurm job that holds G, in `<WD>/matrix/gpu/G`. Their lines are `TYPE drp_gpu:<T> node G ...`. drp_gpu finds the CUDA runtime through `$DAQ_SIM_CUDA_LIB` (§3h), which the step inherits. |
+| `--gpu-job J`, `--gpu-gres R`, `--gpu-lock FILE` | With `--gpu-host`: G's Slurm job (default: the one `squeue` shows running there), the step's `--gres` (default `gpu:1`), and the lock file on G that each GPU DAQ holds from `up` to `down`. |
 | `--types T,T` | Only these detector types (any of `up --det`). |
 | `--features x,x` | Only these features. |
 | `--events N` | L1Accepts of each type's cycle; default 1000. |
@@ -1515,6 +1517,28 @@ separate commands (below).
 srun --jobid=$JOB --overlap -w nodeA --ntasks=1 --cpus-per-task=16 --mem=32G bash -c "
   cd $ROOT/lcls2 && source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh &&
   daq_sim matrix -w $WD/matrix --hosts nodeA,nodeB --locks /tmp/daq-a.lock,/tmp/daq-b.lock \
+    --ami-src <AMI source tree>; echo MATRIX_EXIT=\$?"
+```
+
+**Everything, over every node of the campaign.** The one command, run in a step on nodeA: the types
+shared between nodeA and nodeB, the GPU DRP's types on a GPU node G, the programs run and features a,
+b, c and e on nodeA, d over both, then coverage over all their evidence. The programs run adds
+wave8pvs with `$PSDAQ_SIM_WAVE8PVS_ENV` and `$PSDAQ_SIM_WAVE8PVS_SRC` set (§3m). tt and epixhr2x2 each need
+their own `PSDAQ_SIM_PYTHONPATH` (§3e), given as `PSDAQ_SIM_PYTHONPATH_tt` and
+`PSDAQ_SIM_PYTHONPATH_epixhr2x2`, which `up --det <type>` takes as its `PSDAQ_SIM_PYTHONPATH`; set no
+plain `PSDAQ_SIM_PYTHONPATH`, which every type's `rogue_dev` would read:
+
+```bash
+# one srun step on nodeA; G is in a job of its own (GJOB), with a GPU (§3h); the lock files are each host's own
+H='$SUBMODULEDIR/lcls2-epix-hr-pcie/firmware'; E='$SUBMODULEDIR/epix-hr-single-10k'
+srun --jobid=$JOB --overlap -w nodeA --ntasks=1 --cpus-per-task=16 --mem=32G bash -c "
+  cd $ROOT/lcls2 && source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh &&
+  export DAQ_SIM_CUDA_LIB=$CUDA/targets/x86_64-linux/lib &&
+  export PSDAQ_SIM_WAVE8PVS_ENV=<site conda env> PSDAQ_SIM_WAVE8PVS_SRC=<wave8 source tarball> &&
+  export PSDAQ_SIM_PYTHONPATH_tt='\$SUBMODULEDIR/lcls2-pgp-pcie-apps/firmware/submodules/surf/python' &&
+  export PSDAQ_SIM_PYTHONPATH_epixhr2x2=\"$H/python:$H/submodules/surf/python:$H/submodules/axi-pcie-core/python:$H/submodules/lcls2-pgp-fw-lib/python:$H/submodules/lcls-timing-core/python:$H/submodules/l2si-core/python:$E/firmware/python:$E/software/scripts:$E/firmware/submodules/epix-hr-core/python\" &&
+  daq_sim matrix -w $WD/matrix --hosts nodeA,nodeB --locks /tmp/daq-a.lock,/tmp/daq-b.lock \
+    --gpu-host G --gpu-job $GJOB --gpu-gres gpu:<type>:1 --gpu-lock /tmp/daq-g.lock \
     --ami-src <AMI source tree>; echo MATRIX_EXIT=\$?"
 ```
 
