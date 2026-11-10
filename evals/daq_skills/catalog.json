@@ -1,0 +1,3634 @@
+{
+ "version": 2,
+ "logs_path": "/sdf/home/t/tstopr/daq/logs",
+ "context": "You are helping with the LCLS-II DAQ of the tst hutch, platform 5. Its DAQ logs are under /sdf/home/t/tstopr/daq/logs. This is an offline review of past sessions: Grafana, ConfigDB and the live DAQ cannot be reached from here. Do not file or draft GitHub issues and do not write files. Times are US Pacific (PST, UTC-8) unless stated otherwise.",
+ "pools": {
+  "reg-cfg-tt": {
+   "sessions": [
+    {
+     "run": "runs/tt/f2fault",
+     "ym": "2026/11",
+     "prefix": "09_12:12:52",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "reg-cfg-tt-q": {
+   "sessions": [
+    {
+     "run": "runs/tt/f5fault",
+     "ym": "2026/11",
+     "prefix": "09_12:22:37",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "reg-cfg-hsd": {
+   "sessions": [
+    {
+     "run": "work/types4/final-F1/wd-drp-hsd-fault",
+     "ym": "2026/11",
+     "prefix": "09_12:04:24",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-cfg-epix100": {
+   "sessions": [
+    {
+     "run": "work/fix15/brk-h1/break-register/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_20:19:02",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "reg-cfg-epixhr2x2-q": {
+   "sessions": [
+    {
+     "run": "work/typesint/final-F1/wd-drp-epixhr2x2-fault",
+     "ym": "2026/11",
+     "prefix": "09_13:40:08",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-cfg-opal": {
+   "sessions": [
+    {
+     "run": "work/iter6-skeptic39/wd-fopal",
+     "ym": "2026/11",
+     "prefix": "09_02:45:07",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "reg-cfg-epixquad": {
+   "sessions": [
+    {
+     "run": "work/iter6-skeptic39/wd-fquad",
+     "ym": "2026/11",
+     "prefix": "09_02:52:05",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "reg-cfg-piranha4": {
+   "sessions": [
+    {
+     "run": "work/iter6-skeptic39/wd-fpir",
+     "ym": "2026/11",
+     "prefix": "09_02:47:28",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "reg-cfg-tb": {
+   "sessions": [
+    {
+     "run": "work/iter6-skeptic39/wd-ftb",
+     "ym": "2026/11",
+     "prefix": "09_02:49:47",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "reg-cfg-hrencoder": {
+   "sessions": [
+    {
+     "run": "work/iter4-skeptic36/wd-fault-hrencoder2",
+     "ym": "2026/11",
+     "prefix": "08_21:37:37",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "reg-cfg-epixUHR": {
+   "sessions": [
+    {
+     "run": "work/types4/final-F1/wd-drp-epixUHR-fault",
+     "ym": "2026/11",
+     "prefix": "09_12:21:10",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-cfg-epixuhr3x2": {
+   "sessions": [
+    {
+     "run": "work/typesfix/final-F1/wd-drp-epixuhr3x2-fault",
+     "ym": "2026/11",
+     "prefix": "09_14:29:32",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-cfg-epixquad1kfps": {
+   "sessions": [
+    {
+     "run": "work/types4/final-F1/wd-drp-epixquad1kfps-fault",
+     "ym": "2026/11",
+     "prefix": "09_12:16:40",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-connect-fakecam": {
+   "sessions": [
+    {
+     "run": "work/gpu1/runs/fault-fakecam",
+     "ym": "2026/11",
+     "prefix": "09_08:16:32",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-connect-epixuhremu": {
+   "sessions": [
+    {
+     "run": "work/gpu1/runs/fault-epixuhremu",
+     "ym": "2026/11",
+     "prefix": "09_08:14:33",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "reg-alloc-fakecam": {
+   "sessions": [
+    {
+     "run": "work/iter10-skeptic45/p1/wd-fakecam-fault-Enable_0",
+     "ym": "2026/11",
+     "prefix": "09_10:21:31",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "kill-drp": {
+   "sessions": [
+    {
+     "run": "work/prb/e2e-kill",
+     "ym": "2026/11",
+     "prefix": "08_04:36:38",
+     "host": "sdfmilan119"
+    }
+   ]
+  },
+  "kill-drp-q": {
+   "sessions": [
+    {
+     "run": "work/wg/b2-kill",
+     "ym": "2026/11",
+     "prefix": "08_05:13:47",
+     "host": "sdfmilan119"
+    }
+   ]
+  },
+  "startup-crash-tt": {
+   "sessions": [
+    {
+     "run": "runs/tt/f3nopin",
+     "ym": "2026/11",
+     "prefix": "09_12:15:15",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "startup-crash-tt-q": {
+   "sessions": [
+    {
+     "run": "runs/tt/f6nopin",
+     "ym": "2026/11",
+     "prefix": "09_12:24:58",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "cfg-badname-tt": {
+   "sessions": [
+    {
+     "run": "runs/tt/d1",
+     "ym": "2026/11",
+     "prefix": "09_11:58:38",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "cfg-value-wave8": {
+   "sessions": [
+    {
+     "run": "work/iter4-skeptic/wd-fault-wave8",
+     "ym": "2026/11",
+     "prefix": "08_18:18:57",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "jf-readback": {
+   "sessions": [
+    {
+     "run": "work/jf/runs/fault1",
+     "ym": "2026/11",
+     "prefix": "09_09:03:02",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "pv-missing-pvcam": {
+   "sessions": [
+    {
+     "run": "work/skep15/pvaopen3-s-2",
+     "ym": "2026/11",
+     "prefix": "09_18:22:24",
+     "host": "sdfada011"
+    }
+   ]
+  },
+  "ctl-blames-meb": {
+   "sessions": [
+    {
+     "run": "work/iter9-skeptic41/daq/wd-mw-head2",
+     "ym": "2026/11",
+     "prefix": "09_09:10:21",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "drp-gone-cfg": {
+   "sessions": [
+    {
+     "run": "work/iter9-skeptic41/daq/wd-mw-head3",
+     "ym": "2026/11",
+     "prefix": "09_09:14:23",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "drp-killed-idle": {
+   "sessions": [
+    {
+     "run": "work/iter11-stack/daq/wd-mebwin4-head1",
+     "ym": "2026/11",
+     "prefix": "09_11:11:53",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "control-keyerror": {
+   "sessions": [
+    {
+     "run": "work/wa/run1",
+     "ym": "2026/11",
+     "prefix": "08_02:12:02",
+     "host": "sdfmilan119"
+    }
+   ]
+  },
+  "gpu-hang-cfg": {
+   "sessions": [
+    {
+     "run": "work/skep15c/jf-bnat-1/types/jungfrau",
+     "ym": "2026/11",
+     "prefix": "09_21:12:48",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "teb-overflow": {
+   "sessions": [
+    {
+     "run": "work/fix15b/mx-n1/types/opal",
+     "ym": "2026/11",
+     "prefix": "09_21:36:16",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "gpu-cuda": {
+   "sessions": [
+    {
+     "run": "work/gpu1/runs/f1",
+     "ym": "2026/11",
+     "prefix": "09_07:43:54",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "jf-missing-packets": {
+   "sessions": [
+    {
+     "run": "work/finalinteg/mx-m1/types/jungfrau",
+     "ym": "2026/11",
+     "prefix": "09_16:27:01",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "ctl-blames-teb": {
+   "sessions": [
+    {
+     "run": "work/gpu1/runs/t1",
+     "ym": "2026/11",
+     "prefix": "09_07:27:42",
+     "host": "sdfada013"
+    }
+   ]
+  },
+  "hang-cfg-tt": {
+   "sessions": [
+    {
+     "run": "work/iter13-skeptic13/runs/ttOld",
+     "ym": "2026/11",
+     "prefix": "09_12:55:54",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "healthy-tt": {
+   "sessions": [
+    {
+     "run": "runs/tt/f4",
+     "ym": "2026/11",
+     "prefix": "09_12:21:27",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "healthy-fakecam": {
+   "sessions": [
+    {
+     "run": "runs/orch-pr32-fakecam2",
+     "ym": "2026/11",
+     "prefix": "08_14:18:17",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "healthy-jungfrau": {
+   "sessions": [
+    {
+     "run": "work/fix15/mx-h1/types/jungfrau",
+     "ym": "2026/11",
+     "prefix": "09_19:47:22",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "healthy-ami": {
+   "sessions": [
+    {
+     "run": "work/fix15/fc-1",
+     "ym": "2026/11",
+     "prefix": "09_20:50:25",
+     "host": "sdfmilan082"
+    }
+   ]
+  },
+  "big-pvcam": {
+   "sessions": [
+    {
+     "run": "work/finalinteg/e6-base/wd2",
+     "ym": "2026/11",
+     "prefix": "09_15:05:16",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "big-tebctrb-connect": {
+   "sessions": [
+    {
+     "run": "work/finalinteg/e7-base/wd3",
+     "ym": "2026/11",
+     "prefix": "09_15:12:41",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "big-meb-killed": {
+   "sessions": [
+    {
+     "run": "work/iter9-skeptic41/daq/wd-C2",
+     "ym": "2026/11",
+     "prefix": "09_09:11:58",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "big-pvcam-23": {
+   "sessions": [
+    {
+     "run": "work/iter9-skeptic41/daq/wd-C",
+     "ym": "2026/11",
+     "prefix": "09_09:01:59",
+     "host": "sdfmilan048"
+    }
+   ]
+  },
+  "big-healthy-31": {
+   "sessions": [
+    {
+     "run": "work/iter13-twonode/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_14:25:33",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "big-healthy-36": {
+   "sessions": [
+    {
+     "run": "work/fix15/mx-h1/programs",
+     "ym": "2026/11",
+     "prefix": "09_19:54:53",
+     "host": "sdfmilan023"
+    }
+   ]
+  },
+  "day": {
+   "sessions": [
+    {
+     "run": "work/prog3/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_11:08:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_11:19:01",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_11:23:05",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/final-666df5ae1/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_11:30:25",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/final-666df5ae1/matrix/features/e",
+     "ym": "2026/11",
+     "prefix": "09_11:32:49",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/wd-dev5",
+     "ym": "2026/11",
+     "prefix": "09_11:34:23",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/final-5bd891385/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_11:42:03",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/prog3/final-5bd891385/matrix/features/e",
+     "ym": "2026/11",
+     "prefix": "09_11:44:11",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/d1",
+     "ym": "2026/11",
+     "prefix": "09_11:58:38",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/d2",
+     "ym": "2026/11",
+     "prefix": "09_12:04:22",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/d3fault",
+     "ym": "2026/11",
+     "prefix": "09_12:06:35",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/progtail/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_12:10:17",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f1",
+     "ym": "2026/11",
+     "prefix": "09_12:11:41",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f2fault",
+     "ym": "2026/11",
+     "prefix": "09_12:12:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f3nopin",
+     "ym": "2026/11",
+     "prefix": "09_12:15:15",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f4",
+     "ym": "2026/11",
+     "prefix": "09_12:21:27",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f5fault",
+     "ym": "2026/11",
+     "prefix": "09_12:22:37",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "runs/tt/f6nopin",
+     "ym": "2026/11",
+     "prefix": "09_12:24:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/progtail/wd-dev2",
+     "ym": "2026/11",
+     "prefix": "09_12:26:54",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/progtail/final-a03cd961e/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_12:33:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ttA",
+     "ym": "2026/11",
+     "prefix": "09_12:48:10",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ttB",
+     "ym": "2026/11",
+     "prefix": "09_12:49:29",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ptM/programs",
+     "ym": "2026/11",
+     "prefix": "09_12:53:33",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ttOld",
+     "ym": "2026/11",
+     "prefix": "09_12:55:54",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ptT",
+     "ym": "2026/11",
+     "prefix": "09_12:58:11",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail2/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_13:03:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ptT2",
+     "ym": "2026/11",
+     "prefix": "09_13:05:07",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-skeptic13/runs/ttF",
+     "ym": "2026/11",
+     "prefix": "09_13:06:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail2/final-b6f370d9f/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_13:23:06",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_13:57:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/epixhremu",
+     "ym": "2026/11",
+     "prefix": "09_13:59:27",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_14:00:27",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/opal",
+     "ym": "2026/11",
+     "prefix": "09_14:01:26",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_14:02:31",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_14:03:31",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/iter13-twonode/matrix/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_14:04:33",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/wd-dev1",
+     "ym": "2026/11",
+     "prefix": "09_14:24:24",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/final-45951a402/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_14:41:22",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/final-4056ca8a5/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_14:52:57",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e5-fix082/wd1",
+     "ym": "2026/11",
+     "prefix": "09_14:57:50",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e5-fix082/wd2",
+     "ym": "2026/11",
+     "prefix": "09_14:58:47",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e5-fix082/wd3",
+     "ym": "2026/11",
+     "prefix": "09_14:59:43",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix082/m1/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:00:41",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e5-fix082/wd4",
+     "ym": "2026/11",
+     "prefix": "09_15:03:36",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e7-fix/wd1",
+     "ym": "2026/11",
+     "prefix": "09_15:04:34",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix082/m2/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:05:30",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e5-fix082/wd5",
+     "ym": "2026/11",
+     "prefix": "09_15:06:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e7-fix/wd2",
+     "ym": "2026/11",
+     "prefix": "09_15:07:55",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix082/m3/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:08:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e6-diag/wd1",
+     "ym": "2026/11",
+     "prefix": "09_15:14:29",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e6-diag/wd2",
+     "ym": "2026/11",
+     "prefix": "09_15:16:00",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e6-diag/wd3",
+     "ym": "2026/11",
+     "prefix": "09_15:18:23",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix2-082/m1/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:19:54",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/e6-diag/wd4",
+     "ym": "2026/11",
+     "prefix": "09_15:23:27",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/wd-dev2",
+     "ym": "2026/11",
+     "prefix": "09_15:24:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m1/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:29:11",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/final-2042f5d59/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:32:28",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m2/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:36:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m3/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:42:46",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/tail3/final-649632d3f/matrix/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:46:01",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m4/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:49:34",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m5/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:56:22",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/prog-fix3-082/m6/programs",
+     "ym": "2026/11",
+     "prefix": "09_15:59:42",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_16:20:46",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_16:21:44",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_16:22:54",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_16:24:07",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_16:25:18",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_16:26:16",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_16:27:53",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_16:28:47",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_16:29:46",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m1/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_16:30:48",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_16:54:33",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_16:55:28",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_16:56:36",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_16:57:47",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_16:58:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_16:59:55",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_17:02:19",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_17:03:15",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_17:04:16",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/finalinteg/mx-m2/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_17:05:19",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_17:42:18",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_17:43:16",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_17:44:26",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_17:45:35",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_17:46:42",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_17:47:45",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_17:49:20",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_17:50:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_17:51:08",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m1/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_17:52:09",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_18:20:56",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_18:21:49",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_18:22:55",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_18:24:08",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_18:25:19",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_18:26:19",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_18:27:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_18:28:51",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_18:29:49",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/proof15/mx-m2/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_18:30:50",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/skep15b/wg/daq_sim_run",
+     "ym": "2026/11",
+     "prefix": "09_19:38:45",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_19:40:36",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_19:41:29",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_19:42:35",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_19:43:43",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_19:44:51",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_19:45:49",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_19:47:25",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_19:48:17",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_19:49:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h1/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_19:50:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_20:24:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_20:25:46",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_20:26:51",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_20:27:58",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_20:29:06",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_20:30:04",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_20:31:36",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_20:32:28",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_20:33:23",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/mx-h2/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_20:34:22",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/fc-1",
+     "ym": "2026/11",
+     "prefix": "09_20:50:25",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/fc-2",
+     "ym": "2026/11",
+     "prefix": "09_20:51:50",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15/fc-3",
+     "ym": "2026/11",
+     "prefix": "09_20:53:14",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/loss-before-cpu-1/types/jungfrau",
+     "ym": "2026/11",
+     "prefix": "09_21:14:32",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/loss-after-cpu-1/types/jungfrau",
+     "ym": "2026/11",
+     "prefix": "09_21:26:49",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_21:28:59",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_21:29:52",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_21:30:57",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_21:32:05",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_21:33:13",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_21:34:14",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_21:36:08",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_21:37:00",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_21:37:55",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n1/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_21:38:53",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/cspad",
+     "ym": "2026/11",
+     "prefix": "09_22:03:25",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/epixquad",
+     "ym": "2026/11",
+     "prefix": "09_22:04:22",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/epixhr2x2",
+     "ym": "2026/11",
+     "prefix": "09_22:05:29",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/epixm320",
+     "ym": "2026/11",
+     "prefix": "09_22:06:37",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/epix100",
+     "ym": "2026/11",
+     "prefix": "09_22:07:45",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/jungfrauemu",
+     "ym": "2026/11",
+     "prefix": "09_22:08:41",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/tt",
+     "ym": "2026/11",
+     "prefix": "09_22:10:14",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/ts",
+     "ym": "2026/11",
+     "prefix": "09_22:11:07",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/wave8he",
+     "ym": "2026/11",
+     "prefix": "09_22:12:04",
+     "host": "sdfmilan082"
+    },
+    {
+     "run": "work/fix15b/mx-n2/hosts/sdfmilan082/types/piranha4",
+     "ym": "2026/11",
+     "prefix": "09_22:13:05",
+     "host": "sdfmilan082"
+    }
+   ],
+   "compress_before": "2026-11-09 18:00:00",
+   "leak_allow": [
+    "cpu",
+    "sim",
+    "before",
+    "after"
+   ]
+  }
+ },
+ "cases": [
+  {
+   "id": "reg-cfg-tt",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-cfg-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TriggerDelay"
+     ],
+     "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:12:52"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-tt-q",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-tt-q",
+   "question": "On 2026-11-09 around 12:24 the DAQ would not configure. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TriggerDelay"
+     ],
+     "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:22:37"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-hsd",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-cfg-hsd",
+   "question": "The DAQ was used on 2026-11-09 between 12:04 and 12:07. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "hsd_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "PgpQPllReset"
+     ],
+     "summary": "hsd_0 aborted during configure: a register failed its write-verify (readback did not match) (register DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:04:24"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epix100",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-epix100",
+   "question": "The DAQ was used on 2026-11-09 between 20:19 and 20:21. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epix100_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "DaqTriggerDelay"
+     ],
+     "summary": "epix100_0 aborted during configure: a register failed its write-verify (readback did not match) (register ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_20:19:02"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epixhr2x2-q",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-cfg-epixhr2x2-q",
+   "question": "On 2026-11-09 around 13:41 the DAQ would not configure. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixhr2x2_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Timeout"
+     ],
+     "summary": "epixhr2x2_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Application.EventBuilder.Timeout)"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_13:40:08"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-opal",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-cfg-opal",
+   "question": "The DAQ was used on 2026-11-09 between 02:45 and 02:47. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "opal_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TrigPulseWidthRaw"
+     ],
+     "summary": "opal_0 aborted during configure: a register failed its write-verify (readback did not match) (register ClinkDevRoot.ClinkFeb[0].TrigCtrl[0].TrigPulseWidthRaw)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_02:45:07"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epixquad",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-epixquad",
+   "question": "The DAQ was used on 2026-11-09 between 02:52 and 02:54. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixquad_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "AsicAcqWidth"
+     ],
+     "summary": "epixquad_0 aborted during configure: a register failed its write-verify (readback did not match) (register Top.AcqCore.AsicAcqWidth)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_02:52:05"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-piranha4",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-piranha4",
+   "question": "The DAQ was used on 2026-11-09 between 02:47 and 02:50. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "piranha4_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Partition"
+     ],
+     "summary": "piranha4_0 aborted during configure: a register failed its write-verify (readback did not match) (register ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_02:47:28"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-tb",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-tb",
+   "question": "The DAQ was used on 2026-11-09 between 02:49 and 02:52. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tb_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Partition"
+     ],
+     "summary": "tb_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].Partition)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_02:49:47"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-hrencoder",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-hrencoder",
+   "question": "The DAQ was used on 2026-11-08 between 21:37 and 21:40. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "hrencoder_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Bypass"
+     ],
+     "summary": "hrencoder_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.App.EventBuilder.Bypass)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "08_21:37:37"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epixUHR",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-epixUHR",
+   "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:23. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixUHR_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TriggerDelay"
+     ],
+     "summary": "epixUHR_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:21:10"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epixuhr3x2",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-epixuhr3x2",
+   "question": "The DAQ was used on 2026-11-09 between 14:29 and 14:33. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixuhr3x2_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TriggerDelay"
+     ],
+     "summary": "epixuhr3x2_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_14:29:32"
+    ]
+   }
+  },
+  {
+   "id": "reg-cfg-epixquad1kfps",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-cfg-epixquad1kfps",
+   "question": "The DAQ was used on 2026-11-09 between 12:16 and 12:19. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixquad1kfps_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TriggerDelay"
+     ],
+     "summary": "epixquad1kfps_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:16:40"
+    ]
+   }
+  },
+  {
+   "id": "reg-connect-fakecam",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-connect-fakecam",
+   "question": "The DAQ was used on 2026-11-09 between 08:16 and 08:18. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "connect"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Length_0"
+     ],
+     "summary": "fakecam_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_08:16:32"
+    ]
+   }
+  },
+  {
+   "id": "reg-connect-epixuhremu",
+   "tier": 1,
+   "set": "full",
+   "pool": "reg-connect-epixuhremu",
+   "question": "On 2026-11-09 around 08:15 the DAQ would not connect. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "epixuhremu_0"
+     ],
+     "transition": [
+      "connect"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Length_0"
+     ],
+     "summary": "epixuhremu_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_08:14:33"
+    ]
+   }
+  },
+  {
+   "id": "reg-alloc-fakecam",
+   "tier": 1,
+   "set": "core",
+   "pool": "reg-alloc-fakecam",
+   "question": "The DAQ was used on 2026-11-09 between 10:21 and 10:23. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "alloc"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "Enable_0"
+     ],
+     "summary": "fakecam_0 aborted during alloc: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Enable_0)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_10:21:31"
+    ]
+   }
+  },
+  {
+   "id": "kill-drp",
+   "tier": 1,
+   "set": "core",
+   "pool": "kill-drp",
+   "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "running",
+      "disable",
+      "enable",
+      "run"
+     ],
+     "mechanism": [
+      "signal 9",
+      "SIGKILL",
+      "killed"
+     ],
+     "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "08_04:36:38"
+    ]
+   }
+  },
+  {
+   "id": "kill-drp-q",
+   "tier": 1,
+   "set": "full",
+   "pool": "kill-drp-q",
+   "question": "On 2026-11-08 around 05:15 the DAQ would not leave running (Disable failed). Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "running",
+      "disable",
+      "enable",
+      "run"
+     ],
+     "mechanism": [
+      "signal 9",
+      "SIGKILL",
+      "killed"
+     ],
+     "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "08_05:13:47"
+    ]
+   }
+  },
+  {
+   "id": "startup-crash-tt",
+   "tier": 1,
+   "set": "full",
+   "pool": "startup-crash-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:15 and 12:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "alloc",
+      "start",
+      "startup",
+      "start-up",
+      "launch",
+      "init",
+      "tt_init",
+      "rollcall"
+     ],
+     "mechanism": [
+      "TypeError",
+      "unexpected keyword"
+     ],
+     "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:15:15"
+    ]
+   }
+  },
+  {
+   "id": "startup-crash-tt-q",
+   "tier": 1,
+   "set": "core",
+   "pool": "startup-crash-tt-q",
+   "question": "On 2026-11-09 around 12:25 the DAQ would not allocate; control said 'at least one DRP is required'. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "alloc",
+      "start",
+      "startup",
+      "start-up",
+      "launch",
+      "init",
+      "tt_init",
+      "rollcall"
+     ],
+     "mechanism": [
+      "TypeError",
+      "unexpected keyword"
+     ],
+     "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:24:58"
+    ]
+   }
+  },
+  {
+   "id": "cfg-badname-tt",
+   "tier": 1,
+   "set": "core",
+   "pool": "cfg-badname-tt",
+   "question": "The DAQ was used on 2026-11-09 between 11:58 and 12:01. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0",
+      "tt",
+      "timetool",
+      "time tool",
+      "drp tt"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "illegal XtcData::Name",
+      "illegal XtcData",
+      "illegal name",
+      "ROI[0]",
+      "ROI[1]",
+      "UartPiranha4.ROI",
+      "bracket",
+      "invalid config name",
+      "bad name",
+      "SAD[2]"
+     ],
+     "summary": "tt_0 (timetool DRP) aborted (SIGABRT, signal 6) during configure with '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' - its configuration carries bracketed field names (ROI[1], SAD[2]; healthy sessions show ROI1, SAD2) that are not legal XTC names. Consequences: teb0 lost its DRP link and aborted (signal 6), control timed out 60 s waiting for tt_0 on configure, and the following disconnect timed out for both dead processes."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_11:58:38"
+    ]
+   }
+  },
+  {
+   "id": "cfg-value-wave8",
+   "tier": 1,
+   "set": "core",
+   "pool": "cfg-value-wave8",
+   "question": "The DAQ was used on 2026-11-08 between 18:19 and 18:21. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "wave8_0",
+      "wave8",
+      "drp wave8"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "TriggerDelay(ns) too small",
+      "too small",
+      "Raise controls trigger delay",
+      "configure_trigger_delay",
+      "TriggerEventBuffer[0]:TriggerDelay",
+      "TriggerDelay reads 0",
+      "trigger delay reads back 0",
+      "trigger delay of 0",
+      "IOC delay is 0",
+      "PV"
+     ],
+     "summary": "wave8_0 failed in configure: wave8_config -> configure_trigger_delay raised ValueError('TriggerDelay(ns) too small') (IOC-managed trigger delay reads as 0 / not above the partition delay), the DRP logged '<C> **** python error' and aborted (signal 6). Consequences: teb0 lost its DRP link and aborted (signal 6), control timed out on configure ('wave8_0 did not respond to configure'), then disconnect timed out for both dead processes. (register PV)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "08_18:18:57"
+    ]
+   }
+  },
+  {
+   "id": "jf-readback",
+   "tier": 1,
+   "set": "core",
+   "pool": "jf-readback",
+   "question": "On 2026-11-09 around 09:03 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "jungfrau_0",
+      "jungfrau",
+      "jf",
+      "drp jungfrau"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Failed readback check of exposure time",
+      "readback check",
+      "readback",
+      "exposure time",
+      "0.000020 [0.000010]",
+      "0.000020",
+      "Failed to configure 1 of 1 Jungfrau modules",
+      "read back",
+      "module 0"
+     ],
+     "summary": "jungfrau_0 failed configure phase 1: after 'Setting module 0 exposure time to 0.000010 s' the readback check failed ('Failed readback check of exposure time for module 0: 0.000020 [0.000010]' - module returned 20 us instead of the requested 10 us), so 'Failed to configure 1 of 1 Jungfrau modules' and 'Phase 1 error in Detector::configure()'. Control reported the configure failure immediately; on the following disconnect teb0 crashed ('TEB thread lost connection with a DRP', signal 6) and control logged 'teb0 did not respond to disconnect'."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "free(): double free detected in tcache 2",
+     "jungfrau_0 killed by signal 6 at shutdown",
+     "SMT is on",
+     "workers are left unpinned"
+    ],
+    "sessions": [
+     "09_09:03:02"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "pv-missing-pvcam",
+   "tier": 1,
+   "set": "core",
+   "pool": "pv-missing-pvcam",
+   "question": "The DAQ was used on 2026-11-09 between 18:22 and 18:24. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "pva detector",
+      "PvDetector"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "DAQ:SIM:CAM:IMAGE",
+      "hasn't connected",
+      "Failed to get parameters for PV",
+      "PV not connected",
+      "PV did not connect",
+      "PV unavailable",
+      "PV missing",
+      "PV is not served",
+      "no such PV",
+      "PV connection timeout"
+     ],
+     "summary": "pvcam_0 (drp_pva) failed configure phase 1 because its EPICS PV DAQ:SIM:CAM:IMAGE never connected: control got the warning \"pvcam_0: PV DAQ:SIM:CAM:IMAGE hasn't connected\" ~3 s after configure, and pvcam_0 logged 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE' then 'Phase 1 error in Detector::configure()'. fakecam_0 and teb0 configured fine. Consequence: on the following disconnect teb0 crashed ('TEB thread lost connection with a DRP', signal 6) and control logged 'teb0 did not respond to disconnect'; the operator then reset."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "free(): double free detected in tcache 2",
+     "get_configuration: No device pvcam_0",
+     "Internal error fetching detector configuration",
+     "No integer sim_seed in configdb BEAM/pvcam_0"
+    ],
+    "sessions": [
+     "09_18:22:24"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "ctl-blames-meb",
+   "tier": 1,
+   "set": "core",
+   "pool": "ctl-blames-meb",
+   "question": "On 2026-11-09 around 09:11 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0",
+      "fakecam",
+      "drp/fakecam_0",
+      "the DRP",
+      "detector DRP"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "killed by signal 9",
+      "SIGKILL",
+      "never logged the configure",
+      "did not receive configure",
+      "no 'received key = configure'",
+      "unresponsive",
+      "stalled",
+      "frozen",
+      "stopped responding",
+      "Link ID 0 is disconnected"
+     ],
+     "summary": "On the second configure of the session (09:10:47) the DRP fakecam_0 went silent: it never logged receipt of configure, and was killed by signal 9 at 09:11:07. teb0 and meb0, both blocked synchronising their links with DRP ID 0, then failed ('Link ID 0 is disconnected', 'Failed synchronize Begin with DRP: rc -107') and reported 'Phase 1 error: Failed to configure'; control names meb0 only because its reply arrived first."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_09:10:21"
+    ]
+   }
+  },
+  {
+   "id": "drp-gone-cfg",
+   "tier": 1,
+   "set": "core",
+   "pool": "drp-gone-cfg",
+   "question": "The DAQ was used on 2026-11-09 between 09:14 and 09:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0",
+      "fakecam",
+      "drp/fakecam_0",
+      "the DRP",
+      "detector DRP"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "killed by signal 9",
+      "SIGKILL",
+      "killed from outside",
+      "died during configure",
+      "did not respond to configure",
+      "process disappeared",
+      "DRP died",
+      "killed mid-configure"
+     ],
+     "summary": "In the second cycle the DRP fakecam_0 was killed by signal 9 at 09:14:52, part-way through configure (last line 'AreaDetector configure', no error of its own). teb0 then lost its DRP link and aborted (uncaught exception, signal 6); meb0 noted the disconnect; control timed out after 60 s with 'fakecam_0 did not respond to configure'."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_09:14:23"
+    ]
+   }
+  },
+  {
+   "id": "drp-killed-idle",
+   "tier": 1,
+   "set": "full",
+   "pool": "drp-killed-idle",
+   "question": "The DAQ was used on 2026-11-09 between 11:11 and 11:13. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0",
+      "fakecam",
+      "drp/fakecam_0",
+      "the DRP",
+      "detector DRP"
+     ],
+     "transition": [
+      "connected",
+      "unconfigure",
+      "disconnect",
+      "after unconfigure",
+      "idle"
+     ],
+     "mechanism": [
+      "killed by signal 9",
+      "SIGKILL",
+      "killed from outside",
+      "DRP died",
+      "DRP was killed",
+      "process disappeared",
+      "fakecam_0 did not respond to disconnect"
+     ],
+     "summary": "In the second cycle, after configure and unconfigure had completed (state connected, 11:12:17.97), the DRP fakecam_0 was killed by signal 9 at 11:12:18 with no error of its own. teb0 saw its DRP link drop and aborted (uncaught exception 'lost connection with a DRP', signal 6); meb0 handled the drop. The later disconnect (11:12:23) timed out after 30 s for the two dead processes: 'teb0 did not respond to disconnect', 'fakecam_0 did not respond to disconnect'."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_11:11:53"
+    ]
+   }
+  },
+  {
+   "id": "control-keyerror",
+   "tier": 1,
+   "set": "full",
+   "pool": "control-keyerror",
+   "question": "The DAQ was used on 2026-11-08 between 02:12 and 02:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "control",
+      "control.log",
+      "run control",
+      "collection manager",
+      "controller"
+     ],
+     "transition": [
+      "beginrun",
+      "begin run",
+      "begin-run"
+     ],
+     "mechanism": [
+      "KeyError: 'monitor'",
+      "KeyError",
+      "error: 'monitor'",
+      "'monitor' key",
+      "monitor key missing",
+      "1 run parameters recorded",
+      "selectplatform",
+      "monitor_info",
+      "DAQ Detectors run parameter missing",
+      "monitor_info': {}"
+     ],
+     "summary": "Non-fatal control-level error at beginrun: control logged \"error: 'monitor'\" and \"<E> KeyError: 'monitor'\" while building run parameters, because the per-process 'monitor' key is absent from its collection state (this session never issued selectplatform before alloc, unlike every other session). Consequence: only 1 run parameter ('partition') was recorded in the logbook instead of the usual 2 (the 'DAQ Detectors/drp/fakecam' entry is missing) and beginrun's monitor_info was sent empty ({}). The run itself was not affected: configure, beginrun, enable, ~5 s running, endrun and return to reset all completed with fakecam_0 and teb0 acknowledging every transition."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "stat(...) error: No such file or directory",
+     "Output dir stat error",
+     "output directory missing at startup",
+     "ami NOT supported in absence of MEB"
+    ],
+    "sessions": [
+     "08_02:12:02"
+    ]
+   }
+  },
+  {
+   "id": "gpu-hang-cfg",
+   "tier": 1,
+   "set": "core",
+   "pool": "gpu-hang-cfg",
+   "question": "On 2026-11-09 around 21:14 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "jungfrau_0",
+      "jungfrau",
+      "drp/jungfrau_0",
+      "drp_gpu",
+      "GPU DRP"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "did not respond to configure",
+      "hung in configure",
+      "stalled",
+      "stuck",
+      "never completed configure",
+      "timed out",
+      "60 s",
+      "no reply",
+      "unresponsive",
+      "never sent the Configure"
+     ],
+     "summary": "The GPU DRP jungfrau_0 received configure at 21:13:20, got as far as starting its Collector and TrgInpGen receiver threads, then went silent and never replied; control timed out after 60 s ('jungfrau_0 did not respond to configure'). teb0 had answered configure in 3 ms. Control then issued disconnect, during which teb0 segfaulted (comp_error_dump while 'Error reading Rx CQ') and jungfrau_0 aborted on 'lost connection with a TEB' -- both after, and because of, the failed configure."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "Segmentation Fault",
+     "segfault in teb0 at disconnect",
+     "comp_error_dump"
+    ],
+    "sessions": [
+     "09_21:12:48"
+    ]
+   }
+  },
+  {
+   "id": "teb-overflow",
+   "tier": 1,
+   "set": "core",
+   "pool": "teb-overflow",
+   "question": "The DAQ was used on 2026-11-09 between 21:36 and 21:38. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "opal_0",
+      "opal",
+      "drp/opal_0",
+      "the DRP",
+      "TebContributor"
+     ],
+     "transition": [
+      "enable",
+      "running",
+      "after enable",
+      "first events"
+     ],
+     "mechanism": [
+      "_pending queue overflow",
+      "pending queue overflow",
+      "TebContributor::_post",
+      "queue overflow",
+      "overflow"
+     ],
+     "summary": "Immediately after Enable (21:36:31) the DRP opal_0 hit '<C> TebContributor::_post: _pending queue overflow' and aborted (signal 6). teb0 then lost its DRP link and aborted too (uncaught exception, 21:36:32). Control noticed nothing for 33 s and stayed 'running' with no data; the disable at 21:37:04 then failed with 'teb0 did not respond to disable' and 'opal_0 did not respond to disable'."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_21:36:16"
+    ]
+   }
+  },
+  {
+   "id": "gpu-cuda",
+   "tier": 1,
+   "set": "core",
+   "pool": "gpu-cuda",
+   "question": "The DAQ was used on 2026-11-09 between 07:43 and 07:46. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0",
+      "fakecam",
+      "drp/fakecam_0",
+      "drp_gpu",
+      "GPU DRP"
+     ],
+     "transition": [
+      "enable",
+      "running",
+      "after enable",
+      "disable"
+     ],
+     "mechanism": [
+      "cudaErrorIllegalAddress",
+      "illegal memory access",
+      "(700)",
+      "CUDA error",
+      "MemPool.cc:548",
+      "drpGpu/MemPool.cc",
+      "did not respond to disable phase 2",
+      "StageHist.cu"
+     ],
+     "summary": "Right after Enable (07:44:08) the GPU DRP fakecam_0 began logging 'cudaErrorIllegalAddress (700): an illegal memory access was encountered' from drpGpu/MemPool.cc:547-550 (about 250 lines) and processed nothing further. At disable (07:44:41) it acknowledged phase 1 but the Disable transition never came through its pipeline, so control reported 'fakecam_0 did not respond to disable phase 2' at 07:44:54."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free or corruption",
+     "double free",
+     "signal 6 at shutdown"
+    ],
+    "sessions": [
+     "09_07:43:54"
+    ]
+   }
+  },
+  {
+   "id": "jf-missing-packets",
+   "tier": 1,
+   "set": "full",
+   "pool": "jf-missing-packets",
+   "question": "The DAQ was used on 2026-11-09 between 16:27 and 16:28. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "jungfrau_0",
+      "jungfrau",
+      "drp/jungfrau_0",
+      "jungfrau module",
+      "127.0.0.1:31054"
+     ],
+     "transition": [
+      "running",
+      "disable",
+      "enable"
+     ],
+     "mechanism": [
+      "Missing data",
+      "sent 0 of 128 packets",
+      "Out-of-Order data",
+      "missing packets",
+      "unexpected frame num",
+      "did not respond to disable phase 2",
+      "no UDP packets",
+      "frames 1342"
+     ],
+     "summary": "While running, the jungfrau module at 127.0.0.1:31054 stopped delivering its UDP data: from frame 1342 on jungfrau_0 logged 'sent 0 of 128 packets of frame 0', 'Missing data' and 'Out-of-Order data' for 25 consecutive frames (1342-1366). The Disable transition (16:27:16) was queued behind those frames; phase 1 was acknowledged but phase 2 did not return within 13 s, so control reported 'jungfrau_0 did not respond to disable phase 2' at 16:27:29 (the reply finally arrived at 16:27:41)."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "free(): double free detected in tcache 2",
+     "signal 6 at shutdown"
+    ],
+    "sessions": [
+     "09_16:27:01"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "ctl-blames-teb",
+   "tier": 1,
+   "set": "core",
+   "pool": "ctl-blames-teb",
+   "question": "On 2026-11-09 around 07:28 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "epixuhremu_0",
+      "epixuhremu",
+      "drp_gpu",
+      "gpu drp",
+      "epixuhr"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "maxEntries (64) must divide evenly into numBuffers (16)",
+      "must divide evenly",
+      "maxEntries",
+      "numBuffers (16)",
+      "TebContributor::configure",
+      "dmaBufCount=16",
+      "dmaBufCount",
+      "16 buffers",
+      "batch size 64"
+     ],
+     "summary": "The GPU DRP epixuhremu_0 (drp_gpu) aborted during configure: '<C> int Pds::Eb::TebContributor::configure(): maxEntries (64) must divide evenly into numBuffers (16)' followed by signal 6 - it was started with dmaBufCount=16, fewer buffers than the 64-entry TEB batch. teb0's configure error is a consequence: it found 'Link ID 0 is disconnected' / 'Failed synchronize Begin with DRP: rc -107' / 'Failed to prepare link with DRP ID 0' / 'Teb::configure() failed' and returned 'Phase 1 error: Failed to configure', which is the only error control shows for configure. The later 'epixuhremu_0 did not respond to disconnect' is because the DRP was already dead."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "timing link is still down after ConfigLclsTimingV2()",
+     "could not read PHY status",
+     "GPU is on NUMA node 1, REMOTE from our CPUs",
+     "SMT is on",
+     "no runtime green contexts"
+    ],
+    "sessions": [
+     "09_07:27:42"
+    ]
+   }
+  },
+  {
+   "id": "hang-cfg-tt",
+   "tier": 1,
+   "set": "core",
+   "pool": "hang-cfg-tt",
+   "question": "On 2026-11-09 around 12:57 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0",
+      "tt",
+      "timetool",
+      "time tool"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "hung",
+      "hang",
+      "hangs",
+      "stalled",
+      "stuck",
+      "sleeping for",
+      "went silent",
+      "no error",
+      "unresponsive",
+      "never returned",
+      "never replied"
+     ],
+     "summary": "tt_0 received configure, set its camera up over the serial link and then went silent at 'sleeping for ...UartPiranha4.ROI[0]' with no error of its own; it stayed alive but never replied, so control timed out after 60 s ('tt_0 did not respond to configure'). teb0's segmentation fault came later, on the recovery disconnect, and is not the cause."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "Segmentation Fault in teb0 on disconnect",
+     "double free at shutdown"
+    ],
+    "sessions": [
+     "09_12:55:54"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "healthy-tt",
+   "tier": 1,
+   "set": "core",
+   "pool": "healthy-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "double-free"
+    ],
+    "sessions": [
+     "09_12:21:27"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "healthy-fakecam",
+   "tier": 1,
+   "set": "core",
+   "pool": "healthy-fakecam",
+   "question": "The DAQ was used on 2026-11-08 between 14:18 and 14:19. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "08_14:18:17"
+    ]
+   }
+  },
+  {
+   "id": "healthy-jungfrau",
+   "tier": 1,
+   "set": "core",
+   "pool": "healthy-jungfrau",
+   "question": "The DAQ was used on 2026-11-09 between 19:47 and 19:49. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "double-free"
+    ],
+    "sessions": [
+     "09_19:47:22"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "healthy-ami",
+   "tier": 1,
+   "set": "full",
+   "pool": "healthy-ami",
+   "question": "The DAQ was used on 2026-11-09 between 20:50 and 20:52. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_20:50:25"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "big-pvcam",
+   "tier": 2,
+   "set": "core",
+   "pool": "big-pvcam",
+   "question": "The DAQ was used on 2026-11-09 between 15:05 and 15:07. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "PV camera",
+      "PVA detector",
+      "DAQ:SIM:CAM:IMAGE"
+     ],
+     "transition": [
+      "configure",
+      "configured",
+      "connected to configured",
+      "config"
+     ],
+     "mechanism": [
+      "DAQ:SIM:CAM:IMAGE",
+      "Failed to get parameters for PV",
+      "hasn't connected",
+      "PV not connected",
+      "PV never connected",
+      "PV did not connect",
+      "Phase 1 error in Detector::configure",
+      "PV unavailable",
+      "PV unreachable"
+     ],
+     "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+     "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+     "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+     "pvatable helper: 'Error processing Subscription event for DAQ:SIM:HSD:1_DA:[AB]:MONTIMING' with KeyError: 'readcntsum' (unrelated GUI helper",
+     "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign warning)"
+    ],
+    "sessions": [
+     "09_15:05:16"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "big-tebctrb-connect",
+   "tier": 2,
+   "set": "core",
+   "pool": "big-tebctrb-connect",
+   "question": "The DAQ was used on 2026-11-09 between 15:12 and 15:13. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "TebContributor",
+      "pvcam_0 link to teb0"
+     ],
+     "transition": [
+      "connect",
+      "connected",
+      "allocated to connected"
+     ],
+     "mechanism": [
+      "TebContributor connect failed",
+      "Error connecting to TEB",
+      "127.0.0.1:40459",
+      "fi_eq_sread",
+      "Interrupted system call",
+      "EINTR",
+      "could not connect to the TEB",
+      "connect to teb0 failed",
+      "libfabric connect"
+     ],
+     "summary": "At the connect transition pvcam_0 (drp_pva) could not open its outbound libfabric link to teb0: 'Error connecting to 127.0.0.1:40459 after 569 ms: fi_eq_sread: Interrupted system call(-4)' -> 'DrpBase::connect: TebContributor connect failed'. Control reported 'pvcam_0: TebContributor connect failed', connect failed, the DAQ stayed in 'allocated' and was reset and shut down about a second later; it never configured or ran."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "pvatable helper: KeyError: 'readcntsum' while processing DAQ:SIM:HSD:1_DA:[AB]:MONTIMING subscription events (unrelated)",
+     "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign)",
+     "meb0 '<E> Error in MEB connect()' / 'Failed to accept connection: fi_eq_sread: Interrupted system call(-4)' appears AFTER '^C ... Shutting d"
+    ],
+    "sessions": [
+     "09_15:12:41"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "big-meb-killed",
+   "tier": 2,
+   "set": "core",
+   "pool": "big-meb-killed",
+   "question": "The DAQ was used on 2026-11-09 between 09:12 and 09:14. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "meb0",
+      "meb",
+      "monReqServer",
+      "monitoring event builder",
+      "MEB"
+     ],
+     "transition": [
+      "running",
+      "enable",
+      "enabled",
+      "during the run",
+      "after enable"
+     ],
+     "mechanism": [
+      "killed by signal 9",
+      "SIGKILL",
+      "meb0 was killed",
+      "meb0 died",
+      "Error receiving transition buffer index from MEB",
+      "MebContributor::post",
+      "needed for SlowUpdate",
+      "MEB disappeared"
+     ],
+     "summary": "meb0 (monReqServer) was killed by signal 9 (SIGKILL) at 09:12:41 while the DAQ was running (enable at 09:12:27), with no error of its own. All four DRPs then got Tx errors on their MEB link and aborted at 09:13:05 ('Error receiving transition buffer index from MEB ID 0 needed for SlowUpdate'), teb0 aborted at 09:13:06 ('lost connection with a DRP'), and the disable at 09:13:09 timed out with all 6 clients not responding."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "configdb 'get_configuration: No device <det>!' / 'Internal error fetching detector configuration' tracebacks in pvcam_0, encoder_0, epics_0 ",
+     "ami-worker_0 'Error connecting myTrFd socket (will retry): Connection refused' and shmc0 'shmemClient's server appears to have disconnected "
+    ],
+    "sessions": [
+     "09_09:11:58"
+    ]
+   }
+  },
+  {
+   "id": "big-pvcam-23",
+   "tier": 2,
+   "set": "full",
+   "pool": "big-pvcam-23",
+   "question": "On 2026-11-09 around 09:08 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "PV camera",
+      "PVA detector",
+      "DAQ:SIM:CAM:IMAGE"
+     ],
+     "transition": [
+      "configure",
+      "configured",
+      "connected to configured",
+      "config"
+     ],
+     "mechanism": [
+      "DAQ:SIM:CAM:IMAGE",
+      "Failed to get parameters for PV",
+      "hasn't connected",
+      "PV not connected",
+      "PV never connected",
+      "PV did not connect",
+      "Phase 1 error in Detector::configure",
+      "PV unavailable",
+      "PV unreachable"
+     ],
+     "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+     "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+     "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+     "shmc0: 'shmemClient's server appears to have disconnected - attempting to reconnect' (consequence of meb0 dying)"
+    ],
+    "sessions": [
+     "09_09:01:59"
+    ],
+    "known_issues": [
+     134
+    ]
+   }
+  },
+  {
+   "id": "big-healthy-31",
+   "tier": 2,
+   "set": "disputed",
+   "pool": "big-healthy-31",
+   "question": "The DAQ was used on 2026-11-09 between 14:25 and 14:29. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_14:25:33"
+    ],
+    "known_issues": [
+     134
+    ]
+   },
+   "note": "Not scored. The sim counted this launch as passing, but agents in both arms reported about 12 to 16% of triggers lost to dead time and a few damaged events. Until someone checks, \"no fault\" is not a safe key."
+  },
+  {
+   "id": "big-healthy-36",
+   "tier": 2,
+   "set": "disputed",
+   "pool": "big-healthy-36",
+   "question": "The DAQ was used on 2026-11-09 between 19:54 and 19:59. An operator asks: did anything go wrong? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_19:54:53"
+    ],
+    "known_issues": [
+     134
+    ]
+   },
+   "note": "Not scored. The sim counted this launch as passing, but agents in both arms reported about 12 to 16% of triggers lost to dead time and a few damaged events. Until someone checks, \"no fault\" is not a safe key."
+  },
+  {
+   "id": "day-window",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 around 12:13 the DAQ would not configure. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back"
+     ],
+     "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:12:52"
+    ]
+   }
+  },
+  {
+   "id": "day-window-utc",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "A monitoring alert says the DAQ failed to configure at about 2026-11-09 20:24 UTC. What happened?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back"
+     ],
+     "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:22:37"
+    ],
+    "decoy_sessions": [
+     "09_20:23",
+     "09_20:24",
+     "09_20:2"
+    ]
+   }
+  },
+  {
+   "id": "day-startup",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 around 12:50 the DAQ would not allocate. Why?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "alloc",
+      "start",
+      "startup",
+      "start-up",
+      "launch",
+      "init",
+      "tt_init",
+      "rollcall"
+     ],
+     "mechanism": [
+      "TypeError",
+      "unexpected keyword"
+     ],
+     "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:49:29"
+    ]
+   }
+  },
+  {
+   "id": "day-big-window",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 around 15:15 the DAQ would not configure. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "PV camera",
+      "PVA detector",
+      "DAQ:SIM:CAM:IMAGE"
+     ],
+     "transition": [
+      "configure",
+      "configured",
+      "connected to configured",
+      "config"
+     ],
+     "mechanism": [
+      "DAQ:SIM:CAM:IMAGE",
+      "Failed to get parameters for PV",
+      "hasn't connected",
+      "PV not connected",
+      "PV never connected",
+      "PV did not connect",
+      "Phase 1 error in Detector::configure",
+      "PV unavailable",
+      "PV unreachable"
+     ],
+     "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+     "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+     "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+     "pvatable helper: 'Error processing Subscription event for DAQ:SIM:HSD:1_DA:[AB]:MONTIMING' with KeyError: 'readcntsum' (unrelated GUI helper",
+     "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign warning)"
+    ],
+    "sessions": [
+     "09_15:14:29"
+    ]
+   }
+  },
+  {
+   "id": "day-other-error",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 shortly after 15:04 a launch failed. Why?",
+   "key_source": "observed",
+   "key": {
+    "fault": {
+     "component": [
+      "pvcam_0",
+      "pvcam",
+      "drp_pva",
+      "MebContributor",
+      "pvcam_0 link to meb0"
+     ],
+     "transition": [
+      "connect",
+      "connected",
+      "allocated to connected"
+     ],
+     "mechanism": [
+      "MebContributor connect failed",
+      "Error connecting to MEB",
+      "127.0.0.1:44567",
+      "fi_eq_sread",
+      "Interrupted system call",
+      "EINTR",
+      "could not connect to the MEB",
+      "connect to meb0 failed"
+     ],
+     "summary": "At the connect transition pvcam_0 (drp_pva) connected to teb0 but failed to open its link to meb0: 'Error connecting to 127.0.0.1:44567 after 15 ms: fi_eq_sread: Interrupted system call(-4)' -> 'DrpBase::connect: MebContributor connect failed'. Control reported 'pvcam_0: MebContributor connect failed', connect failed, the DAQ stayed in 'allocated', was reset 0.4 s later and shut down; the other connect errors (teb0, meb0, encoder_0, epics_0) are consequences."
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "pvatable helper: KeyError: 'readcntsum' on DAQ:SIM:HSD:1_DA:[AB]:MONTIMING subscription events (unrelated)",
+     "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign)",
+     "ami-client FileNotFoundError for setuptools/_vendor/autocommand-2.2.2.dist-info/entry_points.txt, raised inside the Ctrl-C traceback at shut"
+    ],
+    "sessions": [
+     "09_15:04:34"
+    ]
+   }
+  },
+  {
+   "id": "day-healthy-window",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 between 16:00 and 16:30, did anything go wrong with the DAQ? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": []
+   }
+  },
+  {
+   "id": "day-healthy-late",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 between 21:00 and 21:30, did anything go wrong with the DAQ? Give a full assessment.",
+   "key_source": "planted",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": []
+   }
+  },
+  {
+   "id": "day-count",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09 between 11:50 and 13:10, which DAQ launches failed, and why did each one fail? List every failed launch.",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure",
+      "alloc"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back",
+      "TypeError",
+      "unexpected keyword",
+      "illegal"
+     ],
+     "summary": "9 launches failed, all on tt_0: four register write-verify failures on TriggerDelay during Configure, three startup crashes (TypeError, unexpected keyword argument 'size') that made Alloc fail with 'at least one DRP is required', one abort on an illegal XtcData::Name during Configure, and one Configure that hung with no error"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_11:58:38",
+     "09_12:06:35",
+     "09_12:12:52",
+     "09_12:15:15",
+     "09_12:22:37",
+     "09_12:24:58",
+     "09_12:49:29",
+     "09_12:55:54",
+     "09_13:06:52"
+    ],
+    "count": 9,
+    "launches": [
+     {
+      "prefix": "09_11:58:38",
+      "cause": "tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence"
+     },
+     {
+      "prefix": "09_12:06:35",
+      "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+     },
+     {
+      "prefix": "09_12:12:52",
+      "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+     },
+     {
+      "prefix": "09_12:15:15",
+      "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+     },
+     {
+      "prefix": "09_12:22:37",
+      "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+     },
+     {
+      "prefix": "09_12:24:58",
+      "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+     },
+     {
+      "prefix": "09_12:49:29",
+      "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+     },
+     {
+      "prefix": "09_12:55:54",
+      "cause": "tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)"
+     },
+     {
+      "prefix": "09_13:06:52",
+      "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+     }
+    ]
+   }
+  },
+  {
+   "id": "day-last-good",
+   "tier": 3,
+   "set": "core",
+   "pool": "day",
+   "question": "On 2026-11-09, when was the last launch before 12:30 in which the tt detector configured successfully, and what went wrong in the launch right after it?",
+   "key_source": "planted",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "read-back"
+     ],
+     "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [],
+    "sessions": [
+     "09_12:21:27",
+     "09_12:22:37"
+    ],
+    "all_sessions": true
+   }
+  }
+ ]
+}

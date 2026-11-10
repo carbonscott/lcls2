@@ -1,0 +1,1368 @@
+[
+ {
+  "id": "hand-tt-correct",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 aborted the configure transition: the TriggerDelay register failed its write verify (got 0xff, expected 0x17).\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-tt-partial",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 did not respond to configure phase 1, so control timed out after 60 s.\nConfidence: medium\n",
+  "expect": "partial",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-tt-wrong",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "## Most Likely Cause\nteb0 lost its connection to the DRP during enable.\nConfidence: high\n",
+  "expect": "wrong",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-tt-falsepass",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "## Most Likely Cause\nteb0 crashed first and took the session down. The Verify error that tt_0 printed during configure is harmless and unrelated.\nConfidence: high\n",
+  "expect": "wrong",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-tt-falsefail",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "## Most Likely Cause\nThe timetool DRP wrote a trigger delay to its firmware during configure and the value did not stick, so it aborted.\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-conn-correct",
+  "case": "reg-connect-fakecam",
+  "question": "The DAQ was used on 2026-11-09 between 08:16 and 08:18. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "connect"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "Length_0"
+    ],
+    "summary": "fakecam_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_08:16:32"
+   ]
+  },
+  "report": "## Most Likely Cause\nfakecam_0 (drp_gpu) aborted in the connect transition: register TDetSemi.Length_0 failed verify (got 0xff, expected 0x40).\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-conn-wrongstep",
+  "case": "reg-connect-fakecam",
+  "question": "The DAQ was used on 2026-11-09 between 08:16 and 08:18. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "connect"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "Length_0"
+    ],
+    "summary": "fakecam_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_08:16:32"
+   ]
+  },
+  "report": "## Most Likely Cause\nfakecam_0 failed to configure: register Length_0 failed verify.\nConfidence: high\n",
+  "expect": "partial",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-kill-correct",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "## Most Likely Cause\nfakecam_0 was killed by signal 9 while the DAQ was running. The later disable failed because the process was gone; the logs do not say who sent the signal.\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-kill-victim",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "## Most Likely Cause\nteb0 threw an uncaught exception (lost connection with a DRP) and aborted with signal 6, so disable failed.\nConfidence: high\n",
+  "expect": "wrong",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-kill-partial",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "## Most Likely Cause\nfakecam_0 and teb0 did not respond to disable.\nConfidence: medium\n",
+  "expect": "partial",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-start-correct",
+  "case": "startup-crash-tt-q",
+  "question": "On 2026-11-09 around 12:25 the DAQ would not allocate; control said 'at least one DRP is required'. Why?",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "alloc",
+     "start",
+     "startup",
+     "start-up",
+     "launch",
+     "init",
+     "tt_init",
+     "rollcall"
+    ],
+    "mechanism": [
+     "TypeError",
+     "unexpected keyword"
+    ],
+    "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+   },
+   "expect_skills": [
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:24:58"
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size'. It never answered rollcall, so alloc had no DRP.\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-start-partial",
+  "case": "startup-crash-tt-q",
+  "question": "On 2026-11-09 around 12:25 the DAQ would not allocate; control said 'at least one DRP is required'. Why?",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "alloc",
+     "start",
+     "startup",
+     "start-up",
+     "launch",
+     "init",
+     "tt_init",
+     "rollcall"
+    ],
+    "mechanism": [
+     "TypeError",
+     "unexpected keyword"
+    ],
+    "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+   },
+   "expect_skills": [
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:24:58"
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 did not respond to rollcall, so alloc failed with 'at least one DRP is required'.\nConfidence: medium\n",
+  "expect": "partial",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-start-unknown",
+  "case": "startup-crash-tt-q",
+  "question": "On 2026-11-09 around 12:25 the DAQ would not allocate; control said 'at least one DRP is required'. Why?",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "alloc",
+     "start",
+     "startup",
+     "start-up",
+     "launch",
+     "init",
+     "tt_init",
+     "rollcall"
+    ],
+    "mechanism": [
+     "TypeError",
+     "unexpected keyword"
+    ],
+    "summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+   },
+   "expect_skills": [
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:24:58"
+   ]
+  },
+  "report": "## Most Likely Cause\nUnknown. control.log shows alloc failed, but I could not tell why the DRP was absent.\nConfidence: low\n",
+  "expect": "unknown",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-name-correct",
+  "case": "cfg-badname-tt",
+  "question": "The DAQ was used on 2026-11-09 between 11:58 and 12:01. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "illegal XtcData::Name",
+     "illegal XtcData",
+     "illegal name",
+     "ROI[0]",
+     "ROI[1]",
+     "UartPiranha4.ROI",
+     "bracket",
+     "invalid config name",
+     "bad name",
+     "SAD[2]"
+    ],
+    "summary": "tt_0 (timetool DRP) aborted (SIGABRT, signal 6) during configure with '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' - its configuration carries bracketed field names (ROI[1], SAD[2]; healthy sessions show ROI1, SAD2) that are not legal XTC names. Consequences: teb0 lost its DRP link and aborted (signal 6), control timed out 60 s waiting for tt_0 on configure, and the following disconnect timed out for both dead processes."
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_11:58:38"
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 aborted during configure: illegal XtcData::Name for expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0].\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-ok-correct",
+  "case": "healthy-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [
+    "double free",
+    "double-free"
+   ],
+   "sessions": [
+    "09_12:21:27"
+   ],
+   "known_issues": [
+    134
+   ]
+  },
+  "report": "## Most Likely Cause\nNo fault: the session went through configure, enable and disable and was shut down by the operator.\nConfidence: high\n\n## Independent Issues\n- tt_0 printed 'free(): double free detected in tcache 2' while shutting down.\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-ok-alarm-exit",
+  "case": "healthy-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [
+    "double free",
+    "double-free"
+   ],
+   "sessions": [
+    "09_12:21:27"
+   ],
+   "known_issues": [
+    134
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 crashed: free(): double free detected in tcache 2, killed by signal 6.\nConfidence: high\n",
+  "expect": "false-alarm",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-ok-alarm-rtprio",
+  "case": "healthy-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [
+    "double free",
+    "double-free"
+   ],
+   "sessions": [
+    "09_12:21:27"
+   ],
+   "known_issues": [
+    134
+   ]
+  },
+  "report": "## Most Likely Cause\ntt_0 and teb0 logged a critical error, Inadequate RTPRIO limit: got 0, require 99.\nConfidence: medium\n",
+  "expect": "false-alarm",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-ro-issue",
+  "case": "reg-cfg-hsd",
+  "question": "The DAQ was used on 2026-11-09 between 12:04 and 12:07. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "hsd_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "PgpQPllReset"
+    ],
+    "summary": "hsd_0 aborted during configure: a register failed its write-verify (readback did not match) (register DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:04:24"
+   ]
+  },
+  "report": "## Most Likely Cause\nhsd_0 aborted in configure: register PgpQPllReset failed verify (got 0x01, expected 0x00).\nConfidence: high\n",
+  "expect": "correct",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "hand-rt-nologs",
+  "case": "reg-cfg-epix100",
+  "question": "The DAQ was used on 2026-11-09 between 20:19 and 20:21. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "epix100_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "DaqTriggerDelay"
+    ],
+    "summary": "epix100_0 aborted during configure: a register failed its write-verify (readback did not match) (register ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_20:19:02"
+   ]
+  },
+  "report": "## Most Likely Cause\nepix100_0 did not respond to configure.\nConfidence: medium\n",
+  "expect": "partial",
+  "why": "hand-written sample"
+ },
+ {
+  "id": "pilot-skills-kill-drp",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "**Yes \u2014 the run failed almost immediately.** The only detector DRP (`fakecam_0`) was killed by SIGKILL within the same second it was enabled, the TEB aborted as a consequence, and run 1 was left open in the logbook, most likely with no usable events. The logs do not say who or what sent the SIGKILL.\n\nTimeline (2026-11-08, PST = UTC\u22128, one session `08_04:36:38` on `sdfmilan119`):\n\n| Time | Event |\n|---|---|\n| 04:36:46\u201304:36:51.56 | Rollcall through enable all succeed; recording is on, run 1 starts and both xtc2 files are opened and registered. |\n| 04:36:51 | `fakecam_0` (pid 2180619) is killed by signal 9, with no error or warning of its own after seeing Enable. |\n| 04:36:51 | `teb0` logs `EbLfClient 0 disconnected on far side`, then `<C> TEB thread lost connection with a DRP`, an uncaught exception, and dies on signal 6. |\n| 04:36:52\u201304:37:25 | Control still reports `running` and sends 34 slowupdates to processes that no longer exist, logging nothing wrong. |\n| 04:37:25\u201304:37:31 | Operator requests `paused`; after 6 s both `fakecam_0` and `teb0` fail to respond to `disable`, and `disable failed to change state`. |\n| 04:38:41 | Control is stopped with Ctrl-C (clean exit 0). No endrun was ever issued. |\n\n## New Crashes\nnone by the suite's crash definition (no Python traceback, no segfault). The two process deaths that did occur \u2014 a SIGKILL and a C++ abort \u2014 are covered under Most Likely Cause.\n\n## Most Likely Cause\n`fakecam_0` DRP was killed by an external SIGKILL at 04:36:51, under half a second after Enable; everything else follows from that. The origin of the SIGKILL is Unknown.\nConfidence: high (that the DRP kill is the root event); the sender of the kill is not established.\nEvidence:\n  - `fakecam_0.log`: last lines are `PGPReader saw Enable` / `TebCtrb sent Enable` / `TebRcvr saw Enable`, then `Received a sigChild for process 2180619. The process was killed by signal 9` at 04:36:51, with no `<E>`/`<C>` lines before it apart from the nonfatal RTPRIO line \u2014 verified-against-real-logs\n  - `teb0.log`: `EbLfClient 0 disconnected on far side` \u2192 `<C> TEB thread lost connection with a DRP` \u2192 `<C> Uncaught exception: Receiver thread lost connection with a DRP` \u2192 stack trace \u2192 `killed by signal 6` at 04:36:51; the TEB saw the far side drop, so the DRP went first \u2014 verified-against-real-logs\n  - `control.log` 04:37:31,390: `<E> fakecam_0 did not respond to disable`, `<E> teb0 did not respond to disable`, `<E> 2 client did not respond to disable`, `<E> condition_disable(): disable phase1 failed`, `<E> disable failed to change state` \u2014 both processes had been dead for about 34 s \u2014 verified-against-real-logs\n  - `control.log`: `start_run: run number = 1` and two `register_file` calls succeed, but there is no endrun or `end_run` call before the `KeyboardInterrupt` at 04:38:41 \u2014 verified-against-real-logs\n\nRemedies: proposed \u2014 on `sdfmilan119`, check the kernel log around 04:36:51 for an OOM-killer entry naming pid 2180619, and check whether someone or some script ran `kill -9` on it. Also inspect `tstx00001-r0001-s000-c000.xtc2` and its `.smd.xtc2` (expect transitions only, no proper close) and close out run 1 in the logbook.\n\n## Also Possible\n1. Kernel OOM killer took the DRP \u2014 Confidence: low\n   Evidence:\n     - The DRP allocated about 1.1 GB of pebble plus 1.1 GB of file-writer buffers; a SIGKILL with no application message fits OOM, but nothing in these logs shows memory pressure \u2014 verified-against-real-logs\n2. Deliberate or scripted `kill -9` (operator, test harness, or batch system) \u2014 Confidence: low\n   Evidence:\n     - The kill lands in the same second as Enable on a fully simulated setup (`sim://` PGP, simulated XPM, localhost), and the process logged no fault of its own; the logs cannot identify the sender \u2014 verified-against-real-logs\n\n## Independent Issues\n1. Control gave no indication for about 34 s that its only DRP and its TEB were gone \u2014 Confidence: medium\n   Evidence:\n     - `control.log` shows state `running` and 34 `slowupdate` triggers from 04:36:52 to 04:37:25 with no warning or error; the first error appears only when the operator requested `paused` \u2014 verified-against-real-logs\n\n## Known Issues\nnone \u2014 the `daq-diagnostics` issues on slac-lcls/lcls2 (9 returned) contain no match for a DRP SIGKILL at Enable or `TEB thread lost connection with a DRP`. No local `issue-drafts/` or `reports/` store exists on this machine.\n\n## Raw Findings\n- Session: `2026/11/08_04:36:38` (`sdfmilan119`; control, fakecam_0, teb0) \u2014 the only session in the window.\n- Control: all transitions rollcall \u2192 enable succeeded by 04:36:51.56; `disable` failed phase 1 at 04:37:31 with both clients unresponsive; control was Ctrl-C'd at 04:38:41 with no endrun. Config alias was `BEAM` (`Loaded configDb tst/BEAM/tmoteb_0`). `<W> ami NOT supported in absence of MEB` is expected, since no MEB was in the partition.\n- Logs: `fakecam_0` killed by signal 9 at 04:36:51 with no preceding error; `teb0` three `<C>` lines and abort (signal 6) at 04:36:51. `<C> Inadequate RTPRIO limit` in both is nonfatal startup noise.\n- Metrics: skipped \u2014 Grafana/Prometheus not reachable from here, so event counts, deadtime and damage for the sub-second of running could not be checked.\n- ConfigDB: skipped \u2014 not reachable, and no detector configuration is implicated (configure succeeded).\n\nNo issues were filed or drafted, and nothing was written to disk.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "pilot-skills-cfg-verify-tt",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "**Yes \u2014 the session failed at Configure and never started a run; no data was recorded.** The time-tool DRP `tt_0` crashed while applying its configuration, the event builder `teb0` died as a consequence, and control then timed out twice before the operator hit Ctrl-C.\n\nTimeline (2026-11-09 PST, single session `2026/11/09_12:12:52_sdfmilan082`):\n\n| Time | Event |\n|---|---|\n| 12:12:58\u201312:13:01 | rollcall, alloc and connect all succeed (`teb0` and `tt_0` selected, readout group 5) |\n| 12:13:01 | configure issued; `teb0` acknowledges phase 1 |\n| 12:13:02 | `tt_0` raises `rogue.GeneralError` in `tt_config` and is killed by signal 6 |\n| 12:13:02 | `teb0` sees the DRP link drop and aborts (signal 6) |\n| 12:14:02 | control gives up after the 60 s configure phase-1 wait: `tt_0 did not respond to configure` |\n| 12:14:02 | a request to go back to `allocated` triggers disconnect |\n| 12:14:32 | disconnect fails after 30 s: neither `tt_0` nor `teb0` responds, because both are dead |\n| 12:14:33 | control stopped with Ctrl-C (exit status 0), last state `connected` |\n\n## New Crashes\n1. `tt_0` (drp, pid 437889) \u2014 Python exception during Configure: a pyrogue register write/verify failure on the time-tool `TriggerDelay`, after which the DRP aborted.\n   Confidence: high\n   Evidence:\n     - `tt_0.log:199-222` \u2014 `rogue.GeneralError: Block::checkTransaction: ... Verify error for block ...TriggerEventBuffer[0].TriggerDelay with address 0x0094900c. Byte: 0. Got: 0xff, Exp: 0x17, Mask: 0xff`, raised from `tt_config.py:188` \u2192 `config_expert` (`tt_config.py:157`, `rogue_node.set`) \u2014 verified-against-real-logs\n     - `tt_0.log:223,229` \u2014 `<C> **** python error`, then `killed by signal 6` at 12:13:02 \u2014 verified-against-real-logs\n     - `tt_0.log:90-92` \u2014 the value being written was `TriggerDelay = 19991` (0x4E17, so the expected low byte 0x17 matches); the readback returned 0xff \u2014 verified-against-real-logs\n     - `tt_0.log:95-198` \u2014 every Piranha4 camera UART command before it returned `OK`, so the failure is specific to this register write, not the camera serial link \u2014 verified-against-real-logs\n\n## Most Likely Cause\nConfigure failed because `tt_0` crashed applying its config (see New Crashes #1); every later error is a downstream effect of that one fault. Why the register read back 0xff is unknown from the logs alone.\nConfidence: high for the crash causing the failed configure; low for the root cause of the readback mismatch.\nEvidence:\n  - `control.log:253-259` \u2014 `tt_0 did not respond to configure` \u2192 `configure phase1 failed` \u2192 `configure failed to change state`, exactly 60 s after configure was issued \u2014 verified-against-real-logs\n  - `teb0.log:91-94,110` \u2014 `EbLfClient 0 disconnected on far side` \u2192 `<C> TEB thread lost connection with a DRP` \u2192 `Uncaught exception: Receiver thread lost connection with a DRP` \u2192 signal 6. The TEB had configured cleanly; it died because the DRP went away \u2014 verified-against-real-logs\n  - `control.log:281-289` \u2014 `tt_0` and `teb0` both `did not respond to disconnect`, consistent with both already being dead since 12:13:02 \u2014 verified-against-real-logs\n  - `tt_0.log:4,46,53` \u2014 the device is simulated (`-d sim://127.0.0.1:31052`, \"tt config runs against simulated device\"), running from a test release (`.../agentify-lcls2/wt-tt/install`) \u2014 verified-against-real-logs\nRemedies: proposed \u2014 check whether the simulated device / register backend at `sim://127.0.0.1:31052` holds a written `TriggerDelay` at 0x0094900c, then relaunch. Auto-restart is disabled, so both processes stayed dead and a full relaunch is needed regardless.\n\n## Also Possible\n1. The simulated PGP device does not model this register (or returns all-ones for unmapped addresses), so verify-on-write always fails \u2014 Confidence: low\n   Evidence:\n     - Readback of 0xff is typical of an unbacked or unreachable register; the device is a simulator \u2014 verified-against-real-logs (the inference is mine)\n2. The `TriggerDelay` value itself is wrong for this setup \u2014 Confidence: low\n   Evidence:\n     - `tt_0.log:90` \u2014 `partitionDelay 0  rawStart 107649  triggerDelay 19991`; a partition delay of 0 feeds the computed value. Only byte 0 of the mismatch is reported, and ConfigDB was unreachable, so I could not check the stored config \u2014 verified-against-real-logs\n\n## Independent Issues\n1. `Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]` (`tt_0.log:94`) \u2014 a config key with no matching device node; it did not stop the configure and its significance is unknown \u2014 Confidence: low\n   Evidence:\n     - Logged once, and the configure continued through all the UART commands afterwards \u2014 verified-against-real-logs\n\nNot faults:\n- `<C> Inadequate RTPRIO limit` in both `teb0` and `tt_0` is nonfatal startup noise.\n- `<W> ami NOT supported in absence of MEB` is expected, since no MEB was selected in the active-detectors file.\n\n## Known Issues\nnone \u2014 the nine `daq-diagnostics` issues on `slac-lcls/lcls2` do not cover a time-tool `TriggerDelay` verify error at Configure. The nearest, [#205](https://github.com/slac-lcls/lcls2/issues/205) (piranha4 DRP aborts at Alloc on a GCP reply timeout), is a different transition and a different error. No local `reports/` or `issue-drafts/` store exists here.\n\n## Raw Findings\n- Session: `2026/11/09_12:12:52_sdfmilan082` (control, teb0, tt_0) \u2014 the only session in the window; all three files read in full.\n- Control: reset \u2192 unallocated \u2192 allocated \u2192 connected succeeded; configure failed phase 1 on `tt_0` at 12:14:02; disconnect failed on `tt_0` and `teb0` at 12:14:32; Ctrl-C at 12:14:33. Recording was enabled but beginrun was never reached (last run number 0). Config alias `BEAM` (`tst/BEAM/tmoteb_0`).\n- Logs: `tt_0` Python exception and abort; `teb0` uncaught C++ exception and abort (secondary; it has a stack trace but is not a Python exception or segfault, so it is not listed as a separate crash).\n- Metrics: skipped \u2014 Grafana/Prometheus not reachable.\n- ConfigDB: skipped \u2014 not reachable; `tt_0` is the implicated detector and its stored `TriggerDelay`/timing config would be the thing to check.\n\nAs instructed, nothing was filed, drafted or written.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "pilot-skills-healthy-tt",
+  "case": "healthy-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [
+    "double free",
+    "double-free"
+   ],
+   "sessions": [
+    "09_12:21:27"
+   ],
+   "known_issues": [
+    134
+   ]
+  },
+  "report": "**Verdict:** the run itself was clean, but one thing did go wrong: the `tt_0` DRP aborted with a glibc double-free while shutting down, after the run had already ended.\n\nThe window holds one 20-second simulated test session (launched 12:21:27 PST, i.e. 20:21:27 UTC) with three processes: `control`, `teb0` and `tt_0`. Only logs were available, so deadtime, damage and the integrity of the files on disk are unchecked.\n\n## New Crashes\nnone \u2014 the only abnormal process death matches an existing issue (see Known Issues).\n\n## Most Likely Cause\nNo fault during data-taking; the one fault is `tt_0` aborting at shutdown (see Known Issues, #134).\nConfidence: medium\nEvidence:\n  - `tt_0.log`: `^C \u2026 <W> Shutting down on INT signal` \u2192 `free(): double free detected in tcache 2` \u2192 `Received a sigChild for process 462290. The process was killed by signal 6` \u2014 verified-against-real-logs\n  - The abort came at 12:21:48, about 6 s after `tt_0` had processed `endrun`, `unconfigure`, `disconnect`, `dealloc` and `reset` (12:21:42) and its worker, PGPReader and Collector threads had finished \u2014 verified-against-real-logs\n  - `control` and `teb0` took the same Ctrl-C and both exited with `Normal exit status = 0` \u2014 verified-against-real-logs\n  - `control.log` shows the full cycle reset \u2192 running \u2192 reset with no `<E>`/`<C>`, no \"did not respond\" and no \"failed to change state\" \u2014 verified-against-real-logs\n  - Run 1 of `tstx00001` was recorded: running 12:21:39.415 \u2192 12:21:41.392 (about 2 s), and the logbook end-run call returned `success: true` listing both the `.xtc2` and `.smd.xtc2` files \u2014 verified-against-real-logs\n  - `teb0.log` at disconnect: event pool `allocs 1985  frees 1985`, `Epoch has NO pending events`, roughly 1,980 L1Accepts at about 1 kHz \u2014 verified-against-real-logs\n  - A double-free at exit matches the fault tracked in #134, which is why this is not rated lower \u2014 documented-in-issue\n\n## Also Possible\n1. A separate teardown bug specific to the `tt` detector or the simulated-PGP (`sim://`, `MemPoolSim`) path, which only looks like #134 \u2014 Confidence: low\n   Evidence:\n     - #134's occurrences are all `epix100`/`timing` on real hardware under TERM; this one is `tt` on a simulated device under INT \u2014 documented-in-issue\n     - The release is a private worktree build (`TESTRELDIR \u2026/agentify-lcls2/wt-tt/install`, `GIT_DESCRIBE:none`), so the exact code is unknown and its source was not available here \u2014 verified-against-real-logs\n\n## Independent Issues\n1. Unexplained message during `tt_0` Configure: `Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]` \u2014 Confidence: low (that it matters)\n   Evidence:\n     - Configure carried on and completed, with every later camera UART command answered `OK` \u2014 verified-against-real-logs\n     - It may mean one config entry was not applied; I could not check without the source or ConfigDB \u2014 verified-against-real-logs\n\nBenign, listed only so they are not mistaken for faults:\n- `<C> Inadequate RTPRIO limit: got 0, require 99` on `teb0` and `tt_0` is the usual non-fatal startup line.\n- `<W> ami NOT supported in absence of MEB` is expected, since no MEB was in this configuration.\n\n## Known Issues\n- [#134](https://github.com/slac-lcls/lcls2/issues/134) (open) \u2014 DRP double-free at exit: multiple EPICS libCom builds loaded in one process \u2014 matches: Most Likely Cause. Likely match, not confirmed: same glibc string and same shutdown-only pattern. Delta: first sighting on a `tt` DRP, in hutch `tst`, on a simulated device, under INT rather than TERM (session `2026/11/09_12:21:27`, host `sdfmilan082`). The libCom root cause in the title could not be checked from these logs.\n\n## Raw Findings\n- Session: `2026/11/09_12:21:27` (host `sdfmilan082`; `control`, `teb0`, `tt_0`) \u2014 the only session in the window. No prior reports or issue drafts exist; none of the three store roots is present on this machine.\n- Control: clean. Rollcall selected `teb0` and `tt_0` (readout group 5); alloc, connect, configure (alias `BEAM`, `Loaded configDb tst/BEAM/tmoteb_0`), beginrun (run 1, recording on), beginstep, enable, then disable, endstep, endrun, unconfigure, disconnect, dealloc and reset all succeeded. Ctrl-C at 12:21:48.\n- Logs: no `<E>` lines and no `<C>` lines other than RTPRIO. `tt_0` aborted on double-free at shutdown (signal 6); `teb0` and `control` exited 0. The `tt_0` log has no explicit file-close line, so file closure rests on the logbook end-run response alone.\n- Metrics: skipped \u2014 Grafana/Prometheus not reachable.\n- ConfigDB: skipped \u2014 not reachable. `tt_0` is implicated only by the `AppLane` lookup message, which remains unchecked.\n\nAs instructed, nothing was filed or drafted; the only outside call was a read-only search of existing `daq-diagnostics` issues on `slac-lcls/lcls2`.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "pilot-none-kill-drp",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "Yes \u2014 the run failed. The only detector process (`fakecam_0`) was killed about a second after the run started, the event builder crashed as a result, and run 1 was left unclosed with essentially no data.\n\n## What happened (all on sdfmilan119, 2026-11-08 PST)\n\n| Time | Event |\n|---|---|\n| 04:36:38\u201341 | `control`, `teb0` and `fakecam_0` start. Experiment is `tstx00001`, recording on. |\n| 04:36:46\u201350 | rollcall, alloc, connect and configure all complete cleanly; both clients respond. |\n| 04:36:50 | Run 1 starts in the logbook; the DRP opens `tstx00001-r0001-s000-c000.xtc2` and its `.smd.xtc2`. |\n| 04:36:51.56 | BeginRun, BeginStep and Enable pass through the DRP and TEB; control enters `running`. |\n| 04:36:51 | **`fakecam_0` (PID 2180619) is killed by signal 9**, in the same second as Enable. Its last log line is the normal \"TebRcvr saw Enable\". |\n| 04:36:51 | **`teb0` (PID 2180618) aborts with signal 6**: \"EbLfClient 0 disconnected on far side\", then \"TEB thread lost connection with a DRP\" and an uncaught exception. |\n| 04:36:52\u201304:37:25 | Control stays in `running` for about 34 s, sending slow updates to nobody. It logs nothing about the dead clients. |\n| 04:37:25 | A request to go to `paused` triggers `disable`. |\n| 04:37:31 | After the 6 s timeout: \"fakecam_0 did not respond to disable\", \"teb0 did not respond to disable\", \"disable phase1 failed\", \"disable failed to change state\". |\n| 04:38:41 | Control is stopped with Ctrl-C and exits with status 0. |\n\n## Assessment\n\n- **Root event:** the DRP died from an external SIGKILL. A SIGKILL cannot be logged by the process itself, and there is no error, warning or backtrace before it.\n- **Who sent it is not in these logs.** A manual `kill -9` or the kernel OOM killer are both possible (the DRP had just allocated about 2.2 GB of buffers); host `dmesg`/journal for 04:36:51 would settle it.\n- **The TEB crash is a consequence, not a second fault.** It lost its only contributor and aborted on the uncaught exception. Neither process restarted, because auto-restart is disabled.\n- **The `disable` errors at 04:37:31 are a late symptom.** Both clients had been dead for about 40 s by then.\n- **Data:** run 1 has at most a fraction of a second of events. The xtc2 and smd files were opened but never closed properly, so expect them truncated, with no Disable, EndStep or EndRun. I could not inspect the files from here.\n- **Logbook:** `start_run` and both file registrations succeeded, but there is no `end_run` call in the control log. Run 1 is probably still open in the logbook with two registered files.\n- **Control never left `running`.** The state machine was stuck there from the failed disable until it was interrupted; no endrun, unconfigure or reset was attempted.\n\n## Not problems\n\n- \"Inadequate RTPRIO limit: got 0, require 99\" in both `teb0` and `fakecam_0` is logged at critical level, but both processes carried on and completed every transition after it.\n- \"ami NOT supported in absence of MEB\" is expected, since no MEB was configured.\n- This was a simulated setup (sim PGP device, loopback TCP, local logbook and configdb), so no real detector or timing hardware was involved.\n\n## Follow-up\n\n1. Check `dmesg`/journal on sdfmilan119 around 04:36:51 for an OOM kill, and ask whether anyone or any script sent `kill -9` to PID 2180619.\n2. Treat run 1 of `tstx00001` as bad, and close it in the logbook if it is still open.\n3. Restart `fakecam_0` and `teb0` before the next run, since neither will come back on its own.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "pilot-none-cfg-verify-tt",
+  "case": "reg-cfg-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TriggerDelay"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:12:52"
+   ]
+  },
+  "report": "**Yes \u2014 the session failed at configure and never took data.** The timetool DRP `tt_0` crashed while configuring, which took `teb0` down with it, and control was left stuck in `connected` until it was Ctrl-C'd at 12:14:33.\n\n## What happened\n\n| Time | Event |\n|---|---|\n| 12:12:52 | `control`, `teb0` and `tt_0` start on sdfmilan082. |\n| 12:12:58 \u2013 12:13:01 | Rollcall, alloc and connect all succeed; `tt_0` is in readout group 5 and the TEB\u2194DRP links come up. |\n| 12:13:01.995 | Configure is sent and `teb0` acknowledges within 2 ms. |\n| 12:13:01 \u2013 02 | `tt_0` runs `tt_config`. The Piranha4 camera UART commands all return OK, then the write of `TriggerEventBuffer[0].TriggerDelay` fails. |\n| 12:13:02 | `tt_0` logs `<C> **** python error` and is killed by signal 6. |\n| 12:13:02 | `teb0` sees the link drop, throws an uncaught exception and is also killed by signal 6. |\n| 12:14:02 | Control's 60 s wait expires: `tt_0 did not respond to configure`, `configure failed to change state`. |\n| 12:14:02 \u2013 12:14:32 | A request to go back to `allocated` (disconnect) times out after 30 s because both clients are dead. |\n| 12:14:33 | Control is stopped with a KeyboardInterrupt and exits with status 0. |\n\n## Root cause\n\nThe failure is a register readback mismatch in `tt_0`'s configure, raised from `config_expert` in `tt_config.py`:\n\n```\nVerify error for block ...TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay\nwith address 0x0094900c. Byte: 0. Got: 0xff, Exp: 0x17, Mask: 0xff\nError setting value '19991' to variable ...TriggerDelay\n```\n\n- **What was written:** 19991 (0x4E17), logged as `partitionDelay 0  rawStart 107649  triggerDelay 19991`.\n- **What came back:** 0xff in the low byte instead of 0x17, so the register did not hold the value.\n- **Device:** this was the simulated PGP device (`sim://127.0.0.1:31052`), not a real KCU1500, so the bad readback came from the simulator's register model.\n\nThe logs can't tell me why the register read back 0xff. Only the first mismatching byte is reported, and I have no access to the source or the simulator from here.\n\n## Consequences\n\n- **No data:** the DAQ never reached `configured`, so there was no run and nothing was recorded, even though recording was switched on at 12:12:58.\n- **Both processes stay dead:** `tt_0` and `teb0` were not restarted (`auto restart is disabled`), so they need a manual restart before the next attempt.\n- **Everything after 12:13:02 is fallout:** the `teb0` crash and both control timeouts follow from the `tt_0` abort, not from separate faults.\n\n## Other things in the logs\n\n- **`Inadequate RTPRIO limit: got 0, require 99`** appears as `<C>` at startup in both `teb0` and `tt_0`. Both carried on through connect afterwards, so it did not cause this failure.\n- **`Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]`** appears in `tt_0` before the camera setup. Configuration continued past it; I can't tell from the logs whether it matters.\n- **`partitionDelay 0`** went into the trigger delay calculation. I can't tell whether zero is expected in this simulated setup.\n- **`ami NOT supported in absence of MEB`** is a warning that matches the setup, which has no MEB.\n- **Software in use:** the binaries came from a test release (`TESTRELDIR .../agentify-lcls2/wt-tt/install`, `GIT_DESCRIBE: none`), not a tagged release. If the same configuration worked on a standard release, that build is the first thing to compare.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "pilot-none-healthy-tt",
+  "case": "healthy-tt",
+  "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [
+    "double free",
+    "double-free"
+   ],
+   "sessions": [
+    "09_12:21:27"
+   ],
+   "known_issues": [
+    134
+   ]
+  },
+  "report": "**Verdict:** the one run (run 1, experiment `tstx00001`) completed cleanly, but the `tt_0` DRP process crashed with a double free while shutting down afterwards. The crash came about 6 s after the run had ended, so it should not have affected the data, though the logs alone cannot prove the files are intact.\n\n## What went wrong\n\n- **`tt_0` aborted at shutdown.** On the Ctrl-C at 12:21:48 the DRP logged `Shutting down on INT signal`, then glibc printed `free(): double free detected in tcache 2`, and the process was killed by signal 6 (SIGABRT). `teb0` and `control` received the same Ctrl-C and exited with status 0.\n- **Timing of the crash.** It happened after `endrun` (12:21:42), `unconfigure`, `disconnect`, `dealloc` and `reset` had all been processed, and after the workers, PGP reader and collector threads had exited normally. It is a teardown bug in the DRP exit path, not a data-taking failure.\n- **Likely place to look.** This DRP ran against a simulated device (`sim://127.0.0.1:31052`, `MemPoolSim`) from a test build (`.../agentify-lcls2/wt-tt/install`). The simulated memory-pool or detector teardown is my first suspect, but there is no backtrace in the log to confirm it.\n\n## What went right\n\n- **State machine:** control walked reset \u2192 running \u2192 reset with no rejected or timed-out transitions, and no error messages in the control log.\n- **Transitions:** every transition from Configure through Unconfigure was seen by the DRP and returned by the TEB with matching timestamps.\n- **Recording:** recording was on, and the two files were opened and registered with the logbook; `end_run` succeeded:\n  - `tstx00001-r0001-s000-c000.xtc2`\n  - `smalldata/tstx00001-r0001-s000-c000.smd.xtc2`\n- **Event building:** the TEB dump at disconnect shows no pending events, with the event pool at 1985 allocations and 1985 frees. There are no timeout, damage or missing-contribution messages.\n- **Camera configuration:** every serial command to the Piranha4 was acknowledged `OK`, and its self-test reported `BiST: Good`.\n\n## Minor or benign items\n\n- **`<C> Inadequate RTPRIO limit: got 0, require 99`** appears in both `teb0` and `tt_0`. The processes ran without real-time priority; this had no visible effect here but would matter on a production node.\n- **`<W> ami NOT supported in absence of MEB`** is expected, since no MEB was configured.\n- **`Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]`** appeared during tt configure. Configure carried on and succeeded; I could not check from the logs whether this is expected with the simulated device.\n- **Run-parameter file is `/dev/null`**, so no PV-based run parameters were recorded; only the two default ones went to the logbook.\n\n## Limits of this review\n\n- **Very short run:** it was enabled for about 2 s (12:21:39.41 to 12:21:41.39). From buffer indices and pool counts I estimate about 2000 events at roughly 1 kHz; that is an inference, as there is no explicit event count in the logs.\n- **File integrity not confirmed:** the DRP does not log file closure. The files were opened and `end_run` listed them, but only inspecting the xtc2 files themselves would confirm they are complete.\n- **Only three logs exist** for the window (`control`, `teb0`, `tt_0`, all on `sdfmilan082`). There are no logs from the timing simulator, logbook or configdb stand-ins, so problems confined to those would not show up here.",
+  "expect": "correct",
+  "why": "real agent report from the pilot, read and labelled by hand"
+ },
+ {
+  "id": "adv-second-place",
+  "case": "kill-drp",
+  "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+  "key": {
+   "fault": {
+    "component": [
+     "fakecam_0"
+    ],
+    "transition": [
+     "running",
+     "disable",
+     "enable",
+     "run"
+    ],
+    "mechanism": [
+     "signal 9",
+     "SIGKILL",
+     "killed"
+    ],
+    "summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "08_04:36:38"
+   ]
+  },
+  "report": "## Most Likely Cause\nteb0 hit an internal bug: it threw an uncaught exception and aborted.\nConfidence: medium\n\n## Also Possible\n1. fakecam_0 was killed by signal 9 first and the TEB only reacted to that. Confidence: low\n",
+  "expect": "partial",
+  "why": "true cause listed only as a low-confidence alternative"
+ },
+ {
+  "id": "adv-wrong-launch",
+  "case": "day-window-utc",
+  "question": "A monitoring alert says the DAQ failed to configure at about 2026-11-09 20:24 UTC. What happened?",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+   },
+   "expect_skills": [
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:22:37"
+   ],
+   "decoy_sessions": [
+    "09_20:23",
+    "09_20:24",
+    "09_20:2"
+   ]
+  },
+  "report": "The alert matches the launch that started at 20:23:10 PST. In that launch tt_0 failed a register verify on TriggerDelay during configure.",
+  "expect": "wrong",
+  "why": "right mechanism, but the launch at the same clock time in local time, not UTC"
+ },
+ {
+  "id": "adv-utc-right",
+  "case": "day-window-utc",
+  "question": "A monitoring alert says the DAQ failed to configure at about 2026-11-09 20:24 UTC. What happened?",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back"
+    ],
+    "summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+   },
+   "expect_skills": [
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_12:22:37"
+   ],
+   "decoy_sessions": [
+    "09_20:23",
+    "09_20:24",
+    "09_20:2"
+   ]
+  },
+  "report": "20:24 UTC is 12:24 PST. The launch 09_12:22:37 failed at configure: tt_0 aborted after a Verify error on the TriggerDelay register (got 0xff, expected 0x17), so control timed out at 12:23:47.",
+  "expect": "correct",
+  "why": "right launch after UTC conversion"
+ },
+ {
+  "id": "adv-count-all",
+  "case": "day-count",
+  "question": "On 2026-11-09 between 11:50 and 13:10, which DAQ launches failed, and why did each one fail? List every failed launch.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure",
+     "alloc"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TypeError",
+     "unexpected keyword",
+     "illegal"
+    ],
+    "summary": "9 launches failed, all on tt_0: four register write-verify failures on TriggerDelay during Configure, three startup crashes (TypeError, unexpected keyword argument 'size') that made Alloc fail with 'at least one DRP is required', one abort on an illegal XtcData::Name during Configure, and one Configure that hung with no error"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_11:58:38",
+    "09_12:06:35",
+    "09_12:12:52",
+    "09_12:15:15",
+    "09_12:22:37",
+    "09_12:24:58",
+    "09_12:49:29",
+    "09_12:55:54",
+    "09_13:06:52"
+   ],
+   "count": 9,
+   "launches": [
+    {
+     "prefix": "09_11:58:38",
+     "cause": "tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence"
+    },
+    {
+     "prefix": "09_12:06:35",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:12:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:15:15",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:22:37",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:24:58",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:49:29",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:55:54",
+     "cause": "tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)"
+    },
+    {
+     "prefix": "09_13:06:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    }
+   ]
+  },
+  "report": "Nine launches failed in the window:\n- 09_11:58:38: tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence\n- 09_12:06:35: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')\n- 09_12:12:52: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')\n- 09_12:15:15: tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed\n- 09_12:22:37: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')\n- 09_12:24:58: tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed\n- 09_12:49:29: tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed\n- 09_12:55:54: tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)\n- 09_13:06:52: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')",
+  "expect": "correct",
+  "why": "all launches with causes"
+ },
+ {
+  "id": "adv-count-half",
+  "case": "day-count",
+  "question": "On 2026-11-09 between 11:50 and 13:10, which DAQ launches failed, and why did each one fail? List every failed launch.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure",
+     "alloc"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TypeError",
+     "unexpected keyword",
+     "illegal"
+    ],
+    "summary": "9 launches failed, all on tt_0: four register write-verify failures on TriggerDelay during Configure, three startup crashes (TypeError, unexpected keyword argument 'size') that made Alloc fail with 'at least one DRP is required', one abort on an illegal XtcData::Name during Configure, and one Configure that hung with no error"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_11:58:38",
+    "09_12:06:35",
+    "09_12:12:52",
+    "09_12:15:15",
+    "09_12:22:37",
+    "09_12:24:58",
+    "09_12:49:29",
+    "09_12:55:54",
+    "09_13:06:52"
+   ],
+   "count": 9,
+   "launches": [
+    {
+     "prefix": "09_11:58:38",
+     "cause": "tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence"
+    },
+    {
+     "prefix": "09_12:06:35",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:12:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:15:15",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:22:37",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:24:58",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:49:29",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:55:54",
+     "cause": "tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)"
+    },
+    {
+     "prefix": "09_13:06:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    }
+   ]
+  },
+  "report": "Five launches failed in the window:\n- 09_11:58:38: tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence\n- 09_12:06:35: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')\n- 09_12:12:52: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')\n- 09_12:15:15: tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed\n- 09_12:22:37: tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')",
+  "expect": "partial",
+  "why": "five of nine"
+ },
+ {
+  "id": "adv-count-one",
+  "case": "day-count",
+  "question": "On 2026-11-09 between 11:50 and 13:10, which DAQ launches failed, and why did each one fail? List every failed launch.",
+  "key": {
+   "fault": {
+    "component": [
+     "tt_0"
+    ],
+    "transition": [
+     "configure",
+     "alloc"
+    ],
+    "mechanism": [
+     "Verify error",
+     "verify",
+     "verification",
+     "readback",
+     "read back",
+     "read-back",
+     "TypeError",
+     "unexpected keyword",
+     "illegal"
+    ],
+    "summary": "9 launches failed, all on tt_0: four register write-verify failures on TriggerDelay during Configure, three startup crashes (TypeError, unexpected keyword argument 'size') that made Alloc fail with 'at least one DRP is required', one abort on an illegal XtcData::Name during Configure, and one Configure that hung with no error"
+   },
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": [
+    "09_11:58:38",
+    "09_12:06:35",
+    "09_12:12:52",
+    "09_12:15:15",
+    "09_12:22:37",
+    "09_12:24:58",
+    "09_12:49:29",
+    "09_12:55:54",
+    "09_13:06:52"
+   ],
+   "count": 9,
+   "launches": [
+    {
+     "prefix": "09_11:58:38",
+     "cause": "tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence"
+    },
+    {
+     "prefix": "09_12:06:35",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:12:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:15:15",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:22:37",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:24:58",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:49:29",
+     "cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:55:54",
+     "cause": "tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)"
+    },
+    {
+     "prefix": "09_13:06:52",
+     "cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    }
+   ]
+  },
+  "report": "One launch failed, 09_12:12:52: tt_0 register verify error at configure. The others look fine.",
+  "expect": "wrong",
+  "why": "one of nine"
+ },
+ {
+  "id": "adv-healthy-window-alarm",
+  "case": "day-healthy-window",
+  "question": "On 2026-11-09 between 16:00 and 16:30, did anything go wrong with the DAQ? Give a full assessment.",
+  "key": {
+   "fault": null,
+   "expect_skills": [
+    "psana-daq",
+    "psana-daq-control",
+    "psana-daq-logs"
+   ],
+   "forbid_skills": [
+    "psana-daq-history"
+   ],
+   "independent": [],
+   "sessions": []
+  },
+  "report": "Yes. At 12:13 tt_0 failed configure with a register verify error, and at 15:05 pvcam_0 failed configure. The DAQ was broken that day.",
+  "expect": "false-alarm",
+  "why": "reports failures from outside the asked window"
+ }
+]
