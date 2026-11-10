@@ -103,16 +103,25 @@ class PVCtrls(threading.Thread):
             self.app.Enable.set(1)
 
 
-def hps_init(name, ipAddr, pktSize):
+def destSel(ch, value):
+    """Set an EvrV2ChannelReg's destination selection, 19 bits from bit 13 in the tree's LclsTimingCore copy (gone
+    since 04ac138c5); lcls-timing-core names its top bits DestType (DestSel 16 bits): the same register bits."""
+    if hasattr(ch, 'DestType'):
+        ch.DestSel.set(value & 0xffff)
+        ch.DestType.set((value >> 16) & 0x3)
+    else:
+        ch.DestSel.set(value)
+
+def hps_init(name, ipAddr, pktSize, port=8193):
     global pv
     global bldName
 
     bldName = name
 
     myargs = { 'ipAddr'      : ipAddr,
+               'port'        : port,
                'pollEn'      : False,
-               'initRead'    : True,
-               'serverPort'  : None }
+               'initRead'    : True }   # no serverPort: pyrogue 6's Root has none (a Root serves only the interfaces added to it)
 
     root = HpsRoot(**myargs)
     root.__enter__()
@@ -152,13 +161,13 @@ def hps_init(name, ipAddr, pktSize):
     bsas.channelSevr.set(0x3fffffffffffffff)
     bsas.acquire.RateSel.set(0)
     #bsas.acquire.DestSel.set(0x20000)
-    bsas.acquire.DestSel.set(0x0000)
+    destSel(bsas.acquire, 0x0000)
     bsas.acquire.EnableReg.set(1)
     bsas.rowAdvance.RateSel.set(2)
-    bsas.rowAdvance.DestSel.set(0x20000)
+    destSel(bsas.rowAdvance, 0x20000)
     bsas.rowAdvance.EnableReg.set(1)
     bsas.tableReset.RateSel.set(3)
-    bsas.tableReset.DestSel.set(0x20000)
+    destSel(bsas.tableReset, 0x20000)
     bsas.tableReset.EnableReg.set(1)
     bsas.Enable.set(1)
 

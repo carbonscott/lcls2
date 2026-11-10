@@ -11,6 +11,7 @@ import yaml
 import time
 import sys
 import argparse
+import inspect
 import wave8 as w8
 #from AdmPcieKu3Pgp2b import *
 import pyrogue.utilities.prbs
@@ -62,8 +63,21 @@ parser.add_argument(
 # Get the arguments
 args = parser.parse_args()
 
+# A simulated device ('sim://...', psdaq/psdaq/sim): rogue's hardware transports become psdaq.sim.rogue_dev's, in process
+if args.dev.startswith('sim://'):
+    from psdaq.sim import rogue_dev
+    rogue_dev.install(args.dev, det_type='wave8pvs')
+
+# Since rogue 5 a Root takes pollEn, initRead and timeout when it is made, and its start() takes nothing;
+# wave8 1.0.1's Top has no dataCapture (it always opens its data lanes)
+rootArgs = dict(pollEn=False, initRead=True, timeout=5.0)
+startArgs = len(inspect.signature(pyrogue.Root.start).parameters) > 1
+topArgs = dict(hwType='datadev', dev=args.dev, lane=args.l, hvBay0En=args.hvBay0En, hvBay1En=args.hvBay1En)
+if 'dataCapture' in inspect.signature(w8.Top.__init__).parameters:
+    topArgs['dataCapture'] = False
+
 # Set base
-Wave8Board = w8.Top(hwType='datadev', dev=args.dev, lane=args.l, hvBay0En=args.hvBay0En, hvBay1En=args.hvBay1En, dataCapture=False)
+Wave8Board = w8.Top(**topArgs, **({} if startArgs else rootArgs))
 
 # Add problematic registers to a special group
 noPVA = [Wave8Board.AxiVersion.GitHash._groups]
@@ -110,12 +124,10 @@ epics = pyrogue.protocols.epicsV4.EpicsPvServer(base=args.base,root=Wave8Board,i
 def main():
 
     # Start the system
-    Wave8Board.start(
-#        pollEn   = True,
-        pollEn   = False,
-        initRead = True,
-        timeout  = 5.0,    
-    )
+    if startArgs:
+        Wave8Board.start(**rootArgs)
+    else:
+        Wave8Board.start()
 
     # Enable components for PVA
     Wave8Board.BatcherEventBuilder.enable.set(True)

@@ -54,6 +54,7 @@ namespace Pds {
       int               _fdsh;
       Pds::Tpr::Queues* _queues;
       unsigned          _rp;
+      bool              _sim;   // a simulated card (PSDAQ_SIM_TPR, Client.cc): its queue file is polled
     };
   };
 };

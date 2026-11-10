@@ -93,7 +93,10 @@ import time
 
 import rogue
 import rogue.hardware.axi
-import rogue.protocols.xilinx
+try:
+    import rogue.protocols.xilinx as _xilinx
+except ImportError:             # rogue 5.9.3 (wave8pvs's site env, R6b) has no Xvc, so none to replace
+    _xilinx = None
 import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
@@ -336,7 +339,7 @@ class SimStreamDma(ris.Master, ris.Slave):
                 continue
             if resp is not None:
                 frame = self._reqFrame(len(resp), True)
-                frame.write(resp, 0)
+                frame.write(bytearray(resp), 0)     # a bytearray: rogue 5.9 takes no bytes
                 self._sendFrame(frame)
 
     def _srpv3(self, ba):
@@ -935,8 +938,9 @@ def install(dev, det_type=None, seeds=None, fault=None, epics_prefix=None, proc=
     # Some firmware roots (high_rate_encoder_dev) serve Xilinx's XVC debug protocol on a TCP port
     # of all interfaces, for a JTAG cable behind the card; the simulated device has none, so its
     # Xvc is a stream endpoint that drops what it gets and opens no socket.
-    _SIM._orig_xvc = rogue.protocols.xilinx.Xvc
-    rogue.protocols.xilinx.Xvc = SimXvc
+    if _xilinx is not None:
+        _SIM._orig_xvc = _xilinx.Xvc
+        _xilinx.Xvc = SimXvc
 
     # Firmware roots open a ZMQ server on a fixed port on all interfaces; a
     # simulated one stays on loopback and takes a free port.
@@ -966,7 +970,7 @@ def uninstall():
         import epics
         epics.PV = _SIM._orig_pv
     if getattr(_SIM, '_orig_xvc', None):
-        rogue.protocols.xilinx.Xvc = _SIM._orig_xvc
+        _xilinx.Xvc = _SIM._orig_xvc
     if getattr(_SIM, '_orig_open', None):
         builtins.open = _SIM._orig_open
     if getattr(_SIM, '_orig_yaml', None):

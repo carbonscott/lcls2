@@ -38,6 +38,8 @@ void usage(const char* p) {
     printf("Options: -a <ip address, dotted notation> (HPS interface)\n");
     printf("         -i <ip_address, dotted notation> ( MC interface)\n");
     printf("         -p <words> (max packet size)\n");
+    printf("         -r <port> (HPS register (RSSI) port, default 8193)\n");
+    printf("         -d <port> (HPS diagnostic bus port, default 8198)\n");
 }
 
 using namespace Bld;
@@ -162,11 +164,12 @@ int main(int argc, char* argv[])
     const char* hpsip_s = 0;
     unsigned hpsip = 0;
     unsigned bldip = 0;
-    unsigned short port = 8198;
+    unsigned short port = 8198;     // the HPS diagnostic bus (-d)
+    unsigned rport = 8193;          // the HPS register link, RSSI (-r)
     unsigned psize(0x3c0);
     const char* bldname = 0; // "DAQ:LAB2:BLD:HPSEXAMPLE";
 
-    while ( (c=getopt( argc, argv, "a:i:p:n:")) != EOF ) {
+    while ( (c=getopt( argc, argv, "a:i:p:n:r:d:")) != EOF ) {
         switch(c) {
         case 'a':
             hpsip = Psdaq::AppUtils::parse_interface(hpsip_s=optarg);
@@ -179,6 +182,12 @@ int main(int argc, char* argv[])
             break;
         case 'n':
             bldname = optarg;
+            break;
+        case 'r':
+            rport = strtoul(optarg,NULL,0);
+            break;
+        case 'd':
+            port = strtoul(optarg,NULL,0);
             break;
         default:
             usage(argv[0]);
@@ -270,7 +279,7 @@ int main(int argc, char* argv[])
 
         //  Get a handle to the rogue control
         // returns new reference
-        dev = _check(PyObject_CallFunction(pFunc,"ssI",bldname,hpsip_s,psize));
+        dev = _check(PyObject_CallFunction(pFunc,"ssII",bldname,hpsip_s,psize,rport));
     }
 
     // "connect" to the sending socket

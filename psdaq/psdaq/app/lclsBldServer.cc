@@ -23,7 +23,8 @@ static void usage(const char* p) {
   printf("Usage: %s [options]\n",p);
   printf("          -d <dev>       : <tpr a/b>    [default: a]\n");
   printf("          -b <type>      : BLD type     [default: ebeam]\n");
-  printf("          -a <addr>      : MC address   [default: 0xefff1801]\n");
+  printf("          -a <addr>      : MC group base [default: 0xefff1900; the type adds 0-3]\n");
+  printf("          -p <port>      : MC port      [default: 12148]\n");
   printf("          -i <addr/name> : MC interface [no default] \n");
   printf("          -r <rate>      : update rate  [default: 5 = 10Hz]\n");
   printf("          -e <eventcode> : update evcode\n");
@@ -41,11 +42,33 @@ int main(int argc, char** argv) {
   unsigned rate = 5;
   int      evcode = -1;
   bool     lverbose = false;
+  //  The BLD types' multicast groups are <base>+0..3 (ebeam, pcav, gmd, xgmd) on <port>: by default the
+  //  production groups 239.255.25.0-3, port 12148; -a and -p choose others (e.g. a group off the
+  //  production network, as psdaq/psdaq/sim does on the loopback interface)
+  unsigned mcbase = 0xefff1900;
+  unsigned short port = 12148;
 
   //char* endptr;
 
-  while ( (c=getopt( argc, argv, "d:b:e:i:r:vh?")) != EOF ) {
+  while ( (c=getopt( argc, argv, "a:d:b:e:i:p:r:vh?")) != EOF ) {
     switch(c) {
+    case 'a':
+      mcbase = Psdaq::AppUtils::parse_ip(optarg);
+      if (!mcbase) {
+        printf("%s: option `-a' parsing error\n", argv[0]);
+        lUsage = true;
+      }
+      break;
+    case 'p':
+      { char* end;
+        unsigned long v = strtoul(optarg,&end,0);
+        if (*end || v == 0 || v > 0xffff) {
+          printf("%s: option `-p' parsing error\n", argv[0]);
+          lUsage = true;
+        }
+        else
+          port = v; }
+      break;
     case 'b':
       bldType = optarg;
       break;
@@ -89,32 +112,31 @@ int main(int argc, char** argv) {
   }
 
   unsigned mcaddr = 0;
-  unsigned short port = 12148;
   unsigned payloadWords = 0;
   unsigned typeId = 0, bldInfo = 0;
 
   if (!bldType)
     lUsage = true;
   else if (strcmp(bldType,"ebeam")==0) {
-    mcaddr       = 0xefff1900;
+    mcaddr       = mcbase + 0;
     typeId       = (7<<16) | 15; // typeid = EBeam v7
     bldInfo      = 0;
     payloadWords = 41;
   }
   else if (strcmp(bldType,"pcav")==0) {
-    mcaddr       = 0xefff1901;
+    mcaddr       = mcbase + 1;
     typeId       = (0<<16) | 17; // typeid = PhaseCavity v0
     bldInfo      = 1;
     payloadWords = 8;
   }
   else if (strcmp(bldType,"gmd")==0) {
-    mcaddr       = 0xefff1902;
+    mcaddr       = mcbase + 2;
     typeId       = (2<<16) | 64; // typeid = GMD v2
     bldInfo      = 2;
     payloadWords = 12;
   }
   else if (strcmp(bldType,"xgmd")==0) {
-    mcaddr       = 0xefff1903;
+    mcaddr       = mcbase + 3;
     typeId       = (0<<16) | 64; // typeid = XGMD v0
     bldInfo      = 3;
     payloadWords = 12;

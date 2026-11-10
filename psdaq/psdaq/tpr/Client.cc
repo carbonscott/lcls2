@@ -17,8 +17,13 @@ using namespace Pds::Tpr;
 //  channel's message queues are regular files in <dir> named after the device files
 //  (<dir>/tpra, <dir>/tpra<channel>), created zero-filled and mapped as the driver's device
 //  files are.  The registers keep what is written (no firmware acts on them), so another
-//  process can read what was programmed; no timing frame reaches the queues.  Without
-//  PSDAQ_SIM_TPR the device files are opened, as before.
+//  process can read what was programmed.  A timing frame reaches a channel's queue file only
+//  when another process writes it there as the driver would (psdaq.sim.tprframes: the frames
+//  of the rate the channel selects); reading the file never blocks as the device does, so
+//  advance() polls it every SIM_POLL_US instead.  Without PSDAQ_SIM_TPR the device files are
+//  opened, as before.
+static const unsigned SIM_POLL_US = 1000;
+
 static std::string _simPath(const char* devname)
 {
   const char* dir = getenv("PSDAQ_SIM_TPR");
@@ -45,7 +50,8 @@ Client::Client(const char* devname,
                ModeSel     modsel) :
   _channel(channel),
   _dev    (nullptr),
-  _queues (nullptr)
+  _queues (nullptr),
+  _sim    (!_simPath(devname).empty())
 {
   _fd = _open(devname, _simPath(devname), sizeof(Pds::Tpr::TprReg));
   if (_fd<0) {
@@ -225,7 +231,8 @@ const Pds::Tpr::Frame* Client::advance(uint64_t pulseId)
       _rp++;
       if (f->pulseId == pulseId) return f;
     }
-    if (read(_fdsh, buff, 32)) {}
+    if (_sim)  usleep(SIM_POLL_US);     // a simulated card's queue file: poll it
+    else if (read(_fdsh, buff, 32)) {}
   }
   return 0;
 }
@@ -241,7 +248,8 @@ const Pds::Tpr::Frame* Client::advance()
       _rp++;
       return f;
     }
-    if (read(_fdsh, buff, 32)) {}
+    if (_sim)  usleep(SIM_POLL_US);     // a simulated card's queue file: poll it
+    else if (read(_fdsh, buff, 32)) {}
   }
   return 0;
 }

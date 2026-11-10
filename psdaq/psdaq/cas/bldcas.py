@@ -27,6 +27,7 @@ def main():
     parser.add_argument('services', metavar='S', type=str, nargs='+', help='BLD services')
     parser.add_argument('-P', required=True, help='DAQ:SIM', metavar='PREFIX')
     parser.add_argument('-A', type=str, help='MC start address', metavar='ADDR', default='239.255.128.1')
+    parser.add_argument('--port', type=int, help='MC port of every service', metavar='PORT', default=11001)
     parser.add_argument('-v', '--verbose', action='store_true', help='be verbose')
 
     args = parser.parse_args()
@@ -49,7 +50,7 @@ def main():
 
     for i,v in enumerate(args.services):
         pvdb[v+':ADDR'   ] = {'type'  : 'int', 'value' : addr+i}
-        pvdb[v+':PORT'   ] = {'type'  : 'int', 'value' : 11001}
+        pvdb[v+':PORT'   ] = {'type'  : 'int', 'value' : args.port}
 
     # printDb(pvdb, prefix)
     printDb()

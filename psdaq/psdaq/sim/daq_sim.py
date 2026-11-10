@@ -78,7 +78,11 @@ Ports for platform p (block 31000 + 10 p; p = 5 gives 31050-31059):
   +4 simsls control (TCP) and trigger input (UDP), +5 simsls stop (TCP), +6 the jungfrau
      module's data destination (UDP; the config's user.port), with --det jungfrau
   +7 the calibration constants stand-in (calibws_server), with --drp drp_gpu --det epixuhr3x2
-UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>).
+UDP: 31200 + p drp_udpencoder (--udp), 31220 + p BLD multicast (--bld, group 239.254.31.<p>),
+31240 + p lclsBldServer's BLD multicast (--tpr, group 239.254.33.0, gui_witness.BLD_GROUP_BASE).
+--hps (31400 + 10 p): +0 simhps's register port (RSSI, every interface), +1 its diagnostic bus (127.0.0.1), +2 the
+BLD multicast of hpsBldServer and hpsBldCopy (groups 239.254.34.0, .1), +3 bldcas's PVA server, +4 the PVA search
+port bldcas and hpsBldServer share, +5 hpsBldServer's PVA server; +6, +7 wave8pvs's PVA server (--wave8pvs).
 Ports the DAQ fixes itself: control ZMQ 29980 + p + 0,10,...,60; procServ 29000 + 100 p + 2..;
 control -X / simxpm PULL 29980 + 70 + xpm; Prometheus exporters 9200-9299 (with -M);
 EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
@@ -260,13 +264,16 @@ def ports(platform):
             'sls': base + 4, 'sls_stop': base + 5, 'sls_data': base + 6, 'calibws': base + 7,
             'ami': 31100 + 10 * platform, 'ami_prom': 31180 + 2 * platform,
             'udp': 31200 + platform, 'ami_pvas': (31210 + 2 * platform, 31211 + 2 * platform),
-            'bld': 31220 + platform,
+            'bld': 31220 + platform, 'lclsbld': 31240 + platform,
             'ami_shot_pvas': (31230 + 2 * platform, 31231 + 2 * platform),
             'pvservers': {'simhsd': (31300 + 10 * platform, 31301 + 10 * platform),
                           'simtpr': (31302 + 10 * platform, 31303 + 10 * platform),
                           'simdti': (31304 + 10 * platform, 31305 + 10 * platform),
                           'bldcas': (31306 + 10 * platform, 31307 + 10 * platform),
-                          'hpsdbuscas': (31308 + 10 * platform, 31309 + 10 * platform)}}
+                          'hpsdbuscas': (31308 + 10 * platform, 31309 + 10 * platform)},
+            'hps': {'reg': 31400 + 10 * platform, 'diag': 31401 + 10 * platform, 'bld': 31402 + 10 * platform,
+                    'bldcas': 31403 + 10 * platform, 'search': 31404 + 10 * platform, 'svc': 31405 + 10 * platform},
+            'wave8pvs': (31406 + 10 * platform, 31407 + 10 * platform)}
 
 
 def bld_group(platform):
@@ -471,7 +478,8 @@ def procs(state):
         (GUI_PROCS if state.get('gui') else ()) + (UDP_PROCS if state.get('udp') else ()) + \
         tuple(a['alias'] for a in state.get('also', ())) + (BLD_PROCS if state.get('bld') else ()) + \
         (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ()) + \
-        (PVSERVER_PROCS if state.get('pvservers') else ()) + (TPR_PROCS if state.get('tpr') else ())
+        (PVSERVER_PROCS if state.get('pvservers') else ()) + (TPR_PROCS if state.get('tpr') else ()) + \
+        (HPS_PROCS if state.get('hps') else ()) + (WAVE8PVS_PROCS if state.get('wave8pvs') else ())
 
 
 def procmgr_status(state):
@@ -602,11 +610,30 @@ PVSERVER_PROCS = ('bldcas', 'hpsdbuscas')
 PVSERVER = ''' {{ id:'{id}', flags:'s', env:'EPICS_PVAS_SERVER_PORT={srv} EPICS_PVAS_BROADCAST_PORT={bcast}',
    cmd:'{id} {args}' }},
 '''
-# --tpr: the TPR programs of the configs (gui_witness.TPR_PROGRAMS: tprtrig, tpr_trigger) on simulated TPR cards, one
-# each: tpr::Client maps <workdir>/tpr/<id>/tpra, a file, instead of /dev/tpra (PSDAQ_SIM_TPR, psdaq/psdaq/tpr/Client.cc)
-TPR_PROCS = ('tprtrig', 'enc_trig')    # the procmgr ids of gui_witness.TPR_PROGRAMS
+# --tpr: the TPR programs of the configs (gui_witness.TPR_PROGRAMS: tprtrig, tpr_trigger, lclsBldServer) on simulated
+# TPR cards, one each: tpr::Client maps <workdir>/tpr/<id>/tpra, a file, instead of /dev/tpra (PSDAQ_SIM_TPR,
+# psdaq/psdaq/tpr/Client.cc); 'up' also starts tprframes (psdaq.sim.tprframes), which delivers the timing frames of
+# the BLD server's card (TPR_FRAME_PROCS), as the card's driver would
+TPR_PROCS = ('tprtrig', 'enc_trig', 'lclsbldsvc')    # the procmgr ids of gui_witness.TPR_PROGRAMS
+TPR_FRAME_PROCS = ('lclsbldsvc',)       # the cards tprframes delivers frames to (the programs that read frames)
 TPR_ENTRY = ''' {{ id:'{id}', flags:'{flags}', env:'PSDAQ_SIM_TPR={card}',
    cmd:'{cmd}' }},
+'''
+# --hps: the HPS BLD chain of lab3-bld.cnf (gui_witness.HPS_PROGRAMS: bldcas, hpsBldServer, hpsBldCopy) under procmgr,
+# hpsBldServer's crate the stand-in psdaq.sim.simhps that 'up' starts (a service, as tprframes)
+HPS_PROCS = ('hpsbldcas', 'hpsbldsvc', 'hpsbldcpa')    # the procmgr ids of gui_witness.HPS_PROGRAMS
+HPS_ENTRY = ''' {{ id:'{id}', flags:'s', env:'{env}',
+   cmd:'{cmd}' }},
+'''
+# --wave8pvs (R6b): wave8pvs (lab3-wave8.cnf: wave8pvs --l 0) under procmgr in a site conda env of its own, the one
+# $PSDAQ_SIM_WAVE8PVS_ENV names (its python, PATH, LD_LIBRARY_PATH and PYTHONPATH in the entry's env), with the wave8
+# package's python from the source tarball $PSDAQ_SIM_WAVE8PVS_SRC unpacked under <workdir>/wave8pvs; its board is
+# psdaq.sim.rogue_dev's in process (--dev sim://wave8pvs), its PVs on PVA ports of its own
+WAVE8PVS_PROCS = ('wave8pvs',)
+WAVE8PVS_ENV, WAVE8PVS_SRC = 'PSDAQ_SIM_WAVE8PVS_ENV', 'PSDAQ_SIM_WAVE8PVS_SRC'
+WAVE8PVS_BASE = f'{PVBASE}:WAVE8'
+WAVE8PVS = ''' {{ id:'wave8pvs', flags:'s', env:'{env}',
+   cmd:'{python} -m psdaq.cas.wave8pvs --l 0 --dev sim://wave8pvs --base {base}' }},
 '''
 GUI = ''' {{ id:'control_gui', flags:'sp', env:'QT_QPA_PLATFORM=offscreen',
    cmd:'control_gui -H localhost -l DEBUG -e {expname} -u {cfguri}' }},
@@ -681,8 +708,9 @@ def two_host_cnf(two, args, cfg_url, extra_also, segments, common, work):
 
 
 def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva=False, epics=False,
-                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False, tpr=False):
-    """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui, --tpr and --ami
+                  gui=False, udp=False, also=(), bld=False, seed=0x1234, length=64, pvservers=False, tpr=False,
+                  hps=False, wave8pvs=None):
+    """The procmgr entries of --also, --pva, --epics, --meb, --udp, --bld, --gui, --tpr, --hps, --wave8pvs and --ami
     (ami_bin: where the ami-* programs are); with --gui and --pvservers also the GUIs on the
     device stand-ins (R4)."""
     P = ports(platform)
@@ -723,7 +751,16 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
         from psdaq.sim import gui_witness
         for name, T in gui_witness.TPR_PROGRAMS.items():
             out += TPR_ENTRY.format(id=T['id'], flags=T['flags'], card=os.path.join(workdir, 'tpr', T['id']),
-                                    cmd=' '.join([name] + gui_witness.tpr_argv(name, INSTRUMENT)))
+                                    cmd=' '.join([name] + gui_witness.tpr_argv(name, INSTRUMENT,
+                                                                                bld_port=P['lclsbld'])))
+    if hps:
+        from psdaq.sim import gui_witness
+        for name, H in gui_witness.HPS_PROGRAMS.items():
+            out += HPS_ENTRY.format(id=H['id'], env=' '.join(f'{k}={v}' for k, v in gui_witness.hps_env(
+                name, P['hps']).items()), cmd=' '.join([name] + gui_witness.hps_argv(name, PVBASE, P['hps'])))
+    if wave8pvs:                        # wave8pvs_prepare()'s result
+        out += WAVE8PVS.format(python=wave8pvs['python'], base=WAVE8PVS_BASE, env=' '.join(
+            f'{k}={v}' for k, v in wave8pvs_env(wave8pvs, workdir, P['wave8pvs']).items()))
     if pvservers:
         from psdaq.sim import gui_witness
         for g in PVSERVER_PROCS:
@@ -734,6 +771,47 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
                  f'--hutch {INSTRUMENT}_sim{platform}')
         out += AMI.format(bin=ami_bin, abase=P['ami'], aopts=aopts, heartbeat=AMI_HEARTBEAT_MS,
                           tag=common['tag'], pvas=AMI_CLIENT_PVAS.format(*P['ami_pvas']))
+    return out
+
+
+def wave8pvs_prepare(workdir):
+    """--wave8pvs: unpack the wave8 package's python and its submodules' from $PSDAQ_SIM_WAVE8PVS_SRC under
+    <workdir>/wave8pvs/src and link this psdaq package under <workdir>/wave8pvs/py, for the conda env
+    $PSDAQ_SIM_WAVE8PVS_ENV: {'env', 'python', 'paths' (its PYTHONPATH), 'src'}."""
+    import tarfile
+    env, src = os.environ.get(WAVE8PVS_ENV), os.environ.get(WAVE8PVS_SRC)
+    if not (env and src):
+        raise Fail(f'--wave8pvs needs {WAVE8PVS_ENV} (a conda env whose rogue has rogue.hardware.pgp) and '
+                   f'{WAVE8PVS_SRC} (the wave8 source tarball): RUNBOOK 3d')
+    python = os.path.join(env, 'bin', 'python')
+    if not (os.access(python, os.X_OK) and os.path.isfile(src)):
+        raise Fail(f'--wave8pvs: no {python} or no {src}')
+    top = os.path.join(workdir, 'wave8pvs')
+    dst = os.path.join(top, 'src')
+    want = re.compile(r'^[^/]+/firmware/(python|submodules/[^/]+/python)/')
+    with tarfile.open(src) as t:
+        members = [m for m in t.getmembers() if want.match(m.name) and (m.isfile() or m.isdir())
+                   and '..' not in m.name.split('/')]
+        t.extractall(dst, members=members)
+    paths = sorted({os.path.join(dst, want.match(m.name).group(0).rstrip('/')) for m in members},
+                   key=lambda d: ('submodules' in d, d))      # the package's own python first
+    py = os.path.join(top, 'py')
+    os.makedirs(py, exist_ok=True)
+    if not os.path.lexists(os.path.join(py, 'psdaq')):
+        os.symlink(os.path.dirname(SIMDIR), os.path.join(py, 'psdaq'))
+    return {'env': env, 'python': python, 'paths': paths + [py], 'src': src}
+
+
+def wave8pvs_env(w, workdir, ports):
+    """The environment wave8pvs's procmgr entry gives it: its conda env's PATH and libraries, the unpacked package
+    and this psdaq, its own PVA ports, its simulated board's write log."""
+    lib = [d for d in (os.path.join(w['env'], 'epics', 'lib', 'linux-x86_64'),
+                       os.path.join(w['env'], 'pcas', 'lib', 'linux-x86_64')) if os.path.isdir(d)]
+    out = {'PATH': f'{w["env"]}/bin:/usr/bin:/bin', 'PYTHONPATH': ':'.join(w['paths']),
+           'EPICS_PVAS_SERVER_PORT': ports[0], 'EPICS_PVAS_BROADCAST_PORT': ports[1],
+           'PSDAQ_SIM_ROGUE_LOG': os.path.join(workdir, 'logs', 'wave8pvs-writes.jsonl')}
+    if lib:
+        out['LD_LIBRARY_PATH'] = ':'.join(lib)
     return out
 
 
@@ -868,6 +946,8 @@ def cmd_up(args):
     bld = getattr(args, 'bld', False)
     pvservers = getattr(args, 'pvservers', False)
     tpr = getattr(args, 'tpr', False)
+    hps = getattr(args, 'hps', False)
+    w8 = getattr(args, 'wave8pvs', False)
     also = parse_also(getattr(args, 'also', None) or [], args.platform)
     fixed = parse_fixed_rates(getattr(args, 'fixed_rate', None) or [])
     two = None
@@ -914,6 +994,12 @@ def cmd_up(args):
     if bld and udp_busy(P['bld']):
         raise Fail(f'UDP port {P["bld"]} already in use')
     want += [P[k] for k in sim_type.get('ports', ())]     # the type's stand-ins' TCP ports
+    if hps and any(udp_busy(P['hps'][k]) for k in ('reg', 'diag', 'bld', 'search')):
+        raise Fail(f'a UDP port of --hps ({P["hps"]}) already in use')
+    if hps:
+        want += [P['hps']['bldcas'], P['hps']['svc']]
+    if w8:
+        want.append(P['wave8pvs'][0])
     busy = [p for p in want if port_busy(p)]
     if sim_type.get('sls'):
         busy += [f'{p}/udp' for p in (P['sls'], P['sls_data']) if udp_busy(p)]
@@ -948,7 +1034,7 @@ def cmd_up(args):
              'segments': segments, 'det': DETECTOR, 'drp': DRP, 'meb': meb, 'ami': ami, 'ami_src': amisrc,
              'pva': pva, 'epics': epics, 'gui': gui, 'udp': udp,
              'also': also, 'fixed_rates': fixed, 'bld': bld, 'pvservers': pvservers,
-             'tpr': tpr, 'two': two,
+             'tpr': tpr, 'hps': hps, 'wave8pvs': w8, 'two': two,
              'remote': ({f'{DETECTOR}_{i}': two['hosts'][1] for i in range(1, segments)} |
                         {x['alias']: two['hosts'][1] for x in also}) if two else {},
              'det_env': {k: os.environ.get(k) for k in sim_type.get('inherit', ())}}
@@ -1117,10 +1203,30 @@ def cmd_up(args):
             say(f'AMI from {amisrc or bindir}: ports {P["ami"]}-{P["ami"] + 9} on 127.0.0.1, '
                 f'worker reads psana://shmem={meb_tag(args.platform)}')
         if tpr:                         # each TPR program's simulated card (tpr::Client, PSDAQ_SIM_TPR)
+            from psdaq.sim import gui_witness
             for i in TPR_PROCS:
                 os.makedirs(work.path('tpr', i), exist_ok=True)
+            cards = [gui_witness.tpr_card(work.dir, n) for n, T in gui_witness.TPR_PROGRAMS.items()
+                     if T['id'] in TPR_FRAME_PROCS]
+            p = start_service(work, state, 'tprframes', [py, '-m', 'psdaq.sim.tprframes'] + cards, env)
+            _wait_log(state['services']['tprframes']['log'], 'ready', 30, p, 'tprframes')
+            say(f'tprframes pid {p.pid}: the timing frames of {", ".join(cards)} (the fixed rate each channel selects)')
+        if hps:                         # hpsBldServer's crate (psdaq.sim.simhps), its register writes logged
+            H = P['hps']
+            p = start_service(work, state, 'simhps', [py, '-m', 'psdaq.sim.simhps', '--reg-port', str(H['reg']),
+                                                       '--diag-port', str(H['diag'])],
+                              dict(env, PSDAQ_SIM_ROGUE_LOG=work.path('logs', 'simhps-writes.jsonl')))
+            _wait_log(state['services']['simhps']['log'], 'ready', 60, p, 'simhps')
+            say(f'simhps pid {p.pid}: hpsBldServer\'s crate, registers on UDP {H["reg"]} (RSSI, every interface), '
+                f'diagnostic bus on 127.0.0.1:{H["diag"]}')
+        w8prep = None
+        if w8:                          # wave8pvs's conda env and its wave8 package, unpacked here (R6b)
+            w8prep = wave8pvs_prepare(work.dir)
+            say(f'wave8pvs: {w8prep["python"]}, the wave8 package from {w8prep["src"]} under '
+                f'{work.path("wave8pvs")}, PVA {P["wave8pvs"][0]}/{P["wave8pvs"][1]} on 127.0.0.1')
         extra = extra_entries(work.dir, args.platform, args.verbose, meb, bindir, pva, epics, gui, udp,
-                              also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr) if not two else ''
+                              also, bld, args.seed, args.length, pvservers=pvservers, tpr=tpr, hps=hps,
+                              wave8pvs=w8prep) if not two else ''
         # (with --hosts the --also DRPs are written by two_host_cnf, on host B)
         # procServ resets LD_LIBRARY_PATH (condaProcServ), so a CUDA runtime that is not on the
         # loader's own path (a toolkit outside /usr/local/cuda) reaches drp_gpu as its 'env'
@@ -1178,6 +1284,8 @@ def cmd_up(args):
             _wait_control_gui(work, 120)
         if sim_type.get('ready_s'):
             _wait_drps_ready(work, state, sim_type['ready_s'])
+        if w8:                          # its imports from the site env and its PVs take a while
+            _wait_wave8pvs(work, 300)
         dstate = _control_state(args.platform)
         if dstate != 'reset':
             raise Fail(f'control answers state {dstate!r}, expected reset')
@@ -1370,6 +1478,22 @@ def _wait_log(path, text, timeout, proc=None, what=''):
     raise Fail(f'{what} did not say {text!r} in {timeout} s ({path})')
 
 
+def _wait_wave8pvs(work, timeout):
+    """Wait until wave8pvs has printed its PV list (EpicsPvServer.dump(), after it started its server)."""
+    import glob
+    end = time.monotonic() + timeout
+    while time.monotonic() < end:
+        logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:wave8pvs.log')), key=os.path.getmtime)
+        text = open(logs[-1], errors='replace').read() if logs else ''
+        if 'Main complete' in text:
+            say(f'wave8pvs serves {text.count(" -> Top")} PVs ({logs[-1]})')
+            return
+        if 'Traceback' in text:
+            raise Fail(f'wave8pvs failed ({logs[-1]})')
+        time.sleep(1)
+    raise Fail(f'wave8pvs did not print its PVs in {timeout} s')
+
+
 def _wait_control_gui(work, timeout):
     """Wait until control_gui has built its window and polls control (its log's first
     'CGWMain.on_zmq_poll'), so the cycle's transitions start after: a control_gui that builds its
@@ -1526,7 +1650,7 @@ def teardown(work, quiet=False):
     if state.get('hostd'):              # up --hosts: each other host's step, and what is left in it
         from psdaq.sim import twonode
         hostd_ok = twonode.stop_hostd(work, state, say)
-    for name in ('simsls', 'simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb') + \
+    for name in ('tprframes', 'simsls', 'simhsd', 'simtpr', 'simdti', 'ioc', 'simxpm', 'lgbk', 'configdb') + \
             tuple(state.get('type_services', ())):
         svc = state['services'].get(name)
         if svc:
@@ -1773,7 +1897,8 @@ def cmd_cycle(args):
     status = dc.getStatus()             # (transition, state, alias, recording, ..., experiment, run, last)
     print(f'{now()} status: transition {status[0]} state {status[1]} recording {status[3]} '
           f'experiment {status[6]} run {status[7]}', flush=True)
-    witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers') or state.get('tpr')) \
+    witness = GuiWitness(work, state) if ok and (state.get('gui') or state.get('pvservers') or state.get('tpr') or
+                                                 state.get('hps') or state.get('wave8pvs')) \
         else None
     if witness:
         witness.tables = tables
@@ -2279,12 +2404,72 @@ class GuiWitness:
         for name, T in gui_witness.TPR_PROGRAMS.items():   # R8: each TPR program's card, read in a thread
             if T['id'] in procs(state):
                 res = self.tprs[name] = {'card': gui_witness.tpr_card(work.dir, name)}
+                if T.get('kind') == 'bld':      # a BLD server: also receive its packets on its group, meanwhile
+                    res.update(group=gui_witness.BLD_GROUP_BASE, port=state['ports']['lclsbld'], packets=[])
+
+                    def bread(res=res):
+                        try:
+                            res['b0'], res['b1'], res['packets'] = gui_witness.bld_receive(
+                                res['group'], res['port'], gui_witness.PUMPS + 4)
+                        except Exception as ex:
+                            res['error'] = f'{type(ex).__name__}: {ex}'
+                    res['bthread'] = threading.Thread(target=bread, daemon=True)
+                    res['bthread'].start()
+                    print(f'{now()} GUI witness: receiving {name}\'s BLD on {res["group"]}:{res["port"]} '
+                          f'(loopback)', flush=True)
 
                 def tread(res=res):
                     res['t0'], res['t1'], res['reads'] = gui_witness.tpr_reads(res['card'], gui_witness.PUMPS + 4)
                 res['thread'] = threading.Thread(target=tread, daemon=True)
                 res['thread'].start()
                 print(f'{now()} GUI witness: reading {name}\'s TPR card {res["card"]}', flush=True)
+        self.hps = {}
+        if state.get('hps'):            # the HPS chain: its programs' packets with their sources, hpsBldServer's PVs
+            H = state['ports']['hps']
+            for name, Hp in gui_witness.HPS_PROGRAMS.items():
+                if 'out' not in Hp:
+                    continue
+                group, port = gui_witness.hps_group(Hp['out'], PVBASE, H)
+                res = self.hps[name] = {'group': group, 'port': port}
+
+                def hread(res=res):
+                    try:
+                        res['t0'], res['t1'], res['packets'], res['owners'] = gui_witness.hps_receive(
+                            res['group'], res['port'], gui_witness.PUMPS + 4)
+                    except Exception as ex:
+                        res['error'] = f'{type(ex).__name__}: {ex}'
+                res['thread'] = threading.Thread(target=hread, daemon=True)
+                res['thread'].start()
+                print(f'{now()} GUI witness: receiving {name}\'s BLD on {group}:{port} (loopback)', flush=True)
+            prefix = f'{PVBASE}:HPSEX'
+            names = gui_witness.hpsbld_names(prefix)
+            ctx = gui_witness.pva_context(H['search'])
+            got = ctx.get(names, timeout=5.0, throw=False)
+            self.hps_pvs = {n: (f'error {type(v).__name__}' if isinstance(v, Exception) else
+                                (v.getID() + ' ' + str(v.todict()) if n.endswith(':PAYLOAD') else str(v)))
+                            for n, v in zip(names, got)}
+            mask = got[names.index(prefix + ':HPS:FIELDMASK')] if prefix + ':HPS:FIELDMASK' in names else None
+            self.hps_mask = None if mask is None or isinstance(mask, Exception) else int(mask)
+            ctx.close()
+            print(f'{now()} GUI witness: hpsBldServer serves {sum(not t.startswith("error") for t in self.hps_pvs.values())}'
+                  f' of the {len(names)} PVs its source defines; FIELDMASK {self.hps_mask}', flush=True)
+        self.w8 = {}
+        if state.get('wave8pvs'):       # R6b: wave8pvs's PVs, every one it lists, and one put and put back
+            import glob
+            logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*:wave8pvs.log')), key=os.path.getmtime)
+            port = state['ports']['wave8pvs']
+            res = self.w8 = {'log': logs[-1] if logs else None, 'ctx': gui_witness.pva_context(port[1]), 'port': port}
+
+            def w8read(res=res):
+                try:
+                    res['entry'] = gui_witness.wave8pvs_entry(res['log'], WAVE8PVS_BASE, res['ctx'], res['port'][0],
+                                                              work.path('logs', 'wave8pvs-writes.jsonl'),
+                                                              gui_witness.PUMPS + 4)
+                except Exception as ex:
+                    res['error'] = f'{type(ex).__name__}: {ex}'
+            res['thread'] = threading.Thread(target=w8read, daemon=True)
+            res['thread'].start()
+            print(f'{now()} GUI witness: reading wave8pvs\'s PVs on PVA port {port[1]}', flush=True)
         for name, m in gui_witness.MONITORS.items():    # scraped in a thread, as long as the walks take
             if m['id'] in procs(state):
                 import glob
@@ -2317,8 +2502,11 @@ class GuiWitness:
                     w[4] = time.time()
                     print(f'{now()} GUI witness: {name} walk exit {p.returncode}', flush=True)
             time.sleep(0.1)
-        for name, res in list(self.monitors.items()) + list(self.servers.items()) + list(self.tprs.items()):
+        for name, res in list(self.monitors.items()) + list(self.servers.items()) + list(self.tprs.items()) + \
+                list(self.hps.items()) + ([('wave8pvs', self.w8)] if self.w8 else []):
             res['thread'].join(max(1, end - time.monotonic()))
+            if res.get('bthread'):
+                res['bthread'].join(max(1, end - time.monotonic()))
         if self.stimulus and self.stimulus.get('link') is not None:     # the link is full no more
             err = pv_put(self.stimulus['pv'], [0.] * len(self.stimulus['value']))
             self.stimulus.update(off=round(time.time() - EPICS_EPOCH_UNIX, 3), off_error=err)
@@ -2343,8 +2531,27 @@ class GuiWitness:
             programs[name] = self.gw.monitor_entry(name, res['port'], res.get('t0', 0), res.get('t1', 0),
                                                    res.get('reads', []), prefix, self.params)
         for name, res in self.tprs.items():
-            programs[name] = self.gw.tpr_entry(name, res['card'], res.get('t0', 0), res.get('t1', 0),
-                                               res.get('reads', []))
+            if 'group' in res:          # a BLD server: its window spans the card reads and the packets received
+                t0 = min(res.get('t0', 0), res.get('b0', res.get('t0', 0)))
+                t1 = max(res.get('t1', 0), res.get('b1', 0))
+                programs[name] = self.gw.bld_entry(name, res['card'], res['group'], res['port'], t0, t1,
+                                                   res.get('reads', []), res.get('packets', []))
+                if res.get('error'):
+                    programs[name]['problems'].append(f'BLD receiver: {res["error"]}')
+                    programs[name]['pass'] = False
+            else:
+                programs[name] = self.gw.tpr_entry(name, res['card'], res.get('t0', 0), res.get('t1', 0),
+                                                   res.get('reads', []))
+        for name, res in self.hps.items():
+            programs[name] = self.gw.hps_entry(name, res['group'], res['port'], res.get('t0', 0), res.get('t1', 0),
+                                               res.get('packets', []), res.get('owners', {}), self.hps_mask,
+                                               self.hps_pvs if name == 'hpsBldServer' else None)
+            if res.get('error'):
+                programs[name]['problems'].append(f'BLD receiver: {res["error"]}')
+                programs[name]['pass'] = False
+        if self.w8:
+            programs['wave8pvs'] = self.w8.get('entry') or {
+                'kind': 'pvs', 'pass': False, 'problems': [self.w8.get('error') or 'no result'], 'live': [], 'reads': []}
         servers = {name: res.get('entry') or {'pass': False, 'problems': ['no result']}
                    for name, res in self.servers.items()}
         if 'deadca' in programs:
@@ -2364,6 +2571,16 @@ class GuiWitness:
                                     f'{len(e.get("squeue", []))} squeue reads' if e.get('kind') == 'slurm' else
                                     f'TPR card read {len(e["reads"])} times, enabled: {" ".join(e["live"]) or "none"}'
                                     if e.get('kind') == 'tpr' else
+                                    f'{len(e["packets"])} BLD packets on {e["group"]}:{e["port"]}, pulseIds '
+                                    f'{e["packets"][0][3]:#x}..{e["packets"][-1][3]:#x}' if e.get('kind') == 'bld'
+                                    and e['packets'] else
+                                    f'no BLD packet on {e["group"]}:{e["port"]}' if e.get('kind') == 'bld' else
+                                    f'{e["count"]} BLD packets on {e["group"]}:{e["port"]} from pids '
+                                    f'{sorted({p for v in e["owners"].values() for p in v})}, first pulseId '
+                                    f'{e["packets"][0][3][0][0]:#x}' if e.get('kind') == 'hps' and e['packets'] else
+                                    f'no BLD packet on {e["group"]}:{e["port"]}' if e.get('kind') == 'hps' else
+                                    f'{e.get("served")} of the {e.get("names")} PVs it lists served by pids '
+                                    f'{e.get("owners")}; {e.get("put")} read {e.get("values")}' if e.get('kind') == 'pvs' else
                                     f'{len(e["live"])} live PVs' + (f' of {e["stand_in"]}' if e.get('stand_in') else '') +
                                     ', e.g. ' + shown(e))
                for n, e in programs.items()}
@@ -2577,9 +2794,21 @@ def main(argv=None):
                              '(for dticas), each on PVA ports of its own; cycle reads their PVs while Running '
                              '(psdaq.sim.gui_witness)')
     upopts.add_argument('--tpr', action='store_true',
-                        help='also run the TPR programs tprtrig and tpr_trigger as the configs start them, each on a '
-                             'simulated TPR card (tpr::Client with PSDAQ_SIM_TPR: its register map is a file in '
-                             '<workdir>/tpr/<id>/); cycle reads their registers while Running (psdaq.sim.gui_witness)')
+                        help='also run the TPR programs tprtrig, tpr_trigger and lclsBldServer as the configs start '
+                             'them, each on a simulated TPR card (tpr::Client with PSDAQ_SIM_TPR: its register map is a '
+                             'file in <workdir>/tpr/<id>/), and tprframes, which delivers the timing frames of the BLD '
+                             'server\'s card; cycle reads their registers and receives lclsBldServer\'s packets (on '
+                             'loopback, a group off the production network) while Running (psdaq.sim.gui_witness)')
+    upopts.add_argument('--hps', action='store_true',
+                        help='also run the HPS BLD chain of lab3-bld.cnf as it starts it: bldcas (the BLD registry, groups '
+                             'and port off the production network), hpsBldServer on the loopback interface with its crate '
+                             'the stand-in psdaq.sim.simhps on 127.0.0.1, and hpsBldCopy; cycle receives their packets '
+                             'and reads hpsBldServer\'s PVs while Running (psdaq.sim.gui_witness)')
+    upopts.add_argument('--wave8pvs', action='store_true',
+                        help='also run wave8pvs (lab3-wave8.cnf) under procmgr in the site conda env $PSDAQ_SIM_WAVE8PVS_ENV '
+                             'with the wave8 package from the source tarball $PSDAQ_SIM_WAVE8PVS_SRC, unpacked under the work '
+                             'dir, its board simulated in process (--dev sim://wave8pvs); cycle gets every PV it lists and '
+                             'puts one and back while Running (psdaq.sim.gui_witness, R6b)')
     upopts.add_argument('-S', '--slow-update', type=int, default=1, choices=(0, 1, 5, 10),
                         help='control -S slow update rate, Hz (default %(default)d)')
     upopts.add_argument('--skip-preflight', action='store_true', help='do not run preflight.sh (not recommended)')

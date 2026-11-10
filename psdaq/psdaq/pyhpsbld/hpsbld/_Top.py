@@ -16,12 +16,15 @@ import pyrogue as pr
 import pyrogue.protocols
 import time
 
-import psdaq.pyxpm.surf.axi                     as axi
-import psdaq.pyxpm.surf.xilinx                  as xil
-import psdaq.pyxpm.surf.devices.ti              as ti
-import psdaq.pyxpm.surf.devices.micron          as micron
-import psdaq.pyxpm.surf.devices.microchip       as microchip
-import psdaq.pyxpm.LclsTimingCore               as timing
+# surf and LclsTimingCore from the cameralink-gateway submodules, as pyxpm since 04ac138c5
+# (the tree's copies under psdaq/pyxpm went in d2d58210a and 04ac138c5)
+from psdaq.utils import enable_cameralink_gateway
+import surf.axi                     as axi
+import surf.xilinx                  as xil
+import surf.devices.ti              as ti
+import surf.devices.micron          as micron
+import surf.devices.microchip       as microchip
+import LclsTimingCore               as timing
 import psdaq.pyhpsbld.hpsbld        as hps
 
 class Top(pr.Device):
@@ -30,6 +33,7 @@ class Top(pr.Device):
             name        = "Top",
             description = "Container for HPS BLD",
             ipAddr      = '10.0.1.101',
+            port        = 8193,
             memBase     = 0,
             **kwargs):
         super().__init__(name=name, description=description, **kwargs)
@@ -55,7 +59,7 @@ class Top(pr.Device):
             pyrogue.streamConnectBiDir( self.srp, self.udp )
 
         if True:
-            self.rudp = pyrogue.protocols.UdpRssiPack( name='rudpReg', host=ipAddr, port=8193, packVer = 1, jumbo = False)
+            self.rudp = pyrogue.protocols.UdpRssiPack( name='rudpReg', host=ipAddr, port=port, packVer = 1, jumbo = False)
 
             # Connect the SRPv3 to tDest = 0x0
             self.srp = rogue.protocols.srp.SrpV3()
