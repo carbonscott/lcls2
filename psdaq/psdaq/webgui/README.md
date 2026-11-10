@@ -45,6 +45,24 @@ Events counter: `--events-source none|emulator|prometheus`; for prometheus give
 POST bodies must be `application/json`; requests with a non-loopback `Host` header or a cross-origin
 `Origin` header are refused.
 
+The pages of the other PyQt GUIs (below) add their own routes, each only when the server was started
+with that page's arguments (the module docstrings give every field):
+
+| method, path | module | reply |
+|---|---|---|
+| GET `/api/pvgui/list` | `pvgui_api.py` | the `--pvgui` pages: name, argv, title |
+| GET `/api/pvgui/spec?gui=<name>` | `pvgui_api.py` | the page tree (nodes with their parity ids); the first request makes the puts the PyQt program makes when it starts |
+| GET `/api/pvgui/values?gui=<name>` | `pvgui_api.py` | `{values: {pv: value or null}, computed, connected, total}` |
+| GET `/api/pvgui/info?gui=<name>` | `pvgui_api.py` | PV prefix, connections |
+| POST `/api/pvgui/put` | `pvgui_api.py` | `{gui, id, value}`: the write of widget `<id>`, by that widget's rule |
+| GET `/api/procstat/status` | `procstat_api.py` | `{cnf, platform, interval, seq, rows: [{showId, status, text, rgb}], error, ...}` |
+| POST `/api/procstat/click` | `procstat_api.py` | `{id, mode: console, logfile or restart, offset}` |
+| GET `/api/daqstat/status`, `/api/datadev/status`, `/api/dpm/status`, `/api/plots/spec`, `/api/cdbgui/state` | `daqstat_api.py`, `datadev_api.py`, `dpm_api.py`, `plots_api.py`, `configdb_gui_api.py` | each page's state |
+
+For example, with the server of "Parity with the other PyQt GUIs" below on port 31063:
+`curl -s 'http://127.0.0.1:31063/api/pvgui/values?gui=pvant'` (simxpm's counters, e.g.
+`DAQ:SIM:XPM:0:PART:5:NumL0Acc`, rise while a run runs) and `curl -s http://127.0.0.1:31063/api/procstat/status`.
+
 ## Tests
 
 ```bash
@@ -169,15 +187,24 @@ refuses every TCP or ZMQ connection to a host other than this one (collection_wi
 recorded as refused, never contacted).
 
 Each page is served at `/gui/<name>` (`/gui/procstat`, `/gui/groupca`, `/gui/pvant`) by any `daq_webgui` started
-with that page's arguments from the table, beside the control GUI at `/`.  On a node with the DAQ up (`$WD`, platform
-5), for example:
+with that page's arguments from the table, beside the control GUI at `/`.  `daq_sim up --webgui` does not pass them,
+so start one more server, on the DAQ's node (`$WD`, platform 5, as `psdaq/psdaq/sim/RUNBOOK.md` §2 brings it up),
+in a step of its own after `up` printed `UP.`, for example:
 
 ```bash
-daq_webgui -p 5 -H 127.0.0.1 --port 31063 --configdb-url http://127.0.0.1:31050/ws/ --procstat-cnf $WD/daq_sim.cnf \
+srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=2 --mem=4G bash -c "cd $ROOT/lcls2 && \
+  source ./setup_env_daq.sh && source psdaq/psdaq/sim/sim_env.sh && export DAQ_SIM_WORKDIR=$WD && \
+  daq_webgui -p 5 -H 127.0.0.1 --port 31063 --configdb-url http://127.0.0.1:31050/ws/ --procstat-cnf $WD/daq_sim.cnf \
     --procstat-logdir $WD/pmlogs --pvgui 'groupca:DAQ:SIM 0 5' \
-    --pvgui 'pvant:--bases DAQ:SIM:XPM:0:PART:5 DAQ:SIM:XPM:0:PART:0 --fields NumL0Acc NumL0Inp L0AccRate'
+    --pvgui 'pvant:--bases DAQ:SIM:XPM:0:PART:5 DAQ:SIM:XPM:0:PART:0 --fields NumL0Acc NumL0Inp L0AccRate'"
 # then http://127.0.0.1:31063/gui/procstat, /gui/groupca, /gui/pvant (from your machine: ssh -L, via the login host)
 ```
+
+The environment matters: `sim_env.sh` sets the loopback-only EPICS lists (`EPICS_PVA_AUTO_ADDR_LIST=NO`, ...) without
+which the server refuses to start (exit 2) rather than search beyond the node.  `DAQ_SIM_WORKDIR=$WD` (`$WD` as you
+give it to `daq_sim -w`) tags the server as the DAQ's, so `daq_sim down -w $WD` stops it with the rest (`down` stops
+every process of yours that carries the tag: `stopping leftover (tagged) pid <pid>`).  Without the tag, `down` leaves
+it running: stop it yourself with Ctrl-C in its step, or `scancel <job>.<step>` (your own step).
 
 The check runs the offscreen walks now, every time, as `check_parity --run-walk` does: `--run-walks` writes them to
 `--walks DIR` (default a temporary dir) and checks with them, so no walk is kept in the tree and none can be stale.

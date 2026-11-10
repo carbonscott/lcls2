@@ -56,6 +56,8 @@ JOB=<jobid>
 # fresh checkout of the branch that holds psdaq/psdaq/sim (agentify)
 ROOT=/sdf/data/lcls/ds/prj/<your project>/scratch/<you>     # any directory on a shared filesystem
 cd $ROOT && git clone https://github.com/carbonscott/lcls2.git && cd lcls2 && git checkout agentify
+# or a pull request's head before it is merged (here #42): fetch it into a branch of your own
+#   git fetch origin pull/42/head:pr-42 && git checkout pr-42 && git log -1 --format=%h   # the PR's head commit
 
 # build on the node (about 1.5 min the first time, about 30 s after a small change)
 export XDG_CACHE_HOME=/sdf/scratch/users/${USER:0:1}/$USER/.cache UV_CACHE_DIR=/sdf/scratch/users/${USER:0:1}/$USER/.uv-cache
@@ -141,7 +143,7 @@ and the psana2 seq; at 1 kHz N is about 1900-2100):
   psana2 with data       <N>
   psana2 checks          PASS
   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
-... evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb
+... evidence <id>: det:drp:fakecam prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb
 ... cycle PASS
 CYCLE_EXIT=0
 ```
@@ -179,11 +181,17 @@ What it runs (logs in `$WD/logs/webgui.log`):
 The web copies of the other PyQt GUIs are pages of the same server, at `/gui/<name>`: `/gui/procstat` (with
 `--procstat-cnf $WD/daq_sim.cnf`), `/gui/groupca` (`--pvgui 'groupca:DAQ:SIM 0 5'`) and `/gui/pvant`
 (`--pvgui 'pvant:--bases ... --fields ...'`). `up --webgui` does not pass these; start a `daq_webgui` with them
-(`psdaq/psdaq/webgui/README.md`, "Parity with the other PyQt GUIs").
+(`psdaq/psdaq/webgui/README.md`, "Parity with the other PyQt GUIs": its environment, its value API
+`/api/pvgui/values?gui=<name>`, and how `daq_sim down` stops it).
 
 It listens on 127.0.0.1 of the node only. To open it from your own machine, tunnel to the node
-that holds the job (S3DF lets you ssh to a compute node only while you have a job on it; this
-tunnel was not tested in this campaign):
+that holds the job (S3DF lets you ssh to a compute node only while you have a job on it). This
+`-J` form was not tested; a two-hop tunnel through sdfiana025 was (recorded at 7695dfdae, the page
+driven Configure to Running to Reset): `ssh -L 31053:<dir>/webgui.sock sdfiana025 'ssh -N -o
+StreamLocalBindUnlink=yes -L <dir>/webgui.sock:127.0.0.1:31053 <node>'`, `<dir>` a `mkdir -m 700`
+directory of yours on sdfiana025. If ssh says the node's host key changed, it turns port forwarding
+off: check the key the node itself has (`/etc/ssh/ssh_host_*_key.pub`, read in a step on it)
+before you trust it.
 ```bash
 ssh -L 31053:127.0.0.1:31053 -J <you>@s3dflogin.slac.stanford.edu <you>@<node>     # e.g. <node>=sdfmilan119
 # then browse http://127.0.0.1:31053/
@@ -330,6 +338,10 @@ cd $ROOT/lcls2 && source ./setup_env_daq.sh && daq_sim coverage; echo COVERAGE_E
 ```
 It only reads the checkout, so it runs anywhere, also on sdfiana025. Without the DAQ env, any
 Python 3.9 or later works: `PYTHONPATH=psdaq python -m psdaq.sim.coverage` from the checkout.
+sdfiana025's `python3` is 3.6 and fails (`TypeError: __init__() got an unexpected keyword argument
+'capture_output'`); there, use the DAQ env's own interpreter without sourcing the env:
+`PYTHONPATH=psdaq /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python -m psdaq.sim.coverage`
+(Python 3.9; about 2 minutes over a full matrix's evidence there).
 
 **Rows.** They are enumerated from the source at HEAD, never from a list:
 - `det:drp:<type>` and `det:drp_gpu:<type>`: one per `register_type("<type>")` call in
@@ -360,8 +372,9 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
 - **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
 - **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
   `daq_sim.cnf` (control, teb, drp), the drp's `-D` type (`fakecam`, or the `--det` type of
-  §3e), and `prog:pyxpm`, because the status file names simxpm as its stand-in. It prints
-  `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pyxpm prog:teb`, then, for any row
+  §3e), and `prog:pyxpm` and `prog:pykcuxpm`, because the status file names simxpm as the stand-in
+  of both. It prints
+  `evidence <id>: det:drp:fakecam prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb`, then, for any row
   the check below would reject, `evidence <id>: coverage would reject it for <row>: <why>`.
 - **Files:** the record lists the run's xtc2 files, `daq_sim.cnf`, `logs/cycle.jsonl`, each
   service's log (which `up` heads with its `# CMDLINE:`, as procmgr heads each process's log),
@@ -1618,7 +1631,9 @@ tail -2 $ROOT/daq_sim_up.log          # "... daq_sim down already took everythin
 1. The web GUI, if `up --webgui` started it.
 2. `procmgr stop` for control, teb0 and fakecam_0.
 3. The PIDs that `up` recorded: simxpm, the run DB and the config DB.
-4. Any process of yours whose environment carries `DAQ_SIM_WORKDIR=$WD`, such as the caRepeater that libca spawns.
+4. Any process of yours whose environment carries `DAQ_SIM_WORKDIR=$WD`, such as the caRepeater that libca spawns, or
+   a second `daq_webgui` started with that tag (`psdaq/psdaq/webgui/README.md`, "Parity with the other PyQt GUIs";
+   one started without it keeps running: stop it yourself).
 
 Then it checks that the ports are free and prints `down: clean`; it exits 1 otherwise. Step A then exits on its own. Ctrl-C or SIGTERM to the `up` process does the same teardown.
 
@@ -1646,6 +1661,10 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
 - Harmless lines:
   - drp/teb: `<C> Inadequate RTPRIO limit: got 0, require 99`, at critical level but non-fatal.
   - control: `<W> ami NOT supported in absence of MEB`.
+  - psana2 (`xtc2_check`, §4) on a GPU node (seen on sdfada011): Open MPI's `shmem: mmap: an error
+    occurred ... /lscratch/.../shared_mem_cuda_pool...` and `create_and_attach: unable to create
+    shared memory BTL coordinating structure`. psana2 runs as one process and does not use them;
+    the check's result line is what counts.
 - SlowUpdates exist only in state running, by control.py's design. At `-S 1` the xtc2 holds about one per second of running.
 - `$WD/data/tst/tstx00001/xtc/` holds the xtc2 files, with `smalldata/` beside them.
 - `$WD/e2e-shots/` holds the e2e's screenshots (reset, running, paused after Disable, reset).
@@ -1713,9 +1732,9 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   run by `cycle` through `qt_walk`; the procmgr instance's own log only shows it ran (its
   `# CMDLINE:`). The walk reads the same PVs with the same argv, while the run runs. The
   deadtime deadca shows is deadtime the cycle causes on purpose (simxpm `SIM:LinkFull`, §3d): no
-  DRP of these runs stalls by itself. xpmpva is
-  not run: at startup it reads `<xpm>:Us:RxAlign` and `<xpm>:Cu:RxAlign`, which this simxpm does
-  not serve, and exits on the timeout.
+  DRP of these runs stalls by itself. xpmpva runs too (`up --gui --pvservers`, R4): at startup it
+  reads `<xpm>:Us:RxAlign` and `<xpm>:Cu:RxAlign` (and exits on the timeout without them), which
+  simxpm now serves.
 - **PVA servers.** A unicast PVA search reaches only one of the sockets bound to the node's
   search port (15076), so simxpm is the only PVA server on it: the stand-in IOC is CA only, and
   ami-client's own PVA server gets ports 31210 + 2 p and 31211 + 2 p. With two PVA servers on
@@ -1735,7 +1754,7 @@ Release the allocation when you are done: `scancel $JOB` (your own job only).
   100/200 test pattern only (no `-f` playback in the run).
 - **Web GUI.** It listens on 127.0.0.1 only and refuses non-loopback endpoints. Its events number
   comes from simxpm's counter, not from the recorded file; `daq_sim e2e` checks the two against
-  each other. The `ssh -L` route of §3b was not tested. The e2e covers one run of one detector
+  each other. A tunnel to it through sdfiana025 was tested (§3b), not the `-J` form. The e2e covers one run of one detector
   at 1 kHz, platform 5.
 - **Web GUI requests.** It answers 403 to any request whose Host header is not loopback, and to a
   POST whose Origin is another host:port (`webgui/tests/test_webgui_hostorigin.py`). It does not
