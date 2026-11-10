@@ -140,6 +140,8 @@ def test_camera_pv_carries_the_l1accept_time():
     from psdaq.sim import simxpm
     cam = simxpm.CameraPV('SIM:CAM', StaticProvider('t'), 0x1234)
     cam.post(1100000000, 123456789, 70000)
+    assert not cam.pv.isOpen()          # no client yet: it opens OPEN_S after one connects (CameraPV)
+    cam._open(cam.clients)              # as onFirstConnect's timer does, with the last image
     v = cam.pv.current()
     assert v['timeStamp.secondsPastEpoch'] == 1100000000 + simxpm.POSIX_TIME_AT_EPICS_EPOCH
     assert v['timeStamp.nanoseconds'] == 123456789 and v['uniqueId'] == 70000
