@@ -267,6 +267,13 @@ class Pipeline(unittest.TestCase):
         self.run_agent(extra=['--resume'])
         self.assertEqual(os.stat(os.path.join(d, os.listdir(d)[0], 'meta.json')).st_mtime, before)
 
+    def test_preface_goes_before_the_prompt_and_into_meta(self):
+        self.harvest()
+        self.run_agent(extra=['--dry-run', '--preface', 'Load the psana-daq skill first.'])
+        d = os.path.join(self.results, 'skills', run.run_id('c1', 1))
+        self.assertTrue(open(os.path.join(d, 'prompt.txt')).read().startswith('Load the psana-daq skill first.\n\nLogs are under'))
+        self.assertEqual(json.load(open(os.path.join(d, 'meta.json')))['preface'], 'Load the psana-daq skill first.')
+
     def test_dry_run_starts_no_agent(self):
         self.harvest()
         self.run_agent(extra=['--dry-run'])

@@ -2,7 +2,7 @@
 
     python3 run.py --work WORK_DIR --arm NAME --skills SKILLS_DIR|none --out RESULTS_DIR
                    [--set core|full] [--case ID ...] [--repeats N] [--jobs N] [--model M]
-                   [--resume] [--dry-run] [--no-sandbox] [--agent-cmd CMD]
+                   [--preface TEXT] [--expose DIR] [--resume] [--dry-run] [--no-sandbox] [--agent-cmd CMD]
 
 An "arm" is one configuration under test, e.g. the skills at some commit, or no skills.
 For each case and repeat this makes RESULTS_DIR/<arm>/<run id>/ (the id is opaque) with
@@ -130,13 +130,13 @@ def run_one(cat, case, a, rep):
         for s in sorted(os.listdir(a.skills)):
             if os.path.exists(os.path.join(a.skills, s, 'SKILL.md')):
                 shutil.copytree(os.path.join(a.skills, s), os.path.join(ws, '.claude', 'skills', s))
-    prompt = cat['context'] + '\n\n' + case['question']
+    prompt = (a.preface + '\n\n' if a.preface else '') + cat['context'] + '\n\n' + case['question']
     if a.no_sandbox:
         prompt = prompt.replace(cat['logs_path'], logs)
     open(os.path.join(d, 'prompt.txt'), 'w').write(prompt)
     cmd = shlex.split(a.agent_cmd) if a.agent_cmd else AGENT + (['--model', a.model] if a.model else [])
     meta = {'case': case['id'], 'arm': a.arm, 'repeat': rep, 'skills': 'none' if a.skills == 'none' else os.path.abspath(a.skills),
-            'model_flag': a.model, 'sandbox': not a.no_sandbox,
+            'model_flag': a.model, 'sandbox': not a.no_sandbox, 'preface': a.preface,
             'started': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}
     if a.dry_run:
         meta['dry_run'] = True
@@ -178,6 +178,8 @@ def main(argv=None):
     ap.add_argument('--first-repeat', type=int, default=1)
     ap.add_argument('--jobs', type=int, default=1)
     ap.add_argument('--model')
+    ap.add_argument('--preface', help='text put before every prompt of this arm, e.g. an instruction to load a skill '
+                                      'first; it makes the arm a different experiment, so give it its own --arm name')
     ap.add_argument('--agent-cmd')
     ap.add_argument('--timeout', type=int, default=1800, help='seconds per run (default %(default)d)')
     ap.add_argument('--resume', action='store_true', help='keep runs that already finished without error')

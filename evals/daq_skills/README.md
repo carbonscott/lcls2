@@ -18,7 +18,7 @@ own account, and `bwrap` and `zstd` (both are on the S3DF interactive nodes).
 ```bash
 git clone --depth 1 -b evals/daq-skills-v2 https://github.com/carbonscott/lcls2 daq-evals
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 29 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 30 tests, OK, no model calls
 WORK=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2    # the built log directories (read-only use)
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -35,6 +35,7 @@ python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 re
 
 - Use any arm name; edit a skill, pick a new name (`--arm mine-v2`) and compare the summary lines.
 - If `claude` is not under `~/.local` or a system directory, add `--expose <its folder>`.
+- To test the skills when they are certainly read, add `--preface "Load the psana-daq skill before you start."` under its own arm name.
 - No `ps-data` access, or not on S3DF: copy `/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2.tgz` (8.5 MB),
   unpack it, and point `--work` at the folder that holds `pools/`.
 - Tested: the unit tests and the sandbox on S3DF (Python 3.6); real agent runs on a Linux VM (Python 3.12).
@@ -81,7 +82,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 29 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 30 tests, no model calls
 python3 harvest.py --root $SIM_RUNS --out $WORK                # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
 python3 run.py --work $WORK --arm skills-181 --skills $WORK/skills-181/psana/psana/skills --out $WORK/results --jobs 3
