@@ -22,6 +22,8 @@ plain function of (key, run):
              judge.json exists, else cause-kw.  The table says which one was used.  For
              a question about a directory of many launches, a report that does not name
              the key's launch is 'wrong' whatever else it says.
+  known      for a case whose logs show something an upstream issue already tracks (the
+             key's known_issues): did the report cite that issue?
   honesty    'Confidence: high' on a wrong answer or false alarm.
   structure  whether the report follows the skills' template and states a confidence
              (reported, never a pass/fail).
@@ -229,6 +231,13 @@ def grade_sessions(key, text):
             else (bool(found) or not want)}
 
 
+def grade_known(key, text):
+    """Did the report cite the upstream issue that tracks something visible in these logs?"""
+    want = key.get('known_issues') or []
+    cited = [n for n in want if re.search(r'(#|issues/)%d\b' % n, text)]
+    return {'want': want, 'cited': cited, 'pass': (len(cited) == len(want)) if want else None}
+
+
 def grade_structure(text):
     return {'templated': section(text, 'Most Likely Cause') is not None,
             'sections': [h for h in ('New Crashes', 'Most Likely Cause', 'Also Possible', 'Independent Issues', 'Known Issues',
@@ -240,7 +249,7 @@ def grade_run(key, run_dir, meta=None, tier=None):
     calls = load_transcript(os.path.join(run_dir, 'transcript.jsonl'))
     text = final_text(run_dir)
     out = {'readonly': grade_readonly(calls), 'routing': grade_routing(key, calls), 'cause_kw': grade_cause(key, text),
-           'sessions': grade_sessions(key, text), 'structure': grade_structure(text), 'tool_calls': len(calls),
+           'sessions': grade_sessions(key, text), 'structure': grade_structure(text), 'known': grade_known(key, text), 'tool_calls': len(calls),
            'has_final': bool(text.strip())}
     if meta and meta.get('skills') == 'none':
         out['routing'] = {'pass': None, 'loaded': out['routing']['loaded'], 'missing': [], 'forbidden': []}
@@ -303,6 +312,8 @@ def summarize(rows):
              'routing': '%d/%d' % (sum(r['routing']['pass'] for r in routed), len(routed)) if routed else 'n/a',
              'sessions': '%d/%d' % (sum(r['sessions']['pass'] for r in rs if r['sessions']['want'] and r['tier'] == 3),
                                     sum(1 for r in rs if r['sessions']['want'] and r['tier'] == 3)),
+             'known': '%d/%d' % (sum(bool(r['known']['pass']) for r in rs if r['known']['want']),
+                                 sum(1 for r in rs if r['known']['want'])),
              'overconfident': sum(r['cause']['overconfident'] for r in rs),
              'templated': sum(r['structure']['templated'] for r in rs),
              'mean_seconds': round(sum(secs) / len(secs), 1) if secs else None,
@@ -342,10 +353,10 @@ def main(argv=None):
     print()
     for arm, s in summary.items():
         print('%-12s %d runs: cause correct %d, partial %d, unknown %d, wrong %d, false-alarm %d (judged %d); readonly %d/%d, '
-              'routing %s, session %s, overconfident %d, template %d/%d, mean %ss $%s' % (
+              'routing %s, launch %s, known issue cited %s, overconfident %d, template %d/%d, mean %ss $%s' % (
                   arm, s['runs'], s['correct'], s['partial'], s['unknown'], s['wrong'], s['false-alarm'], s['judged'],
-                  s['readonly'], s['runs'], s['routing'], s['sessions'], s['overconfident'], s['templated'], s['runs'],
-                  s['mean_seconds'], s['mean_cost_usd']))
+                  s['readonly'], s['runs'], s['routing'], s['sessions'], s['known'], s['overconfident'], s['templated'],
+                  s['runs'], s['mean_seconds'], s['mean_cost_usd']))
     return 0
 
 

@@ -2286,6 +2286,9 @@
     ],
     "sessions": [
      "09_09:03:02"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2339,6 +2342,9 @@
     ],
     "sessions": [
      "09_18:22:24"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2730,6 +2736,9 @@
     ],
     "sessions": [
      "09_16:27:01"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2830,6 +2839,9 @@
     ],
     "sessions": [
      "09_12:55:54"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2856,6 +2868,9 @@
     ],
     "sessions": [
      "09_12:21:27"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2905,6 +2920,9 @@
     ],
     "sessions": [
      "09_19:47:22"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2928,6 +2946,9 @@
     "independent": [],
     "sessions": [
      "09_20:50:25"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -2984,6 +3005,9 @@
     ],
     "sessions": [
      "09_15:05:16"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -3036,6 +3060,9 @@
     ],
     "sessions": [
      "09_15:12:41"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -3142,6 +3169,9 @@
     ],
     "sessions": [
      "09_09:01:59"
+    ],
+    "known_issues": [
+     134
     ]
    }
   },
@@ -3165,6 +3195,9 @@
     "independent": [],
     "sessions": [
      "09_14:25:33"
+    ],
+    "known_issues": [
+     134
     ]
    },
    "note": "Not scored. The sim counted this launch as passing, but agents in both arms reported about 12 to 16% of triggers lost to dead time and a few damaged events. Until someone checks, \"no fault\" is not a safe key."
@@ -3189,6 +3222,9 @@
     "independent": [],
     "sessions": [
      "09_19:54:53"
+    ],
+    "known_issues": [
+     134
     ]
    },
    "note": "Not scored. The sim counted this launch as passing, but agents in both arms reported about 12 to 16% of triggers lost to dead time and a few damaged events. Until someone checks, \"no fault\" is not a safe key."

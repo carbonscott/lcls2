@@ -95,6 +95,13 @@ class RoutingSessionsStructure(unittest.TestCase):
         both = dict(KEY, sessions=['09_12:12:52', '09_12:22:37'], all_sessions=True)
         self.assertFalse(grade.grade_sessions(both, 'only 09_12:12:52')['pass'])
 
+    def test_known_issue_must_be_cited_by_number(self):
+        key = dict(HEALTHY, known_issues=[134])
+        self.assertTrue(grade.grade_known(key, 'matches #134 (double free at exit)')['pass'])
+        self.assertTrue(grade.grade_known(key, 'see https://github.com/slac-lcls/lcls2/issues/134')['pass'])
+        self.assertFalse(grade.grade_known(key, 'a double free at exit, 1340 events')['pass'])
+        self.assertIsNone(grade.grade_known(KEY, 'anything')['pass'])
+
     def test_structure(self):
         g = grade.grade_structure(report('x') + '\n## Known Issues\nnone\n')
         self.assertEqual((g['templated'], g['confidence_stated'], g['sections']), (True, True, ['Most Likely Cause', 'Known Issues']))

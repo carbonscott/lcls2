@@ -586,6 +586,9 @@
    ],
    "sessions": [
     "09_12:21:27"
+   ],
+   "known_issues": [
+    134
    ]
   },
   "report": "## Most Likely Cause\nNo fault: the session went through configure, enable and disable and was shut down by the operator.\nConfidence: high\n\n## Independent Issues\n- tt_0 printed 'free(): double free detected in tcache 2' while shutting down.\n",
@@ -612,6 +615,9 @@
    ],
    "sessions": [
     "09_12:21:27"
+   ],
+   "known_issues": [
+    134
    ]
   },
   "report": "## Most Likely Cause\ntt_0 crashed: free(): double free detected in tcache 2, killed by signal 6.\nConfidence: high\n",
@@ -638,6 +644,9 @@
    ],
    "sessions": [
     "09_12:21:27"
+   ],
+   "known_issues": [
+    134
    ]
   },
   "report": "## Most Likely Cause\ntt_0 and teb0 logged a critical error, Inadequate RTPRIO limit: got 0, require 99.\nConfidence: medium\n",
@@ -823,6 +832,9 @@
    ],
    "sessions": [
     "09_12:21:27"
+   ],
+   "known_issues": [
+    134
    ]
   },
   "report": "**Verdict:** the run itself was clean, but one thing did go wrong: the `tt_0` DRP aborted with a glibc double-free while shutting down, after the run had already ended.\n\nThe window holds one 20-second simulated test session (launched 12:21:27 PST, i.e. 20:21:27 UTC) with three processes: `control`, `teb0` and `tt_0`. Only logs were available, so deadtime, damage and the integrity of the files on disk are unchecked.\n\n## New Crashes\nnone \u2014 the only abnormal process death matches an existing issue (see Known Issues).\n\n## Most Likely Cause\nNo fault during data-taking; the one fault is `tt_0` aborting at shutdown (see Known Issues, #134).\nConfidence: medium\nEvidence:\n  - `tt_0.log`: `^C \u2026 <W> Shutting down on INT signal` \u2192 `free(): double free detected in tcache 2` \u2192 `Received a sigChild for process 462290. The process was killed by signal 6` \u2014 verified-against-real-logs\n  - The abort came at 12:21:48, about 6 s after `tt_0` had processed `endrun`, `unconfigure`, `disconnect`, `dealloc` and `reset` (12:21:42) and its worker, PGPReader and Collector threads had finished \u2014 verified-against-real-logs\n  - `control` and `teb0` took the same Ctrl-C and both exited with `Normal exit status = 0` \u2014 verified-against-real-logs\n  - `control.log` shows the full cycle reset \u2192 running \u2192 reset with no `<E>`/`<C>`, no \"did not respond\" and no \"failed to change state\" \u2014 verified-against-real-logs\n  - Run 1 of `tstx00001` was recorded: running 12:21:39.415 \u2192 12:21:41.392 (about 2 s), and the logbook end-run call returned `success: true` listing both the `.xtc2` and `.smd.xtc2` files \u2014 verified-against-real-logs\n  - `teb0.log` at disconnect: event pool `allocs 1985  frees 1985`, `Epoch has NO pending events`, roughly 1,980 L1Accepts at about 1 kHz \u2014 verified-against-real-logs\n  - A double-free at exit matches the fault tracked in #134, which is why this is not rated lower \u2014 documented-in-issue\n\n## Also Possible\n1. A separate teardown bug specific to the `tt` detector or the simulated-PGP (`sim://`, `MemPoolSim`) path, which only looks like #134 \u2014 Confidence: low\n   Evidence:\n     - #134's occurrences are all `epix100`/`timing` on real hardware under TERM; this one is `tt` on a simulated device under INT \u2014 documented-in-issue\n     - The release is a private worktree build (`TESTRELDIR \u2026/agentify-lcls2/wt-tt/install`, `GIT_DESCRIBE:none`), so the exact code is unknown and its source was not available here \u2014 verified-against-real-logs\n\n## Independent Issues\n1. Unexplained message during `tt_0` Configure: `Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]` \u2014 Confidence: low (that it matters)\n   Evidence:\n     - Configure carried on and completed, with every later camera UART command answered `OK` \u2014 verified-against-real-logs\n     - It may mean one config entry was not applied; I could not check without the source or ConfigDB \u2014 verified-against-real-logs\n\nBenign, listed only so they are not mistaken for faults:\n- `<C> Inadequate RTPRIO limit: got 0, require 99` on `teb0` and `tt_0` is the usual non-fatal startup line.\n- `<W> ami NOT supported in absence of MEB` is expected, since no MEB was in this configuration.\n\n## Known Issues\n- [#134](https://github.com/slac-lcls/lcls2/issues/134) (open) \u2014 DRP double-free at exit: multiple EPICS libCom builds loaded in one process \u2014 matches: Most Likely Cause. Likely match, not confirmed: same glibc string and same shutdown-only pattern. Delta: first sighting on a `tt` DRP, in hutch `tst`, on a simulated device, under INT rather than TERM (session `2026/11/09_12:21:27`, host `sdfmilan082`). The libCom root cause in the title could not be checked from these logs.\n\n## Raw Findings\n- Session: `2026/11/09_12:21:27` (host `sdfmilan082`; `control`, `teb0`, `tt_0`) \u2014 the only session in the window. No prior reports or issue drafts exist; none of the three store roots is present on this machine.\n- Control: clean. Rollcall selected `teb0` and `tt_0` (readout group 5); alloc, connect, configure (alias `BEAM`, `Loaded configDb tst/BEAM/tmoteb_0`), beginrun (run 1, recording on), beginstep, enable, then disable, endstep, endrun, unconfigure, disconnect, dealloc and reset all succeeded. Ctrl-C at 12:21:48.\n- Logs: no `<E>` lines and no `<C>` lines other than RTPRIO. `tt_0` aborted on double-free at shutdown (signal 6); `teb0` and `control` exited 0. The `tt_0` log has no explicit file-close line, so file closure rests on the logbook end-run response alone.\n- Metrics: skipped \u2014 Grafana/Prometheus not reachable.\n- ConfigDB: skipped \u2014 not reachable. `tt_0` is implicated only by the `AppLane` lookup message, which remains unchecked.\n\nAs instructed, nothing was filed or drafted; the only outside call was a read-only search of existing `daq-diagnostics` issues on `slac-lcls/lcls2`.",
@@ -928,6 +940,9 @@
    ],
    "sessions": [
     "09_12:21:27"
+   ],
+   "known_issues": [
+    134
    ]
   },
   "report": "**Verdict:** the one run (run 1, experiment `tstx00001`) completed cleanly, but the `tt_0` DRP process crashed with a double free while shutting down afterwards. The crash came about 6 s after the run had ended, so it should not have affected the data, though the logs alone cannot prove the files are intact.\n\n## What went wrong\n\n- **`tt_0` aborted at shutdown.** On the Ctrl-C at 12:21:48 the DRP logged `Shutting down on INT signal`, then glibc printed `free(): double free detected in tcache 2`, and the process was killed by signal 6 (SIGABRT). `teb0` and `control` received the same Ctrl-C and exited with status 0.\n- **Timing of the crash.** It happened after `endrun` (12:21:42), `unconfigure`, `disconnect`, `dealloc` and `reset` had all been processed, and after the workers, PGP reader and collector threads had exited normally. It is a teardown bug in the DRP exit path, not a data-taking failure.\n- **Likely place to look.** This DRP ran against a simulated device (`sim://127.0.0.1:31052`, `MemPoolSim`) from a test build (`.../agentify-lcls2/wt-tt/install`). The simulated memory-pool or detector teardown is my first suspect, but there is no backtrace in the log to confirm it.\n\n## What went right\n\n- **State machine:** control walked reset \u2192 running \u2192 reset with no rejected or timed-out transitions, and no error messages in the control log.\n- **Transitions:** every transition from Configure through Unconfigure was seen by the DRP and returned by the TEB with matching timestamps.\n- **Recording:** recording was on, and the two files were opened and registered with the logbook; `end_run` succeeded:\n  - `tstx00001-r0001-s000-c000.xtc2`\n  - `smalldata/tstx00001-r0001-s000-c000.smd.xtc2`\n- **Event building:** the TEB dump at disconnect shows no pending events, with the event pool at 1985 allocations and 1985 frees. There are no timeout, damage or missing-contribution messages.\n- **Camera configuration:** every serial command to the Piranha4 was acknowledged `OK`, and its self-test reported `BiST: Good`.\n\n## Minor or benign items\n\n- **`<C> Inadequate RTPRIO limit: got 0, require 99`** appears in both `teb0` and `tt_0`. The processes ran without real-time priority; this had no visible effect here but would matter on a production node.\n- **`<W> ami NOT supported in absence of MEB`** is expected, since no MEB was configured.\n- **`Lookup failed for node [AppLane] in path [cl.TimeToolKcu1500.Application]`** appeared during tt configure. Configure carried on and succeeded; I could not check from the logs whether this is expected with the simulated device.\n- **Run-parameter file is `/dev/null`**, so no PV-based run parameters were recorded; only the two default ones went to the logbook.\n\n## Limits of this review\n\n- **Very short run:** it was enabled for about 2 s (12:21:39.41 to 12:21:41.39). From buffer indices and pool counts I estimate about 2000 events at roughly 1 kHz; that is an inference, as there is no explicit event count in the logs.\n- **File integrity not confirmed:** the DRP does not log file closure. The files were opened and `end_run` listed them, but only inspecting the xtc2 files themselves would confirm they are complete.\n- **Only three logs exist** for the window (`control`, `teb0`, `tt_0`, all on `sdfmilan082`). There are no logs from the timing simulator, logbook or configdb stand-ins, so problems confined to those would not show up here.",

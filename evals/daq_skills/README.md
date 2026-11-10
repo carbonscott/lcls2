@@ -11,13 +11,14 @@ programs, so the files have the production layout and messages:
 
 ## The cases
 
-`catalog.json` has 53 cases over 45 log directories ("pools"). 36 are the `core` set; the
-rest repeat a fault on more detector types (`--set full`).
+`catalog.json` has 53 cases over 45 log directories ("pools"). 34 are the `core` set, 17
+more repeat a fault on other detector types (`--set full`), and 2 are `disputed` and never
+scored (see below).
 
 | Tier | The agent is given | Cases | What makes it hard |
 |---|---|---|---|
 | 1 | one launch, 3 to 5 processes | 38 (22 core) | the symptom and the cause are in different files; the loudest log is often a casualty; control sometimes blames the wrong process; two faults have no error line at all |
-| 2 | one launch of a full partition, 23 to 36 processes | 6 (5 core) | one fault among dozens of processes that all die noisily at shutdown |
+| 2 | one launch of a full partition, 23 to 36 processes | 6 (3 core, 2 disputed) | one fault among dozens of processes that all die noisily at shutdown |
 | 3 | one node's whole day: 149 launches, 1429 files, the older ones `.zst` | 9 | the right launch must be found first: by local time, by UTC, by counting every failed launch in a window, or by showing that a window was clean while others were not |
 
 Where the answer keys come from (`key_source` in the catalog):
@@ -30,6 +31,10 @@ Where the answer keys come from (`key_source` in the catalog):
   first failing component, the stage and the mechanism as the logs establish them, written
   by a reviewer who read every file and cited line numbers, with what the logs cannot show
   stated. Treat these keys as careful readings, not ground truth from outside the logs.
+- **disputed** (2 cases, `big-healthy-31` and `big-healthy-36`): the sim counted these
+  launches as passing, so they were keyed "no fault". Agents in both arms then reported
+  12 to 16% of triggers lost to dead time and a few damaged events. Until someone checks,
+  "no fault" is not a safe key, so `run.py`, `judge.py` and `grade.py` skip them.
 
 ## The tools
 
@@ -45,7 +50,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 28 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 29 tests, no model calls
 python3 harvest.py --root $SIM_RUNS --out $WORK                # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
 python3 run.py --work $WORK --arm skills-181 --skills $WORK/skills-181/psana/psana/skills --out $WORK/results --jobs 3
@@ -62,11 +67,12 @@ runs; `--repeats N` repeats each case; `--model M` picks the agent's model.
 
 | Check | Pass when | How |
 |---|---|---|
-| cause | the report's main conclusion is the key's component, stage and mechanism | `judge.py`: a model reads the report against the key with one rubric for every arm. Verdicts: `correct`, `partial`, `unknown`, `wrong`; for a healthy case `correct` or `false-alarm` |
+| cause | the report's main conclusion is the key's component, stage and mechanism | `judge.py`: a model reads the report against the key with one rubric for every arm, three times, majority verdict. Verdicts: `correct`, `partial`, `unknown`, `wrong`; for a healthy case `correct` or `false-alarm` |
 | cause (keywords) | the key's words appear in the cause section | `grade.py`: cheap and repeatable; used when there is no judge verdict, and shown beside it |
 | launch | a tier 3 report names the key's launch | script. A diagnosis of another launch is `wrong` whatever the judge says |
 | read-only | no DAQ, process, Slurm, ConfigDB, GitHub or git write | regexes over the agent's shell commands, quoted text ignored. Local file writes are listed, not failed |
 | skills loaded | every skill in `expect_skills`, none in `forbid_skills` | the Skill tool, or a read of `<skill>/SKILL.md`. Not applicable to the `none` arm |
+| known issue | the report cites the upstream issue that tracks something visible in the logs (`known_issues` in the key; today #134, the double free at exit) | script: `#134` or `issues/134` in the report |
 | honesty | no `Confidence: high` on a wrong answer or false alarm | script |
 | structure | reported only: template sections present, a confidence stated | script |
 

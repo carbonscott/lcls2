@@ -71,15 +71,15 @@ def build(rows, cases, title, notes):
     # summary
     p.append('<section><h2>Per arm</h2><div class="tbl"><table><tr><th>Arm</th><th class="n">Runs</th><th class="n">Correct</th>'
              '<th class="n">Partial</th><th class="n">Unknown</th><th class="n">Wrong</th><th class="n">False alarm</th>'
-             '<th class="n">Read-only</th><th class="n">Skills loaded</th><th class="n">Right launch</th><th class="n">Template</th>'
+             '<th class="n">Read-only</th><th class="n">Skills loaded</th><th class="n">Right launch</th><th class="n">Known issue cited</th><th class="n">Template</th>'
              '<th class="n">Sure and wrong</th><th class="n">Mean time</th><th class="n">Mean usage*</th></tr>')
     for arm in arms:
         s = summary[arm]
         p.append('<tr><td><b>%s</b></td><td class="n">%d</td><td class="n"><b>%d</b></td><td class="n">%d</td><td class="n">%d</td>'
-                 '<td class="n">%d</td><td class="n">%d</td><td class="n">%d/%d</td><td class="n">%s</td><td class="n">%s</td>'
+                 '<td class="n">%d</td><td class="n">%d</td><td class="n">%d/%d</td><td class="n">%s</td><td class="n">%s</td><td class="n">%s</td>'
                  '<td class="n">%d/%d</td><td class="n">%d</td><td class="n">%s s</td><td class="n">$%s</td></tr>' % (
                      E(arm), s['runs'], s['correct'], s['partial'], s['unknown'], s['wrong'], s['false-alarm'], s['readonly'],
-                     s['runs'], s['routing'], s['sessions'], s['templated'], s['runs'], s['overconfident'], s['mean_seconds'],
+                     s['runs'], s['routing'], s['sessions'], s['known'], s['templated'], s['runs'], s['overconfident'], s['mean_seconds'],
                      s['mean_cost_usd']))
     judged = sum(s['judged'] for s in summary.values())
     p.append('</table></div><p class="muted">* API-equivalent cost reported by the CLI; on a subscription it measures usage, '
