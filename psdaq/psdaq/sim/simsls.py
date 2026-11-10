@@ -40,13 +40,26 @@ start; packet p carries image rows 4p..4p+3, so pixel i of the 512 x 1024 image 
 jungfrau raw, flattened) is psdaq.sim.pattern.pattern(seed, frameNumber, i, 16): 14 data bits
 and the 2 gain bits.
 
+Flow control: the module's 128 packets of a frame are 2 MiB of the receiver's buffer (a loopback
+datagram of 8240 bytes costs 16640: its kernel buffer), and the receive buffer MemPoolSim's
+UdpFront asks for (16 MiB) is capped at twice net.core.rmem_max: 425984 B where rmem_max is the
+default 212992, room for 25 packets.  Sent back to back, a frame overflowed it whenever the DRP's
+reading thread fell 25 packets behind, and the kernel dropped what did not fit ('MemPoolSim:
+module ... sent 78 of 128 packets', DRP_Damage, in a drp_gpu jungfrau run of matrix h1 at
+b14885af3).  So where the buffer cannot hold a frame, simsls sends a frame in bursts that fit:
+before each burst it reads the receiving socket's queue (rx_queue in /proc/net/udp) and sends only
+the packets that fit in three quarters of the buffer, waiting while none fit (at most 0.1 s per
+burst, then it sends anyway; the DRP gives up a frame 0.2 s after its last packet).  Where a frame
+fits (net.core.rmem_max of 1.5 MiB or more), it sends as before.  It logs the receiving socket's
+drops (the drops column of /proc/net/udp: the packets the kernel dropped there) with its counts.
+
 Fault (PSDAQ_SIM_SLS_FAULT='<setting>[=<value>]', or --fault): after the client sets <setting>,
 reading it back returns <value> (default: what was set, plus 1), so Drp::Jungfrau's readback
 check fails at Configure and names it.  <setting> is one of exptime, period, delay,
 highvoltage, settings, gainmode, readoutspeed, or a DAC (vb_ds, vb_comp, vb_pixbuf, vref_ds,
 vref_comp, vref_prech, vin_com, vdd_prot).
 
-    python -m psdaq.sim.simsls --port 31054 --seed 0x1234
+    python -m psdaq.sim.simsls --port 31054 --seed 0x1234 [--rcvbuf B]
 """
 
 import argparse
@@ -89,6 +102,39 @@ PIXELS_PER_PACKET = ROWS * COLS // PACKETS
 HEADER = struct.Struct('<QIIQQHHHHIHBB')        # sls_detector_header, 48 bytes
 assert HEADER.size == 48
 HEADER_VERSION = 2
+
+RCVBUF_ASK = 16 << 20               # the receive buffer MemPoolSim's UdpFront asks for (SO_RCVBUF)
+PACKET_COST = 16640                 # what one 8240-byte loopback datagram costs a receive buffer
+ROOM_WAIT_S = 0.1                   # the longest wait for room before a burst
+UDP_TABLE = '/proc/net/udp'
+
+
+def receive_buffer(ask=RCVBUF_ASK):
+    """The receive buffer a UDP socket on this host gets when it asks for 'ask' bytes, as
+    MemPoolSim's does (the kernel doubles the request and caps it at twice net.core.rmem_max)."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, ask)
+        return s.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
+    finally:
+        s.close()
+
+
+def udp_queue(ip, port, table=UDP_TABLE):
+    """(bytes queued, packets dropped) at the UDP socket bound to ip:port on this host (rx_queue
+    and drops of its /proc/net/udp line), or None when no socket is bound there."""
+    want = {'%08X:%04X' % (struct.unpack('=I', socket.inet_aton(ip))[0], port),
+            '00000000:%04X' % port}
+    try:
+        with open(table) as f:
+            next(f, None)
+            for line in f:
+                col = line.split()
+                if len(col) > 12 and col[1] in want:
+                    return int(col[4].split(':')[1], 16), int(col[-1])
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
 
 # Function ids of slsDetectorPackage 9.0.0 (sls_detector_funcs.h) that simsls serves:
 # id: (name, argument layout, return layout)
@@ -169,7 +215,8 @@ def ip_str(value):
 class Module:
     """The state of one Jungfrau module and its data generator."""
 
-    def __init__(self, seed=0x1234, module_id=0x2a0, serial=0x1e3, firmware=0x230920, fault=None):
+    def __init__(self, seed=0x1234, module_id=0x2a0, serial=0x1e3, firmware=0x230920, fault=None,
+                 rcvbuf=None):
         self.lock = threading.RLock()
         self.seed = seed
         self.module_id = module_id
@@ -197,11 +244,20 @@ class Module:
         self.status = IDLE
         self.run = None                         # the armed acquisition's stop event
         self.triggers_in = queue.Queue()
-        self.counts = {'calls': 0, 'triggers': 0, 'triggers_ignored': 0, 'frames': 0, 'packets': 0}
+        self.counts = {'calls': 0, 'triggers': 0, 'triggers_ignored': 0, 'frames': 0, 'packets': 0,
+                       'room_waits': 0, 'room_timeouts': 0, 'receiver_drops': None}
+        self.rcvbuf = receive_buffer() if rcvbuf is None else rcvbuf    # the receiver's buffer
         self.base = (mix(np.arange(ROWS * COLS, dtype=np.uint64)) & np.uint32(0xffff)).astype(np.uint16)
         self.t0 = time.monotonic()
         self.data = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.data.bind(('127.0.0.1', 0))
+
+    @property
+    def limit(self):
+        """What a burst may fill the receiver's buffer to (three quarters of it), or None when a
+        whole frame fits under that, so a frame goes back to back."""
+        lim = self.rcvbuf * 3 // 4
+        return None if PACKETS * PACKET_COST <= lim else lim
 
     # ---- readbacks, with the fault --------------------------------------------------------
     def readback(self, name, value):
@@ -228,13 +284,49 @@ class Module:
         ts = int((time.monotonic() - self.t0) * 1e7)
         raw = img.tobytes()
         step = PIXELS_PER_PACKET * 2
-        for p in range(PACKETS):
-            hdr = HEADER.pack(frame, exp // 100, p, 0, ts, self.module_id,
-                              self.position[0], self.position[1], 0, 0, 0, JUNGFRAU, HEADER_VERSION)
-            self.data.sendto(hdr + raw[p * step:(p + 1) * step], dest)
+        p = 0
+        while p < PACKETS:                  # in bursts that fit in the receiver's buffer
+            n = PACKETS - p if self.limit is None else min(PACKETS - p, self.room(dest))
+            for k in range(p, p + n):
+                hdr = HEADER.pack(frame, exp // 100, k, 0, ts, self.module_id,
+                                  self.position[0], self.position[1], 0, 0, 0, JUNGFRAU, HEADER_VERSION)
+                self.data.sendto(hdr + raw[k * step:(k + 1) * step], dest)
+            p += n
         with self.lock:
             self.counts['frames'] += 1
             self.counts['packets'] += PACKETS
+
+    def room(self, dest):
+        """How many packets fit in the receiver's buffer now (its queue below self.limit); waits
+        while none fit, up to ROOM_WAIT_S, then answers all of them.  All of them too when the
+        receiving socket is not in /proc/net/udp (not bound yet, or not on this host)."""
+        end = None
+        while True:
+            q = self.receiver_queue(dest)
+            if q is None:
+                return PACKETS
+            fit = (self.limit - q) // PACKET_COST
+            if fit > 0:
+                return fit
+            now = time.monotonic()
+            if end is None:
+                end = now + ROOM_WAIT_S
+                with self.lock:
+                    self.counts['room_waits'] += 1
+            elif now > end:
+                with self.lock:
+                    self.counts['room_timeouts'] += 1
+                return PACKETS
+            time.sleep(0.0002)
+
+    def receiver_queue(self, dest):
+        """Bytes queued at the receiving socket (None if it is not found); keeps its drops."""
+        q = udp_queue(*dest)
+        if q is None:
+            return None
+        with self.lock:
+            self.counts['receiver_drops'] = q[1]
+        return q[0]
 
     def acquire(self, stop):
         """The armed module: one frame per trigger, or per period in auto timing."""
@@ -588,20 +680,29 @@ def main(argv=None):
                         help='board id (F_GET_SERIAL_NUMBER)')
     parser.add_argument('--fault', default=os.environ.get(ENV_FAULT),
                         help='<setting>[=<value>]: that setting reads back wrong (default $%s)' % ENV_FAULT)
+    parser.add_argument('--rcvbuf', type=int, default=None,
+                        help='the receiver\'s buffer in bytes (default: what a %d B SO_RCVBUF request '
+                        'gets on this host, as MemPoolSim asks); a frame is sent in bursts that fit' % RCVBUF_ASK)
     parser.add_argument('-v', action='store_true', help='log every call')
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.v else logging.INFO,
                         format='%(asctime)s simsls %(levelname)s %(message)s')
     fault = parse_fault(args.fault)
     sim = SimSls(args.port, seed=args.seed, module_id=args.module_id, serial=args.serial,
-                 fault=fault).start()
+                 fault=fault, rcvbuf=args.rcvbuf).start()
+    m = sim.module
     log.info('Jungfrau module stand-in (sls %s): control 127.0.0.1:%d, stop :%d, trigger udp :%d, '
-             'seed %#x, module id %#x%s', VERSION.decode(), args.port, args.port + 1, args.port,
-             args.seed, args.module_id, ', FAULT %s' % (fault,) if fault else '')
+             'seed %#x, module id %#x%s; receiver buffer %d B: %s', VERSION.decode(), args.port,
+             args.port + 1, args.port, args.seed, args.module_id, ', FAULT %s' % (fault,) if fault else '',
+             m.rcvbuf, 'a frame fits, sent back to back' if m.limit is None else
+             'a frame (%d B of it) is sent in bursts that keep the queue under %d B'
+             % (PACKETS * PACKET_COST, m.limit))
     stop = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
         signal.signal(sig, lambda *a: stop.set())
     while not stop.wait(10):
+        if m.dst_port:
+            m.receiver_queue((ip_str(m.dst_ip), m.dst_port))     # its drops, for the log
         with sim.module.lock:
             log.info('status %d, next frame %d, %s', sim.module.status, sim.module.next_frame,
                      sim.module.counts)

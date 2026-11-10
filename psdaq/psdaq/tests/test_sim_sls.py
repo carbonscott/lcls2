@@ -155,15 +155,19 @@ def test_unknown_fault_setting_is_refused():
         simsls.parse_fault('nosuchsetting')
 
 
-def test_one_frame_per_trigger(sim):
+@pytest.mark.parametrize('slow', [False, True])
+def test_one_frame_per_trigger(sim, slow):
+    """Every frame arrives whole through a 256 KiB receive buffer (a frame costs a buffer 2 MiB),
+    also when the reader takes 1 ms per packet: simsls sends a frame in bursts that fit (sent back
+    to back, a frame overflowed the 416 KiB buffer the DRP gets where net.core.rmem_max is the
+    default: 'sent 78 of 128 packets' in matrix run h1 at b14885af3)."""
     p = sim.port
     rx = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 8 << 20)
-    if rx.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF) < 2 * 128 * 8240:
-        rx.close()          # the sender thread shares this process's GIL: a frame must fit
-        pytest.skip('UDP receive buffer below 2 MiB (net.core.rmem_max): a frame would overflow it')
+    rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 128 << 10)
     rx.bind(('127.0.0.1', 0))
     rx.settimeout(5)
+    sim.module.rcvbuf = rx.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
+    assert sim.module.rcvbuf <= 256 << 10 and sim.module.limit is not None     # a frame does not fit
     configure(p, rx.getsockname()[1])
     ok(p, 107, 'Q', (1,))                                      # BeginRun: next frame number 1
     trig = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -178,6 +182,8 @@ def test_one_frame_per_trigger(sim):
         packets = {}
         while len(packets) < 128:
             d = rx.recv(9000)
+            if slow:
+                time.sleep(0.001)
             assert len(d) == 48 + 8192
             h = simsls.HEADER.unpack(d[:48])
             assert h[0] == frame and h[5] == 0x2a0 and h[11] == simsls.JUNGFRAU
@@ -187,8 +193,29 @@ def test_one_frame_per_trigger(sim):
     ok(p + 1, 20)                                              # F_STOP_ACQUISITION
     assert ok(p + 1, 21, fmt_ret='i') == simsls.IDLE
     assert ok(p, 108, fmt_ret='Q') == 3                        # F_GET_NEXT_FRAME_NUMBER
+    c = sim.module.counts
+    assert c['receiver_drops'] == 0 and c['room_timeouts'] == 0 and (c['room_waits'] > 0 or not slow), c
     rx.close()
     trig.close()
+
+
+def test_udp_queue_reads_the_receivers_line(tmp_path):
+    """udp_queue: rx_queue and drops of the socket bound to ip:port, from /proc/net/udp's format."""
+    table = tmp_path / 'udp'
+    table.write_text(
+        '   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode ref pointer drops\n'
+        '  901: 0100007F:7A50 00000000:0000 07 00000000:00041000 00:00000000 00000000  1000        0 123 2 0000000000000000 42\n')
+    assert simsls.udp_queue('127.0.0.1', 0x7A50, str(table)) == (0x41000, 42)
+    assert simsls.udp_queue('127.0.0.1', 0x7A51, str(table)) is None
+    rx = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)       # and this host's own table
+    rx.bind(('127.0.0.1', 0))
+    tx = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    for _ in range(3):
+        tx.sendto(b'x' * 8240, rx.getsockname())
+    queued, drops = simsls.udp_queue(*rx.getsockname())
+    assert queued >= 3 * 8240 and drops == 0
+    rx.close()
+    tx.close()
 
 
 @pytest.mark.skipif(shutil.which('sls_detector_put') is None, reason='no slsDetectorPackage client')
