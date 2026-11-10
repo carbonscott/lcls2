@@ -291,6 +291,7 @@ class Pipeline(unittest.TestCase):
         self.assertIn('--tmpfs / ', s)
         self.assertNotIn('--bind / /', s)
         self.assertNotIn('.ssh', s)
+        self.assertIn('--ro-bind /opt/tools /opt/tools', ' '.join(run.sandbox('/x/ws', '/x/logs', '/l', ['/opt/tools'])))
 
 
 if __name__ == '__main__':

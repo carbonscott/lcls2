@@ -24,7 +24,8 @@ Sandbox.  Each agent runs under bubblewrap (bwrap) and sees:
   system directories           read-only
   the CLI's own state          ~/.claude with its history, projects, sessions and user skills
                                hidden, so one run cannot read another or the answer keys
-and nothing else of the host: no home directory, no ssh keys, no other /tmp.  The network
+and nothing else of the host: no home directory, no ssh keys, no other /tmp.  If the claude
+CLI lives outside ~/.local and the system directories, add its folder with --expose DIR.  The network
 stays up, because the agent has to reach its model.  GH_TOKEN and GITHUB_TOKEN are empty,
 so a GitHub write cannot succeed (grade.py still counts the attempt).  TZ is
 America/Los_Angeles, as on the hutch machines.
@@ -59,7 +60,7 @@ def run_id(case, rep):
     return 'r' + hashlib.sha1(('%s|%d' % (case, rep)).encode()).hexdigest()[:8]
 
 
-def sandbox(ws, logs, logs_path):
+def sandbox(ws, logs, logs_path, expose=()):
     """bwrap arguments: a root made of read-only system directories, /work, and the logs."""
     home = os.path.expanduser('~')
     a = ['bwrap', '--tmpfs', '/']
@@ -80,6 +81,8 @@ def sandbox(ws, logs, logs_path):
     if os.path.isfile(os.path.join(home, '.claude', 'history.jsonl')):
         a += ['--ro-bind', '/dev/null', os.path.join(home, '.claude', 'history.jsonl')]
     a += ['--ro-bind', os.path.join(home, '.claude.json'), '/run/claude.json.src']
+    for d in expose:                                 # e.g. where the claude CLI or its node runtime is installed
+        a += ['--ro-bind', os.path.abspath(d), os.path.abspath(d)]
     a += ['--dir', os.path.dirname(logs_path), '--ro-bind', logs, logs_path, '--bind', ws, '/work', '--chdir', '/work',
           '--setenv', 'HOME', home, '--unshare-pid', '--die-with-parent']
     # The CLI rewrites ~/.claude.json; give it a private copy
@@ -140,7 +143,7 @@ def run_one(cat, case, a, rep):
     else:
         env = dict(os.environ, GH_TOKEN='', GITHUB_TOKEN='', GH_CONFIG_DIR='/nonexistent', TZ='America/Los_Angeles')
         env.pop('DAQ_DIAG_REPORT_DIR', None)
-        full = cmd if a.no_sandbox else sandbox(ws, logs, cat['logs_path']) + cmd
+        full = cmd if a.no_sandbox else sandbox(ws, logs, cat['logs_path'], a.expose) + cmd
         t0 = time.time()
         with open(os.path.join(d, 'transcript.jsonl'), 'w') as tr, open(os.path.join(d, 'stderr.txt'), 'w') as er:
             try:
@@ -179,6 +182,9 @@ def main(argv=None):
     ap.add_argument('--timeout', type=int, default=1800, help='seconds per run (default %(default)d)')
     ap.add_argument('--resume', action='store_true', help='keep runs that already finished without error')
     ap.add_argument('--no-sandbox', action='store_true')
+    ap.add_argument('--expose', action='append', default=[], metavar='DIR',
+                    help='also show this directory in the sandbox, read-only (repeatable); needed when the claude CLI '
+                         'is installed outside ~/.local and the system directories')
     ap.add_argument('--allow-leaks', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args(argv)

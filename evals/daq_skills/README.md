@@ -9,6 +9,37 @@ hardware-free sim (`psdaq/psdaq/sim`), which runs the real `control`, `teb`, `me
 programs, so the files have the production layout and messages:
 `YYYY/MM/<DD_HH:MM:SS>_<host>:<component>.log[.zst]`.
 
+## Quick start for skill authors (S3DF)
+
+The 45 log directories are already built and readable by the `ps-data` group, so you do
+not need the sim or `harvest.py`. You need this folder, the `claude` CLI logged in to your
+own account, and `bwrap` and `zstd` (both are on the S3DF interactive nodes).
+
+```bash
+git clone --depth 1 -b evals/daq-skills-v2 https://github.com/carbonscott/lcls2 daq-evals
+cd daq-evals/evals/daq_skills
+python3 -m unittest discover -s tests                          # 29 tests, OK, no model calls
+WORK=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2    # the built log directories (read-only use)
+OUT=$HOME/daq-eval-results                                       # your results go here
+SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
+
+python3 run.py --work $WORK --arm mine --skills $SK  --out $OUT --case reg-cfg-tt --case day-window-utc   # 2 runs, about a minute
+python3 run.py --work $WORK --arm none --skills none --out $OUT --case reg-cfg-tt --case day-window-utc
+python3 judge.py --results $OUT && python3 grade.py --results $OUT
+
+# the whole core set (34 cases per arm, about 15 minutes with --jobs 3, about $1.30 of usage per run on the default model)
+python3 run.py --work $WORK --arm mine --skills $SK  --out $OUT --jobs 3 --resume
+python3 run.py --work $WORK --arm none --skills none --out $OUT --jobs 3 --resume
+python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 report.py --results $OUT --out $OUT/report.html
+```
+
+- Use any arm name; edit a skill, pick a new name (`--arm mine-v2`) and compare the summary lines.
+- If `claude` is not under `~/.local` or a system directory, add `--expose <its folder>`.
+- No `ps-data` access, or not on S3DF: copy `/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2.tgz` (8.5 MB),
+  unpack it, and point `--work` at the folder that holds `pools/`.
+- Tested: the unit tests and the sandbox on S3DF (Python 3.6); real agent runs on a Linux VM (Python 3.12).
+  A real agent run on S3DF itself has not been tried yet.
+
 ## The cases
 
 `catalog.json` has 53 cases over 45 log directories ("pools"). 34 are the `core` set, 17
