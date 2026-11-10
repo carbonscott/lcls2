@@ -426,10 +426,18 @@ def feature_unavailable(x, hosts=None):
 
 # --- one DAQ: a type, or the programs run ---------------------------------------------------
 
+def type_up_args(det, drp='drp'):
+    """up's options for one type: --drp for the GPU DRP, and --rate for a type that runs at a rate of its own
+    (daq_sim's table, 'rate': jungfrau at 100 Hz, as the RUNBOOK runs it)."""
+    table = ds.GPU_SIM_TYPES if drp == 'drp_gpu' else ds.SIM_TYPES
+    rate = (table.get(det) or {}).get('rate')
+    return ([] if drp == 'drp' else ['--drp', drp]) + ([] if rate is None else ['--rate', str(rate)])
+
+
 def run_type(args, det, wd, env, kill=False, drp='drp'):
-    """One type's DAQ: up --det (--drp drp_gpu for the GPU DRP), a recorded cycle, down; assertions
-    types/<det>/<what> (types/drp_gpu:<det>/<what>)."""
-    return run_daq(args, f'types/{type_key(det, drp)}', det, wd, env, [] if drp == 'drp' else ['--drp', drp], [],
+    """One type's DAQ: up --det (--drp drp_gpu for the GPU DRP; the type's own --rate), a recorded cycle, down;
+    assertions types/<det>/<what> (types/drp_gpu:<det>/<what>)."""
+    return run_daq(args, f'types/{type_key(det, drp)}', det, wd, env, type_up_args(det, drp), [],
                    kill=kill, drp=drp)
 
 

@@ -191,10 +191,14 @@ SIM_TYPES = {
     # jungfrau: Drp::Jungfrau drives its module through sls::Detector at slsHosts, here simsls
     # (psdaq.sim.simsls) on loopback; MemPoolSim triggers the module per L1Accept and frames the
     # 128 UDP packets it sends to sim_udp_port (1 MiB per event), and the config DB entry points
-    # the module's data there (user.kcu_ip, user.port; 'sets', applied by configdb_seed --set)
+    # the module's data there (user.kcu_ip, user.port; 'sets', applied by configdb_seed --set).
+    # 'rate': the L1Accept rate it runs at (RUNBOOK §3j: up --rate 100), which daq_sim matrix passes on:
+    # simsls sends each frame's 128 packets from python, and at the default 1 kHz the DRP fell about 25
+    # frames behind, so the frames still queued at Disable, after the DRP had stopped the module, came
+    # with no data ('Missing data', 'did not respond to disable phase 2')
     'jungfrau':    {'kwargs': 'sim_dma_size=0x110000,sim_dma_count=128,segNums=0,'
                               'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
-                    'sls': True,
+                    'sls': True, 'rate': 100,
                     'sets': ('user.kcu_ip=127.0.0.1', 'user.jungfrau_ip=127.0.0.1',
                              'user.port={sls_data}')},
 }
@@ -225,7 +229,7 @@ GPU_SIM_TYPES = {
     'jungfrau':   {'kwargs': 'reducer=NoOpReducer,sim_dma_size=0x110000,sim_dma_count=64,'
                              'dmaBufSize=1179648,dmaBufCount=64,segNums=0,'
                              'slsHosts=127.0.0.1:{sls},sim_udp_port={sls_data}',
-                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets']},
+                   'sls': True, 'sets': SIM_TYPES['jungfrau']['sets'], 'rate': SIM_TYPES['jungfrau']['rate']},
     # Gpu::EpixUHR3x2 configures through Drp::EpixUHR3x2, so the readout system, its config DB
     # entry and files and the wait for its init are drp's (SIM_TYPES); MemPoolSim sends the same
     # 336 x 576 panel (tdest 3).  At BeginRun it fetches the panel's pedestals and gains from the

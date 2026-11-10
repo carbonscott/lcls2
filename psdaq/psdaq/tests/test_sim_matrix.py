@@ -437,3 +437,11 @@ def test_matrix_runs_the_gpu_types_on_the_gpu_host(tmp_path, monkeypatch, capsys
     # without --gpu-host the det:drp_gpu RUN row stays one the matrix cannot run
     rc = matrix.cmd_matrix(args(workdir=str(tmp_path / 'n'), only=['types']))
     assert rc == 1 and 'types/det:drp_gpu:g1/runnable' in capsys.readouterr().out
+
+
+def test_a_type_runs_at_its_own_rate():
+    """jungfrau runs at 100 Hz, as the RUNBOOK runs it (its module stand-in sends 128 packets a frame from python),
+    with drp and with drp_gpu; a type with no rate of its own takes up's default."""
+    assert matrix.type_up_args('jungfrau') == ['--rate', '100']
+    assert matrix.type_up_args('jungfrau', 'drp_gpu') == ['--drp', 'drp_gpu', '--rate', '100']
+    assert matrix.type_up_args('epix100') == [] and matrix.type_up_args('fakecam', 'drp_gpu') == ['--drp', 'drp_gpu']
