@@ -201,7 +201,7 @@ srun --jobid=$JOB --overlap --ntasks=1 --cpus-per-task=2 --mem=4G bash -c "cd $R
 ```
 
 The environment matters: `sim_env.sh` sets the loopback-only EPICS lists (`EPICS_PVA_AUTO_ADDR_LIST=NO`, ...) without
-which the server refuses to start (exit 2) rather than search beyond the node.  `DAQ_SIM_WORKDIR=$WD` (`$WD` as you
+which the server refuses to start rather than search beyond the node (`NonLoopbackError: --pvgui: EPICS_PVA_AUTO_ADDR_LIST=''; refusing ...`, a Python traceback, exit 1).  `DAQ_SIM_WORKDIR=$WD` (`$WD` as you
 give it to `daq_sim -w`) tags the server as the DAQ's, so `daq_sim down -w $WD` stops it with the rest (`down` stops
 every process of yours that carries the tag: `stopping leftover (tagged) pid <pid>`).  Without the tag, `down` leaves
 it running: stop it yourself with Ctrl-C in its step, or `scancel <job>.<step>` (your own step).
