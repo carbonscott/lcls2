@@ -53,9 +53,9 @@ salloc --no-shell --account=lcls:prjdat21 --qos=normal --partition=milano --excl
 squeue -u $USER                       # note the JOBID; below: JOB=<that id>
 JOB=<jobid>
 
-# fresh checkout of the branch that holds psdaq/psdaq/sim (agentify)
+# fresh checkout of the branch that holds psdaq/psdaq/sim (sim-main, the fork's default branch)
 ROOT=/sdf/data/lcls/ds/prj/<your project>/scratch/<you>     # any directory on a shared filesystem
-cd $ROOT && git clone https://github.com/carbonscott/lcls2.git && cd lcls2 && git checkout agentify
+cd $ROOT && git clone https://github.com/carbonscott/lcls2.git && cd lcls2 && git checkout sim-main
 # or a pull request's head before it is merged (here #42): fetch it into a branch of your own
 #   git fetch origin pull/42/head:pr-42 && git checkout pr-42 && git log -1 --format=%h   # the PR's head commit
 
