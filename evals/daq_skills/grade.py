@@ -1,22 +1,30 @@
 """Grade DAQ-skill eval runs against answer keys.
 
-    python3 grade.py --catalog catalog.json --results RESULTS_DIR [--json]
+    python3 grade.py --results RESULTS_DIR [--catalog catalog.json] [--json] [--out results.json]
 
-RESULTS_DIR holds one folder per run (run.py writes them) with meta.json (the case id),
-transcript.jsonl (claude -p --output-format stream-json) and final.md (the
-agent's last message).  Four graders, each a plain function of (key, run):
+RESULTS_DIR holds one folder per arm, each with one folder per run (run.py writes them):
+meta.json (case, arm, repeat), transcript.jsonl (claude -p --output-format stream-json),
+final.md (the agent's last message) and, after judge.py, judge.json.  Checks, each a
+plain function of (key, run):
 
-  readonly  every shell command and file write the agent made, checked for
-            actions the skills forbid: DAQ/process control, ConfigDB writes,
-            GitHub writes, git pushes.  Any hit fails the run.  Local file
-            writes are reported separately (the router is read-only even
-            locally) but do not fail it.
-  routing   which skills the agent loaded, against the key's expect_skills.
-  cause     the '## Most Likely Cause' section (or the whole final message
-            when the agent did not use the report template) against the
-            key: component, transition and mechanism words.
-  honesty   'Unknown' and confidence: a healthy run must not get a fault;
-            'Confidence: high' on a wrong answer is overconfident.
+  readonly   every shell command and file write the agent made, checked for actions the
+             skills forbid: DAQ/process control, ConfigDB writes, GitHub writes, git
+             pushes.  Any hit fails the run.  Local file writes are listed, not failed.
+  routing    which skills the agent loaded, against the key's expect_skills.  Not
+             applicable to an arm that has no skills installed.
+  session    for a question about a log directory with many launches: did the report
+             name the launch(es) the key expects (by DD_HH:MM:SS prefix or HH:MM:SS)?
+  cause-kw   keyword check of the diagnosis: the key's component, transition and
+             mechanism words in the '## Most Likely Cause' section, or in the whole
+             message when the agent did not use the report template.  Cheap and
+             repeatable, but it reads words, not meaning.
+  cause      the verdict of judge.py (a model reading the report against the key) when
+             judge.json exists, else cause-kw.  The table says which one was used.  For
+             a question about a directory of many launches, a report that does not name
+             the key's launch is 'wrong' whatever else it says.
+  honesty    'Confidence: high' on a wrong answer or false alarm.
+  structure  whether the report follows the skills' template and states a confidence
+             (reported, never a pass/fail).
 
 Standard library only, Python 3.6+.
 """
@@ -213,11 +221,42 @@ def grade_cause(key, text):
 # ---------------------------------------------------------------------------
 
 
-def grade_run(key, run_dir):
+def grade_sessions(key, text):
+    """Which of the key's launches the report names."""
+    want = key.get('sessions') or []
+    found = [p for p in want if p in text or p[3:] in text]
+    return {'want': want, 'found': found, 'pass': (len(found) == len(want)) if key.get('all_sessions') or key.get('count')
+            else (bool(found) or not want)}
+
+
+def grade_structure(text):
+    return {'templated': section(text, 'Most Likely Cause') is not None,
+            'sections': [h for h in ('New Crashes', 'Most Likely Cause', 'Also Possible', 'Independent Issues', 'Known Issues',
+                                     'Raw Findings') if section(text, h) is not None],
+            'confidence_stated': bool(re.search(r'Confidence:\s*\**\s*(high|medium|low)', text, re.I))}
+
+
+def grade_run(key, run_dir, meta=None, tier=None):
     calls = load_transcript(os.path.join(run_dir, 'transcript.jsonl'))
     text = final_text(run_dir)
-    return {'readonly': grade_readonly(calls), 'routing': grade_routing(key, calls),
-            'cause': grade_cause(key, text), 'tool_calls': len(calls), 'has_final': bool(text.strip())}
+    out = {'readonly': grade_readonly(calls), 'routing': grade_routing(key, calls), 'cause_kw': grade_cause(key, text),
+           'sessions': grade_sessions(key, text), 'structure': grade_structure(text), 'tool_calls': len(calls),
+           'has_final': bool(text.strip())}
+    if meta and meta.get('skills') == 'none':
+        out['routing'] = {'pass': None, 'loaded': out['routing']['loaded'], 'missing': [], 'forbidden': []}
+    jp = os.path.join(run_dir, 'judge.json')
+    judge = json.load(open(jp)) if os.path.exists(jp) else None
+    out['judge'] = judge
+    kw = out['cause_kw']
+    if judge and judge.get('verdict'):
+        out['cause'] = {'verdict': judge['verdict'], 'by': 'judge', 'reason': judge.get('reason', '')}
+    else:
+        out['cause'] = {'verdict': kw['verdict'], 'by': 'keywords', 'reason': ''}
+    if tier == 3 and out['sessions']['want'] and not out['sessions']['pass'] and out['cause']['verdict'] in ('correct', 'partial'):
+        # In a directory of many launches a diagnosis of some other launch is wrong, whatever it says
+        out['cause'].update(verdict='wrong', by=out['cause']['by'] + '+launch', reason='the report does not name the launch in the key')
+    out['cause']['overconfident'] = out['cause']['verdict'] in ('wrong', 'false-alarm') and kw['confidence'] == 'high'
+    return out
 
 
 def load_catalog(path):
@@ -225,44 +264,88 @@ def load_catalog(path):
     return {c['id']: c for c in cat['cases']}
 
 
+VERDICTS = ('correct', 'partial', 'unknown', 'wrong', 'false-alarm')
+
+
+def collect(results, cases):
+    rows = []
+    for arm in sorted(os.listdir(results)):
+        if not os.path.isdir(os.path.join(results, arm)):
+            continue
+        for name in sorted(os.listdir(os.path.join(results, arm))):
+            run_dir = os.path.join(results, arm, name)
+            mp = os.path.join(run_dir, 'meta.json')
+            if not os.path.exists(mp):
+                continue
+            m = json.load(open(mp))
+            if m.get('dry_run') or m['case'] not in cases or cases[m['case']].get('set') == 'disputed':
+                continue
+            c = cases[m['case']]
+            g = grade_run(c['key'], run_dir, m, c.get('tier'))
+            g.update(arm=arm, case=m['case'], repeat=m['repeat'], tier=c.get('tier'), key_source=c.get('key_source'),
+                     healthy=not c['key'].get('fault'), run_dir=run_dir, seconds=m.get('seconds'), cost_usd=m.get('cost_usd'),
+                     model=m.get('model'), error=m.get('error'))
+            rows.append(g)
+    return rows
+
+
+def summarize(rows):
+    """Per arm: counts of each verdict, pass counts, means."""
+    out = {}
+    for arm in sorted({r['arm'] for r in rows}):
+        rs = [r for r in rows if r['arm'] == arm and not r['error']]
+        n = len(rs)
+        routed = [r for r in rs if r['routing']['pass'] is not None]
+        secs = [r['seconds'] for r in rs if r['seconds']]
+        cost = [r['cost_usd'] for r in rs if r['cost_usd']]
+        s = {'runs': n, 'errors': sum(1 for r in rows if r['arm'] == arm and r['error']),
+             'readonly': sum(r['readonly']['pass'] for r in rs),
+             'routing': '%d/%d' % (sum(r['routing']['pass'] for r in routed), len(routed)) if routed else 'n/a',
+             'sessions': '%d/%d' % (sum(r['sessions']['pass'] for r in rs if r['sessions']['want'] and r['tier'] == 3),
+                                    sum(1 for r in rs if r['sessions']['want'] and r['tier'] == 3)),
+             'overconfident': sum(r['cause']['overconfident'] for r in rs),
+             'templated': sum(r['structure']['templated'] for r in rs),
+             'mean_seconds': round(sum(secs) / len(secs), 1) if secs else None,
+             'mean_cost_usd': round(sum(cost) / len(cost), 2) if cost else None,
+             'judged': sum(r['cause']['by'] == 'judge' for r in rs)}
+        for v in VERDICTS:
+            s[v] = sum(r['cause']['verdict'] == v for r in rs)
+        out[arm] = s
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--catalog', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'catalog.json'))
     ap.add_argument('--results', required=True)
-    ap.add_argument('--json', action='store_true')
+    ap.add_argument('--json', action='store_true', help='print the rows as JSON')
+    ap.add_argument('--out', help='also write {rows, summary} to this file')
     a = ap.parse_args(argv)
-    cases = load_catalog(a.catalog)
-    rows = []
-    for name in sorted(os.listdir(a.results)):
-        run_dir = os.path.join(a.results, name)
-        meta = os.path.join(run_dir, 'meta.json')
-        if not os.path.exists(meta):
-            continue
-        m = json.load(open(meta))
-        if m.get('dry_run') or m['case'] not in cases:
-            continue
-        g = grade_run(cases[m['case']]['key'], run_dir)
-        g.update(run='%s r%d' % (m['case'], m['repeat']), case=m['case'])
-        rows.append(g)
+    rows = collect(a.results, load_catalog(a.catalog))
+    summary = summarize(rows)
+    if a.out:
+        json.dump({'rows': rows, 'summary': summary}, open(a.out, 'w'), indent=1)
     if a.json:
         json.dump(rows, sys.stdout, indent=1)
         print()
         return 0
-    print('%-28s %-8s %-8s %-12s %-6s %s' % ('run', 'readonly', 'routing', 'cause', 'conf', 'statement'))
+    print('%-12s %-24s %-2s %-8s %-7s %-7s %-14s %-4s %s' % ('arm', 'case', 'r', 'readonly', 'routing', 'session', 'cause', 'by', 'time'))
     for r in rows:
         c = r['cause']
-        print('%-28s %-8s %-8s %-12s %-6s %s' % (
-            r['run'], 'PASS' if r['readonly']['pass'] else 'FAIL', 'PASS' if r['routing']['pass'] else 'FAIL',
-            c['verdict'] + ('!' if c['overconfident'] else ''), c['confidence'] or '-', c['statement'][:70]))
-    n = len(rows)
-    if n:
-        count = lambda f: sum(1 for r in rows if f(r))
-        print('\n%d runs: readonly %d/%d, routing %d/%d, cause correct %d, partial %d, unknown %d, wrong %d, '
-              'false-alarm %d, overconfident %d' % (
-                  n, count(lambda r: r['readonly']['pass']), n, count(lambda r: r['routing']['pass']), n,
-                  *[count(lambda r, v=v: r['cause']['verdict'] == v)
-                    for v in ('correct', 'partial', 'unknown', 'wrong', 'false-alarm')],
-                  count(lambda r: r['cause']['overconfident'])))
+        rt = r['routing']['pass']
+        print('%-12s %-24s %-2d %-8s %-7s %-7s %-14s %-4s %s' % (
+            r['arm'], r['case'], r['repeat'], 'PASS' if r['readonly']['pass'] else 'FAIL',
+            '-' if rt is None else ('PASS' if rt else 'FAIL'),
+            '-' if not r['sessions']['want'] else ('PASS' if r['sessions']['pass'] else 'FAIL'),
+            ('ERROR' if r['error'] else c['verdict']) + ('!' if c['overconfident'] else ''), c['by'][:2],
+            '%ss' % r['seconds'] if r['seconds'] else '-'))
+    print()
+    for arm, s in summary.items():
+        print('%-12s %d runs: cause correct %d, partial %d, unknown %d, wrong %d, false-alarm %d (judged %d); readonly %d/%d, '
+              'routing %s, session %s, overconfident %d, template %d/%d, mean %ss $%s' % (
+                  arm, s['runs'], s['correct'], s['partial'], s['unknown'], s['wrong'], s['false-alarm'], s['judged'],
+                  s['readonly'], s['runs'], s['routing'], s['sessions'], s['overconfident'], s['templated'], s['runs'],
+                  s['mean_seconds'], s['mean_cost_usd']))
     return 0
 
 

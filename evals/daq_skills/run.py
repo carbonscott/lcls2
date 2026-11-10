@@ -1,128 +1,202 @@
-"""Run an agent on harvested eval cases and keep what grade.py needs.
+"""Run an agent on eval cases and keep what grade.py needs.
 
-    python3 run.py --cases CASES_DIR --skills SKILLS_DIR --out RESULTS_DIR
-                   [--case ID ...] [--repeats N] [--agent-cmd CMD] [--dry-run]
+    python3 run.py --work WORK_DIR --arm NAME --skills SKILLS_DIR|none --out RESULTS_DIR
+                   [--set core|full] [--case ID ...] [--repeats N] [--jobs N] [--model M]
+                   [--resume] [--dry-run] [--no-sandbox] [--agent-cmd CMD]
 
-For each case and repeat, makes RESULTS_DIR/<case_dir>__r<N>/ a fresh workspace, named
-opaquely so the path does not hint at the case (meta.json, written after the run,
-records the case id):
-  logs/                 a copy of the case's logs (the agent may do anything to the copy)
-  .claude/skills/<s>/   a copy of each skill in SKILLS_DIR (e.g. a 'git archive' of
-                        psana/psana/skills at the commit under test)
-  prompt.txt            the prompt, from the catalog's templates and case.json
-then runs the agent there with that prompt on stdin and saves
-  transcript.jsonl      its stream-json output, final.md its last message, meta.json.
+An "arm" is one configuration under test, e.g. the skills at some commit, or no skills.
+For each case and repeat this makes RESULTS_DIR/<arm>/<run id>/ (the id is opaque) with
+  ws/                  the agent's working directory; ws/.claude/skills/<s>/ holds a copy of
+                       each skill in SKILLS_DIR (a 'git archive' of psana/psana/skills at the
+                       commit under test), or nothing for --skills none
+  prompt.txt           the catalog's context and the case's question
+  transcript.jsonl     the agent's stream-json output;  final.md  its last message
+  meta.json            case, arm, repeat, model, seconds, exit status, tokens
 
 The default agent is Claude Code headless:
   claude -p --output-format stream-json --verbose --allowedTools Bash,Read,Grep,Glob,Skill
-GitHub writes cannot succeed: GH_TOKEN, GITHUB_TOKEN and GH_CONFIG_DIR are pointed at
-nothing, so a 'gh issue create' fails (grade.py still counts the attempt).  Nothing here
-can reach a DAQ: the cases are logs only.
+         --setting-sources project --strict-mcp-config
+(only the skills in ws/ are visible: no user skills, no MCP servers).
 
-Each run uses the subscription's usage limit; --dry-run writes the workspaces and prompts
-without starting an agent.  Standard library only, Python 3.6+.
+Sandbox.  Each agent runs under bubblewrap (bwrap) and sees:
+  /work                        its working directory (read-write)
+  <catalog logs_path>          the case's log directory, read-only, at the production path
+  system directories           read-only
+  the CLI's own state          ~/.claude with its history, projects, sessions and user skills
+                               hidden, so one run cannot read another or the answer keys
+and nothing else of the host: no home directory, no ssh keys, no other /tmp.  The network
+stays up, because the agent has to reach its model.  GH_TOKEN and GITHUB_TOKEN are empty,
+so a GitHub write cannot succeed (grade.py still counts the attempt).  TZ is
+America/Los_Angeles, as on the hutch machines.
+
+--no-sandbox runs the agent directly in ws/ with the real path of the logs in the prompt;
+it is for tests with a scripted agent (--agent-cmd).  Each real run uses the model
+subscription's usage; --dry-run writes the workspaces and prompts without starting an agent.
+Standard library only, Python 3.6+.
 """
 
 import argparse
+import concurrent.futures
 import datetime
+import hashlib
 import json
 import os
 import shlex
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 
-from harvest import case_dir
+from harvest import pool_id
 
-DEFAULT_AGENT = ('claude -p --output-format stream-json --verbose '
-                 '--allowedTools Bash,Read,Grep,Glob,Skill')
-
-
-def prompt_for(catalog, case, info, logs):
-    t = catalog['prompts']
-    first = info.get('first') or ''
-    last = info.get('last') or first
-    fill = {'logs': logs, 'date': first[:10], 'start': first[11:16], 'end': last[11:16]}
-    return (t['context'] + '\n\n' + t[case['prompt']]).format(**fill)
+AGENT = ['claude', '-p', '--output-format', 'stream-json', '--verbose', '--allowedTools', 'Bash,Read,Grep,Glob,Skill',
+         '--setting-sources', 'project', '--strict-mcp-config']
+HIDE = ['projects', 'skills', 'plugins', 'todos', 'shell-snapshots', 'file-history', 'sessions', 'backups', 'paste-cache',
+        'feedback', 'cache', 'session-env']
 
 
-def final_from_stream(path):
-    """The 'result' text of a stream-json transcript, else the last assistant text."""
-    result, last = None, ''
+def run_id(case, rep):
+    return 'r' + hashlib.sha1(('%s|%d' % (case, rep)).encode()).hexdigest()[:8]
+
+
+def sandbox(ws, logs, logs_path):
+    """bwrap arguments: a root made of read-only system directories, /work, and the logs."""
+    home = os.path.expanduser('~')
+    a = ['bwrap', '--tmpfs', '/']
+    for d in ('/usr', '/etc', '/opt', '/var', '/lib', '/lib64', '/bin', '/sbin'):
+        if os.path.islink(d):
+            a += ['--symlink', os.readlink(d), d]
+        elif os.path.isdir(d):
+            a += ['--ro-bind', d, d]
+    a += ['--dev', '/dev', '--proc', '/proc', '--tmpfs', '/tmp', '--tmpfs', '/run']
+    if os.path.exists('/run/systemd/resolve'):
+        a += ['--ro-bind', '/run/systemd/resolve', '/run/systemd/resolve']
+    a += ['--dir', home, '--bind', os.path.join(home, '.claude'), os.path.join(home, '.claude')]
+    if os.path.isdir(os.path.join(home, '.local')):
+        a += ['--ro-bind', os.path.join(home, '.local'), os.path.join(home, '.local')]
+    for name in HIDE:
+        if os.path.isdir(os.path.join(home, '.claude', name)):
+            a += ['--tmpfs', os.path.join(home, '.claude', name)]
+    if os.path.isfile(os.path.join(home, '.claude', 'history.jsonl')):
+        a += ['--ro-bind', '/dev/null', os.path.join(home, '.claude', 'history.jsonl')]
+    a += ['--ro-bind', os.path.join(home, '.claude.json'), '/run/claude.json.src']
+    a += ['--dir', os.path.dirname(logs_path), '--ro-bind', logs, logs_path, '--bind', ws, '/work', '--chdir', '/work',
+          '--setenv', 'HOME', home, '--unshare-pid', '--die-with-parent']
+    # The CLI rewrites ~/.claude.json; give it a private copy
+    return a + ['/bin/sh', '-c', 'cp /run/claude.json.src "$HOME/.claude.json"; exec "$@"', 'sh']
+
+
+def read_stream(path):
+    """(final text, result event) of a stream-json transcript."""
+    result, last, ev_result = None, '', {}
     for line in open(path, errors='replace'):
         try:
             ev = json.loads(line)
         except ValueError:
             continue
-        if ev.get('type') == 'result' and isinstance(ev.get('result'), str):
-            result = ev['result']
+        if not isinstance(ev, dict):
+            continue
+        if ev.get('type') == 'result':
+            ev_result = ev
+            if isinstance(ev.get('result'), str):
+                result = ev['result']
         elif ev.get('type') == 'assistant':
             texts = [b.get('text', '') for b in (ev.get('message') or {}).get('content') or []
                      if isinstance(b, dict) and b.get('type') == 'text']
             if any(texts):
                 last = '\n'.join(texts)
-    return result if result is not None else last
+    return (result if result is not None else last), ev_result
 
 
-def run_one(catalog, case, cases_dir, skills, out, rep, agent_cmd, dry, timeout):
-    src = os.path.join(cases_dir, case_dir(case['id']))
-    info = json.load(open(os.path.join(src, 'case.json')))
-    if info.get('leaks'):
-        raise SystemExit('%s: harvest found leaks; fix the case before running it' % case['id'])
-    ws = os.path.abspath(os.path.join(out, '%s__r%d' % (case_dir(case['id']), rep)))
-    if os.path.exists(ws):
-        shutil.rmtree(ws)
-    shutil.copytree(os.path.join(src, 'logs'), os.path.join(ws, 'logs'))
-    for s in sorted(os.listdir(skills)):
-        if os.path.exists(os.path.join(skills, s, 'SKILL.md')):
-            shutil.copytree(os.path.join(skills, s), os.path.join(ws, '.claude', 'skills', s))
-    prompt = prompt_for(catalog, case, info, os.path.join(ws, 'logs'))
-    open(os.path.join(ws, 'prompt.txt'), 'w').write(prompt)
-    meta = {'case': case['id'], 'repeat': rep, 'skills': os.path.abspath(skills), 'agent_cmd': agent_cmd,
-            'started': datetime.datetime.utcnow().isoformat() + 'Z'}
-    if dry:
+def run_one(cat, case, a, rep):
+    logs = os.path.abspath(os.path.join(a.work, 'pools', pool_id(case['pool']), 'logs'))
+    pool = json.load(open(os.path.join(os.path.dirname(logs), 'pool.json')))
+    if pool.get('leaks') and not a.allow_leaks:
+        raise SystemExit('%s: harvest found leaks in its pool; fix them before running' % case['id'])
+    d = os.path.abspath(os.path.join(a.out, a.arm, run_id(case['id'], rep)))
+    meta_path = os.path.join(d, 'meta.json')
+    if a.resume and os.path.exists(meta_path):
+        old = json.load(open(meta_path))
+        if old.get('exit') == 0 and not old.get('error') and os.path.getsize(os.path.join(d, 'final.md')) > 0:
+            return old, True
+    if os.path.exists(d):
+        shutil.rmtree(d)
+    ws = os.path.join(d, 'ws')
+    os.makedirs(ws)
+    if a.skills != 'none':
+        for s in sorted(os.listdir(a.skills)):
+            if os.path.exists(os.path.join(a.skills, s, 'SKILL.md')):
+                shutil.copytree(os.path.join(a.skills, s), os.path.join(ws, '.claude', 'skills', s))
+    prompt = cat['context'] + '\n\n' + case['question']
+    if a.no_sandbox:
+        prompt = prompt.replace(cat['logs_path'], logs)
+    open(os.path.join(d, 'prompt.txt'), 'w').write(prompt)
+    cmd = shlex.split(a.agent_cmd) if a.agent_cmd else AGENT + (['--model', a.model] if a.model else [])
+    meta = {'case': case['id'], 'arm': a.arm, 'repeat': rep, 'skills': 'none' if a.skills == 'none' else os.path.abspath(a.skills),
+            'model_flag': a.model, 'sandbox': not a.no_sandbox,
+            'started': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}
+    if a.dry_run:
         meta['dry_run'] = True
     else:
-        env = dict(os.environ, GH_TOKEN='', GITHUB_TOKEN='', GH_CONFIG_DIR=tempfile.mkdtemp(prefix='nogh-'))
+        env = dict(os.environ, GH_TOKEN='', GITHUB_TOKEN='', GH_CONFIG_DIR='/nonexistent', TZ='America/Los_Angeles')
+        env.pop('DAQ_DIAG_REPORT_DIR', None)
+        full = cmd if a.no_sandbox else sandbox(ws, logs, cat['logs_path']) + cmd
         t0 = time.time()
-        with open(os.path.join(ws, 'transcript.jsonl'), 'w') as tr, \
-                open(os.path.join(ws, 'stderr.txt'), 'w') as er:
+        with open(os.path.join(d, 'transcript.jsonl'), 'w') as tr, open(os.path.join(d, 'stderr.txt'), 'w') as er:
             try:
-                p = subprocess.run(shlex.split(agent_cmd), input=prompt, stdout=tr, stderr=er, cwd=ws,
-                                   env=env, universal_newlines=True, timeout=timeout)
+                p = subprocess.run(full, input=prompt, stdout=tr, stderr=er, cwd=ws, env=env,
+                                   universal_newlines=True, timeout=a.timeout)
                 meta['exit'] = p.returncode
             except subprocess.TimeoutExpired:
                 meta['exit'] = 'timeout'
         meta['seconds'] = round(time.time() - t0, 1)
-        open(os.path.join(ws, 'final.md'), 'w').write(final_from_stream(os.path.join(ws, 'transcript.jsonl')))
-    json.dump(meta, open(os.path.join(ws, 'meta.json'), 'w'), indent=1)
-    return ws, meta
+        final, res = read_stream(os.path.join(d, 'transcript.jsonl'))
+        open(os.path.join(d, 'final.md'), 'w').write(final)
+        usage = res.get('usage') or {}
+        meta.update(turns=res.get('num_turns'), cost_usd=res.get('total_cost_usd'), output_tokens=usage.get('output_tokens'),
+                    model=next(iter(res.get('modelUsage') or {}), None))
+        if res.get('is_error') or not final.strip():
+            meta['error'] = (final or open(os.path.join(d, 'stderr.txt')).read())[:300]
+    json.dump(meta, open(meta_path, 'w'), indent=1)
+    return meta, False
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     here = os.path.dirname(os.path.abspath(__file__))
     ap.add_argument('--catalog', default=os.path.join(here, 'catalog.json'))
-    ap.add_argument('--cases', required=True, help='harvest.py --out folder')
-    ap.add_argument('--skills', required=True, help='folder of <skill>/SKILL.md')
+    ap.add_argument('--work', required=True, help='harvest.py --out folder')
+    ap.add_argument('--arm', required=True, help='a name for this configuration, e.g. skills-181 or none')
+    ap.add_argument('--skills', required=True, help="folder of <skill>/SKILL.md, or 'none'")
     ap.add_argument('--out', required=True)
+    ap.add_argument('--set', choices=['core', 'full'], default='core', help="'full' adds the extra cases")
     ap.add_argument('--case', action='append')
     ap.add_argument('--repeats', type=int, default=1)
-    ap.add_argument('--agent-cmd', default=DEFAULT_AGENT)
+    ap.add_argument('--first-repeat', type=int, default=1)
+    ap.add_argument('--jobs', type=int, default=1)
+    ap.add_argument('--model')
+    ap.add_argument('--agent-cmd')
     ap.add_argument('--timeout', type=int, default=1800, help='seconds per run (default %(default)d)')
+    ap.add_argument('--resume', action='store_true', help='keep runs that already finished without error')
+    ap.add_argument('--no-sandbox', action='store_true')
+    ap.add_argument('--allow-leaks', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args(argv)
-    catalog = json.load(open(a.catalog))
-    os.makedirs(a.out, exist_ok=True)
-    for case in catalog['cases']:
-        if a.case and case['id'] not in a.case:
-            continue
-        for rep in range(1, a.repeats + 1):
-            ws, meta = run_one(catalog, case, a.cases, a.skills, a.out, rep, a.agent_cmd, a.dry_run, a.timeout)
-            print('%-28s r%d exit=%s %ss' % (case['id'], rep, meta.get('exit', 'dry'), meta.get('seconds', '-')))
-    return 0
+    cat = json.load(open(a.catalog))
+    todo = [(c, r) for c in cat['cases'] if (a.case and c['id'] in a.case) or (not a.case and c['set'] in (('core', 'full') if a.set == 'full' else ('core',)))
+            for r in range(a.first_repeat, a.first_repeat + a.repeats)]
+    bad = 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, a.jobs)) as ex:
+        futs = {ex.submit(run_one, cat, c, a, r): (c, r) for c, r in todo}
+        for f in concurrent.futures.as_completed(futs):
+            c, r = futs[f]
+            meta, kept = f.result()
+            bad += bool(meta.get('error')) or meta.get('exit', 0) != 0
+            print('%-10s %-26s r%d exit=%s %6ss %s%s' % (a.arm, c['id'], r, meta.get('exit', 'dry'), meta.get('seconds', '-'),
+                                                       '(kept) ' if kept else '', (meta.get('error') or '')[:80].replace('\n', ' ')))
+            sys.stdout.flush()
+    print('%d runs, %d with errors' % (len(todo), bad))
+    return 1 if bad else 0
 
 
 if __name__ == '__main__':

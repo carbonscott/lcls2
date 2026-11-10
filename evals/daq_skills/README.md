@@ -1,53 +1,115 @@
 # Evals for the DAQ diagnostic skills
 
-These tools measure whether the `psana-daq*` skills (upstream PRs #131, #181, #191,
-`psana/psana/skills/`) lead an agent to the right diagnosis. Each case is a DAQ
-session from the hardware-free sim (`psdaq/psdaq/sim`) where the fault is known
-because it was planted. The sim runs the real `control`, `teb` and `drp` programs, so
-its logs have the production layout and messages:
-`YYYY/MM/<DD_HH:MM:SS>_<host>:<component>.log`.
+These tools measure whether the `psana-daq*` skills (`psana/psana/skills/`, upstream PRs
+#131, #181, #191) lead an agent to the right diagnosis of a DAQ problem, and what they add
+over the same agent with no skills.
 
-| Step | Tool | Uses a node? | Uses the model? |
+Each case is a question about real DAQ logs whose cause is known. The logs come from the
+hardware-free sim (`psdaq/psdaq/sim`), which runs the real `control`, `teb`, `meb` and `drp`
+programs, so the files have the production layout and messages:
+`YYYY/MM/<DD_HH:MM:SS>_<host>:<component>.log[.zst]`.
+
+## The cases
+
+`catalog.json` has 53 cases over 45 log directories ("pools"). 36 are the `core` set; the
+rest repeat a fault on more detector types (`--set full`).
+
+| Tier | The agent is given | Cases | What makes it hard |
 |---|---|---|---|
-| 1. Build case folders from sim runs | `harvest.py` | no (reads run folders) | no |
-| 2. Run the agent on each case | `run.py` | no | yes, one headless session per case and repeat |
-| 3. Grade | `grade.py` | no | no |
+| 1 | one launch, 3 to 5 processes | 38 (22 core) | the symptom and the cause are in different files; the loudest log is often a casualty; control sometimes blames the wrong process; two faults have no error line at all |
+| 2 | one launch of a full partition, 23 to 36 processes | 6 (5 core) | one fault among dozens of processes that all die noisily at shutdown |
+| 3 | one node's whole day: 149 launches, 1429 files, the older ones `.zst` | 9 | the right launch must be found first: by local time, by UTC, by counting every failed launch in a window, or by showing that a window was clean while others were not |
 
-`catalog.json` lists the cases: the source run, the prompt type and the answer key.
+Where the answer keys come from (`key_source` in the catalog):
 
-## Graders
+- **planted** (33 cases): the sim broke one thing on purpose and wrote down what. For a
+  register fault the sim's own log line names the register; `harvest.py` removes that line
+  from the copy and keeps it in `pool.json`. Healthy runs passed the sim's own checks.
+- **observed** (20 cases): a real failure that happened while the sim was being built
+  (a hang, a CUDA error, a queue overflow, a PV that never connected, ...). The key is the
+  first failing component, the stage and the mechanism as the logs establish them, written
+  by a reviewer who read every file and cited line numbers, with what the logs cannot show
+  stated. Treat these keys as careful readings, not ground truth from outside the logs.
 
-| Grader | Pass when | How |
+## The tools
+
+| Step | Tool | Uses the model? |
 |---|---|---|
-| readonly | the agent made no DAQ, process, Slurm, ConfigDB, GitHub or git write | regexes over its shell commands, quoted text ignored. Local file writes are listed but do not fail a run |
-| routing | it loaded every skill in `expect_skills` and none in `forbid_skills` | the Skill tool, or a read of `<skill>/SKILL.md` |
-| cause | `## Most Likely Cause` names the key's component, transition and mechanism | whole-word matches in that section (its Evidence lines included). Verdicts: `correct`, `partial` (right component and transition, mechanism missing, e.g. stopped at "did not respond"), `unknown`, `wrong`; for a healthy run `correct` or `false-alarm` |
-| honesty | no `Confidence: high` on a wrong answer or false alarm | shown as `!` after the verdict |
+| 1. Build the log directories from sim runs | `harvest.py` | no |
+| 2. Run the agent on each case, per arm | `run.py` | yes, one headless session per case and repeat |
+| 3. Judge each report against its key | `judge.py` | yes, one small call per report |
+| 4. Grade and tabulate | `grade.py` | no |
+| 5. One HTML page of the results | `report.py` | no |
 
-An answer without the report template is graded on the whole final message.
-
-## Running
+An **arm** is one configuration under test: the skills at some commit, or `none`.
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                 # no model calls
-python3 harvest.py --out $WORK/cases                      # exit 1 if a case leaks hint words
-git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
-python3 run.py --cases $WORK/cases --skills $WORK/skills-181/psana/psana/skills \
-               --out $WORK/results-181 --repeats 3
-python3 grade.py --results $WORK/results-181
+python3 -m unittest discover -s tests -v                       # 28 tests, no model calls
+python3 harvest.py --root $SIM_RUNS --out $WORK                # exit 1 if a hint word leaks
+mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
+python3 run.py --work $WORK --arm skills-181 --skills $WORK/skills-181/psana/psana/skills --out $WORK/results --jobs 3
+python3 run.py --work $WORK --arm none --skills none --out $WORK/results --jobs 3
+python3 judge.py --results $WORK/results
+python3 grade.py --results $WORK/results
+python3 report.py --results $WORK/results --out $WORK/report.html
 ```
 
-`run.py --dry-run` writes the workspaces and prompts without starting an agent. To
-compare two skill versions, run both with the same cases and repeats and grade each.
+`run.py --dry-run` writes the prompts without starting an agent; `--resume` keeps finished
+runs; `--repeats N` repeats each case; `--model M` picks the agent's model.
 
-## Case design rules
+## What is checked
 
-- The agent sees process logs only. `harvest.py` drops the sim's own records and
-  replaces the run folder's path (e.g. `.../f2fault`) with the case folder's path.
-- `harvest.py` fails a case whose files still contain a hint word (`fault`, `break`,
-  `kill-drp`, the run folder's name, ...), unless `leak_allow` lists it.
-- Sweep cases share one neutral prompt ("did anything go wrong?"), including the
-  healthy runs, so the prompt does not reveal whether there was a fault.
-- Known false positive: a shell redirect inside an unquoted awk program can count as
-  a local write (soft, never a failure).
+| Check | Pass when | How |
+|---|---|---|
+| cause | the report's main conclusion is the key's component, stage and mechanism | `judge.py`: a model reads the report against the key with one rubric for every arm. Verdicts: `correct`, `partial`, `unknown`, `wrong`; for a healthy case `correct` or `false-alarm` |
+| cause (keywords) | the key's words appear in the cause section | `grade.py`: cheap and repeatable; used when there is no judge verdict, and shown beside it |
+| launch | a tier 3 report names the key's launch | script. A diagnosis of another launch is `wrong` whatever the judge says |
+| read-only | no DAQ, process, Slurm, ConfigDB, GitHub or git write | regexes over the agent's shell commands, quoted text ignored. Local file writes are listed, not failed |
+| skills loaded | every skill in `expect_skills`, none in `forbid_skills` | the Skill tool, or a read of `<skill>/SKILL.md`. Not applicable to the `none` arm |
+| honesty | no `Confidence: high` on a wrong answer or false alarm | script |
+| structure | reported only: template sections present, a confidence stated | script |
+
+### The judge is calibrated, not trusted
+
+`tests/judge_set.json` holds 32 reports with verdicts set by hand: hand-written right,
+partial, wrong and "right words, wrong conclusion" reports, six real agent reports, and
+traps such as the right mechanism in the wrong launch.
+
+```bash
+python3 judge.py --calibrate tests/judge_set.json    # sonnet: 30 of 32 on 2026-11-10
+```
+
+Its two misses are lenient ones: a report with the right register but the wrong stage,
+and the wrong-launch trap (which the launch check then catches). Re-run the calibration
+when the rubric or the judge model changes, and quote it with any score.
+
+## How a run is kept honest
+
+- **Only process logs.** The sim's state and evidence files are never copied.
+- **Paths are neutralised.** A run folder such as `.../break-register/types/epix100`
+  becomes `/sdf/data/lcls/ds/tst/tstx00001/scratch/daq/s<hash>`.
+- **Hint words fail the harvest.** `fault`, `break`, `skeptic`, ..., and the distinctive
+  parts of each run folder's name, as whole words.
+- **Nothing is invented.** No line is added, reordered or re-timed. Files keep their
+  modification times; older launches are compressed as log rotation would.
+- **The agent is sandboxed** (bubblewrap): it sees its working directory, the logs
+  read-only at `/sdf/home/t/tstopr/daq/logs`, and system directories. No home directory,
+  no ssh keys, no other runs, no answer keys. In an earlier unsandboxed pilot three of six
+  agents went looking in a project folder they guessed from the working directory's path.
+- **Prompts are the same for every arm** and say nothing about a fault. Healthy cases use
+  the same question as faulty ones.
+- **Folder names are opaque** (`p<hash>`, `r<hash>`), so a path never names a case.
+
+## Known limits
+
+- The sim's faults are cleaner than a hutch's. All logs say "simulated device", and
+  reports mention it.
+- Only the control and logs skills (and the router) are exercised. The monitor and
+  ConfigDB skills need Grafana and ConfigDB; the history skill is only checked for staying
+  unused.
+- The agent has network access (it must reach its model), so the skills' search of
+  upstream issues works but is rate-limited and changes as issues change.
+- One repeat per case says little about a single case; compare arms over the whole set,
+  and repeat before drawing conclusions about one.
+- "Observed" keys were written by a model reading the same logs the agents read.
