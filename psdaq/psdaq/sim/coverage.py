@@ -89,7 +89,8 @@ listed .xtc2 files.  Rows that need one:
                      device (--dev sim://), and one PV read back 2 or more distinct numbers, each
                      after the first one its board logged written to the PV's register
                      (pvs_problem).
-                     Every 'programs' entry of a GUI or monitor (not a TPR program) also needs
+                     Every 'programs' entry of a GUI or monitor (not a TPR program, lclsBldServer,
+                     the HPS chain or wave8pvs) also needs
                      procmgr's own instance of the program to have run through the run: the record must list its procmgr logs
                      ('# ID:'; daq_sim lists every one of the id since 'up'), which between them name
                      one child pid ('The PID of new child': a procmgr or procstat restart starts a
@@ -933,7 +934,8 @@ def pv_prefixes(args):
 def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_prog=None, logs=(), own=(),
                          served=None, caps=None):
     """Why a gui_witness does not show prog read live values of the run, or None: entry_problem, then, for a
-    'programs' entry of a GUI or monitor (not a TPR program, R8), procmgr_span_problem (own: the texts of prog's
+    'programs' entry of a GUI or monitor (not a TPR program, R8, lclsBldServer, the HPS chain, R9, or wave8pvs,
+    R6b), procmgr_span_problem (own: the texts of prog's
     logs in the record), and for an entry with PV values a stand-in served (not procstat, daqstat (R5), a TPR
     program (R8), a program's own PVs (R3b), lclsBldServer, the HPS chain (R9) or wave8pvs (R6b), each of
     which its own check covers), served_problem (served: served_logs of the record; caps: their size caps)."""
@@ -941,7 +943,8 @@ def live_witness_problem(prog, w, run_id, mine, runs, section, run_ids=(), row_p
     if p:
         return p
     e = w[section][prog]
-    if section == 'programs' and e.get('kind') != 'tpr':        # a GUI or monitor, not a TPR program (R8)
+    if section == 'programs' and e.get('kind') not in ('tpr', 'bld', 'hps', 'pvs'):    # a GUI or monitor, not a
+        # TPR program (R8), lclsBldServer, the HPS chain (R9) or wave8pvs (R6b), which their own checks cover
         p = procmgr_span_problem(prog, w, own, runs, mine)
         if p:
             return p

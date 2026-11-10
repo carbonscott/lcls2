@@ -522,7 +522,8 @@ A record proves a row only if all of these hold, and the row's line names the fi
     channel on the readout group control gives it at Connect, the partition's), and needs 2 or
     more reads within the run's L1Accepts, each with exactly those values (`shows tprtrig's card
     at ... with trigger0.delay 0x2, not the 0x3 its command line programs`).
-  - every GUI or monitor row above (R2, R2b, R2c, R4, R5; not R8's TPR programs) also needs
+  - every GUI or monitor row above (R2, R2b, R2c, R4, R5; not R8's TPR programs, lclsBldServer,
+    the HPS chain or wave8pvs, which their own checks below cover) also needs
     procmgr's own instance of the
     program to have run through the run, not only cycle's offscreen copy of it. The record lists
     every procmgr log of the id since `up` (`# ID:`; a procmgr or procstat restart starts a new
