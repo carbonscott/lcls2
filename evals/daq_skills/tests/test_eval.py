@@ -126,6 +126,28 @@ class Judge(unittest.TestCase):
         self.assertIn('- launch 09_12:12:52: verify', many)
 
 
+class BundledLogs(unittest.TestCase):
+    """data/pools.tar.gz is what the cases are about; it must match catalog.json."""
+
+    def test_archive_has_every_pool_and_file_the_catalog_names(self):
+        import tarfile
+        path = os.path.join(os.path.dirname(HERE), 'data', 'pools.tar.gz')
+        cat = json.load(open(os.path.join(os.path.dirname(HERE), 'catalog.json')))
+        with tarfile.open(path) as tar:
+            names = set(tar.getnames())
+            for name, pool in cat['pools'].items():
+                pid = harvest.pool_id(name)
+                info = json.load(tar.extractfile('pools/%s/pool.json' % pid))
+                self.assertEqual(info['leaks'], [], name)
+                self.assertEqual([s['prefix'] for s in info['sessions']], [s['prefix'] for s in pool['sessions']], name)
+                for s in info['sessions']:
+                    for f in s['files']:
+                        self.assertIn('pools/%s/logs/%s/%s' % (pid, s['ym'], f), names)
+            self.assertEqual({n.split('/')[1] for n in names if n.count('/') >= 1}, {harvest.pool_id(n) for n in cat['pools']})
+        for c in cat['cases']:
+            self.assertIn(c['pool'], cat['pools'])
+
+
 FAKE_AGENT = r'''
 import json, sys
 prompt = sys.stdin.read()

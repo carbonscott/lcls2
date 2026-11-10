@@ -9,17 +9,18 @@ hardware-free sim (`psdaq/psdaq/sim`), which runs the real `control`, `teb`, `me
 programs, so the files have the production layout and messages:
 `YYYY/MM/<DD_HH:MM:SS>_<host>:<component>.log[.zst]`.
 
-## Quick start for skill authors (S3DF)
+## Quick start for skill authors
 
-The 45 log directories are already built and readable by the `ps-data` group, so you do
-not need the sim or `harvest.py`. You need this folder, the `claude` CLI logged in to your
-own account, and `bwrap` and `zstd` (both are on the S3DF interactive nodes).
+Everything needed is in this folder: the tools, the cases, and the logs the cases are
+about (`data/pools.tar.gz`, 8.3 MB, 45 log directories). You do not need the sim, S3DF
+group access or `harvest.py`. You need the `claude` CLI logged in to your own account, and
+`bwrap` and `zstd` (both are on the S3DF interactive nodes).
 
 ```bash
 git clone --depth 1 -b evals/daq-skills-v2 https://github.com/carbonscott/lcls2 daq-evals
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 31 tests, OK, no model calls
-WORK=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2    # the built log directories (read-only use)
+python3 -m unittest discover -s tests                          # 32 tests, OK, no model calls
+WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
 
@@ -36,10 +37,9 @@ python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 re
 - Use any arm name; edit a skill, pick a new name (`--arm mine-v2`) and compare the summary lines.
 - If `claude` is not under `~/.local` or a system directory, add `--expose <its folder>`.
 - To test the skills when they are certainly read, add `--preface "Load the psana-daq skill before you start."` under its own arm name.
-- No `ps-data` access, or not on S3DF: copy `/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2.tgz` (8.5 MB),
-  unpack it, and point `--work` at the folder that holds `pools/`.
-- Tested: the unit tests and the sandbox on S3DF (Python 3.6); real agent runs on a Linux VM (Python 3.12).
-  A real agent run on S3DF itself has not been tried yet.
+- Unpack with `tar` so the files keep their modification times; the logs skill's helper picks sessions by them.
+- Tested: the unit tests, the sandbox and a scripted agent on S3DF (Python 3.6); real agent runs on a Linux VM
+  (Python 3.12). A real Claude Code run on S3DF itself has not been tried yet.
 
 ## Using another agent
 
@@ -90,7 +90,8 @@ Where the answer keys come from (`key_source` in the catalog):
 
 | Step | Tool | Uses the model? |
 |---|---|---|
-| 1. Build the log directories from sim runs | `harvest.py` | no |
+| 0. Unpack the bundled logs | `tar xzf data/pools.tar.gz -C $WORK` | no |
+| 1. Only for new cases: build log directories from sim runs, then re-pack `data/pools.tar.gz` | `harvest.py` | no |
 | 2. Run the agent on each case, per arm | `run.py` | yes, one headless session per case and repeat |
 | 3. Judge each report against its key | `judge.py` | yes, one small call per report |
 | 4. Grade and tabulate | `grade.py` | no |
@@ -100,8 +101,9 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 31 tests, no model calls
-python3 harvest.py --root $SIM_RUNS --out $WORK                # exit 1 if a hint word leaks
+python3 -m unittest discover -s tests -v                       # 32 tests, no model calls
+tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
+# python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
 python3 run.py --work $WORK --arm skills-181 --skills $WORK/skills-181/psana/psana/skills --out $WORK/results --jobs 3
 python3 run.py --work $WORK --arm none --skills none --out $WORK/results --jobs 3
@@ -156,6 +158,16 @@ when the rubric or the judge model changes, and quote it with any score.
 - **Prompts are the same for every arm** and say nothing about a fault. Healthy cases use
   the same question as faulty ones.
 - **Folder names are opaque** (`p<hash>`, `r<hash>`), so a path never names a case.
+
+## The bundled logs
+
+`data/pools.tar.gz` holds `pools/<id>/logs/YYYY/MM/...` and a `pool.json` per pool (the
+launches, their files, and the sim lines that were removed). It is the output of
+`harvest.py` for this `catalog.json`; a unit test checks that the two match. The agent
+never sees `pool.json`: only `logs/` is mounted in its sandbox. The logs are from the
+simulator, carry no experiment data, and were scanned for credentials, e-mail addresses
+and home-directory names before being committed. To add cases, harvest into a work
+folder and re-pack: `tar --sort=name --owner=0 --group=0 --numeric-owner -cf - pools | gzip -n -9`.
 
 ## Known limits
 
