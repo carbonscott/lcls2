@@ -88,15 +88,16 @@ def shapes_data(src, shapes, data):
                + xtc(3, 0, data))
 
 
-def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
+def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None, shift=0):
     """An xtc2 file as a DRP writes a run: a Configure with the runinfo Names and one Names per
     detector (detType, detName); a BeginRun at BEGINRUN with the runinfo (experiment, run
     number); `events` L1Accepts, each with a ShapesData of every detector in with_data (default:
     all); an EndRun 1 s after the last L1Accept.  A detector named fakecam holds, as the DRP
     writes it, a uint32 'value' and a uint16 'array_raw' of 1 x 9 words, its seq (words 4, 5) the
     L1Accept's number and its pixel (word 8) 7, as ami_check reads them (RAW_SEQ_PIXEL); any other
-    a uint32 'value'."""
+    a uint32 'value'.  shift: s to move every timestamp by (another run of the same number)."""
     path = str(path)
+    dt = shift << 32
     os.makedirs(os.path.dirname(path), exist_ok=True)
     expt, run = run_id.split('/r')
     srcs, cfg = {}, [names(RUNINFO_SRC, 'runinfo', 'runinfo', 'runinfo', [('expt', 10, 1), ('runnum', 2, 0)])]
@@ -115,9 +116,9 @@ def write_run(path, dets, events=1000, run_id=RUN_ID, with_data=None):
     with open(path, 'wb') as f:
         f.write(dgram(2, b''.join(cfg)))
         f.write(dgram(4, shapes_data(RUNINFO_SRC, [(len(e), 0, 0, 0, 0)], e + struct.pack('<I', int(run))),
-                      stamp=BEGINRUN[0] << 32 | BEGINRUN[1]))
-        f.write(b''.join(dgram(12, l1(k), stamp=l1_stamp(k)) for k in range(events)))
-        f.write(dgram(5, b'', stamp=l1_stamp(events) + (1 << 32)))
+                      stamp=(BEGINRUN[0] << 32 | BEGINRUN[1]) + dt))
+        f.write(b''.join(dgram(12, l1(k), stamp=l1_stamp(k) + dt) for k in range(events)))
+        f.write(dgram(5, b'', stamp=l1_stamp(events) + (1 << 32) + dt))
     return path
 
 
@@ -1185,6 +1186,39 @@ def test_a_pv_server_stand_in_is_proven_by_a_witness_of_its_pvs(tmp_path):
                              **kw)                                        # its reads are not under its prefix
     assert code == 1 and 'shows simxpm read no live value under DAQ:SIM:HSD' in line
 
+
+
+def test_another_runs_files_and_witness_spliced_into_a_record_are_rejected(tmp_path):
+    """FG3, a forgery by record edits only (no file written, no hash computed): a record of one run
+    that also lists another run's xtc2 file, its witness and its stand-in's logs, unchanged, in place
+    of its own witness.  Every daq_sim run is tstx00001/r0001, so before the rows were checked against
+    the L1Accepts of both runs' files and the other run's witness counted; now a record's xtc2 files
+    of its run must have one BeginRun.  The other run's files alone are a valid record (the control);
+    its witness alone, without its xtc2 file, names no listed file (FG2)."""
+    row, entry = 'prog:pykcuxpm', {'status': 'STAND-IN', 'stand_in': 'simxpm', 'interface': 'its PVs'}
+    o = tmp_path / 'other'                              # the other run (as the helpers' times) and its witness
+    oxtc = write_run(o / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')])
+    w = gui_witness(oxtc, ['simxpm'], section='servers')
+    server_entry(w, w['servers']['simxpm'])
+    ofiles = [write_witness(o / 'gui_witness.json', w)] + served_file(o, 'simxpm', XPM_SERVED)
+    mxtc = write_run(tmp_path / 'mine' / 'tstx00001-r0001-s000-c000.xtc2', [('fakecam', 'fakecam')],
+                     shift=-3600)                       # this record's own run, an hour earlier
+
+    def check(tag, files):
+        status = write_status(tmp_path / f'{tag}.json', {row: entry})
+        record([row], files, tmp_path / tag)
+        code, out = run_check(status, tmp_path / tag)
+        print(tag, line_of(out, row))
+        return code, line_of(out, row)
+
+    code, line = check('control', [oxtc] + ofiles)
+    assert 'stand-in simxpm (its PVs); evidence ' in line and 'NO VALID' not in line
+    code, line = check('fg2', [mxtc] + ofiles)
+    assert code == 1 and 'names no listed xtc2 file of run tstx00001/r0001' in line
+    code, line = check('fg3', [mxtc, oxtc] + ofiles)
+    assert code == 1 and 'NO VALID EVIDENCE' in line
+    assert (f"its xtc2 files of run tstx00001/r0001 have 2 different BeginRuns ({BEGINRUN[0] - 3600}.{BEGINRUN[1]}, "
+            f"{BEGINRUN_TIME}): a record is one run, so it cannot list another run's files") in line
 
 def own_server_entry(w, e, missing=(), prefix='DAQ:SIM:HPSEX'):
     """Make a 'programs'-shaped entry the 'servers' entry of bldcas serving its own PVs (R3b): marked as the

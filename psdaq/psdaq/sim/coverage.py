@@ -22,8 +22,10 @@ tracked file modified (only the commit's own code counts), it names the run (run
 every file it lists exists, is non-empty and still holds the bytes the record hashed when it
 was written (sha256 of the first 'bytes' bytes: a log may have grown since, an .xtc2 file
 not); an .xtc2 file must also be a whole chain of xtc2 datagrams that starts with a
-Configure (xtc2_content).  Then the record proves a row only if its files' content says so,
-as the coverage tool reads them (xtc2_content, read_log):
+Configure (xtc2_content).  A record is one run: its .xtc2 files whose BeginRun runinfo is the
+record's run_id must all have the same BeginRun time (every daq_sim run is tstx00001/r0001, so
+files of another run would otherwise count as this run's).  Then the record proves a row only if
+its files' content says so, as the coverage tool reads them (xtc2_content, read_log):
   det:<drp>:<type>   a listed .xtc2 file whose Configure has a <type> detector (its detType
                      or detName), with >= 1000 L1Accepts that hold that detector's data, and
                      whose BeginRun runinfo is the record's run_id; and a listed log whose
@@ -1810,6 +1812,14 @@ def row_problem(rid, entry, rec, cache=None):
     def names_run(text, paths):
         return any(names_file(text, p) or names_relative(text, p, data_dir) or
                    (runs[p]['beginrun'] and runs[p]['beginrun'] in text) for p in paths)
+
+    # One record is one run.  Every daq_sim run is the same run number (tstx00001/r0001), so
+    # without this a record could also list another run's xtc2 files, logs and witness, unchanged,
+    # and its rows would be checked against the L1Accepts of both runs.
+    begun = sorted({c['beginrun'] for c in runs.values() if c['run'] == run_id and c['beginrun']})
+    if len(begun) > 1:
+        return (f'its xtc2 files of run {run_id} have {len(begun)} different BeginRuns '
+                f'({", ".join(begun[:3])}): a record is one run, so it cannot list another run\'s files')
 
     if rid.startswith('det:'):
         exe, typ = rid.split(':', 2)[1:]

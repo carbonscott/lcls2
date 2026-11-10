@@ -562,10 +562,16 @@ A record proves a row only if all of these hold, and the row's line names the fi
   - what these rules catch: a forged witness or log that the record's hashes still match, as
     long as the forger did not also fit the run's other files to it: AMI matches whose seq or pixel
     the xtc2 file does not hold, GUI values no stand-in served while the GUI read, another run's
-    witness or served-value log, a served-value log added beside the stand-ins' own, and a GUI
-    killed or restarted between `up` and the record. The record is not signed: a forger who also
-    edits or adds a served-value log, takes AMI matches from the xtc2 file itself, or edits
-    procstat's tables still passes. Nor does it catch pids swapped consistently between two AMI
+    witness or served-value log (alone it names no listed xtc2 file of the run, or its values were
+    not served in this run), another run's files added to a record with that run's witness and logs,
+    unchanged (every daq_sim run is tstx00001/r0001, so a record is one run by its BeginRun: its xtc2
+    files of the run must all have the same BeginRun time, `its xtc2 files of run tstx00001/r0001
+    have 2 different BeginRuns (...): a record is one run, so it cannot list another run's files`),
+    a served-value log added beside the stand-ins' own, and a GUI killed or restarted between `up`
+    and the record. The record is not signed, and what ties it to a commit is only its own `sha`
+    field: a record written at another commit with only that field changed passes for every row it
+    proved there, with no file touched. Nor do the rules catch a forger who also edits or adds a
+    served-value log, takes AMI matches from the xtc2 file itself, or edits procstat's tables. Nor does it catch pids swapped consistently between two AMI
     processes in the witness and in their procmgr logs, or a GUI's reads moved or widened, within
     the run, to other values its server served.
   - the BLD server lclsBldServer (R8 and its packets): lab3-bld.cnf:52 starts it as
@@ -645,7 +651,8 @@ A record proves a row only if all of these hold, and the row's line names the fi
     time, its ID the mask, its events within 4095 pulses and after the packet before, and
     its four PVs served with PAYLOAD's type ID the mask; for hpsBldCopy most of its events
     carrying the time of an hpsBldServer event (plus the pulse delta, as its Client gives it),
-    within the run. As everywhere (COV-LIMIT), a witness rewritten and re-hashed would pass.
+    within the run. As everywhere (the record is not signed: "what these rules catch", above), a
+    witness rewritten and re-hashed would pass.
   - wave8pvs (R6b: another site env, its board simulated): lab3-wave8.cnf starts `wave8pvs --l 0`,
     which imports `rogue.hardware.pgp` (the DAQ env's rogue, 6.1.3, has none) and the wave8 package
     (in no env; the site keeps its source tarballs). `up --wave8pvs` runs it under procmgr as
