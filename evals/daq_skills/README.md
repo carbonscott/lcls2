@@ -18,7 +18,7 @@ own account, and `bwrap` and `zstd` (both are on the S3DF interactive nodes).
 ```bash
 git clone --depth 1 -b evals/daq-skills-v2 https://github.com/carbonscott/lcls2 daq-evals
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 30 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 31 tests, OK, no model calls
 WORK=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/daq-skill-evals/v2    # the built log directories (read-only use)
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -40,6 +40,24 @@ python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 re
   unpack it, and point `--work` at the folder that holds `pools/`.
 - Tested: the unit tests and the sandbox on S3DF (Python 3.6); real agent runs on a Linux VM (Python 3.12).
   A real agent run on S3DF itself has not been tried yet.
+
+## Using another agent
+
+`run.py --agent-cmd CMD` runs any program in place of Claude Code, in the same sandbox. The
+contract is small: the prompt arrives on stdin, the working directory is `/work`, the logs
+are at `/sdf/home/t/tstopr/daq/logs`, and whatever the program prints is its report.
+
+```bash
+python3 run.py --work $WORK --arm my-agent --skills $SK --skills-path .agents/skills --out $OUT \
+    --agent-cmd "my-agent --non-interactive" --expose /path/to/my-agent/install --bind $HOME/.my-agent
+```
+
+`--skills-path` is where that agent looks for skills, `--expose` shows a directory
+read-only, `--bind` read-write (a login or state folder). For such runs `grade.py` cannot
+see the agent's commands, so read-only and skills-loaded show as not checked; cause,
+launch, known issue and structure are graded as usual. The judge is replaceable the same
+way (`judge.py --judge-cmd`: the rubric on stdin, a JSON object with a `result` string on
+stdout); without any judge, `grade.py` falls back to its keyword check.
 
 ## The cases
 
@@ -82,7 +100,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 30 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 31 tests, no model calls
 python3 harvest.py --root $SIM_RUNS --out $WORK                # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
 python3 run.py --work $WORK --arm skills-181 --skills $WORK/skills-181/psana/psana/skills --out $WORK/results --jobs 3

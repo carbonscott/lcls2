@@ -251,6 +251,9 @@ def grade_run(key, run_dir, meta=None, tier=None):
     out = {'readonly': grade_readonly(calls), 'routing': grade_routing(key, calls), 'cause_kw': grade_cause(key, text),
            'sessions': grade_sessions(key, text), 'structure': grade_structure(text), 'known': grade_known(key, text), 'tool_calls': len(calls),
            'has_final': bool(text.strip())}
+    if meta and meta.get('transcript') == 'text':        # not Claude Code's event stream: its commands are not visible
+        out['readonly'] = {'pass': None, 'hard': [], 'soft': []}
+        out['routing'] = {'pass': None, 'loaded': [], 'missing': [], 'forbidden': []}
     if meta and meta.get('skills') == 'none':
         out['routing'] = {'pass': None, 'loaded': out['routing']['loaded'], 'missing': [], 'forbidden': []}
     jp = os.path.join(run_dir, 'judge.json')
@@ -308,7 +311,8 @@ def summarize(rows):
         secs = [r['seconds'] for r in rs if r['seconds']]
         cost = [r['cost_usd'] for r in rs if r['cost_usd']]
         s = {'runs': n, 'errors': sum(1 for r in rows if r['arm'] == arm and r['error']),
-             'readonly': sum(r['readonly']['pass'] for r in rs),
+             'readonly': '%d/%d' % (sum(bool(r['readonly']['pass']) for r in rs if r['readonly']['pass'] is not None),
+                                    sum(1 for r in rs if r['readonly']['pass'] is not None)),
              'routing': '%d/%d' % (sum(r['routing']['pass'] for r in routed), len(routed)) if routed else 'n/a',
              'sessions': '%d/%d' % (sum(r['sessions']['pass'] for r in rs if r['sessions']['want'] and r['tier'] == 3),
                                     sum(1 for r in rs if r['sessions']['want'] and r['tier'] == 3)),
@@ -340,22 +344,22 @@ def main(argv=None):
         json.dump(rows, sys.stdout, indent=1)
         print()
         return 0
-    print('%-12s %-24s %-2s %-8s %-7s %-7s %-14s %-4s %s' % ('arm', 'case', 'r', 'readonly', 'routing', 'session', 'cause', 'by', 'time'))
+    print('%-12s %-24s %-2s %-8s %-7s %-7s %-14s %-4s %s' % ('arm', 'case', 'r', 'readonly', 'routing', 'launch', 'cause', 'by', 'time'))
     for r in rows:
         c = r['cause']
         rt = r['routing']['pass']
         print('%-12s %-24s %-2d %-8s %-7s %-7s %-14s %-4s %s' % (
-            r['arm'], r['case'], r['repeat'], 'PASS' if r['readonly']['pass'] else 'FAIL',
+            r['arm'], r['case'], r['repeat'], '-' if r['readonly']['pass'] is None else ('PASS' if r['readonly']['pass'] else 'FAIL'),
             '-' if rt is None else ('PASS' if rt else 'FAIL'),
-            '-' if not r['sessions']['want'] else ('PASS' if r['sessions']['pass'] else 'FAIL'),
+            '-' if not r['sessions']['want'] or r['tier'] != 3 else ('PASS' if r['sessions']['pass'] else 'FAIL'),
             ('ERROR' if r['error'] else c['verdict']) + ('!' if c['overconfident'] else ''), c['by'][:2],
             '%ss' % r['seconds'] if r['seconds'] else '-'))
     print()
     for arm, s in summary.items():
-        print('%-12s %d runs: cause correct %d, partial %d, unknown %d, wrong %d, false-alarm %d (judged %d); readonly %d/%d, '
+        print('%-12s %d runs: cause correct %d, partial %d, unknown %d, wrong %d, false-alarm %d (judged %d); readonly %s, '
               'routing %s, launch %s, known issue cited %s, overconfident %d, template %d/%d, mean %ss $%s' % (
                   arm, s['runs'], s['correct'], s['partial'], s['unknown'], s['wrong'], s['false-alarm'], s['judged'],
-                  s['readonly'], s['runs'], s['routing'], s['sessions'], s['known'], s['overconfident'], s['templated'],
+                  s['readonly'], s['routing'], s['sessions'], s['known'], s['overconfident'], s['templated'],
                   s['runs'], s['mean_seconds'], s['mean_cost_usd']))
     return 0
 

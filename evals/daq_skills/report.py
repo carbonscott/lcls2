@@ -56,7 +56,7 @@ def cell(rs):
     for r in sorted(rs, key=lambda r: r['repeat']):
         v = 'error' if r['error'] else r['cause']['verdict']
         out.append(chip(v, v + ('!' if r['cause']['overconfident'] else '')))
-        if not r['readonly']['pass']:
+        if r['readonly']['pass'] is False:
             out.append(chip('fail', 'write: ' + r['readonly']['hard'][0]['what']))
         if r['routing']['pass'] is False:
             out.append(chip('partial', 'skills'))
@@ -76,10 +76,10 @@ def build(rows, cases, title, notes):
     for arm in arms:
         s = summary[arm]
         p.append('<tr><td><b>%s</b></td><td class="n">%d</td><td class="n"><b>%d</b></td><td class="n">%d</td><td class="n">%d</td>'
-                 '<td class="n">%d</td><td class="n">%d</td><td class="n">%d/%d</td><td class="n">%s</td><td class="n">%s</td><td class="n">%s</td>'
+                 '<td class="n">%d</td><td class="n">%d</td><td class="n">%s</td><td class="n">%s</td><td class="n">%s</td><td class="n">%s</td>'
                  '<td class="n">%d/%d</td><td class="n">%d</td><td class="n">%s s</td><td class="n">$%s</td></tr>' % (
                      E(arm), s['runs'], s['correct'], s['partial'], s['unknown'], s['wrong'], s['false-alarm'], s['readonly'],
-                     s['runs'], s['routing'], s['sessions'], s['known'], s['templated'], s['runs'], s['overconfident'], s['mean_seconds'],
+                     s['routing'], s['sessions'], s['known'], s['templated'], s['runs'], s['overconfident'], s['mean_seconds'],
                      s['mean_cost_usd']))
     judged = sum(s['judged'] for s in summary.values())
     p.append('</table></div><p class="muted">* API-equivalent cost reported by the CLI; on a subscription it measures usage, '
@@ -116,7 +116,7 @@ def build(rows, cases, title, notes):
     p.append('</table></div></section>')
     # details
     odd = [c for c in order if any(r['case'] == c['id'] and (r['error'] or r['cause']['verdict'] != 'correct' or
-                                                           not r['readonly']['pass']) for r in rows)]
+                                                           r['readonly']['pass'] is False) for r in rows)]
     p.append('<section><h2>Cases where an arm was not correct (%d)</h2>' % len(odd))
     for c in odd:
         f = c['key'].get('fault')

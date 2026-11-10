@@ -252,7 +252,7 @@ class Pipeline(unittest.TestCase):
         self.assertTrue(by['skills']['readonly']['pass'] and by['skills']['sessions']['pass'])
         self.assertEqual(by['skills']['cost_usd'], 0.5)
         s = grade.summarize(rows)
-        self.assertEqual((s['skills']['correct'], s['skills']['routing'], s['none']['routing']), (1, '1/1', 'n/a'))
+        self.assertEqual((s['skills']['correct'], s['skills']['routing'], s['none']['routing'], s['skills']['readonly']), (1, '1/1', 'n/a', '1/1'))
         self.assertEqual(sorted(os.listdir(os.path.join(os.path.dirname(rows[1]['run_dir']), os.path.basename(rows[1]['run_dir']), 'ws', '.claude', 'skills'))),
                          ['psana-daq', 'psana-daq-logs'])
 
@@ -266,6 +266,23 @@ class Pipeline(unittest.TestCase):
         time.sleep(0.05)
         self.run_agent(extra=['--resume'])
         self.assertEqual(os.stat(os.path.join(d, os.listdir(d)[0], 'meta.json')).st_mtime, before)
+
+    def test_any_program_can_be_the_agent(self):
+        """A shell one-liner as the agent: its plain output is the report; its commands are not checked."""
+        self.harvest()
+        agent = os.path.join(self.tmp, 'agent.sh')
+        open(agent, 'w').write('cat > /dev/null\nls agent-skills > /dev/null || exit 3\n'
+                               'echo "tt_0 aborted in configure in launch 09_12:12:52: Verify error on TriggerDelay"\n')
+        skills = os.path.join(self.tmp, 'skills')
+        os.makedirs(os.path.join(skills, 'psana-daq'))
+        open(os.path.join(skills, 'psana-daq', 'SKILL.md'), 'w').write('# x')
+        self.results = os.path.join(self.tmp, 'results')
+        self.assertEqual(run.main(['--catalog', self.catalog, '--work', self.work, '--arm', 'other', '--skills', skills,
+                                   '--skills-path', 'agent-skills', '--out', self.results, '--no-sandbox',
+                                   '--agent-cmd', 'sh ' + agent]), 0)
+        (row,) = grade.collect(self.results, grade.load_catalog(self.catalog))
+        self.assertEqual((row['cause']['verdict'], row['readonly']['pass'], row['routing']['pass']), ('correct', None, None))
+        self.assertEqual(grade.summarize([row])['other']['readonly'], '0/0')
 
     def test_preface_goes_before_the_prompt_and_into_meta(self):
         self.harvest()
@@ -299,6 +316,7 @@ class Pipeline(unittest.TestCase):
         self.assertNotIn('--bind / /', s)
         self.assertNotIn('.ssh', s)
         self.assertIn('--ro-bind /opt/tools /opt/tools', ' '.join(run.sandbox('/x/ws', '/x/logs', '/l', ['/opt/tools'])))
+        self.assertIn('--bind /opt/state /opt/state', ' '.join(run.sandbox('/x/ws', '/x/logs', '/l', [], ['/opt/state'])))
 
 
 if __name__ == '__main__':
