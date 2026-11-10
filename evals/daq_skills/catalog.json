@@ -1,0 +1,465 @@
+{
+ "version": 1,
+ "prompts": {
+  "context": "This is an offline review of a past DAQ session. The DAQ logs for the hutch are under {logs} (the same layout as /sdf/home/<x>/<hutch>opr/daq/logs: YYYY/MM/DD_HH:MM:SS_<host>:<component>.log). Grafana, ConfigDB and the live DAQ are not reachable from here. Do not file or draft GitHub issues.",
+  "sweep": "The tst hutch DAQ, platform 5, was used on {date} between {start} and {end} (America/Los_Angeles). An operator asks: did anything go wrong? Give a full assessment.",
+  "configure": "On {date} around {end} (America/Los_Angeles) the tst DAQ on platform 5 would not configure. Why?",
+  "disable": "On {date} around {end} (America/Los_Angeles) the tst DAQ on platform 5 would not leave running (Disable failed). Why?",
+  "alloc": "On {date} around {end} (America/Los_Angeles) the tst DAQ on platform 5 would not allocate; control said 'at least one DRP is required'. Why?"
+ },
+ "cases": [
+  {
+   "id": "cfg-verify-tt",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f2fault",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "TriggerDelay"
+     ],
+     "summary": "tt_0 DRP aborted during Configure phase 1: register TriggerDelay failed write-verify (got 0xff, expected 0x17)"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-verify-tt-q",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f5fault",
+   "prompt": "configure",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "TriggerDelay"
+     ],
+     "summary": "same as cfg-verify-tt, asked as a targeted Configure question"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-verify-hsd",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/types4/final-F1/wd-drp-hsd-fault",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "hsd_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "PgpQPllReset"
+     ],
+     "summary": "hsd_0 DRP failed Configure phase 1: register PgpQPllReset failed write-verify"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-verify-epix100",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/iter4-skeptic/wd-fault-epix100",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "epix100_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "AsicAcqLToPPmatL"
+     ],
+     "summary": "epix100_0 DRP failed Configure phase 1: register AsicAcqLToPPmatL failed write-verify"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-verify-epixhr2x2-q",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/hr2/final-F2/wd-drp-epixhr2x2-fault",
+   "prompt": "configure",
+   "key": {
+    "fault": {
+     "component": [
+      "epixhr2x2_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "EventBuilder.Timeout"
+     ],
+     "summary": "epixhr2x2_0 DRP failed Configure phase 1: register EventBuilder.Timeout failed write-verify"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-verify-epixquad1kfps",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/types4/final-F1/wd-drp-epixquad1kfps-fault",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "epixquad1kfps_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back"
+     ],
+     "summary": "epixquad1kfps_0 DRP failed Configure phase 1: a TriggerEventManager register failed write-verify"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "connect-verify-fakecam",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/gpu1/runs/fault-fakecam",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "connect"
+     ],
+     "mechanism": [
+      "Verify error",
+      "verify",
+      "verification",
+      "readback",
+      "read back",
+      "Length_0"
+     ],
+     "summary": "fakecam_0 (drp_gpu) failed Connect: register TDetSemi.Length_0 failed write-verify"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "kill-drp",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/prb/e2e-kill",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "running",
+      "disable",
+      "enable",
+      "run"
+     ],
+     "mechanism": [
+      "signal 9",
+      "SIGKILL",
+      "killed"
+     ],
+     "summary": "fakecam_0 DRP was killed (signal 9) while running; Disable then failed because it was gone"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "kill-drp-q",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/work/wg/b2-kill",
+   "prompt": "disable",
+   "key": {
+    "fault": {
+     "component": [
+      "fakecam_0"
+     ],
+     "transition": [
+      "running",
+      "disable",
+      "enable",
+      "run"
+     ],
+     "mechanism": [
+      "signal 9",
+      "SIGKILL",
+      "killed"
+     ],
+     "summary": "same as kill-drp, asked as a targeted Disable question"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "startup-crash-tt",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f3nopin",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "alloc",
+      "start",
+      "startup",
+      "start-up",
+      "launch",
+      "init",
+      "tt_init",
+      "rollcall"
+     ],
+     "mechanism": [
+      "TypeError",
+      "unexpected keyword"
+     ],
+     "summary": "tt_0 DRP crashed at startup (TypeError in tt_init: unexpected keyword size), so rollcall found no DRP and Alloc failed"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "startup-crash-tt-q",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f6nopin",
+   "prompt": "alloc",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "alloc",
+      "start",
+      "startup",
+      "start-up",
+      "launch",
+      "init",
+      "tt_init",
+      "rollcall"
+     ],
+     "mechanism": [
+      "TypeError",
+      "unexpected keyword"
+     ],
+     "summary": "same as startup-crash-tt, asked as a targeted Alloc question"
+    },
+    "expect_skills": [
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "cfg-badname-tt",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/d1",
+   "prompt": "sweep",
+   "key": {
+    "fault": {
+     "component": [
+      "tt_0"
+     ],
+     "transition": [
+      "configure"
+     ],
+     "mechanism": [
+      "XtcData::Name",
+      "illegal"
+     ],
+     "summary": "tt_0 DRP aborted during Configure: illegal XtcData::Name for a ROI[0] config name"
+    },
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "healthy-tt",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f4",
+   "prompt": "sweep",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "double-free"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "healthy-tt-2",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/tt/f1",
+   "prompt": "sweep",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": [
+     "double free",
+     "double-free"
+    ]
+   },
+   "leak_allow": []
+  },
+  {
+   "id": "healthy-fakecam",
+   "source": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/runs/orch-pr32-fakecam2",
+   "prompt": "sweep",
+   "key": {
+    "fault": null,
+    "expect_skills": [
+     "psana-daq",
+     "psana-daq-control",
+     "psana-daq-logs"
+    ],
+    "forbid_skills": [
+     "psana-daq-history"
+    ],
+    "independent": []
+   },
+   "leak_allow": []
+  }
+ ]
+}
