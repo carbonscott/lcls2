@@ -1,0 +1,67 @@
+name: Sim cheap tier
+# The cheap tier of the hardware-free DAQ (psdaq/psdaq/sim): every sim unit test file, found by
+# glob, and one fakecam run of daq_sim up / cycle / down (RUNBOOK §2-§5) read back by psana2
+# with the per-event payload check. The full check (daq_sim matrix, RUNBOOK §3p) needs S3DF.
+on:
+  pull_request:
+    branches: [sim-main]
+  push:
+    branches: [sim-main, 'ci/**', 'ci-break/**']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sim-cheap-tier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash -el {0}       # login shell, for conda (as run_daq_tests.yaml)
+    steps:
+      - name: Checkout repo with submodules
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install procServ
+        # procmgr starts every DAQ process under procServ; the conda spec has none
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q procserv
+          command -v procServ && procServ --version | head -1
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4.0.1
+        with:
+          auto-update-conda: true
+          activate-environment: build-conda-env
+          channels: lcls-ii, conda-forge
+          environment-file: .daq_20250402_r9.txt
+
+      - name: Build
+        id: build
+        run: |
+          export ENV_TYPE=legacy      # as run_daq_tests.yaml; -d turns the DAQ build on
+          ./build_all.sh -d
+
+      - name: Sim unit tests (every psdaq/psdaq/tests/test_sim*.py)
+        id: unit
+        run: bash psdaq/psdaq/sim/ci_cheap_tier.sh unit
+
+      - name: Fakecam DAQ run (daq_sim up / cycle / down, psana2 read-back)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 15
+        run: bash psdaq/psdaq/sim/ci_cheap_tier.sh daq
+
+      - name: Upload the DAQ work dir logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: daq-sim-ci-logs
+          path: |
+            ${{ runner.temp }}/daq_sim_ci/logs
+            ${{ runner.temp }}/daq_sim_ci/pmlogs
+            ${{ runner.temp }}/daq_sim_ci/*.json
+            ${{ runner.temp }}/daq_sim_ci/*.cnf
+          if-no-files-found: ignore
+          retention-days: 7

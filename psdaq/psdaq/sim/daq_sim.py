@@ -108,7 +108,9 @@ from psdaq.sim import coverage, served_log
 SIMDIR = os.path.dirname(os.path.abspath(__file__))
 SIM_ENV = os.path.join(SIMDIR, 'sim_env.sh')
 PREFLIGHT = os.path.join(SIMDIR, 'preflight.sh')
-RCFILE = os.path.join(SIMDIR, 'procmgrd.s3df.conf')
+# procmgr's rcfile (PROCSERVBIN, CONDABASE): S3DF's, or another host's named by DAQ_SIM_RCFILE
+# (a GitHub-hosted runner's, written by ci_cheap_tier.sh)
+RCFILE = os.environ.get('DAQ_SIM_RCFILE') or os.path.join(SIMDIR, 'procmgrd.s3df.conf')
 
 INSTRUMENT = 'tst'
 EXPERIMENT = 'tstx00001'
