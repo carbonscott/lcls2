@@ -42,13 +42,35 @@ using us_t    = std::chrono::microseconds;
 const std::chrono::milliseconds BATCH_TIMEOUT{1}; // Timed on CLOCK_MONOTONIC: the coarse clock steps ~1 ms
 
 
+// The depth of _pending: numBuffers, unless kwarg tebPendingDepth asks for a
+// deeper queue (a power of 2 >= numBuffers).  The receiver frees a batch's
+// buffers before it pops the batch, so with one event per batch numBuffers
+// entries can be queued and _post() finds the queue full.  The batch region
+// stays sized by numBuffers (configure()).
+static unsigned pendingDepth(const TebCtrbParams& prms, unsigned numBuffers)
+{
+  auto it = prms.kwargs.find("tebPendingDepth");
+  if (it == prms.kwargs.end())  return numBuffers;
+
+  unsigned depth = std::stoul(it->second);
+  if ((depth < numBuffers) || (depth & (depth - 1)))
+  {
+    logging::critical("%s:\n  tebPendingDepth (%u) must be a power of 2 >= numBuffers (%u)",
+                      __PRETTY_FUNCTION__, depth, numBuffers);
+    abort();
+  }
+  logging::info("tebPendingDepth %u (numBuffers %u)", depth, numBuffers);
+  return depth;
+}
+
 TebContributor::TebContributor(const TebCtrbParams& prms,
                                unsigned             numBuffers) :
   _prms       (prms),
   _transport  (prms.verbose, prms.kwargs),
   _id         (-1),
   _numEbs     (0),
-  _pending    (numBuffers),
+  _numBuffers (numBuffers),
+  _pending    (pendingDepth(prms, numBuffers)),
   _batch      {nullptr, false},
   _previousPid(0),
   _eventCount (0),
@@ -173,11 +195,11 @@ int TebContributor::configure()
   _pending.startup();
 
   // maxInputSize becomes known during Configure, so reinitialize BatchManager now
-  auto numBatches = _pending.size() / _prms.maxEntries;
-  if (numBatches * _prms.maxEntries != _pending.size())
+  auto numBatches = _numBuffers / _prms.maxEntries;
+  if (numBatches * _prms.maxEntries != _numBuffers)
   {
     logging::critical("%s:\n  maxEntries (%u) must divide evenly into numBuffers (%u)",
-                      __PRETTY_FUNCTION__, _prms.maxEntries, _pending.size());
+                      __PRETTY_FUNCTION__, _prms.maxEntries, _numBuffers);
     abort();
   }
   _batMan.initialize(_prms.maxInputSize, _prms.maxEntries, numBatches);
