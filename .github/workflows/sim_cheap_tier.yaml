@@ -29,6 +29,12 @@ jobs:
         run: |
           sudo apt-get update -q && sudo apt-get install -y -q procserv
           command -v procServ && procServ --version | head -1
+          # procmgr reaches each procServ's control port at the host's name (ProcMgr.py:600-604);
+          # Ubuntu's procServ accepts control connections on loopback only, so the name must
+          # resolve to loopback, as every peer of this DAQ is on 127.0.0.1
+          echo "before: $(getent hosts "$(hostname)")"
+          echo "127.0.0.1 $(hostname)" | sudo tee -a /etc/hosts
+          echo "after: $(getent hosts "$(hostname)")"
 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4.0.1

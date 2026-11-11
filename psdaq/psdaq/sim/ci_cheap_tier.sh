@@ -18,9 +18,6 @@ export PYTHONPATH=$TESTRELDIR/lib/python$pyver/site-packages
 export PROCMGR_EXPORT=RDMAV_FORK_SAFE=1,RDMAV_HUGEPAGES_SAFE=1,OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1,NUMEXPR_NUM_THREADS=1,PS_PARALLEL='none'
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 export QT_QPA_PLATFORM=offscreen
-# procmgr start refuses to run without it (ProcMgr.py:964-967); on S3DF it names the site's
-# firmware submodules, which no type of this run reads
-export SUBMODULEDIR=${SUBMODULEDIR:-$TESTRELDIR/no-submodules}
 
 unit() {
     shopt -s nullglob
@@ -42,11 +39,15 @@ daq() {
     condabase=${CONDA_EXE:+$(dirname "$(dirname "$CONDA_EXE")")}
     [[ -f $condabase/etc/profile.d/conda.sh ]] || { echo "no conda base with etc/profile.d/conda.sh (CONDA_EXE=${CONDA_EXE:-unset})"; return 2; }
     mkdir -p "$wd"
+    # procmgr start refuses to run without it (ProcMgr.py:964-967). On S3DF it names the site's
+    # firmware submodules (8 GB), which fakecam does not read; the unit tests skip without it
+    export SUBMODULEDIR=${SUBMODULEDIR:-$wd/no-submodules}
     # procmgr's rcfile for this host, as procmgrd.s3df.conf is S3DF's (daq_sim reads DAQ_SIM_RCFILE)
     export DAQ_SIM_RCFILE=$wd.procmgrd.conf
     printf 'PORTBASE=29000\nPROCSERVBIN=%s\nCONDABASE=%s\n' "$procserv" "$condabase" > "$DAQ_SIM_RCFILE"
     echo "host $(hostname), $(nproc --all) CPUs, $(free -g | awk '/Mem:/{print $2}') GB; procServ $procserv; rcfile $DAQ_SIM_RCFILE:"
     cat "$DAQ_SIM_RCFILE"
+    echo "$(hostname) resolves to: $(getent hosts "$(hostname)")"   # procmgr telnets procServ there
     [[ -n ${PSDAQ_SIM_CORRUPT_SEQ:-} ]] && echo "PSDAQ_SIM_CORRUPT_SEQ=$PSDAQ_SIM_CORRUPT_SEQ (deliberate break: one payload byte inverted)"
 
     local t0=$SECONDS
