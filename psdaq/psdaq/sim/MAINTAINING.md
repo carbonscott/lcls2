@@ -113,15 +113,21 @@ cd $ROOT/lcls2 && git fetch origin && git fetch upstream
 D=$(date -u +%F)
 git worktree add $ROOT/wt-trial -b scratch/trial-$D origin/sim-main
 cd $ROOT/wt-trial
-git merge --no-commit --no-ff upstream/master; echo MERGE_EXIT=$?   # 0 clean, 1 conflicts
+echo "upstream commits not in sim-main: $(git log --oneline origin/sim-main..upstream/master | wc -l)"
+git merge --no-commit --no-ff upstream/master; echo MERGE_EXIT=$?   # 0 clean or nothing to merge, 1 conflicts
 git diff --name-only --diff-filter=U        # the conflicting files
 git diff --cached --stat | tail -1          # size of what comes in
-git log --oneline origin/sim-main..upstream/master | wc -l    # upstream commits not yet in sim-main
-git merge --abort
+git rev-parse -q --verify MERGE_HEAD >/dev/null && git merge --abort    # only if a merge is in progress
 cd $ROOT/lcls2 && git worktree remove $ROOT/wt-trial && git branch -D scratch/trial-$D
 ```
 
 Never push a `scratch/*` branch. At the 2026-11-11 sync only `CHANGELOG.md` conflicted.
+
+**Nothing to merge.** If the first line prints 0, upstream has nothing new: `git merge` prints
+`Already up to date.` with `MERGE_EXIT=0`, the next two commands print nothing, and no merge is in
+progress to abort (a plain `git merge --abort` would print `fatal: There is no merge to abort
+(MERGE_HEAD missing)`, which is harmless). Then steps 4 and 5 have nothing to do: skip them and
+test sim-main itself, from step 6 with the first-visit checkout.
 
 ## 4. Fast-forward the fork's master to upstream's
 
@@ -173,10 +179,23 @@ that same head; any later push to the branch needs a new full check. Afterwards
 
 drp_gpu links against `libcuda.so.1`, which milano nodes do not have (`cannot find
 /lib64/libcuda.so.1`, `BUILD_EXIT=1`), so build on G. The GPU subprojects are git wraps: fetch them on
-sdfiana025 (compute nodes have no internet). WT is the checkout under test (`$ROOT/wt-sync` here).
+sdfiana025 (compute nodes have no internet).
+
+WT is the checkout under test. After a sync it is step 5's worktree: `export WT=$ROOT/wt-sync`.
+On a first visit, or when step 3 found nothing to merge, it is a detached worktree of sim-main
+(no branch, nothing to push):
 
 ```bash
-export WT=$ROOT/wt-sync
+git -C $ROOT/lcls2 fetch origin
+git -C $ROOT/lcls2 worktree add --detach $ROOT/wt-main origin/sim-main
+export WT=$ROOT/wt-main
+git -C $WT log -1 --format='%h %s'     # the commit every later step reports as HEAD
+```
+
+On a later visit, move it to the new sim-main with `git -C $WT checkout --detach origin/sim-main`
+after a fetch. Then build:
+
+```bash
 (cd $WT && source ./setup_env_daq.sh && meson subprojects download lc pfpl sleek)
 nohup srun --jobid=$GJOB --overlap -w $G --ntasks=1 --cpus-per-task=32 --mem=120G --gres=gpu:l40s:1 bash -c \
   "cd $WT && source ./setup_env_daq.sh && export CUDA_ROOT=$CUDA PATH=\$PATH:$CUDA/bin && ./build_all.sh -d -j 32; echo BUILD_EXIT=\$?" \
@@ -228,19 +247,32 @@ srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G bash -
 grep -E '^TYPE|^FAILED|^MATRIX' $ROOT/work/cheap.log
 ```
 
-Expected, the run (exit 0; N at least 1000, about 1900-2100 at 1 kHz, the same three times):
+Expected, the run (exit 0; N at least 1000, typically 1800-2200 at 1 kHz, the same three times):
 ```
 TYPE fakecam      node <A> job <JOB> run <W>/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ <N> psana2 <N> with-data <N> per-event PASS PASS
+TYPE fakecam      (the same line again)
 MATRIX PASS (7 assertions)
 MATRIX_EXIT=0 in <s> s
 ```
 and the corrupted byte (exit 1):
 ```
+TYPE fakecam      node <A> ... run <W>/break-corrupt/types/fakecam/... DAQ <N> psana2 <N> with-data <N> per-event FAIL FAIL
+TYPE fakecam      (the same line again)
 FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, ...']
 FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
 MATRIX FAIL (2 of 7 assertions failed)
 MATRIX_EXIT=1
 ```
+
+**Reading a run's output (steps 8 to 10).** `daq_sim matrix` prints each `TYPE`/`PROGRAMS` line
+when that run ends and again in its summary, under `==== MATRIX SUMMARY`: the same result twice,
+not two runs. The summary also prints `whole matrix at this HEAD (with carried results): ...`, the
+state of the whole matrix given only what this work dir holds. A partial run (steps 8 and 9, the
+breaks) prints `FAIL; not run: types/cspad ... programs coverage; failed:
+types/det:drp_gpu:<type>/runnable ...` there (without `--gpu-host`, the five GPU DRP types the
+coverage status marks RUN count as not runnable): expected, not a failure of this run. The verdict
+of what a command ran is its exit code (`MATRIX_EXIT`) and its `MATRIX PASS|FAIL` line; only the
+full check (step 10) must also print `whole matrix ...: PASS`.
 
 ## 9. First run: a subset smaller than the full check
 
@@ -255,10 +287,12 @@ grep -E '^TYPE|^PROGRAMS|^FAILED|^MATRIX' $ROOT/work/first.log
 ```
 
 Expected: three `TYPE` lines (fakecam, epix100, opal), each `DAQ <N> psana2 <N> with-data <N>
-per-event PASS PASS` with equal N >= 1000, `MATRIX PASS (21 assertions)`, `MATRIX_EXIT=0`; then
-`PROGRAMS fakecam ... DAQ <N> psana2 <N> with-data <N> per-event PASS PASS`, `MATRIX PASS (8
-assertions)`, `MATRIX_EXIT=0` (the programs run takes about 5 min). Each command's exit code is the
-verdict of what it ran.
+per-event PASS PASS` with the three counts of a line equal and N >= 1000 (N differs between types),
+then the same three lines again (the summary, see step 8), `MATRIX PASS (21 assertions)`,
+`MATRIX_EXIT=0`; then `PROGRAMS fakecam ... DAQ <N> psana2 <N> with-data <N> per-event PASS PASS`
+twice, `MATRIX PASS (8 assertions)`, `MATRIX_EXIT=0` (the types take about 3 min, the programs run
+about 5 min). Each command's exit code is the verdict of what it ran; its `whole matrix ...: FAIL`
+line is expected (step 8).
 
 ## 10. The full check
 
@@ -288,17 +322,25 @@ nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G 
 
 Every run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
 earlier results (`"carried": true` in the summary). The run takes 24-33 min (seven full checks
-2026-11-09 to 2026-11-11). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`.
-Expected end:
+2026-11-09 to 2026-11-11). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
+(A's 11 types and the programs run print a line as each ends; B's and G's lines are prefixed
+`[<host>]` until the summary). When it has ended, read the summary only:
+
+```bash
+sed -n '/^==== MATRIX SUMMARY/,$p' $ROOT/work/mx-c1.log | grep -E '^(TYPE|PROGRAMS|FEATURE|coverage:|whole|FAILED|MATRIX)'
+```
+
+Expected: 21 `TYPE <type> node <A or B>` lines (11 on A, 10 on B), 5 `TYPE drp_gpu:<type> node <G>`
+lines, one `PROGRAMS` line, `FEATURE a PASS` .. `FEATURE e PASS`, then
 
 ```
 coverage: at <HEAD>: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+whole matrix at this HEAD (with carried results): PASS
 MATRIX PASS (201 assertions)
 MATRIX_EXIT=0 <time>
 ```
 
-with 21 `TYPE <type> node <A or B>` lines (11 on A, 10 on B), 5 `TYPE drp_gpu:<type> node <G>`
-lines, one `PROGRAMS` line and `FEATURE a PASS` .. `FEATURE e PASS`. A different assertion or coverage row count after a sync must be traced to
+(`MATRIX_EXIT` comes from `mx.sh`, after the summary.) A different assertion or coverage row count after a sync must be traced to
 an upstream commit (a type or program added or removed) before the run counts.
 
 **The three deliberate breaks**, each its own command and each must exit 1 (on A, after the check):
@@ -336,7 +378,7 @@ limit, a cancelled allocation) counts neither way, with its cause written down.
    `matrix-summary.json`). Each line is `FAILED <section>/<name>/<assertion>: <why>`.
 2. For each failed type or section, open its DRP and teb0 pmlogs (step 12) and find the first
    error line.
-3. Look that line up in [FLAKES.md](FLAKES.md) (first column: symptom). The row's verdict says what to
+3. Look that line up in [FLAKES.md](FLAKES.md) (the symptom column). The row's verdict says what to
    do; no verdict excuses the failure:
    - FIXED / FIXED-UPSTREAM: should not happen any more. Reopen the row and rerun its reproducer at
      this commit; for FIXED-UPSTREAM check the named commit is still an ancestor of HEAD.
@@ -374,7 +416,16 @@ A full check's work dir `W` (`$ROOT/work/mx-<TAG>`) holds:
 - the run's log (`$ROOT/work/mx-<TAG>.log`): the `TYPE`/`PROGRAMS` lines, each assertion, the
   `FAILED` lines and `MATRIX PASS|FAIL`.
 
+**The sim drps' TEB pending depth (F1's fix, PR #52).** `daq_sim` gives every `drp -d sim://` the
+kwarg `tebPendingDepth`, twice its pebble count rounded up to a power of 2
+(`teb_pending_depth` in `psdaq/psdaq/sim/daq_sim.py`), so TebContributor's queue of posted batches
+has room beyond the pebbles. drp accepts the kwarg only with `-d sim://` (`psdaq/drp/drp.cc`);
+production defaults are unchanged. Each sim drp's pmlog shows it as
+`tebPendingDepth <N> (numBuffers <M>)` (e.g. opal `tebPendingDepth 256 (numBuffers 128)`), and its
+`-k` on the `# CMDLINE:` line. A `_pending queue overflow` in a sim drp whose log lacks that line
+means the kwarg was not passed; with the line, it is F1 coming back (FLAKES.md).
+
 To find a register symptom in a failed run:
-`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired' W --include='*.log' | head`
+`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired|Unable to bind random UDP6 port' W --include='*.log' | head`
 (remember F3's shutdown lines appear in nearly every DRP log). RUNBOOK §6 lists the expected and
 the harmless lines of a DAQ's logs.
