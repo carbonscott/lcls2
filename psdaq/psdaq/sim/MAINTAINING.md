@@ -226,6 +226,13 @@ tail -4 $ROOT/work/ut.log
 Expected: `0 failed`, `PYTEST_EXIT=0`; at def58eaf8, 16 files, `421 passed, 1 skipped` (skip:
 `could not import 'ami'`). A skip for any other reason is a finding.
 
+CI (step 8) is the authoritative run of the unit tier; this S3DF run is a second look, on nodes that
+can be slow (FLAKES.md F9 is a timing test that fails there). When a test fails here and passes in CI,
+tell an environment failure from a regression: rerun that one test (`pytest -rs -p no:cacheprovider
+<file>::<test>`) on the same node at the same time in a built checkout of sim-main (step 6's
+`wt-main`). Failing there too: the environment (or an older defect), not the change; register it.
+Passing at sim-main and failing at the head: a regression of the change.
+
 ## 8. The cheap tier
 
 **In CI (every pull request to sim-main).** `.github/workflows/sim_cheap_tier.yaml` builds the tree
@@ -296,6 +303,41 @@ line is expected (step 8).
 
 ## 10. The full check
 
+**Pre-flight (before every full check).** A full check on slow nodes can fail for reasons that are
+not the code's (FLAKES.md F7, F8). Probe A, B and G first, keep the lines with the run, and do not
+start the check while a probe is more than 2x its baseline. A run not started is not an attempt; a
+run started is always listed, whatever its end. The probe, once:
+
+```bash
+cat > $ROOT/probe.sh <<'EOF'
+#!/bin/bash
+# probe.sh: one line about this node (in a step on A, B or G; needs ROOT and WT exported)
+F=$ROOT/work/probe-1G.bin; [ -s $F ] || dd if=/dev/urandom of=$F bs=4M count=256 status=none
+cd $WT && source ./setup_env_daq.sh >/dev/null 2>&1
+others=$(ps -e -o uid= | awk -v me=$(id -u) '$1>=1000 && $1!=me' | wc -l)    # other users' processes
+t0=$(date +%s.%N); python -c "import psana, psdaq.control"; t1=$(date +%s.%N)
+dd_s=$(dd if=$F of=/dev/null bs=4M iflag=direct 2>&1 | tail -1 | awk -F, '{print $(NF-1)}' | awk '{print $1}')
+cu=$(python -c "import ctypes,time; t=time.time(); r=ctypes.CDLL('libcuda.so.1').cuInit(0); print('%.3f rc%d' % (time.time()-t, r))" 2>/dev/null || echo none)
+echo "PROBE $(hostname -s) $(date -u +%FT%TZ) load $(cut -d' ' -f1-3 /proc/loadavg) others $others import_s $(echo "$t1 - $t0" | bc) dd_s $dd_s cuinit_s $cu"
+EOF
+export WT ROOT
+for n in $A $B; do srun --jobid=$JOB --overlap -w $n --ntasks=1 --cpus-per-task=2 --mem=4G bash $ROOT/probe.sh; done
+srun --jobid=$GJOB --overlap -w $G --ntasks=1 --cpus-per-task=2 --mem=4G --gres=gpu:l40s:1 bash $ROOT/probe.sh
+```
+
+and one fakecam try: step 8's first command, on A (its `MATRIX_EXIT=0 in <s> s`). The baselines,
+medians of 14 probes and 10 fakecam tries on an ada node, 2026-11-11 19:00-19:32Z:
+
+| probe | baseline | do not start above |
+|---|---|---|
+| `import_s` (`import psana, psdaq.control` from the build) | 2.89 s | 5.8 s |
+| `dd_s` (the 1 GB file, `O_DIRECT` read) | 0.69 s | 1.4 s |
+| `cuinit_s` (G only; `none` on milano) | 0.083 s | 0.17 s |
+| fakecam try, wall | 63 s | 126 s |
+
+`load` and `others` have no gate; write them down (that day: load1 median 15, others median 140).
+Probe again before each run of a series (step 11).
+
 The one command (RUNBOOK §3p, "Everything, over every node of the campaign"), in a step on A: the
 types shared between A and B (each under its node's lock), the GPU DRP's types on G, the programs
 run and features a, b, c, e on A, d over both, then coverage over all of their evidence. Write it
@@ -321,8 +363,8 @@ nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G 
 ```
 
 Every run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
-earlier results (`"carried": true` in the summary). The run takes 24-33 min (seven full checks
-2026-11-09 to 2026-11-11). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
+earlier results (`"carried": true` in the summary). The run takes 25-40 min (one run took 38 min
+in a slow period). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
 (A's 11 types and the programs run print a line as each ends; B's and G's lines are prefixed
 `[<host>]` until the summary). When it has ended, read the summary only:
 
@@ -355,8 +397,8 @@ nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G 
 ```
 
 Expected: `BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed)` (`epix100_0 did not respond
-to configure`), `BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)` (`fakecam_0 drp pid
-... GONE after the run`), `BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)` (`event 500:
+to configure`), `BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)`, or 4 of 7 (`fakecam_0 drp pid
+... GONE after the run`; either count is the break failing as it must), `BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)` (`event 500:
 payload pattern broken`).
 
 **Coverage on its own**, over the full check's evidence:
@@ -371,8 +413,18 @@ the status file's claims, then `PASS` and `COV_EXIT=0` (at def58eaf8).
 ## 11. When a run fails, and when to rerun what
 
 A failed run is read, not retried. Never rerun a check until it passes: every run you start stays in
-the record, failed or not. Only a run cut short by the infrastructure (node failure, the job's time
-limit, a cancelled allocation) counts neither way, with its cause written down.
+the record, failed or not.
+
+**Cut short by the infrastructure** means the run never reached its `MATRIX PASS|FAIL` summary line
+because of a node failure, the Slurm job's time limit, a cancelled allocation or an OOM kill. Only
+such a run counts neither way, with its cause written down (e.g. `sacct -j <job> -o
+JobID,State,ExitCode,Elapsed`, the node's or the OOM killer's message). A run that completes with
+`MATRIX FAIL` because the node was slow is a failure, not a cut: the pre-flight (step 10) is there so
+that such a run is not started.
+
+**A series** (several full checks at one commit, to show it repeats): stop the series at the first
+`MATRIX FAIL`. That run gets a register row, or adds to its row's counts (below); the commit cannot
+be the one the series proves, and a fix is a new commit with a new series.
 
 1. List what failed: `grep '^FAILED ' <the run's log>` (or step 12's one-liner on
    `matrix-summary.json`). Each line is `FAILED <section>/<name>/<assertion>: <why>`.
@@ -425,7 +477,10 @@ production defaults are unchanged. Each sim drp's pmlog shows it as
 `-k` on the `# CMDLINE:` line. A `_pending queue overflow` in a sim drp whose log lacks that line
 means the kwarg was not passed; with the line, it is F1 coming back (FLAKES.md).
 
-To find a register symptom in a failed run:
-`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired|Unable to bind random UDP6 port' W --include='*.log' | head`
-(remember F3's shutdown lines appear in nearly every DRP log). RUNBOOK §6 lists the expected and
+To find a register symptom in a failed run (F8's is in the run's own log):
+`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired|RuntimeError: Unable to bind|Future already retrieved|pvwait: timeout|ami_count' W $ROOT/work/mx-<TAG>.log --include='*.log' | head`
+(remember F3's shutdown lines appear in nearly every DRP log). `daq_sim: PVA client context: Unable to
+bind random UDP6 port (attempt <n> of 10), retrying` is benign, F6's fix absorbing the race; only
+`RuntimeError: Unable to bind` is F6. F9 is in the unit tests' log: `grep -n 'assert 200 <='
+$ROOT/work/ut.log`. RUNBOOK §6 lists the expected and
 the harmless lines of a DAQ's logs.
