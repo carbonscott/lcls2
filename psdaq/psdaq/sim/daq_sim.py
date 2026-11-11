@@ -89,6 +89,7 @@ EPICS (sim_env.sh) PVA 15075/15076, CA 15064/15065.
 """
 
 import argparse
+import atexit
 import datetime
 import getpass
 import json
@@ -1449,17 +1450,39 @@ def link_full(alias, share):
     return rec
 
 
+_PVA = {'ctx': None, 'lock': threading.Lock()}
+PVA_BIND_RACE = 'Unable to bind random UDP6 port'
+
+
+def pva_context(attempts=10):
+    """The one PVA client context of this process for pv_get and pv_put, made at first use and closed at
+    exit.  PVXS binds the client's IPv6 search socket to the port number the kernel gave its IPv4 one, and
+    raises RuntimeError(PVA_BIND_RACE) when another IPv6 UDP socket of the node holds that number: that
+    error alone is retried, at most `attempts` times; any other error, and the last attempt's, is raised."""
+    with _PVA['lock']:
+        if _PVA['ctx'] is None:
+            from p4p.client.thread import Context
+            for n in range(1, attempts + 1):
+                try:
+                    _PVA['ctx'] = Context('pva')
+                    break
+                except RuntimeError as e:
+                    if str(e) != PVA_BIND_RACE or n == attempts:
+                        raise
+                    print(f'{now()} daq_sim: PVA client context: {e} (attempt {n} of {attempts}), retrying',
+                          file=sys.stderr, flush=True)
+            atexit.register(_PVA['ctx'].close)
+        return _PVA['ctx']
+
+
 def pv_put(name, value, timeout=5.0):
     """Put a PV over PVA; None on success, else the error."""
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         ctx.put(name, value, timeout=timeout)
         return None
     except Exception as e:
         return f'{type(e).__name__}: {e}'
-    finally:
-        ctx.close()
 
 
 def start_webgui(work, state, env):
@@ -1799,14 +1822,11 @@ COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_
 
 
 def pv_get(name, timeout=3.0):
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         return ctx.get(name, timeout=timeout)
     except Exception as e:
         return f'error: {e}'
-    finally:
-        ctx.close()
 
 
 def cmd_status(args):
