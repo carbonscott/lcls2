@@ -27,6 +27,8 @@ print('JSON ' + json.dumps(d))
 def test_store_config_is_captured_and_nothing_is_contacted():
     pytest.importorskip('pyrogue')
     r = subprocess.run([sys.executable, '-c', CHECK], capture_output=True, text=True, timeout=120)
+    if r.returncode and "KeyError: 'SUBMODULEDIR'" in r.stderr:     # unset: no site firmware submodules
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     assert r.returncode == 0, r.stderr[-2000:]
     d = json.loads([l for l in r.stdout.splitlines() if l.startswith('JSON ')][0][5:])
     assert d['detType:RO'] == 'wave8' and d['detName:RO'] == 'wave8_0'

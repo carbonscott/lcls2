@@ -50,6 +50,13 @@ daq() {
     echo "$(hostname) resolves to: $(getent hosts "$(hostname)")"   # procmgr telnets procServ there
     [[ -n ${PSDAQ_SIM_CORRUPT_SEQ:-} ]] && echo "PSDAQ_SIM_CORRUPT_SEQ=$PSDAQ_SIM_CORRUPT_SEQ (deliberate break: one payload byte inverted)"
 
+    # the teb and drp refuse to start below an unlimited MEMLOCK limit ("Inadequate MEMLOCK limit:
+    # got 8388608, require -1", a runner's default); S3DF's nodes have it unlimited. RTPRIO stays
+    # 0 there too, which they report and accept (RUNBOOK §6, harmless lines)
+    if [[ $(ulimit -l) != unlimited ]]; then
+        sudo -n prlimit --pid $$ --memlock=unlimited:unlimited || { echo "cannot raise MEMLOCK"; return 2; }
+    fi
+    echo "MEMLOCK $(ulimit -l), RTPRIO $(ulimit -r)"
     local t0=$SECONDS
     timeout -k 10 300 python -m psdaq.sim.daq_sim up -w "$wd" --detach; rc_up=$?
     echo "UP_EXIT=$rc_up ($((SECONDS - t0)) s)"

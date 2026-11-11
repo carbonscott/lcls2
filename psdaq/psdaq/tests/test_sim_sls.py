@@ -267,6 +267,8 @@ def test_daq_sim_points_the_module_data_at_loopback():
     import json
     import sys
     r = subprocess.run([sys.executable, '-c', SEED_CHECK], capture_output=True, text=True, timeout=120)
+    if r.returncode and "KeyError: 'SUBMODULEDIR'" in r.stderr:     # unset: no site firmware submodules
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     assert r.returncode == 0, r.stderr[-2000:]
     lines = r.stdout.splitlines()
     assert 'NOT REFUSED' not in lines

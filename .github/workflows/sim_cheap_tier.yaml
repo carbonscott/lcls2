@@ -60,14 +60,14 @@ jobs:
         run: bash psdaq/psdaq/sim/ci_cheap_tier.sh daq
 
       - name: Upload the DAQ work dir logs
+        # one tarball: artifact paths may not hold ':', which procmgr's log names do
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        run: tar czf "$RUNNER_TEMP/daq_sim_ci_logs.tgz" -C "$RUNNER_TEMP" --ignore-failed-read daq_sim_ci/logs daq_sim_ci/pmlogs daq_sim_ci.procmgrd.conf || true
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
         with:
           name: daq-sim-ci-logs
-          path: |
-            ${{ runner.temp }}/daq_sim_ci/logs
-            ${{ runner.temp }}/daq_sim_ci/pmlogs
-            ${{ runner.temp }}/daq_sim_ci/*.json
-            ${{ runner.temp }}/daq_sim_ci/*.cnf
+          path: ${{ runner.temp }}/daq_sim_ci_logs.tgz
           if-no-files-found: ignore
           retention-days: 7

@@ -200,6 +200,8 @@ def test_proc_text_of_the_simulated_driver():
     import sys
     r = subprocess.run([sys.executable, '-c', PROC_CHECK], capture_output=True, text=True,
                        timeout=120)
+    if r.returncode and "KeyError: 'SUBMODULEDIR'" in r.stderr:     # unset: no site firmware submodules
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     assert r.returncode == 0, r.stderr[-2000:]
     assert "('XilinxKcu1500', 4)" in r.stdout
 
