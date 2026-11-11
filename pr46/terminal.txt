@@ -1,0 +1,169 @@
+exedev@indigo-galaxy:redo$ date -Is; hostname   # this machine: the exe.dev VM
+2026-11-11T03:06:54+00:00
+indigo-galaxy
+exedev@indigo-galaxy:redo$ ssh -t sdfiana025 bash --rcfile $R/logs/proof46/rc.sh -i
+cwang31@sdfiana025:wt-formal$ hostname; date '+%F %T %Z'; cat /etc/redhat-release; gcc --version | head -1; valgrind --version
+sdfiana025
+2026-11-10 19:06:57 PST
+Red Hat Enterprise Linux release 8.10 (Ootpa)
+gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-29)
+valgrind-3.22.0
+cwang31@sdfiana025:wt-formal$ # A clean checkout of the PR head in a new worktree: nothing built, nothing left over
+cwang31@sdfiana025:wt-formal$ git fetch -q origin && git worktree add -q --detach $R/wt-proof46-take3 origin/formal/xtc2 && cd $R/wt-proof46-take3 && git rev-parse HEAD && git log -1 --format='%ad  %s' && echo "local changes: $(git status --short | wc -l)"
+702899a5bf091d97c4f9d5fea71a606d624d656b
+Tue Nov 10 19:06:43 2026 -0800  xtcdata/formal: findings.sh fixes the stack size for the deep-nesting case
+local changes: 0
+cwang31@sdfiana025:wt-proof46-take3$ git diff --stat origin/sim-main HEAD | tail -1; echo 'files outside xtcdata/formal:'; git diff --name-only origin/sim-main HEAD | grep -v '^xtcdata/formal/'
+ 25 files changed, 2401 insertions(+)
+files outside xtcdata/formal:
+.github/workflows/run_xtc_formal.yaml
+CHANGELOG.md
+cwang31@sdfiana025:wt-proof46-take3$ cd xtcdata/formal && . ./env.sh && (cd lean && lean --version) && ls
+Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)
+audit.sh  coverage  difftest  env.sh  FINDINGS.md  lean  README.md
+cwang31@sdfiana025:formal$ # 1. Build the model. lake compiles every theorem; a proof that does not check stops the build
+cwang31@sdfiana025:formal$ (cd lean && time lake build 2>&1 | tail -4)
+✔ [11/14] Built XtcLean.Props (3.5s)
+✔ [12/14] Built XtcLean.Safety (3.6s)
+✔ [13/14] Built XtcLean (1.5s)
+Build completed successfully (14 jobs).
+
+real	0m12.268s
+user	0m12.398s
+sys	0m4.571s
+cwang31@sdfiana025:formal$ # 2. Audit: the axioms each theorem rests on. Exit 0 only with no sorry and no unknown axiom
+cwang31@sdfiana025:formal$ ./audit.sh | tail -9; echo "AUDIT_EXIT=${PIPESTATUS[0]}"
+kernel     XtcLean.iterate_visits_lt
+kernel     XtcLean.iterate_oob_with_exact_bufEnd
+kernel     XtcLean.iterate_passes_xtc_past_bufEnd
+kernel     XtcLean.fileRun_phantom_dgram
+kernel     XtcLean.fileRun_uninit
+bv_decide  XtcLean.payloadSize_spec
+bv_decide  XtcLean.fileNext_dgram_spec
+
+39 theorems: 17 kernel-only, 22 via bv_decide, 0 bad
+AUDIT_EXIT=0
+cwang31@sdfiana025:formal$ # 2b. The audit must fail when it should: a copy with one false theorem "proved" by sorry
+cwang31@sdfiana025:formal$ bash $L/sorry.sh $PWD $R/work/proof46-sorry-take3 2>&1 | tail -7
+theorem bogus_claim : (1 : Nat) = 2 := by sorry
+#print axioms bogus_claim
+bv_decide  XtcLean.fileNext_dgram_spec
+SORRY      bogus_claim
+
+40 theorems: 17 kernel-only, 22 via bv_decide, 1 bad
+AUDIT_EXIT=1
+cwang31@sdfiana025:formal$ # 3. Build the oracle: the tree's own xtcdata C++ sources, compiled here
+cwang31@sdfiana025:formal$ ./difftest/build.sh 2>&1 | tail -4; ls -la difftest/build | grep oracle
+total 840
+-rw-rw----+ 1 cwang31 ps-data     96 Nov 10 19:07 asan-build.log
+-rwxrwx--x+ 1 cwang31 ps-data 481656 Nov 10 19:07 oracle
+-rwxrwx--x+ 1 cwang31 ps-data 369312 Nov 10 19:07 oracle_O0
+-rwxrwx--x+ 1 cwang31 ps-data 481656 Nov 10 19:07 oracle
+-rwxrwx--x+ 1 cwang31 ps-data 369312 Nov 10 19:07 oracle_O0
+cwang31@sdfiana025:formal$ # 4. Each finding shown on the real C++ (and under valgrind), next to what the model says
+cwang31@sdfiana025:formal$ ./difftest/findings.sh 2>&1 | cut -c1-150; echo "FINDINGS_EXIT=${PIPESTATUS[0]}"
+== X1 Damage::increase(UserDefined) changes nothing (Corrupted, for comparison, sets bit 3)
+   case:   damage_inc_value 0 12
+   model:  0
+   C++:    0
+== X1 comparison
+   case:   damage_inc_value 0 3
+   model:  8
+   C++:    8
+== X2 iterate reads extent of a header that crosses bufEnd (28-byte buffer, bufEnd 28)
+   case:   iterate 00000000000000001c00000000000000000001000c00000000000000 28 0
+   model:  OOB 24
+   C++:    ABORT
+   valgrind: Invalid read of size 4
+== X3 process() gets an Xtc with extent 16 at offset 12 of a 24-byte buffer
+   case:   iterate 000000000000000018000000000000000000010010000000 24 0
+   model:  ok 12:1:16
+   C++:    ok 12:1:16
+== X4 next() returns a second datagram from 5 stray bytes
+   case:   fileiter 22222222111111110000000c00000000000000000c000000ffffffffff 64 5
+   model:  ok 12@24 12@29 end:eof
+   C++:    ok 12@24 12@29 end:eof
+== X4 next() on a 5-byte file uses a header that was never written
+   model:  UNINIT
+   valgrind: Conditional jump or move depends on uninitialised value(s)
+== X5 TypeId("Names_v3") has version 0; TypeId(Names, 3) has version 3 (value id version)
+   case:   typeid_str Names_v3
+   model:  4 4 0
+   C++:    4 4 0
+== X5 comparison
+   case:   typeid_ctor 4 3
+   model:  12292 4 3
+   C++:    12292 4 3
+== X6 alloc(size = 2^64 - 4) passes the bounds check and shrinks extent 12 to 8 (offset extent)
+   case:   alloc 12 18446744073709551612 64
+   model:  PTROVF
+   C++:    12 8
+== X7 a chain of nested Parents overflows the stack (run with ulimit -s 8192 kB)
+   depth 20000 (240000 byte buffer): oracle exit 0
+   depth 400000 (4800000 byte buffer): oracle exit 139
+ALL FINDINGS REPRODUCED
+FINDINGS_EXIT=0
+cwang31@sdfiana025:formal$ # 5. Differential test: model against real code, 3 seeds, valgrind on the memory cases
+cwang31@sdfiana025:formal$ time python3 difftest/run.py --seeds 1 2 3 --n 80000 --valgrind; echo "RUN_EXIT=$?"
+seed 1: 1425564 cases, 1390164 compared, 35400 undefined, 0 disagree so far
+valgrind clean: 125164 defined memory cases, exit 0 (71 s)
+valgrind ub sample (flagged/total): {'iterate:OOB': [730, 730], 'fileiter:UNINIT': [472, 472], 'fileiter:OOB': [798, 798]} near reads not flagged: 0
+seed 2: 1425564 cases, 1389900 compared, 35664 undefined, 0 disagree so far
+seed 3: 1425564 cases, 1390152 compared, 35412 undefined, 0 disagree so far
+
+op                     agree undefined      kern
+alloc                 223753     16247         0
+damage_get            196608         0         0  (whole input space)
+damage_inc_u16        240000         0         0
+damage_inc_value      240000         0         0
+damage_setuser        240000         0         0
+env                   240000         0         0
+fileiter              180682     59318     14706
+iterate               209089     30911         0
+levelname                 12         0         0  (whole input space)
+namesid               240000         0         0
+sizeof_payload        240000         0         0
+src_ctor              240000         0         0
+transition            240000         0         0
+trname                    48         0         0  (whole input space)
+ts_cmp                240000         0         0
+ts_from_ns            240000         0         0
+ts_secnsec            240000         0         0
+ts_u64                240000         0         0
+typeid_ctor           240000         0         0
+typeid_name               24         0         0  (whole input space)
+typeid_str            240000         0         0
+
+disagreements: 0
+RESULT: PASS
+
+real	4m58.189s
+user	15m37.762s
+sys	3m20.934s
+RUN_EXIT=0
+cwang31@sdfiana025:formal$ # 6. Mutation check: 14 deliberately wrong models. The test must catch every one
+cwang31@sdfiana025:formal$ python3 difftest/mutate.py --work $R/work/proof46-mut-take3 | tail -18; echo "MUT_EXIT=${PIPESTATUS[0]}"
+
+id   wrong change to the model                                            diff test proofs             detail
+M1   TypeId version mask loses a bit                                      caught    a proof fails      9414 disagreements
+M2   Damage::increase(UserDefined) sets bit 12 (what the callers expect)  caught    a proof fails      938 disagreements
+M3   strtoul does not skip white space                                    caught    proofs still pass  865 disagreements
+M4   two transition names swapped                                         caught    proofs still pass  2 disagreements
+M5   bufEnd check off by one                                              caught    a proof fails      46 disagreements
+M6   loop runs once more at remaining = 0                                 caught    proofs still pass  model does not finish in 300 s
+M7   remaining decreases by extent - 1                                    caught    proofs still pass  model does not finish in 300 s
+M8   root tests the wrong damage bit                                      caught    proofs still pass  832 disagreements
+M9   alloc aborts on an exact fit                                         caught    proofs still pass  3639 disagreements
+M10  extent read at the wrong offset                                      caught    a proof fails      9955 disagreements
+M11  int to size_t sign extension dropped                                 caught    a proof fails      1213 disagreements
+M12  datagram that exactly fits is refused                                caught    proofs still pass  1413 disagreements
+M13  stale header bytes replaced by zeros                                 caught    a proof fails      1825 disagreements
+M14  calls one more byte out of bounds than the code reads                caught    a proof fails      0 disagreements, 163 undefined-behaviour claims valgrind rejects
+
+14 mutants, 14 caught
+MUT_EXIT=0
+cwang31@sdfiana025:formal$ git rev-parse HEAD; echo "tracked files changed: $(git status --short --untracked-files=no | wc -l)"; date '+%F %T %Z'
+702899a5bf091d97c4f9d5fea71a606d624d656b
+tracked files changed: 0
+2026-11-10 19:30:11 PST
+cwang31@sdfiana025:formal$ 
