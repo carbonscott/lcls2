@@ -263,12 +263,12 @@ print('KWARGS ' + daq_sim.SIM_TYPES['jungfrau']['kwargs'].format(length=0, seed=
 def test_daq_sim_points_the_module_data_at_loopback():
     """The jungfrau config daq_sim seeds is its store's, with the module's data destination and
     source on loopback and its UDP port the one MemPoolSim binds (sim_udp_port), types kept."""
+    if not os.environ.get('SUBMODULEDIR'):
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     pytest.importorskip('pyrogue')
     import json
     import sys
     r = subprocess.run([sys.executable, '-c', SEED_CHECK], capture_output=True, text=True, timeout=120)
-    if r.returncode and "KeyError: 'SUBMODULEDIR'" in r.stderr:     # unset: no site firmware submodules
-        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     assert r.returncode == 0, r.stderr[-2000:]
     lines = r.stdout.splitlines()
     assert 'NOT REFUSED' not in lines

@@ -1,7 +1,6 @@
 name: Sim cheap tier
 # The cheap tier of the hardware-free DAQ (psdaq/psdaq/sim): every sim unit test file, found by
-# glob, and one fakecam run of daq_sim up / cycle / down (RUNBOOK §2-§5) read back by psana2
-# with the per-event payload check. The full check (daq_sim matrix, RUNBOOK §3p) needs S3DF.
+# glob, with each skip's reason printed. The full check (daq_sim matrix, RUNBOOK §3p) needs S3DF.
 on:
   pull_request:
     branches: [sim-main]
@@ -24,18 +23,6 @@ jobs:
       - name: Checkout repo with submodules
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install procServ
-        # procmgr starts every DAQ process under procServ; the conda spec has none
-        run: |
-          sudo apt-get update -q && sudo apt-get install -y -q procserv
-          command -v procServ && procServ --version | head -1
-          # procmgr reaches each procServ's control port at the host's name (ProcMgr.py:600-604);
-          # Ubuntu's procServ accepts control connections on loopback only, so the name must
-          # resolve to loopback, as every peer of this DAQ is on 127.0.0.1
-          echo "before: $(getent hosts "$(hostname)")"
-          echo "127.0.0.1 $(hostname)" | sudo tee -a /etc/hosts
-          echo "after: $(getent hosts "$(hostname)")"
-
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4.0.1
         with:
@@ -45,45 +32,15 @@ jobs:
           environment-file: .daq_20250402_r9.txt
 
       - name: Build
-        id: build
         run: |
           export ENV_TYPE=legacy      # as run_daq_tests.yaml; -d turns the DAQ build on
           ./build_all.sh -d
 
       - name: Sim unit tests (every psdaq/psdaq/tests/test_sim*.py)
-        id: unit
         run: bash psdaq/psdaq/sim/ci_cheap_tier.sh unit
 
-      - name: Access to slaclab/l2si-drp
-        # fakecam's drp imports l2si_drp (psdaq/psdaq/configdb/xpmdet_config.py:1-2) from
-        # slaclab/l2si-drp, a private repository: without a token that reads it the DAQ run
-        # cannot start on this runner, and is not run (a warning says so)
-        id: l2si
-        env:
-          L2SI_DRP_TOKEN: ${{ secrets.L2SI_DRP_TOKEN }}
-        run: |
-          if [[ -n $L2SI_DRP_TOKEN ]]; then
-            echo "have=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning title=Fakecam DAQ run NOT run::fakecam's drp imports l2si_drp from slaclab/l2si-drp, a private repository; set the repository secret L2SI_DRP_TOKEN (read access to it) to run it"
-          fi
-
-      - name: Fakecam DAQ run (daq_sim up / cycle / down, psana2 read-back)
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.l2si.outputs.have == 'true' }}
-        timeout-minutes: 15
-        env:
-          L2SI_DRP_TOKEN: ${{ secrets.L2SI_DRP_TOKEN }}
-        run: bash psdaq/psdaq/sim/ci_cheap_tier.sh daq
-
-      - name: Upload the DAQ work dir logs
-        # one tarball: artifact paths may not hold ':', which procmgr's log names do
-        if: ${{ always() }}
-        run: tar czf "$RUNNER_TEMP/daq_sim_ci_logs.tgz" -C "$RUNNER_TEMP" --ignore-failed-read daq_sim_ci/logs daq_sim_ci/pmlogs daq_sim_ci.procmgrd.conf || true
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: daq-sim-ci-logs
-          path: ${{ runner.temp }}/daq_sim_ci_logs.tgz
-          if-no-files-found: ignore
-          retention-days: 7
+      # The cheap tier's fakecam DAQ run is not run here: fakecam's drp imports l2si_drp
+      # (psdaq/psdaq/configdb/xpmdet_config.py) from slaclab/l2si-drp, which is SLAC-internal.
+      # It runs on one S3DF node (RUNBOOK §3p):
+      #   daq_sim matrix -w <WD> --only types --types fakecam      (exit 0)
+      #   daq_sim matrix -w <WD> --break corrupt                    (exit 1)
