@@ -28,6 +28,7 @@ Everything in `psdaq/psdaq/sim/`:
 | `../../drp/simFrame.cc` (`drp_sim_frame`) | Writes one simulated BEB DMA buffer to stdout, for the framer's tests. |
 | `coverage.py`, `coverage_status.json` | `daq_sim coverage` (§3d): which detector types and programs are proven to run without hardware, at HEAD. |
 | `matrix.py` | `daq_sim matrix` (§3p): the whole matrix in one command, every detector type, the system features and coverage, with an exit code that is the verdict. |
+| `MAINTAINING.md`, `FLAKES.md` | How to bring upstream in and re-prove the sim, start to end (allocations, the sync merge, the build, the cheap tier, the full check, what to rerun when); the register of known intermittent failures with each one's verdict. |
 | `ami_check.py`, `gui_witness.py` | The checks `cycle` runs with `--ami` and `--gui`, and the witnesses of the run they write for coverage (§3d, §3m). |
 | `ami_shot.py`, `qtgrab/` | `cycle --ami-shot PNG`: AMI's viewer of the camera image, offscreen, saved to PNG (§3m). |
 | `../../drpGpu/MemPool.cc` (`drp_gpu -d sim://`) | The GPU DRP's simulated device: `MemPoolSim`'s frames copied into the GPU's DMA buffers (§3h). |
@@ -1481,8 +1482,10 @@ lists without a DAQ.
 
 `daq_sim matrix` runs, unattended, a cycle of every detector type, one run of the programs (§3m),
 the system features and the coverage check, and exits 0 only if every assertion passes. Run it in
-one `srun` step on the node (it takes about an hour; a shell that cuts commands off needs `nohup`
-and a log, §1; AMI as in §3m, from `--ami-src DIR` or `$DAQ_SIM_AMI_SRC`):
+one `srun` step on the node (a shell that cuts commands off needs `nohup` and a log, §1; AMI as
+in §3m, from `--ami-src DIR` or `$DAQ_SIM_AMI_SRC`). Over two milano nodes and a GPU node
+("Everything", below) it takes 24-33 min: 24.3-33.1 min in the six full checks of PR #42 and
+26.7 min in the full check s1 at def58eaf8; on one node, that node runs every type itself:
 
 ```bash
 # one srun step on the node (JOB, ROOT and WD as in §1 and §2)
