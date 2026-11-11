@@ -1,0 +1,18 @@
+# R/work/sync/brk-s1.log verbatim
+=== breaks s1 on sdfmilan082 job 44243825 step 11 wt-sync HEAD def58eaf8 dirty 0 2026-11-11T09:15:50Z
+BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/epix100/transitions: setState configured -> error; setState allocated -> connected; status stream error: epix100_0 did not respond to configure; status stream error: 1 client did not respond to configure; never reached running; ended in 'connected
+FAILED types/epix100/drp-alive: epix100_0 drp pid 1050607 GONE after the run (now no process)
+FAILED types/epix100/counts: simxpm L1Accepts None, TEB_WrtCt None, psana2 events None, with epix100 data None: NOT equal and >= 1000
+FAILED types/epix100/per-event: xtc2_check --det epix100: did not run
+FAILED types/epix100/evidence: no evidence record for det:drp:epix100 (the cycle failed)
+BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/fakecam/transitions: setState paused -> running; status stream error: teb0 did not respond to disable; status stream error: fakecam_0 did not respond to disable; ended in 'running', started in 'reset'
+FAILED types/fakecam/drp-alive: fakecam_0 drp pid 1054746 GONE after the run (now no process)
+FAILED types/fakecam/counts: simxpm L1Accepts 1817, TEB_WrtCt None, psana2 events 0, with fakecam data 0: NOT equal and >= 1000
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL: the file is empty (0 B)
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0xccca8702 != 0xccca87fd']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+=== breaks done 2026-11-11T09:20:08Z

@@ -1,0 +1,245 @@
+# excerpt of R/work/sync/mx-s1.log: its first line and its MATRIX SUMMARY block (lines 5026-5268 of 5268), verbatim
+=== matrix s1 on sdfmilan031 job 44243825 step 6 wt-sync HEAD def58eaf8 dirty 0 gpu sdfada016 job 44243826 2026-11-11T08:45:07Z
+==== MATRIX SUMMARY at HEAD def58eaf89f0085d28f317eeaeb2557534c3fff0 (tracked files modified: False), host sdfmilan031, job 44243825 step 6, 2026-11-11T00:45:07.798-08:00 .. 2026-11-11T01:11:51.741-08:00
+types (26):
+TYPE fakecam      node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1877 psana2 1877 with-data 1877 per-event PASS PASS
+TYPE cspad        node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/cspad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1998 psana2 1998 with-data 1998 per-event PASS PASS
+TYPE hsd          node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/hsd/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1966 psana2 1966 with-data 1966 per-event PASS PASS
+TYPE epixquad     node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/epixquad/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1979 psana2 1979 with-data 1979 per-event PASS PASS
+TYPE epixquad1kfps node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/epixquad1kfps/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1989 psana2 1989 with-data 1989 per-event PASS PASS
+TYPE epixhr2x2    node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/epixhr2x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1967 psana2 1967 with-data 1967 per-event PASS PASS
+TYPE epixhremu    node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/epixhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2031 psana2 2031 with-data 2031 per-event PASS PASS
+TYPE epixm320     node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/epixm320/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2033 psana2 2033 with-data 2033 per-event PASS PASS
+TYPE epixUHR      node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/epixUHR/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1815 psana2 1815 with-data 1815 per-event PASS PASS
+TYPE epix100      node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/epix100/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1897 psana2 1897 with-data 1897 per-event PASS PASS
+TYPE jungfrau     node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1093 psana2 1093 with-data 1093 per-event PASS PASS
+TYPE jungfrauemu  node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/jungfrauemu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1877 psana2 1877 with-data 1877 per-event PASS PASS
+TYPE opal         node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/opal/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2202 psana2 2202 with-data 2202 per-event PASS PASS
+TYPE tt           node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/tt/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2185 psana2 2185 with-data 2185 per-event PASS PASS
+TYPE tb           node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/tb/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1926 psana2 1926 with-data 1926 per-event PASS PASS
+TYPE ts           node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/ts/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1972 psana2 1972 with-data 1972 per-event PASS PASS
+TYPE wave8        node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/wave8/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2960 psana2 2960 with-data 2960 per-event PASS PASS
+TYPE wave8he      node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/wave8he/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 2078 psana2 2078 with-data 2078 per-event PASS PASS
+TYPE hrencoder    node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/hrencoder/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1951 psana2 1951 with-data 1951 per-event PASS PASS
+TYPE piranha4     node sdfmilan082 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/hosts/sdfmilan082/types/piranha4/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1959 psana2 1959 with-data 1959 per-event PASS PASS
+TYPE epixuhr3x2   node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/types/epixuhr3x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1982 psana2 1982 with-data 1982 per-event PASS PASS
+TYPE drp_gpu:fakecam node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/gpu/sdfada016/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1855 psana2 1855 with-data 1855 per-event PASS PASS
+TYPE drp_gpu:epixuhremu node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/gpu/sdfada016/types/epixuhremu/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1966 psana2 1966 with-data 1966 per-event PASS PASS
+TYPE drp_gpu:epixuhrsim node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/gpu/sdfada016/types/epixuhrsim/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1910 psana2 1910 with-data 1910 per-event PASS PASS
+TYPE drp_gpu:jungfrau node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/gpu/sdfada016/types/jungfrau/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1095 psana2 1095 with-data 1095 per-event PASS PASS
+TYPE drp_gpu:epixuhr3x2 node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/gpu/sdfada016/types/epixuhr3x2/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1761 psana2 1761 with-data 1761 per-event PASS PASS
+programs:
+PROGRAMS fakecam      node sdfmilan031 job 44243825 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/programs/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 3262 psana2 3262 with-data 3262 per-event PASS PASS
+features:
+FEATURE a PASS  exit 0, FEATURE a PASS
+FEATURE b PASS  exit 0, FEATURE b PASS
+FEATURE c PASS  exit 0, FEATURE c PASS
+FEATURE d PASS  exit 0, FEATURE d PASS
+FEATURE e PASS  exit 0, FEATURE e PASS
+coverage: at def58eaf8: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+assertions: 201, 201 passed, 0 failed
+  PASS types/fakecam/up: exit 0
+  PASS types/fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/fakecam/drp-alive: fakecam_0 drp pid 3632195 alive after the run
+  PASS types/fakecam/counts: simxpm L1Accepts 1877, TEB_WrtCt 1877, psana2 events 1877, with fakecam data 1877: equal and >= 1000
+  PASS types/fakecam/per-event: xtc2_check --det fakecam: PASS
+  PASS types/fakecam/evidence: record 20261111T004553-cycle-def58eaf8-3632405
+  PASS types/fakecam/down: exit 0, down: clean
+  PASS types/cspad/up: exit 0
+  PASS types/cspad/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/cspad/drp-alive: cspad_0 drp pid 985931 alive after the run
+  PASS types/cspad/counts: simxpm L1Accepts 1998, TEB_WrtCt 1998, psana2 events 1998, with cspad data 1998: equal and >= 1000
+  PASS types/cspad/per-event: xtc2_check --det cspad: PASS
+  PASS types/cspad/evidence: record 20261111T004556-cycle-def58eaf8-986156
+  PASS types/cspad/down: exit 0, down: clean
+  PASS types/hsd/up: exit 0
+  PASS types/hsd/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/hsd/drp-alive: hsd_0 drp pid 3634341 alive after the run
+  PASS types/hsd/counts: simxpm L1Accepts 1966, TEB_WrtCt 1966, psana2 events 1966, with hsd data 1966: equal and >= 1000
+  PASS types/hsd/per-event: xtc2_check --det hsd: PASS
+  PASS types/hsd/evidence: record 20261111T004655-cycle-def58eaf8-3634402
+  PASS types/hsd/down: exit 0, down: clean
+  PASS types/epixquad/up: exit 0
+  PASS types/epixquad/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixquad/drp-alive: epixquad_0 drp pid 988061 alive after the run
+  PASS types/epixquad/counts: simxpm L1Accepts 1979, TEB_WrtCt 1979, psana2 events 1979, with epixquad data 1979: equal and >= 1000
+  PASS types/epixquad/per-event: xtc2_check --det epixquad: PASS
+  PASS types/epixquad/evidence: record 20261111T004704-cycle-def58eaf8-988113
+  PASS types/epixquad/down: exit 0, down: clean
+  PASS types/epixquad1kfps/up: exit 0
+  PASS types/epixquad1kfps/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixquad1kfps/drp-alive: epixquad1kfps_0 drp pid 3636469 alive after the run
+  PASS types/epixquad1kfps/counts: simxpm L1Accepts 1989, TEB_WrtCt 1989, psana2 events 1989, with epixquad1kfps data 1989: equal and >= 1000
+  PASS types/epixquad1kfps/per-event: xtc2_check --det epixquad1kfps: PASS
+  PASS types/epixquad1kfps/evidence: record 20261111T004804-cycle-def58eaf8-3636520
+  PASS types/epixquad1kfps/down: exit 0, down: clean
+  PASS types/epixhr2x2/up: exit 0
+  PASS types/epixhr2x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixhr2x2/drp-alive: epixhr2x2_0 drp pid 990352 alive after the run
+  PASS types/epixhr2x2/counts: simxpm L1Accepts 1967, TEB_WrtCt 1967, psana2 events 1967, with epixhr2x2 data 1967: equal and >= 1000
+  PASS types/epixhr2x2/per-event: xtc2_check --det epixhr2x2: PASS
+  PASS types/epixhr2x2/evidence: record 20261111T004818-cycle-def58eaf8-990925
+  PASS types/epixhr2x2/down: exit 0, down: clean
+  PASS types/epixhremu/up: exit 0
+  PASS types/epixhremu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixhremu/drp-alive: epixhremu_0 drp pid 3638763 alive after the run
+  PASS types/epixhremu/counts: simxpm L1Accepts 2031, TEB_WrtCt 2031, psana2 events 2031, with epixhremu data 2031: equal and >= 1000
+  PASS types/epixhremu/per-event: xtc2_check --det epixhremu: PASS
+  PASS types/epixhremu/evidence: record 20261111T004901-cycle-def58eaf8-3638830
+  PASS types/epixhremu/down: exit 0, down: clean
+  PASS types/epixm320/up: exit 0
+  PASS types/epixm320/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixm320/drp-alive: epixm320_0 drp pid 993011 alive after the run
+  PASS types/epixm320/counts: simxpm L1Accepts 2033, TEB_WrtCt 2033, psana2 events 2033, with epixm320 data 2033: equal and >= 1000
+  PASS types/epixm320/per-event: xtc2_check --det epixm320: PASS
+  PASS types/epixm320/evidence: record 20261111T004930-cycle-def58eaf8-993231
+  PASS types/epixm320/down: exit 0, down: clean
+  PASS types/epixUHR/up: exit 0
+  PASS types/epixUHR/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixUHR/drp-alive: epixUHR_0 drp pid 3640909 alive after the run
+  PASS types/epixUHR/counts: simxpm L1Accepts 1815, TEB_WrtCt 1815, psana2 events 1815, with epixUHR data 1815: equal and >= 1000
+  PASS types/epixUHR/per-event: xtc2_check --det epixUHR: PASS
+  PASS types/epixUHR/evidence: record 20261111T005026-cycle-def58eaf8-3640966
+  PASS types/epixUHR/down: exit 0, down: clean
+  PASS types/epix100/up: exit 0
+  PASS types/epix100/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epix100/drp-alive: epix100_0 drp pid 995345 alive after the run
+  PASS types/epix100/counts: simxpm L1Accepts 1897, TEB_WrtCt 1897, psana2 events 1897, with epix100 data 1897: equal and >= 1000
+  PASS types/epix100/per-event: xtc2_check --det epix100: PASS
+  PASS types/epix100/evidence: record 20261111T005032-cycle-def58eaf8-995549
+  PASS types/epix100/down: exit 0, down: clean
+  PASS types/jungfrau/up: exit 0
+  PASS types/jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/jungfrau/drp-alive: jungfrau_0 drp pid 3643420 alive after the run
+  PASS types/jungfrau/counts: simxpm L1Accepts 1093, TEB_WrtCt 1093, psana2 events 1093, with jungfrau data 1093: equal and >= 1000
+  PASS types/jungfrau/per-event: xtc2_check --det jungfrau: PASS
+  PASS types/jungfrau/evidence: record 20261111T005138-cycle-def58eaf8-3643485
+  PASS types/jungfrau/down: exit 0, down: clean
+  PASS types/jungfrauemu/up: exit 0
+  PASS types/jungfrauemu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/jungfrauemu/drp-alive: jungfrauemu_0 drp pid 997464 alive after the run
+  PASS types/jungfrauemu/counts: simxpm L1Accepts 1877, TEB_WrtCt 1877, psana2 events 1877, with jungfrauemu data 1877: equal and >= 1000
+  PASS types/jungfrauemu/per-event: xtc2_check --det jungfrauemu: PASS
+  PASS types/jungfrauemu/evidence: record 20261111T005201-cycle-def58eaf8-997522
+  PASS types/jungfrauemu/down: exit 0, down: clean
+  PASS types/opal/up: exit 0
+  PASS types/opal/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/opal/drp-alive: opal_0 drp pid 3646297 alive after the run
+  PASS types/opal/counts: simxpm L1Accepts 2202, TEB_WrtCt 2202, psana2 events 2202, with opal data 2202: equal and >= 1000
+  PASS types/opal/per-event: xtc2_check --det opal: PASS
+  PASS types/opal/evidence: record 20261111T005244-cycle-def58eaf8-3646357
+  PASS types/opal/down: exit 0, down: clean
+  PASS types/tt/up: exit 0
+  PASS types/tt/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/tt/drp-alive: tt_0 drp pid 1000492 alive after the run
+  PASS types/tt/counts: simxpm L1Accepts 2185, TEB_WrtCt 2185, psana2 events 2185, with tt data 2185: equal and >= 1000
+  PASS types/tt/per-event: xtc2_check --det tt: PASS
+  PASS types/tt/evidence: record 20261111T005259-cycle-def58eaf8-1000702
+  PASS types/tt/down: exit 0, down: clean
+  PASS types/tb/up: exit 0
+  PASS types/tb/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/tb/drp-alive: tb_0 drp pid 3648583 alive after the run
+  PASS types/tb/counts: simxpm L1Accepts 1926, TEB_WrtCt 1926, psana2 events 1926, with tb data 1926: equal and >= 1000
+  PASS types/tb/per-event: xtc2_check --det tb: PASS
+  PASS types/tb/evidence: record 20261111T005340-cycle-def58eaf8-3648656
+  PASS types/tb/down: exit 0, down: clean
+  PASS types/ts/up: exit 0
+  PASS types/ts/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/ts/drp-alive: ts_0 drp pid 1002225 alive after the run
+  PASS types/ts/counts: simxpm L1Accepts 1972, TEB_WrtCt 1972, psana2 events 1972, with ts data 1972: equal and >= 1000
+  PASS types/ts/per-event: xtc2_check --det ts: PASS
+  PASS types/ts/evidence: record 20261111T005355-cycle-def58eaf8-1002825
+  PASS types/ts/down: exit 0, down: clean
+  PASS types/wave8/up: exit 0
+  PASS types/wave8/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/wave8/drp-alive: wave8_0 drp pid 3650644 alive after the run
+  PASS types/wave8/counts: simxpm L1Accepts 2960, TEB_WrtCt 2960, psana2 events 2960, with wave8 data 2960: equal and >= 1000
+  PASS types/wave8/per-event: xtc2_check --det wave8: PASS
+  PASS types/wave8/evidence: record 20261111T005445-cycle-def58eaf8-3650813
+  PASS types/wave8/down: exit 0, down: clean
+  PASS types/wave8he/up: exit 0
+  PASS types/wave8he/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/wave8he/drp-alive: wave8he_0 drp pid 1004602 alive after the run
+  PASS types/wave8he/counts: simxpm L1Accepts 2078, TEB_WrtCt 2078, psana2 events 2078, with wave8he data 2078: equal and >= 1000
+  PASS types/wave8he/per-event: xtc2_check --det wave8he: PASS
+  PASS types/wave8he/evidence: record 20261111T005500-cycle-def58eaf8-1005020
+  PASS types/wave8he/down: exit 0, down: clean
+  PASS types/hrencoder/up: exit 0
+  PASS types/hrencoder/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/hrencoder/drp-alive: hrencoder_0 drp pid 3652931 alive after the run
+  PASS types/hrencoder/counts: simxpm L1Accepts 1951, TEB_WrtCt 1951, psana2 events 1951, with hrencoder data 1951: equal and >= 1000
+  PASS types/hrencoder/per-event: xtc2_check --det hrencoder: PASS
+  PASS types/hrencoder/evidence: record 20261111T005543-cycle-def58eaf8-3652980
+  PASS types/hrencoder/down: exit 0, down: clean
+  PASS types/piranha4/up: exit 0
+  PASS types/piranha4/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/piranha4/drp-alive: piranha4_0 drp pid 1006762 alive after the run
+  PASS types/piranha4/counts: simxpm L1Accepts 1959, TEB_WrtCt 1959, psana2 events 1959, with piranha4 data 1959: equal and >= 1000
+  PASS types/piranha4/per-event: xtc2_check --det piranha4: PASS
+  PASS types/piranha4/evidence: record 20261111T005559-cycle-def58eaf8-1007350
+  PASS types/piranha4/down: exit 0, down: clean
+  PASS types/epixuhr3x2/up: exit 0
+  PASS types/epixuhr3x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/epixuhr3x2/drp-alive: epixuhr3x2_0 drp pid 3654710 alive after the run
+  PASS types/epixuhr3x2/counts: simxpm L1Accepts 1982, TEB_WrtCt 1982, psana2 events 1982, with epixuhr3x2 data 1982: equal and >= 1000
+  PASS types/epixuhr3x2/per-event: xtc2_check --det epixuhr3x2: PASS
+  PASS types/epixuhr3x2/evidence: record 20261111T005743-cycle-def58eaf8-3656660
+  PASS types/epixuhr3x2/down: exit 0, down: clean
+  PASS types/drp_gpu:fakecam/up: exit 0
+  PASS types/drp_gpu:fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:fakecam/drp-alive: fakecam_0 drp pid 1693975 alive after the run
+  PASS types/drp_gpu:fakecam/counts: simxpm L1Accepts 1855, TEB_WrtCt 1855, psana2 events 1855, with fakecam data 1855: equal and >= 1000
+  PASS types/drp_gpu:fakecam/per-event: xtc2_check --det fakecam: PASS
+  PASS types/drp_gpu:fakecam/evidence: record 20261111T004556-cycle-def58eaf8-1694263
+  PASS types/drp_gpu:fakecam/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhremu/up: exit 0
+  PASS types/drp_gpu:epixuhremu/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhremu/drp-alive: epixuhremu_0 drp pid 1696581 alive after the run
+  PASS types/drp_gpu:epixuhremu/counts: simxpm L1Accepts 1966, TEB_WrtCt 1966, psana2 events 1966, with epixuhremu data 1966: equal and >= 1000
+  PASS types/drp_gpu:epixuhremu/per-event: xtc2_check --det epixuhremu: PASS
+  PASS types/drp_gpu:epixuhremu/evidence: record 20261111T004655-cycle-def58eaf8-1696702
+  PASS types/drp_gpu:epixuhremu/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhrsim/up: exit 0
+  PASS types/drp_gpu:epixuhrsim/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhrsim/drp-alive: epixuhrsim_0 drp pid 1699249 alive after the run
+  PASS types/drp_gpu:epixuhrsim/counts: simxpm L1Accepts 1910, TEB_WrtCt 1910, psana2 events 1910, with epixuhrsim data 1910: equal and >= 1000
+  PASS types/drp_gpu:epixuhrsim/per-event: xtc2_check --det epixuhrsim: PASS
+  PASS types/drp_gpu:epixuhrsim/evidence: record 20261111T004750-cycle-def58eaf8-1699486
+  PASS types/drp_gpu:epixuhrsim/down: exit 0, down: clean
+  PASS types/drp_gpu:jungfrau/up: exit 0
+  PASS types/drp_gpu:jungfrau/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:jungfrau/drp-alive: jungfrau_0 drp pid 1701503 alive after the run
+  PASS types/drp_gpu:jungfrau/counts: simxpm L1Accepts 1095, TEB_WrtCt 1095, psana2 events 1095, with jungfrau data 1095: equal and >= 1000
+  PASS types/drp_gpu:jungfrau/per-event: xtc2_check --det jungfrau: PASS
+  PASS types/drp_gpu:jungfrau/evidence: record 20261111T004903-cycle-def58eaf8-1702159
+  PASS types/drp_gpu:jungfrau/down: exit 0, down: clean
+  PASS types/drp_gpu:epixuhr3x2/up: exit 0
+  PASS types/drp_gpu:epixuhr3x2/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/drp_gpu:epixuhr3x2/drp-alive: epixuhr3x2_0 drp pid 1705150 alive after the run
+  PASS types/drp_gpu:epixuhr3x2/counts: simxpm L1Accepts 1761, TEB_WrtCt 1761, psana2 events 1761, with epixuhr3x2 data 1761: equal and >= 1000
+  PASS types/drp_gpu:epixuhr3x2/per-event: xtc2_check --det epixuhr3x2: PASS
+  PASS types/drp_gpu:epixuhr3x2/evidence: record 20261111T005104-cycle-def58eaf8-1707529
+  PASS types/drp_gpu:epixuhr3x2/down: exit 0, down: clean
+  PASS programs/up: exit 0
+  PASS programs/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS programs/drp-alive: fakecam_0 drp pid 3659599 alive after the run
+  PASS programs/counts: simxpm L1Accepts 3262, TEB_WrtCt 3262, psana2 events 3262, with fakecam data 3262: equal and >= 1000
+  PASS programs/per-event: xtc2_check --det fakecam: PASS
+  PASS programs/evidence: record 20261111T010020-cycle-def58eaf8-3660024 for 42 rows
+  PASS programs/down: exit 0, down: clean
+  PASS programs/checks: system DRP checks: PASS; ami check: PASS; gui witness: PASS; ami shot: PASS /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/programs/ami-shot.png: window "fakecam:raw:raw" of ami-client pid 3661360, 65+ colours; MEB_EvtCt 3262
+  PASS features/a/down: exit 0, down: clean
+  PASS features/a: exit 0, FEATURE a PASS
+  PASS features/b/down: exit 0, down: clean
+  PASS features/b: exit 0, FEATURE b PASS
+  PASS features/c/down: exit 0, down: clean
+  PASS features/c: exit 0, FEATURE c PASS
+  PASS features/d/down: exit 0, down: clean
+  PASS features/d: exit 0, FEATURE d PASS
+  PASS features/e/down: exit 0, down: clean
+  PASS features/e: exit 0, FEATURE e PASS
+  PASS coverage: at def58eaf8: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+summary JSON: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/sync/mx-s1/matrix-summary.json
+whole matrix at this HEAD (with carried results): PASS
+MATRIX PASS (201 assertions)
+MATRIX_EXIT=0 2026-11-11T09:11:51Z

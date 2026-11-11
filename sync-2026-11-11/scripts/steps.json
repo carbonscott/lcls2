@@ -1,0 +1,19 @@
+[
+ {"send": "export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM"},
+ {"send": "# the sync PR's head (sync/upstream-2026-11-11) on sdfada016, a Slurm step in job 44243826 reached through sdfiana025"},
+ {"send": "ssh -t sdfiana025 srun --jobid=44243826 --overlap -w sdfada016 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/work/prsync/rc.sh -i", "expect": "cwang31@sdfada016", "timeout": 240},
+ {"send": "cd $R/wt-sync"},
+ {"send": "git log -1 --format=\"%H %cI\""},
+ {"send": "git log -1 --format=%P   # parents: 8dcc3e998 (PR #45 head = sim-main tree) and 39afa18e3 (upstream master, PR #300)"},
+ {"send": "echo \"local changes: $(git status --short --untracked-files=no | wc -l)\"; date -u; hostname"},
+ {"send": "source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo SIM_ENV_SOURCED=$SIM_ENV_SOURCED", "timeout": 300},
+ {"send": "# a short real DAQ run at this head: one fakecam DRP, up, 1000+ L1Accepts, psana2 read-back with the per-event payload check, down"},
+ {"send": "daq_sim matrix -w $R/work/prsync/rec1 --only types --types fakecam --lock /tmp/sdh-daq-ada016.lock --evidence $R/work/prsync/rec1-ev", "expect": "^MATRIX (PASS|FAIL)", "timeout": 900},
+ {"send": "echo \"MATRIX_EXIT=$? $(date -u +%FT%TZ)\""},
+ {"send": "# the full check at this head (RUNBOOK 3p; sdfmilan031 + sdfmilan082 + GPU types on sdfada016), run before this recording:"},
+ {"send": "grep -E '^=== matrix|^coverage: at|^MATRIX |MATRIX_EXIT' $R/work/sync/mx-s1.log"},
+ {"send": "# its three deliberate breaks (each must exit 1):"},
+ {"send": "grep -E '^BREAK' $R/work/sync/brk-s1.log"},
+ {"send": "git rev-parse HEAD; date -u +%FT%TZ"},
+ {"send": "exit", "expect": "exedev@", "timeout": 60}
+]

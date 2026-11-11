@@ -1,0 +1,144 @@
+exedev@velvet-comet:redo$ export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM
+2026-11-11T13:23:51+00:00
+velvet-comet
+exedev@velvet-comet:redo$ # the sync PR's head (sync/upstream-2026-11-11) on sdfada016, a Slurm step in job 44243826 reached through sdfiana025
+exedev@velvet-comet:redo$ ssh -t sdfiana025 srun --jobid=44243826 --overlap -w sdfada016 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/work/prsync/rc.sh -i
+cwang31@sdfada016:~$ cd $R/wt-sync
+cwang31@sdfada016:wt-sync$ git log -1 --format="%H %cI"
+def58eaf89f0085d28f317eeaeb2557534c3fff0 2026-11-11T00:31:16-08:00
+cwang31@sdfada016:wt-sync$ git log -1 --format=%P   # parents: 8dcc3e998 (PR #45 head = sim-main tree) and 39afa18e3 (upstream master, PR #300)
+8dcc3e998cdd8147aace359e6ec927e035d0f291 39afa18e3f4f0b8735746f6d1eddc0bbbd32fd13
+cwang31@sdfada016:wt-sync$ echo "local changes: $(git status --short --untracked-files=no | wc -l)"; date -u; hostname
+local changes: 0
+Wed Nov 11 01:24:01 PM UTC 2026
+sdfada016
+cwang31@sdfada016:wt-sync$ source ./setup_env_daq.sh >/dev/null 2>&1; source psdaq/psdaq/sim/sim_env.sh; echo SIM_ENV_SOURCED=$SIM_ENV_SOURCED
+SIM_ENV_SOURCED=1
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ # a short real DAQ run at this head: one fakecam DRP, up, 1000+ L1Accepts, psana2 read-back with the per-event payload check, down
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ daq_sim matrix -w $R/work/prsync/rec1 --only types --types fakecam --lock /tmp/sdh-daq-ada016.lock --evidence $R/work/prsync/rec1-ev
+2026-11-11T05:24:12.862-08:00 MATRIX: sections types at HEAD def58eaf89f0085d28f317eeaeb2557534c3fff0 (tracked files modified: False) host sdfada016 job 44243826 step 3 workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1
+2026-11-11T05:24:13.223-08:00 matrix: types: fakecam
+2026-11-11T05:24:13.223-08:00 matrix: ---- type fakecam (1 of 1)
+2026-11-11T05:24:13.228-08:00 matrix: lock /tmp/sdh-daq-ada016.lock held (waited 0 s)
+  fakecam up| 2026-11-11T05:24:13.791-08:00 daq_sim: up on sdfada016 (job 44243826 step 3), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam
+  fakecam up| 2026-11-11T05:24:13.791-08:00 daq_sim: preflight (fail-closed isolation check) ...
+  fakecam up| 2026-11-11T05:24:37.617-08:00 daq_sim: preflight rc=0: 05:24:37 PREFLIGHT PASS  (logs/preflight.log)
+  fakecam up| 2026-11-11T05:24:39.311-08:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+  fakecam up| 2026-11-11T05:24:39.311-08:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+  fakecam up| 2026-11-11T05:24:41.733-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T05:24:48.160-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  fakecam up|   host         sdfada016 (Slurm job 44243826)
+  fakecam up|   control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  fakecam up|   configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  fakecam up|   rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  fakecam up|   simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  fakecam up|   procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/daq_sim.cnf  pids {'control': 2382079, 'teb0': 2382080, 'fakecam_0': 2382066}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/pmlogs
+  fakecam up|   data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/data  (xtc2 written when recording)
+  fakecam up|   prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  fakecam up|   webgui       port 31053 (not started: up --webgui)
+  fakecam up|   drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam
+  fakecam up|   stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam
+  fakecam cycle| 2026-11-11T05:24:49.092-08:00 start state: reset
+  fakecam cycle| 2026-11-11T05:24:49.092-08:00 setRecord(True) -> OK
+  fakecam cycle| 2026-11-11T05:24:50.095-08:00 setState unallocated  -> unallocated  OK
+  fakecam cycle| 2026-11-11T05:24:50.095-08:00 selectPlatform(control, drp, teb) -> OK
+  fakecam cycle| 2026-11-11T05:24:50.458-08:00 [warning] ami NOT supported in absence of MEB
+  fakecam cycle| 2026-11-11T05:24:50.470-08:00 setState allocated    -> allocated    OK
+  fakecam cycle| 2026-11-11T05:24:50.866-08:00 setState connected    -> connected    OK
+  fakecam cycle| 2026-11-11T05:24:52.135-08:00 setState configured   -> configured   OK
+  fakecam cycle| 2026-11-11T05:24:53.207-08:00 [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+  fakecam cycle| 2026-11-11T05:24:53.218-08:00 [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  fakecam cycle| 2026-11-11T05:24:53.222-08:00 setState starting     -> starting     OK
+  fakecam cycle| 2026-11-11T05:24:53.225-08:00 setState paused       -> paused       OK
+  fakecam cycle| 2026-11-11T05:24:53.229-08:00 setState running      -> running      OK
+  fakecam cycle| 2026-11-11T05:24:53.229-08:00 status: transition enable state running recording True experiment tstx00001 run 1
+  fakecam cycle| 2026-11-11T05:24:55.188-08:00 DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1580 (wanted >= 1000)
+  fakecam cycle| 2026-11-11T05:24:55.193-08:00 setState paused       -> paused       OK
+  fakecam cycle| 2026-11-11T05:24:56.357-08:00 counts after Disable: {'simxpm NumL0Acc': 1964, 'simxpm NumL0Inp': 1964, 'simxpm NumL0Acc group 5': 1964, 'simxpm links': {'fakecam_0': {'group': 5, 'l1acc': 1964, 'link': 0}}, 'TEB_EvtCt': 1964, 'TEB_TrCt': 7, 'TEB_WrtCt': 1964, 'DRP_Damage': 0, 'DRP_RecordSize': 821220, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}
+  fakecam cycle| 2026-11-11T05:24:56.361-08:00 setState starting     -> starting     OK
+  fakecam cycle| 2026-11-11T05:24:56.369-08:00 setState configured   -> configured   OK
+  fakecam cycle| 2026-11-11T05:24:56.372-08:00 setState connected    -> connected    OK
+  fakecam cycle| 2026-11-11T05:24:56.492-08:00 setState allocated    -> allocated    OK
+  fakecam cycle| 2026-11-11T05:24:56.523-08:00 setState unallocated  -> unallocated  OK
+  fakecam cycle| 2026-11-11T05:24:56.524-08:00 setState reset        -> reset        OK
+  fakecam cycle| 2026-11-11T05:25:00.564-08:00 final state reset (start reset)
+  fakecam cycle| transitions (request -> read back):
+  fakecam cycle|   2026-11-11T05:24:49.092-08:00 -> 2026-11-11T05:24:50.095-08:00  unallocated  unallocated
+  fakecam cycle|   2026-11-11T05:24:50.095-08:00 -> 2026-11-11T05:24:50.470-08:00  allocated    allocated
+  fakecam cycle|   2026-11-11T05:24:50.470-08:00 -> 2026-11-11T05:24:50.866-08:00  connected    connected
+  fakecam cycle|   2026-11-11T05:24:50.866-08:00 -> 2026-11-11T05:24:52.135-08:00  configured   configured
+  fakecam cycle|   2026-11-11T05:24:52.135-08:00 -> 2026-11-11T05:24:53.222-08:00  starting     starting
+  fakecam cycle|   2026-11-11T05:24:53.222-08:00 -> 2026-11-11T05:24:53.225-08:00  paused       paused
+  fakecam cycle|   2026-11-11T05:24:53.225-08:00 -> 2026-11-11T05:24:53.229-08:00  running      running
+  fakecam cycle|   2026-11-11T05:24:55.189-08:00 -> 2026-11-11T05:24:55.193-08:00  paused       paused
+  fakecam cycle|   2026-11-11T05:24:56.357-08:00 -> 2026-11-11T05:24:56.361-08:00  starting     starting
+  fakecam cycle|   2026-11-11T05:24:56.361-08:00 -> 2026-11-11T05:24:56.369-08:00  configured   configured
+  fakecam cycle|   2026-11-11T05:24:56.369-08:00 -> 2026-11-11T05:24:56.372-08:00  connected    connected
+  fakecam cycle|   2026-11-11T05:24:56.372-08:00 -> 2026-11-11T05:24:56.492-08:00  allocated    allocated
+  fakecam cycle|   2026-11-11T05:24:56.492-08:00 -> 2026-11-11T05:24:56.523-08:00  unallocated  unallocated
+  fakecam cycle|   2026-11-11T05:24:56.523-08:00 -> 2026-11-11T05:24:56.524-08:00  reset        reset
+  fakecam cycle| counts:
+  fakecam cycle|   simxpm NumL0Acc        1964
+  fakecam cycle|   simxpm NumL0Inp        1964
+  fakecam cycle|   simxpm NumL0Acc group 5 1964
+  fakecam cycle|   simxpm links           {'fakecam_0': {'group': 5, 'l1acc': 1964, 'link': 0}}
+  fakecam cycle|   TEB_EvtCt              1964
+  fakecam cycle|   TEB_TrCt               7
+  fakecam cycle|   TEB_WrtCt              1964
+  fakecam cycle|   DRP_Damage             0
+  fakecam cycle|   DRP_RecordSize         821220
+  fakecam cycle|   drp_num_dma_errors     0
+  fakecam cycle|   drp_num_missing_rogs   0
+  fakecam cycle|   drp_num_th_error       0
+  fakecam cycle|   drp_num_pgp_jump       0
+  fakecam cycle|   xtc2 file              /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (821268 B)
+  fakecam cycle|   psana2 events          1964
+  fakecam cycle|   psana2 with data       1964
+  fakecam cycle|   psana2 checks          PASS
+  fakecam cycle|   psana2 seq             1..1964
+  fakecam cycle|   psana2 seeds           {'0x1234': 1964}
+  fakecam cycle|   equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1000: True
+  fakecam cycle| 2026-11-11T05:25:00.799-08:00 evidence 20261111T052500-cycle-def58eaf8-2382151: det:drp:fakecam prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb
+  fakecam cycle| 2026-11-11T05:25:00.865-08:00 cycle PASS
+  fakecam down| 2026-11-11T05:25:01.295-08:00 daq_sim: procmgr stop daq_sim.cnf
+  fakecam down| 2026-11-11T05:25:06.922-08:00 daq_sim: stopping simxpm pid 2381870: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+  fakecam down| 2026-11-11T05:25:07.022-08:00 daq_sim: stopping lgbk pid 2381868: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+  fakecam down| 2026-11-11T05:25:07.424-08:00 daq_sim: stopping configdb pid 2381842: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+  fakecam down| 2026-11-11T05:25:08.139-08:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045]
+  fakecam down| 2026-11-11T05:25:08.149-08:00 daq_sim: down: clean
+2026-11-11T05:25:08.156-08:00 matrix: lock /tmp/sdh-daq-ada016.lock released
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1964 psana2 1964 with-data 1964 per-event PASS PASS
+==== MATRIX SUMMARY at HEAD def58eaf89f0085d28f317eeaeb2557534c3fff0 (tracked files modified: False), host sdfada016, job 44243826 step 3, 2026-11-11T05:24:12.862-08:00 .. 2026-11-11T05:25:08.157-08:00
+types (1):
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1964 psana2 1964 with-data 1964 per-event PASS PASS
+assertions: 7, 7 passed, 0 failed
+  PASS types/fakecam/up: exit 0
+  PASS types/fakecam/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message
+  PASS types/fakecam/drp-alive: fakecam_0 drp pid 2382066 alive after the run
+  PASS types/fakecam/counts: simxpm L1Accepts 1964, TEB_WrtCt 1964, psana2 events 1964, with fakecam data 1964: equal and >= 1000
+  PASS types/fakecam/per-event: xtc2_check --det fakecam: PASS
+  PASS types/fakecam/evidence: record 20261111T052500-cycle-def58eaf8-2382151
+  PASS types/fakecam/down: exit 0, down: clean
+summary JSON: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/prsync/rec1/matrix-summary.json
+whole matrix at this HEAD (with carried results): FAIL; not run: types/cspad types/hsd types/epixquad types/epixquad1kfps types/epixhr2x2 types/epixhremu types/epixm320 types/epixUHR types/epix100 types/jungfrau types/jungfrauemu types/opal types/tt types/tb types/ts types/wave8 types/wave8he types/hrencoder types/piranha4 types/epixuhr3x2 features/a features/b features/c features/d features/e programs coverage; failed: types/det:drp_gpu:fakecam/runnable types/det:drp_gpu:epixuhremu/runnable types/det:drp_gpu:epixuhrsim/runnable types/det:drp_gpu:epixuhr3x2/runnable types/det:drp_gpu:jungfrau/runnable
+MATRIX PASS (7 assertions)
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ echo "MATRIX_EXIT=$? $(date -u +%FT%TZ)"
+MATRIX_EXIT=0 2026-11-11T13:25:08Z
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ # the full check at this head (RUNBOOK 3p; sdfmilan031 + sdfmilan082 + GPU types on sdfada016), run before this recording:
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ grep -E '^=== matrix|^coverage: at|^MATRIX |MATRIX_EXIT' $R/work/sync/mx-s1.log
+=== matrix s1 on sdfmilan031 job 44243825 step 6 wt-sync HEAD def58eaf8 dirty 0 gpu sdfada016 job 44243826 2026-11-11T08:45:07Z
+coverage: at def58eaf8: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+MATRIX PASS (201 assertions)
+MATRIX_EXIT=0 2026-11-11T09:11:51Z
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ # its three deliberate breaks (each must exit 1):
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ grep -E '^BREAK' $R/work/sync/brk-s1.log
+BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed)
+BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)
+BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ git rev-parse HEAD; date -u +%FT%TZ
+def58eaf89f0085d28f317eeaeb2557534c3fff0
+2026-11-11T13:25:14Z
+(daq_20250402_r9) cwang31@sdfada016:wt-sync$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@velvet-comet:redo$ 
