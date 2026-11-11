@@ -31,6 +31,35 @@ unit() {
     python -m pytest -rfEs "${files[@]}"
 }
 
+# The python of l2si-drp, which every XpmDetector type's drp imports at Configure
+# (xpmdet_config.py -> psdaq/utils/enable_l2si_drp.py): the commits of S3DF's
+# $SUBMODULEDIR (lcls2_submodules_10292026), only their python dirs, and the one edit its
+# patch.sh makes to l2si-drp (its rogue ZmqServer on any free port).
+L2SI_DRP=(
+    "l2si-drp                                759fe14ec33ccc04a0bba4eb36d71928ac0e49a7 firmware/python"
+    "l2si-drp/firmware/submodules/axi-pcie-core    5a814a114a7450d09be21453e503dddab96c4194 python"
+    "l2si-drp/firmware/submodules/l2si-core        a96a5577cc6bb25e1286ceebc3b56ab993078f43 python"
+    "l2si-drp/firmware/submodules/lcls-timing-core 7ce68a4b8e29642c7892fd99ec0991135e930919 python"
+    "l2si-drp/firmware/submodules/lcls2-pgp-fw-lib af85e73e5a19fb395e16a55f9d30394d671de07e python"
+    "l2si-drp/firmware/submodules/surf             65dc3e425d609fd14e4b3fc73fe5cbfa37b95f87 python"
+)
+submodules() {
+    local top=$1 line path sha sub repo
+    for line in "${L2SI_DRP[@]}"; do
+        read -r path sha sub <<< "$line"
+        repo=${path##*/}
+        [[ -d $top/$path/$sub ]] && continue
+        mkdir -p "$top/$path" && git -C "$top/$path" init -q && \
+        git -C "$top/$path" remote add origin "https://github.com/slaclab/$repo" && \
+        git -C "$top/$path" sparse-checkout set "$sub" && \
+        git -C "$top/$path" fetch -q --depth 1 --filter=blob:none origin "$sha" && \
+        git -C "$top/$path" -c advice.detachedHead=false checkout -q FETCH_HEAD || { echo "fetch of slaclab/$repo $sha failed"; return 1; }
+        echo "SUBMODULEDIR/$path at $(git -C "$top/$path" rev-parse --short HEAD) ($sub)"
+    done
+    sed -i "s/ZmqServer(root=self, addr='127.0.0.1', port=10000)/ZmqServer(root=self, addr='127.0.0.1', port=0)/" \
+        "$top/l2si-drp/firmware/python/l2si_drp/_Root.py"
+}
+
 daq() {
     local wd=${DAQ_SIM_CI_WORKDIR:-${RUNNER_TEMP:-/tmp}/daq_sim_ci}
     local events=${DAQ_SIM_CI_EVENTS:-1000}
@@ -39,9 +68,11 @@ daq() {
     condabase=${CONDA_EXE:+$(dirname "$(dirname "$CONDA_EXE")")}
     [[ -f $condabase/etc/profile.d/conda.sh ]] || { echo "no conda base with etc/profile.d/conda.sh (CONDA_EXE=${CONDA_EXE:-unset})"; return 2; }
     mkdir -p "$wd"
-    # procmgr start refuses to run without it (ProcMgr.py:964-967). On S3DF it names the site's
-    # firmware submodules (8 GB), which fakecam does not read; the unit tests skip without it
-    export SUBMODULEDIR=${SUBMODULEDIR:-$wd/no-submodules}
+    # procmgr start refuses to run without it (ProcMgr.py:964-967), and fakecam's drp imports
+    # l2si-drp's python from it. On S3DF it names the site's firmware submodules (8 GB); here
+    # it holds l2si-drp's python only. The unit tests run without it (their skips name it)
+    export SUBMODULEDIR=${SUBMODULEDIR:-${RUNNER_TEMP:-/tmp}/lcls2_submodules}
+    submodules "$SUBMODULEDIR" || return 2
     # procmgr's rcfile for this host, as procmgrd.s3df.conf is S3DF's (daq_sim reads DAQ_SIM_RCFILE)
     export DAQ_SIM_RCFILE=$wd.procmgrd.conf
     printf 'PORTBASE=29000\nPROCSERVBIN=%s\nCONDABASE=%s\n' "$procserv" "$condabase" > "$DAQ_SIM_RCFILE"
