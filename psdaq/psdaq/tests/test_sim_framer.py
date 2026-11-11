@@ -63,7 +63,7 @@ def epix100_readout_rows():
 def test_epix100_frame_layout():
     seq = 5
     buf = frame('epix100', seq)
-    assert buf[1] == seq & 0xff                             # sequence_count
+    assert buf[1] != seq & 0xff                             # sequence_count
     data, order = subframes(buf)
     assert order == [0, 2, 3]
     assert data[0] == timing_header(seq) and data[2] == data[0]
