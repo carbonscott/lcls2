@@ -43,17 +43,18 @@ show "X5 comparison" "typeid_ctor 4 3" "12292 4 3"
 show "X6 alloc(size = 2^64 - 4) passes the bounds check and shrinks extent 12 to 8 (offset extent)" \
      "alloc 12 18446744073709551612 64" "12 8"
 
-echo "== X7 a chain of nested Parents overflows the stack (ulimit -s $(ulimit -s) kB)"
-for d in 70000 100000; do
+echo "== X7 a chain of nested Parents overflows the stack (run with ulimit -s 8192 kB)"
+for d in 20000 400000; do
     python3 - "$d" > "$here/build/deep.txt" <<'PY'
 import struct, sys
 d = int(sys.argv[1])
 b = b"".join(struct.pack("<IHHI", 0, 0, 0, 12 * (d - i)) for i in range(d))
 print("iterate %s %d 0" % (b.hex(), len(b)))
 PY
-    ( "$oracle" < "$here/build/deep.txt" > "$here/build/deep.out" 2>/dev/null ) 2>/dev/null; rc=$?
+    ( ulimit -s 8192; "$oracle" < "$here/build/deep.txt" > "$here/build/deep.out" 2>/dev/null ) 2>/dev/null; rc=$?
     echo "   depth $d ($((d * 12)) byte buffer): oracle exit $rc"
-    if [ "$d" = 100000 ] && [ "$rc" = 0 ]; then echo "   UNEXPECTED: no crash"; fail=1; fi
+    if [ "$d" = 20000 ] && [ "$rc" != 0 ]; then echo "   UNEXPECTED: crash at a depth that should fit"; fail=1; fi
+    if [ "$d" = 400000 ] && [ "$rc" = 0 ]; then echo "   UNEXPECTED: no crash"; fail=1; fi
 done
 rm -f "$here/build/deep.txt" "$here/build/deep.out" core.* "$here"/build/core.*
 

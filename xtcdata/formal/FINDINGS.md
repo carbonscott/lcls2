@@ -113,9 +113,12 @@ pointer sum wraps, the check passes, and `extent += size` lowers the extent.
 
 Each nested Parent is one recursive call of `iterate` through `process`.
 
-- Oracle, a chain of nested Parents (`difftest/build/deep.sh`, 8 MB stack):
-  depth 70,000 (840 kB buffer) returns; depth 100,000 (1.2 MB) ends with
-  signal 11.
+- Oracle, a chain of nested Parents with an 8 MB stack on sdfiana025
+  (gcc 8.5): depth 70,000 (840 kB buffer) returns; depth 100,000 (1.2 MB)
+  ends with signal 11. The depth that overflows depends on the compiler and
+  the stack limit, so `difftest/findings.sh` fixes the stack at 8 MB and
+  uses depths far from the edge: 20,000 must return, 400,000 (4.8 MB
+  buffer) must crash.
 - Lean: not stated; the model has no call stack. `loop_ne_fuel` shows only
   that the loop itself cannot run forever.
 - Reach: corrupt or hostile input only; `Dgram::MaxSize` is 16 MB.
