@@ -17,6 +17,7 @@ export TESTRELDIR=$REPO/install
 export PATH=$TESTRELDIR/bin:$PATH
 pyver=$(python -V 2>&1 | grep -oP '\d+\.\d+' | head -1)
 export PYTHONPATH=$TESTRELDIR/lib/python$pyver/site-packages
+export PROCMGR_EXPORT=RDMAV_FORK_SAFE=1,RDMAV_HUGEPAGES_SAFE=1,OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1,NUMEXPR_NUM_THREADS=1,PS_PARALLEL='none'
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 export QT_QPA_PLATFORM=offscreen
 
