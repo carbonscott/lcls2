@@ -11,8 +11,11 @@ Why: hpsBldCopy (psdaq/psdaq/app/hpsBldCopy.cc) polls PVBase::ready() on its inp
 is EpicsPVA::getComplete(), which waits 30 s for the PV and, if it has not connected, returns false; the
 next call takes the same std::promise's future again and the program aborts with std::future_error
 ('Future already retrieved', signal 6).  procmgr starts bldcas, hpsBldServer and hpsBldCopy together, so a
-hpsBldServer that serves its PVs more than 30 s after hpsBldCopy starts aborts hpsBldCopy.  daq_sim starts
-hpsBldCopy behind this wait; the production program is unchanged.
+hpsBldServer that comes up late aborts hpsBldCopy: its PVA client (pvAccessCPP 7.1.6) searches again for a
+PV it has not found at about 0.24*2^n s after the start (..., 7.6, 15.2, 30.4 s), so a server that comes up more
+than about 15 s after hpsBldCopy starts is not found within the 30 s (hpsBldServer came up 16 and 18 s late in
+the two runs where hpsBldCopy aborted on its own).  daq_sim starts hpsBldCopy behind this wait; the production
+program is unchanged.
 """
 
 import argparse

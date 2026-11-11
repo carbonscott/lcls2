@@ -660,7 +660,8 @@ HPS_PROCS = ('hpsbldcas', 'hpsbldsvc', 'hpsbldcpa')    # the procmgr ids of gui_
 HPS_ENTRY = ''' {{ id:'{id}', flags:'s', env:'{env}',
    cmd:'{cmd}' }},
 '''
-# F7: hpsBldCopy aborts (std::future_error) if a PV it reads is not served within PVBase::ready()'s 30 s, and procmgr
+# F7: hpsBldCopy aborts (std::future_error) if a PV it reads is not found within PVBase::ready()'s 30 s, which its
+# client's search schedule (pvAccessCPP: again at about 7.6, 15.2, 30.4 s) misses for a server up ~15 s late, and procmgr
 # starts it with the servers of those PVs (bldcas, hpsBldServer); it starts behind psdaq.sim.pvwait, which waits up to
 # HPS_PV_WAIT s for its five PVs (-I's PAYLOAD, ADDR, PORT; -O's ADDR, PORT) and then execs it (same pid)
 HPS_PV_WAIT = 120
