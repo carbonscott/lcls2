@@ -41,8 +41,10 @@ import time
 GRAPH = 'graph'                         # ami's default graph name (ami.client Defaults.GraphName)
 ROWS, NROWS, PIXSUM, COUNT = 'ami_rows', 'ami_rows_count', 'ami_pixsum', 'ami_count'
 PIXEL = (0, 8)                          # raw[lane 0, uint16 word 8]: low half of payload word 4
-MAX_ROWS = 4096                         # rows each RollingBuffer keeps: more than the events AMI
-                                        # sees in a cycle; it resends them all every heartbeat
+MAX_ROWS = 16384                        # rows each RollingBuffer keeps (its N), and so the most events the
+                                        # check can count: a run whose AMI sees more fails 'ami_count N != M
+                                        # events in AMI's rows' (F8); at ~46 events/s that is ~6 min of
+                                        # Running; it resends them all every heartbeat
 
 
 def comm_addr(addr):

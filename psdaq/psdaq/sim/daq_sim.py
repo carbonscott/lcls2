@@ -660,6 +660,18 @@ HPS_PROCS = ('hpsbldcas', 'hpsbldsvc', 'hpsbldcpa')    # the procmgr ids of gui_
 HPS_ENTRY = ''' {{ id:'{id}', flags:'s', env:'{env}',
    cmd:'{cmd}' }},
 '''
+# F7: hpsBldCopy aborts (std::future_error) if a PV it reads is not found within PVBase::ready()'s 30 s, which its
+# client's search schedule (pvAccessCPP: again at about 7.6, 15.2, 30.4 s) can miss for a server up ~15 s late, and procmgr
+# starts it with the servers of those PVs (bldcas, hpsBldServer); it starts behind psdaq.sim.pvwait, which waits up to
+# HPS_PV_WAIT s for its five PVs (-I's PAYLOAD, ADDR, PORT; -O's ADDR, PORT) and then execs it (same pid)
+HPS_PV_WAIT = 120
+
+
+def hps_pvwait(argv):
+    """The pvwait words before hpsBldCopy's command line `argv`."""
+    from psdaq.sim import pvwait
+    i, o = argv[argv.index('-I') + 1], argv[argv.index('-O') + 1]
+    return pvwait.command([f'{i}:PAYLOAD', f'{i}:ADDR', f'{i}:PORT', f'{o}:ADDR', f'{o}:PORT'], HPS_PV_WAIT)
 # --wave8pvs (R6b): wave8pvs (lab3-wave8.cnf: wave8pvs --l 0) under procmgr in a site conda env of its own, the one
 # $PSDAQ_SIM_WAVE8PVS_ENV names (its python, PATH, LD_LIBRARY_PATH and PYTHONPATH in the entry's env), with the wave8
 # package's python from the source tarball $PSDAQ_SIM_WAVE8PVS_SRC unpacked under <workdir>/wave8pvs; its board is
@@ -791,8 +803,10 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     if hps:
         from psdaq.sim import gui_witness
         for name, H in gui_witness.HPS_PROGRAMS.items():
+            argv = gui_witness.hps_argv(name, PVBASE, P['hps'])
+            wait = hps_pvwait(argv) if name == 'hpsBldCopy' else []
             out += HPS_ENTRY.format(id=H['id'], env=' '.join(f'{k}={v}' for k, v in gui_witness.hps_env(
-                name, P['hps']).items()), cmd=' '.join([name] + gui_witness.hps_argv(name, PVBASE, P['hps'])))
+                name, P['hps']).items()), cmd=' '.join(wait + [name] + argv))
     if wave8pvs:                        # wave8pvs_prepare()'s result
         out += WAVE8PVS.format(python=wave8pvs['python'], base=WAVE8PVS_BASE, env=' '.join(
             f'{k}={v}' for k, v in wave8pvs_env(wave8pvs, workdir, P['wave8pvs']).items()))
@@ -1466,10 +1480,28 @@ def link_full(alias, share):
     return rec
 
 
+PVA_BIND_RACE = 'Unable to bind random UDP6 port'
+
+
+def pva_context(attempts=10):
+    """A new PVA client context, for one pv_get or pv_put call (which closes it).  PVXS binds the client's
+    IPv6 search socket to the port number the kernel gave its IPv4 one, and raises RuntimeError(PVA_BIND_RACE)
+    when another IPv6 UDP socket of the node holds that number: that error alone is retried, at most
+    `attempts` times; any other error, and the last attempt's, is raised."""
+    from p4p.client.thread import Context
+    for n in range(1, attempts + 1):
+        try:
+            return Context('pva')
+        except RuntimeError as e:
+            if str(e) != PVA_BIND_RACE or n == attempts:
+                raise
+            print(f'{now()} daq_sim: PVA client context: {e} (attempt {n} of {attempts}), retrying',
+                  file=sys.stderr, flush=True)
+
+
 def pv_put(name, value, timeout=5.0):
     """Put a PV over PVA; None on success, else the error."""
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         ctx.put(name, value, timeout=timeout)
         return None
@@ -1816,8 +1848,7 @@ COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_
 
 
 def pv_get(name, timeout=3.0):
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         return ctx.get(name, timeout=timeout)
     except Exception as e:
