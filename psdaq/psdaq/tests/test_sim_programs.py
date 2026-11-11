@@ -707,7 +707,9 @@ def test_lclsBldServer_sends_its_bld_for_the_frames_tprframes_delivers(tmp_path)
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     srv = subprocess.Popen([exe] + argv, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     try:
-        time.sleep(2)
+        deadline = time.time() + 30     # F9: until its first packet, not a fixed 2 s (its start takes 2-5 s on a busy node)
+        while not gui_witness.bld_receive(gui_witness.BLD_GROUP_BASE, port, 0.5)[2]:
+            assert srv.poll() is None and time.time() < deadline, 'lclsBldServer sent no packet within 30 s'
         t0, t1, packets = gui_witness.bld_receive(gui_witness.BLD_GROUP_BASE, port, 3)
         _, t2, reads = gui_witness.tpr_reads(card, 1)
     finally:
