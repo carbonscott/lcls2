@@ -1466,10 +1466,28 @@ def link_full(alias, share):
     return rec
 
 
+PVA_BIND_RACE = 'Unable to bind random UDP6 port'
+
+
+def pva_context(attempts=10):
+    """A new PVA client context, for one pv_get or pv_put call (which closes it).  PVXS binds the client's
+    IPv6 search socket to the port number the kernel gave its IPv4 one, and raises RuntimeError(PVA_BIND_RACE)
+    when another IPv6 UDP socket of the node holds that number: that error alone is retried, at most
+    `attempts` times; any other error, and the last attempt's, is raised."""
+    from p4p.client.thread import Context
+    for n in range(1, attempts + 1):
+        try:
+            return Context('pva')
+        except RuntimeError as e:
+            if str(e) != PVA_BIND_RACE or n == attempts:
+                raise
+            print(f'{now()} daq_sim: PVA client context: {e} (attempt {n} of {attempts}), retrying',
+                  file=sys.stderr, flush=True)
+
+
 def pv_put(name, value, timeout=5.0):
     """Put a PV over PVA; None on success, else the error."""
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         ctx.put(name, value, timeout=timeout)
         return None
@@ -1816,8 +1834,7 @@ COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_
 
 
 def pv_get(name, timeout=3.0):
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         return ctx.get(name, timeout=timeout)
     except Exception as e:
