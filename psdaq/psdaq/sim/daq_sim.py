@@ -202,6 +202,23 @@ SIM_TYPES = {
                     'sets': ('user.kcu_ip=127.0.0.1', 'user.jungfrau_ip=127.0.0.1',
                              'user.port={sls_data}')},
 }
+
+
+def teb_pending_depth(kwargs):
+    """The drp's tebPendingDepth for drp -k KWARGS: twice its pebble count, rounded up to a power of 2.
+    The pebble count is pebbleBufCount, or else the DMA count rounded up to a power of 2 (DrpBase.cc),
+    the DMA count being sim_dma_count or MemPoolSim's 1024.  TebContributor's queue of posted batches
+    holds as many entries as there are pebbles unless tebPendingDepth says more, and with one event per
+    batch it can fill and abort the drp ('_pending queue overflow', flake register F1)."""
+    def pow2(n):
+        return 1 << (int(n) - 1).bit_length()
+    kw = dict(x.split('=', 1) for x in kwargs.split(',') if '=' in x)
+    pebbles = int(kw['pebbleBufCount']) if 'pebbleBufCount' in kw else pow2(int(kw.get('sim_dma_count', '1024'), 0))
+    return 2 * pow2(pebbles)
+
+
+for _t in SIM_TYPES.values():           # every drp -d sim:// (drp.cc takes tebPendingDepth with sim:// only)
+    _t['kwargs'] += f',tebPendingDepth={teb_pending_depth(_t["kwargs"])}'
 # drp_gpu -k settings per simulated detector type (up --drp drp_gpu --det).  drp_gpu -d sim://
 # (psdaq/drpGpu/MemPool.cc) copies what the drp's MemPoolSim makes of simxpm's frames into the
 # GPU's DMA buffers, after the 32 B DMA frame, so its dmaBufSize (decimal) must exceed
