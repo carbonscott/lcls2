@@ -1,0 +1,79 @@
+exedev@velvet-comet:redo$ export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM
+2026-11-11T13:53:26+00:00
+velvet-comet
+exedev@velvet-comet:redo$ ssh -t sdfiana025 bash --rcfile $R/work/ci/rec-rc.sh -i
+cwang31@sdfiana025:wt-ci$ git log -1 --format='%H %cI %s'   # ci/cheap-tier head
+aa6b0e428717e1b6f99b941ae5fec42e9187e35b 2026-11-11T05:42:04-08:00 Merge remote-tracking branch 'origin/sim-main' into ci/cheap-tier
+cwang31@sdfiana025:wt-ci$ git log -1 --format=%P   # parents: af3696039 (ci/cheap-tier) and d4e2217e0 (sim-main, after sync PR #48)
+af3696039b2cd1bc06caeba47352541303497d58 d4e2217e047e0e8e9522b1f9c1e0caee2a474ed3
+cwang31@sdfiana025:wt-ci$ echo "local changes: $(git status --short | wc -l)"; git fetch -q origin && git rev-parse origin/ci/cheap-tier
+local changes: 0
+aa6b0e428717e1b6f99b941ae5fec42e9187e35b
+cwang31@sdfiana025:wt-ci$ git diff --stat origin/sim-main HEAD
+ .github/workflows/sim_cheap_tier.yaml             | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ CHANGELOG.md                                      |  1 +
+ psdaq/psdaq/sim/ci_cheap_tier.sh                  | 39 +++++++++++++++++++++++++++++++++++++++
+ psdaq/psdaq/tests/test_sim_configdb_seed_store.py |  3 +++
+ psdaq/psdaq/tests/test_sim_hsd.py                 |  3 +++
+ psdaq/psdaq/tests/test_sim_rogue_dev.py           |  3 +++
+ psdaq/psdaq/tests/test_sim_sls.py                 |  2 ++
+ 7 files changed, 97 insertions(+)
+cwang31@sdfiana025:wt-ci$ ls psdaq/psdaq/tests/test_sim*.py | wc -l   # the glob the job uses
+16
+cwang31@sdfiana025:wt-ci$ gh run view 43031519426 --repo carbonscott/lcls2   # the job at this head
+⣾⣽⣻⢿⡿⣟⣾⣽⣻
+✓ ci/cheap-tier Sim cheap tier · 43031519426
+Triggered via push about 11 minutes ago
+
+JOBS
+✓ sim-cheap-tier in 10m23s (ID 130559486618)
+
+ANNOTATIONS
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+sim-cheap-tier: .github#1
+
+
+For more information about the job, try: gh run view --job=130559486618
+View this run on GitHub: https://github.com/carbonscott/lcls2/actions/runs/43031519426
+cwang31@sdfiana025:wt-ci$ gh run view 43031519426 --repo carbonscott/lcls2 --log | cut -f3- | sed -E "s/^[0-9T:.-]+Z //" | grep -E 'sim test files colllected|collected [0-9]+ items|SKIPPED|passed,'
+sim test files collected: 16 (glob psdaq/psdaq/tests/test_sim*.py at aa6b0e4)
+collected 422 items
+SKIPPED [1] psdaq/psdaq/tests/test_sim_configdb_seed_store.py:30: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_hsd.py:92: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_programs.py:125: could not import 'ami': No module named 'ami'
+SKIPPED [1] psdaq/psdaq/tests/test_sim_rogue_dev.py:201: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_rogue_dev.py:291: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_rogue_dev.py:303: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_rogue_dev.py:491: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_rogue_dev.py:505: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_sls.py:267: needs $SUBMODULEDIR (the DAQ env)
+SKIPPED [1] psdaq/psdaq/tests/test_sim_xpmdet_types.py:63: needs $SUBMODULEDIR (the DAQ env)
+================= 412 passed, 10 skipped in 136.08s (0:02:16) ==================
+cwang31@sdfiana025:wt-ci$ # deliberate break 1, ci-break/unit-1 (one assert flipped), never merged:
+cwang31@sdfiana025:wt-ci$ gh run view 43031426914 --repo carbonscott/lcls2 --json conclusion,headBranch,headSha --jq '.conclusion+" "+.headBranch+" "+..headSha'
+⣾⣽⣻⢿⡿⣟failure ci-break/unit-1 d7325d70c64cc76edacd9083bfa613ffd7bc4200
+cwang31@sdfiana025:wt-ci$ gh run view 43031426914 --repo carbonscott/lcls2 --log-failed | cut -f3- | sed -E "s/^[0-9T:.-]+Z //" | grep -E '^E  |test_siim_framer.py:[0-9]+: |^FAILED|failed,'
+E       assert 5 != (5 & 255)
+psdaq/psdaq/tests/test_sim_framer.py:66: AssertionError
+FAILED psdaq/psdaq/tests/test_sim_framer.py::test_epix100_frame_layout - assert 5 != (5 & 255)
+============ 1 failed, 411 passed, 10 skipped in 131.94s (0:02:11) =============
+cwang31@sdfiana025:wt-ci$ # deliberate break 2, ci-break/payload-1 (PSDAQ_SIM_CORRUPT_SEQ=9: one payload byte of L1Accept 9 inverted), never merged:
+cwang31@sdfiana025:wt-ci$ gh run view 43031434875 --repo carbonscott/lcls2 --json conclusion,headBranch,headSha --jq '.conclusion+" "+.headBranch+" "+..headSha'
+⣾⣽⣻⢿⡿⣟failure ci-break/payload-1 ba402090c7ed5ad4b04ba33fb672e2d595bb4159
+cwang31@sdfiana025:wt-ci$ gh run view 43031434875 --repo carbonscott/lcls2 --log-failed | cut -f3- | sed -E "s/^[0-9T:.-]+Z //" | grep -E 'At index|^FAAILED|failed,'
+E             At index 7 diff: 248 != 7
+E         At index 6 diff: 44102 != 44217
+FAILED psdaq/psdaq/tests/test_sim_framer.py::test_wave8_frame_layout - assert False
+FAILED psdaq/psdaq/tests/test_sim_framer.py::test_ts_timing_message_layout - AssertionError: mpsPowerClass
+  At index 7 diff: 248 != 7
+FAILED psdaq/psdaq/tests/test_sim_framer.py::test_tb_event_timing_message_layout - assert [41368, 60994...7, 41229, ...] == [41368, 60994...7, 41229, ...]
+  At index 6 diff: 44102 != 44217
+FAILED psdaq/psdaq/tests/test_sim_framer.py::test_epixhr2x2_frame_layout - assert False
+============ 4 failed, 408 passed, 10 skipped in 123.81s (0:02:03) =============
+cwang31@sdfiana025:wt-ci$ git rev-parse HEAD; date -u +%FT%TZ
+aa6b0e428717e1b6f99b941ae5fec42e9187e35b
+2026-11-11T13:53:54Z
+cwang31@sdfiana025:wt-ci$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@velvet-comet:redo$ 

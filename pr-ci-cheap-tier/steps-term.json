@@ -1,0 +1,63 @@
+[
+ {
+  "send": "export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/work/ci/rec-rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 120
+ },
+ {
+  "send": "git log -1 --format='%H %cI %s'   # ci/cheap-tier head"
+ },
+ {
+  "send": "git log -1 --format=%P   # parents: af3696039 (ci/cheap-tier) and d4e2217e0 (sim-main, after sync PR #48)"
+ },
+ {
+  "send": "echo \"local changes: $(git status --short | wc -l)\"; git fetch -q origin && git rev-parse origin/ci/cheap-tier"
+ },
+ {
+  "send": "git diff --stat origin/sim-main HEAD"
+ },
+ {
+  "send": "ls psdaq/psdaq/tests/test_sim*.py | wc -l   # the glob the job uses"
+ },
+ {
+  "send": "gh run view 43031519426 --repo carbonscott/lcls2   # the job at this head",
+  "timeout": 120
+ },
+ {
+  "send": "gh run view 43031519426 --repo carbonscott/lcls2 --log | cut -f3- | sed -E \"s/^[0-9T:.-]+Z //\" | grep -E 'sim test files collected|collected [0-9]+ items|SKIPPED|passed,'",
+  "timeout": 180
+ },
+ {
+  "send": "# deliberate break 1, ci-break/unit-1 (one assert flipped), never merged:"
+ },
+ {
+  "send": "gh run view 43031426914 --repo carbonscott/lcls2 --json conclusion,headBranch,headSha --jq '.conclusion+\" \"+.headBranch+\" \"+.headSha'",
+  "timeout": 120
+ },
+ {
+  "send": "gh run view 43031426914 --repo carbonscott/lcls2 --log-failed | cut -f3- | sed -E \"s/^[0-9T:.-]+Z //\" | grep -E '^E  |test_sim_framer.py:[0-9]+: |^FAILED|failed,'",
+  "timeout": 180
+ },
+ {
+  "send": "# deliberate break 2, ci-break/payload-1 (PSDAQ_SIM_CORRUPT_SEQ=9: one payload byte of L1Accept 9 inverted), never merged:"
+ },
+ {
+  "send": "gh run view 43031434875 --repo carbonscott/lcls2 --json conclusion,headBranch,headSha --jq '.conclusion+\" \"+.headBranch+\" \"+.headSha'",
+  "timeout": 120
+ },
+ {
+  "send": "gh run view 43031434875 --repo carbonscott/lcls2 --log-failed | cut -f3- | sed -E \"s/^[0-9T:.-]+Z //\" | grep -E 'At index|^FAILED|failed,'",
+  "timeout": 180
+ },
+ {
+  "send": "git rev-parse HEAD; date -u +%FT%TZ"
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]
