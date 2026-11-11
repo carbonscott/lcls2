@@ -1,0 +1,57 @@
+[
+ {
+  "send": "export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile $R/work/prf1/rec-rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 120
+ },
+ {
+  "send": "srun --jobid=44245342 --overlap -w sdfada018 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/work/prf1/node-rc.sh -i",
+  "expect": "cwang31@sdfada018",
+  "timeout": 180
+ },
+ {
+  "send": "git log -1 --format='%H %cI'   # the fix head, immutable build R/builds/cee776d3c"
+ },
+ {
+  "send": "git diff --stat 946ef0ff1 HEAD   # against the base (sim-main)"
+ },
+ {
+  "send": "echo \"local changes: $(git status --short --untracked-files=no | wc -l)\"; date -u; hostname"
+ },
+ {
+  "send": "# the F1 overlay reproducer (opal pebbleBufCount=256, teb0 SIGSTOPped 1 s after Enable): 3 of 30 aborted at 946ef0ff1"
+ },
+ {
+  "send": "bash $R/work/prf1/repro3.sh cee776d3c rec 1 1.0 $R/work/f1fix2/ov-disc",
+  "expect": "=== repro done",
+  "timeout": 900
+ },
+ {
+  "send": "grep -h -E 'tebPendingDepth|# of TEB contrib' $R/work/prf1/runs/rec/try-1/types/opal/pmlogs/*/*/*opal_0.log | cut -c1-160"
+ },
+ {
+  "send": "grep -E '^M2 totals|^  MATRIX PASS|^Arithmetic|^M3 totals' $R/work/f1fix2/results.md   # f1fix2's 40 + 10 tries at this head"
+ },
+ {
+  "send": "grep -E '^=== matrix|coverage: at|^MATRIX |MATRIX_EXIT' $R/work/prf1/mx-p1.log"
+ },
+ {
+  "send": "grep -E '^BREAK' $R/work/prf1/brk-b1.log"
+ },
+ {
+  "send": "git rev-parse HEAD; date -u +%FT%TZ"
+ },
+ {
+  "send": "exit",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 60
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]
