@@ -1,0 +1,54 @@
+name: Test XTC2 formal model
+
+# Builds the Lean model of xtcdata's container layer with its proofs, and
+# compares the model with the real C++ on generated inputs (xtcdata/formal).
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'xtcdata/**'
+      - '.github/workflows/run_xtc_formal.yaml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  formal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Install elan and valgrind
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
+          sh elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          sudo apt-get update
+          sudo apt-get install -y valgrind
+
+      - name: Build the model and check the proofs
+        run: |
+          cd xtcdata/formal/lean
+          lake build
+
+      - name: Audit the axioms of every theorem
+        run: xtcdata/formal/audit.sh
+
+      - name: Build the oracle from the tree's xtcdata sources
+        run: xtcdata/formal/difftest/build.sh
+
+      - name: Differential test, model against the real code
+        run: |
+          python3 xtcdata/formal/difftest/run.py --seeds 1 2 3 --n 60000 \
+              --valgrind --ub-sample 400 --jobs 4
+
+      - name: Findings, each shown on the real code
+        run: |
+          . xtcdata/formal/env.sh
+          xtcdata/formal/difftest/findings.sh
+
+      - name: Mutation check, wrong models must be caught
+        run: |
+          . xtcdata/formal/env.sh
+          python3 xtcdata/formal/difftest/mutate.py
