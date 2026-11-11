@@ -79,6 +79,7 @@ namespace Pds {
       std::vector<listU32_t >   _trBuffers;
       unsigned                  _id;
       unsigned                  _numEbs;
+      unsigned                  _numBuffers; // Sizes the batch region
       BatchQueue                _pending; // Time ordered list of completed batches
       CtrbBatch                 _batch;
       uint64_t                  _previousPid;
