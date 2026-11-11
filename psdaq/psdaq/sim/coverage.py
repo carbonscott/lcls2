@@ -299,6 +299,8 @@ def resolve(cmd):
             while i < len(words) and words[i].startswith('-') and words[i] != '-m':
                 i += 2 if words[i] in PYTHON_OPTS_WITH_VALUE else 1
             if i + 1 < len(words) and words[i] == '-m':
+                if words[i + 1] == 'psdaq.sim.pvwait' and '--' in words[i + 2:]:    # it execs what follows '--'
+                    return resolve(shlex.join(words[words.index('--', i + 2) + 1:]))
                 return words[i + 1].split('.')[-1], words[i + 2:]
             if i < len(words):
                 return program_name(words[i]), words[i + 1:]

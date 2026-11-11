@@ -1,0 +1,91 @@
+"""pvwait: wait until PVs answer, then run a command in this process (flake register F7).
+
+    python -m psdaq.sim.pvwait [--timeout S] PV [PV ...] -- COMMAND [ARG ...]
+
+Gets every PV over PVA (the client configuration from the environment, as the command's own) until each has
+answered once, printing one line per PV with the seconds it took, then replaces itself with COMMAND
+(os.execvp), so COMMAND keeps this process's pid and its procmgr entry.  If a PV has not answered within
+--timeout seconds it prints 'pvwait: timeout <PV>' for each such PV and exits 1 without running COMMAND.
+
+Why: hpsBldCopy (psdaq/psdaq/app/hpsBldCopy.cc) polls PVBase::ready() on its input and output PVs.  ready()
+is EpicsPVA::getComplete(), which waits 30 s for the PV and, if it has not connected, returns false; the
+next call takes the same std::promise's future again and the program aborts with std::future_error
+('Future already retrieved', signal 6).  procmgr starts bldcas, hpsBldServer and hpsBldCopy together, so a
+hpsBldServer that serves its PVs more than 30 s after hpsBldCopy starts aborts hpsBldCopy.  daq_sim starts
+hpsBldCopy behind this wait; the production program is unchanged.
+"""
+
+import argparse
+import os
+import sys
+import time
+
+PVA_BIND_RACE = 'Unable to bind random UDP6 port'     # psdaq.sim.daq_sim.PVA_BIND_RACE
+
+
+def command(pvs, timeout):
+    """The words that run what follows them behind a wait for `pvs` (at most `timeout` s)."""
+    return ['python', '-m', 'psdaq.sim.pvwait', '--timeout', str(timeout)] + list(pvs) + ['--']
+
+
+def split(argv):
+    """(pvwait's own arguments, the command): argv split at the first '--'."""
+    if '--' not in argv:
+        raise SystemExit('pvwait: no "--" before the command')
+    k = argv.index('--')
+    if k + 1 == len(argv):
+        raise SystemExit('pvwait: no command after "--"')
+    return argv[:k], argv[k + 1:]
+
+
+def context(attempts=10):
+    """A PVA client context from the environment; only PVXS's IPv6 bind race is retried (as daq_sim.pva_context)."""
+    from p4p.client.thread import Context
+    for n in range(1, attempts + 1):
+        try:
+            return Context('pva')
+        except RuntimeError as e:
+            if str(e) != PVA_BIND_RACE or n == attempts:
+                raise
+
+
+def wait(pvs, timeout, ctx, out=sys.stdout):
+    """The PVs of `pvs` that did not answer a get within `timeout` s (an empty list when all did)."""
+    t0 = time.monotonic()
+    pending = list(pvs)
+    while pending:
+        left = t0 + timeout - time.monotonic()
+        if left <= 0:
+            break
+        got = ctx.get(pending, timeout=min(2.0, max(left, 0.1)), throw=False)
+        for pv, v in zip(list(pending), got):
+            if not isinstance(v, Exception):
+                pending.remove(pv)
+                print(f'pvwait: {pv} answered after {time.monotonic() - t0:.1f} s', file=out, flush=True)
+    return pending
+
+
+def main(argv=None):
+    own, cmd = split(sys.argv[1:] if argv is None else argv)
+    p = argparse.ArgumentParser(prog='pvwait')
+    p.add_argument('--timeout', type=float, default=60.0, help='s to wait for all PVs (default %(default)s)')
+    p.add_argument('pvs', nargs='+', metavar='PV')
+    a = p.parse_args(own)
+    print(f'pvwait: waiting up to {a.timeout:g} s for {" ".join(a.pvs)}', flush=True)
+    ctx = context()
+    try:
+        missing = wait(a.pvs, a.timeout, ctx)
+    finally:
+        ctx.close()
+    if missing:
+        for pv in missing:
+            print(f'pvwait: timeout {pv}', flush=True)
+        return 1
+    print(f'pvwait: exec {" ".join(cmd)}', flush=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os.execvp(cmd[0], cmd)
+
+
+if __name__ == '__main__':
+    sys.exit(main())
