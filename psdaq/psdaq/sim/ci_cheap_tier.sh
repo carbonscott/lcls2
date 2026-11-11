@@ -44,16 +44,19 @@ L2SI_DRP=(
     "l2si-drp/firmware/submodules/surf             65dc3e425d609fd14e4b3fc73fe5cbfa37b95f87 python"
 )
 submodules() {
-    local top=$1 line path sha sub repo
+    local top=$1 line path sha sub repo auth
     for line in "${L2SI_DRP[@]}"; do
         read -r path sha sub <<< "$line"
         repo=${path##*/}
+        auth=()                         # l2si-drp is private: a token that reads it, never stored
+        [[ $repo == l2si-drp && -n ${L2SI_DRP_TOKEN:-} ]] && \
+            auth=(-c "http.https://github.com/.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$L2SI_DRP_TOKEN" | base64 -w0)")
         [[ -d $top/$path/$sub ]] && continue
         mkdir -p "$top/$path" && git -C "$top/$path" init -q && \
         git -C "$top/$path" remote add origin "https://github.com/slaclab/$repo" && \
         git -C "$top/$path" sparse-checkout set "$sub" && \
-        git -C "$top/$path" fetch -q --depth 1 --filter=blob:none origin "$sha" && \
-        git -C "$top/$path" -c advice.detachedHead=false checkout -q FETCH_HEAD || { echo "fetch of slaclab/$repo $sha failed"; return 1; }
+        git -C "$top/$path" "${auth[@]}" fetch -q --depth 1 --filter=blob:none origin "$sha" && \
+        git -C "$top/$path" "${auth[@]}" -c advice.detachedHead=false checkout -q FETCH_HEAD || { echo "fetch of slaclab/$repo $sha failed"; return 1; }
         echo "SUBMODULEDIR/$path at $(git -C "$top/$path" rev-parse --short HEAD) ($sub)"
     done
     sed -i "s/ZmqServer(root=self, addr='127.0.0.1', port=10000)/ZmqServer(root=self, addr='127.0.0.1', port=0)/" \

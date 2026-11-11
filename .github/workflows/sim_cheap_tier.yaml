@@ -54,9 +54,25 @@ jobs:
         id: unit
         run: bash psdaq/psdaq/sim/ci_cheap_tier.sh unit
 
+      - name: Access to slaclab/l2si-drp
+        # fakecam's drp imports l2si_drp (psdaq/psdaq/configdb/xpmdet_config.py:1-2) from
+        # slaclab/l2si-drp, a private repository: without a token that reads it the DAQ run
+        # cannot start on this runner, and is not run (a warning says so)
+        id: l2si
+        env:
+          L2SI_DRP_TOKEN: ${{ secrets.L2SI_DRP_TOKEN }}
+        run: |
+          if [[ -n $L2SI_DRP_TOKEN ]]; then
+            echo "have=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=Fakecam DAQ run NOT run::fakecam's drp imports l2si_drp from slaclab/l2si-drp, a private repository; set the repository secret L2SI_DRP_TOKEN (read access to it) to run it"
+          fi
+
       - name: Fakecam DAQ run (daq_sim up / cycle / down, psana2 read-back)
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.l2si.outputs.have == 'true' }}
         timeout-minutes: 15
+        env:
+          L2SI_DRP_TOKEN: ${{ secrets.L2SI_DRP_TOKEN }}
         run: bash psdaq/psdaq/sim/ci_cheap_tier.sh daq
 
       - name: Upload the DAQ work dir logs
