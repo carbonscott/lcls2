@@ -25,6 +25,9 @@ print('JSON ' + json.dumps(d))
 
 
 def test_store_config_is_captured_and_nothing_is_contacted():
+    import os
+    if not os.environ.get('SUBMODULEDIR'):
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     pytest.importorskip('pyrogue')
     r = subprocess.run([sys.executable, '-c', CHECK], capture_output=True, text=True, timeout=120)
     assert r.returncode == 0, r.stderr[-2000:]

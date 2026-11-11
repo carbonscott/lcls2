@@ -1,0 +1,46 @@
+name: Sim cheap tier
+# The cheap tier of the hardware-free DAQ (psdaq/psdaq/sim): every sim unit test file, found by
+# glob, with each skip's reason printed. The full check (daq_sim matrix, RUNBOOK §3p) needs S3DF.
+on:
+  pull_request:
+    branches: [sim-main]
+  push:
+    branches: [sim-main, 'ci/**', 'ci-break/**']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sim-cheap-tier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash -el {0}       # login shell, for conda (as run_daq_tests.yaml)
+    steps:
+      - name: Checkout repo with submodules
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4.0.1
+        with:
+          auto-update-conda: true
+          activate-environment: build-conda-env
+          channels: lcls-ii, conda-forge
+          environment-file: .daq_20250402_r9.txt
+
+      - name: Build
+        run: |
+          export ENV_TYPE=legacy      # as run_daq_tests.yaml; -d turns the DAQ build on
+          ./build_all.sh -d
+
+      - name: Sim unit tests (every psdaq/psdaq/tests/test_sim*.py)
+        run: bash psdaq/psdaq/sim/ci_cheap_tier.sh unit
+
+      # The cheap tier's fakecam DAQ run is not run here: fakecam's drp imports l2si_drp
+      # (psdaq/psdaq/configdb/xpmdet_config.py) from slaclab/l2si-drp, which is SLAC-internal.
+      # It runs on one S3DF node (RUNBOOK §3p):
+      #   daq_sim matrix -w <WD> --only types --types fakecam      (exit 0)
+      #   daq_sim matrix -w <WD> --break corrupt                    (exit 1)

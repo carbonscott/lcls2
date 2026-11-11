@@ -87,6 +87,9 @@ print('JSON ' + json.dumps(d))
 
 
 def test_hsd_store_script_is_captured_and_nothing_is_contacted():
+    import os
+    if not os.environ.get('SUBMODULEDIR'):
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     r = subprocess.run([sys.executable, '-c', CHECK], capture_output=True, text=True, timeout=120)
     assert r.returncode == 0, r.stderr[-2000:]
     d = json.loads([l for l in r.stdout.splitlines() if l.startswith('JSON ')][0][5:])

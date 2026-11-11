@@ -196,6 +196,9 @@ with open(rogue_dev.__file__) as f:               # other files are untouched
 def test_proc_text_of_the_simulated_driver():
     """PgpMonitor's detect_version reads the simulated driver text.  In a subprocess: pytest-qt
     loads a Qt binding that pyrogue.pydm (imported by pgpmonitor) cannot use."""
+    import os
+    if not os.environ.get('SUBMODULEDIR'):
+        pytest.skip('needs $SUBMODULEDIR (the DAQ env)')
     import subprocess
     import sys
     r = subprocess.run([sys.executable, '-c', PROC_CHECK], capture_output=True, text=True,
