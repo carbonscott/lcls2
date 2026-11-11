@@ -13,9 +13,10 @@ next call takes the same std::promise's future again and the program aborts with
 ('Future already retrieved', signal 6).  procmgr starts bldcas, hpsBldServer and hpsBldCopy together, so a
 hpsBldServer that comes up late aborts hpsBldCopy: its PVA client (pvAccessCPP 7.1.6) searches again for a
 PV it has not found at about 0.24*2^n s after the start (..., 7.6, 15.2, 30.4 s), so a server that comes up more
-than about 15 s after hpsBldCopy starts is not found within the 30 s (hpsBldServer came up 16 and 18 s late in
+than about 15 s after hpsBldCopy starts may not be found within the 30 s (hpsBldServer came up 16 and 18 s late in
 the two runs where hpsBldCopy aborted on its own).  daq_sim starts hpsBldCopy behind this wait; the production
-program is unchanged.
+program is unchanged.  pvwait reads each PV once and does not re-check it: a PV whose server goes away after
+that read is not covered (with bldcas stopped 20 s, hpsBldServer exits and hpsBldCopy still aborts).
 """
 
 import argparse
