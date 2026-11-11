@@ -306,7 +306,8 @@ line is expected (step 8).
 **Pre-flight (before every full check).** A full check on slow nodes can fail for reasons that are
 not the code's (FLAKES.md F7, F8). Probe A, B and G first, keep the lines with the run, and do not
 start the check while a probe is more than 2x its baseline. A run not started is not an attempt; a
-run started is always listed, whatever its end. The probe, once:
+run started is always listed, whatever its end. The gate (below) is these probes plus a
+sentinel. The probe, once:
 
 ```bash
 cat > $ROOT/probe.sh <<'EOF'
@@ -337,6 +338,39 @@ medians of 14 probes and 10 fakecam tries on an ada node, 2026-11-11 19:00-19:32
 
 `load` and `others` have no gate; write them down (that day: load1 median 15, others median 140).
 Probe again before each run of a series (step 11).
+
+A probe taken once misses short stalls of a whole node (seconds in which a process is frozen or a
+`stat` under /sdf/group hangs; FLAKES.md F11). So keep one sentinel per node (A, B, G) running for
+the whole series, each in a step of its own (it holds no lock and starts no DAQ process); it writes
+one line a second:
+
+```bash
+cat > $ROOT/sentinel.sh <<'EOF'
+#!/bin/bash
+# sentinel.sh: once a second, the time of a stat under /sdf/group, of one under /tmp, and how far sleep 1 overran
+exec python3 -u - $ROOT/work/sentinel-$(hostname -s).log <<'PY'
+import os, sys, time, datetime
+G = '/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/ps-4.5.16/bin/python'
+log = open(sys.argv[1], 'a', buffering=1)
+def ts(p):
+    t = time.monotonic(); os.stat(p); return time.monotonic() - t
+while True:
+    g, t = ts(G), ts('/tmp'); s = time.monotonic(); time.sleep(1)
+    log.write('%sZ group_stat=%.3f tmp_stat=%.3f sleep_over=%.3f\n' % (
+        datetime.datetime.utcnow().isoformat(timespec='seconds'), g, t, time.monotonic() - s - 1))
+PY
+EOF
+export ROOT
+for n in $A $B; do nohup srun --jobid=$JOB --overlap -w $n --ntasks=1 --cpus-per-task=1 --mem=256M bash $ROOT/sentinel.sh > /dev/null 2>&1 & done
+nohup srun --jobid=$GJOB --overlap -w $G --ntasks=1 --cpus-per-task=1 --mem=256M bash $ROOT/sentinel.sh > /dev/null 2>&1 &
+# the gate's sentinel half: each node's largest value over the last 15 min (900 lines) must be 3 or less
+for n in $A $B $G; do tail -900 $ROOT/work/sentinel-$n.log | grep -oE '=[0-9.-]+' | tr -d = | sort -g | tail -1 | sed "s/^/$n max /"; done
+```
+
+**The gate before each full check.** Start a run only when every probe is under its "do not start
+above" value (within 2x of its baseline) and no sentinel line of A, B or G in the last 15 min has a
+value over 3 s. Write the gate's lines down with the run. The gate lowers the odds; it does not
+protect: on 2026-11-11 a gate passed at about 22:10Z and F11 hit the run started after it at 22:21Z.
 
 The one command (RUNBOOK §3p, "Everything, over every node of the campaign"), in a step on A: the
 types shared between A and B (each under its node's lock), the GPU DRP's types on G, the programs
@@ -424,7 +458,9 @@ that such a run is not started.
 
 **A series** (several full checks at one commit, to show it repeats): stop the series at the first
 `MATRIX FAIL`. That run gets a register row, or adds to its row's counts (below); the commit cannot
-be the one the series proves, and a fix is a new commit with a new series.
+be the one the series proves, and a fix is a new commit with a new series. Never move the commit the
+proofs are bound to (H) to a child that changes only `.md` files to escape a failure: the code is
+the same, so the failed run stands against the child too.
 
 1. List what failed: `grep '^FAILED ' <the run's log>` (or step 12's one-liner on
    `matrix-summary.json`). Each line is `FAILED <section>/<name>/<assertion>: <why>`.
@@ -441,6 +477,16 @@ be the one the series proves, and a fix is a new commit with a new series.
    - no row: add one (FLAKES.md, "How to add a row").
 4. F3 (a double free or a segfault at shutdown) is in nearly every DRP log after `Shutting down on INT
    signal`; it has never failed an assertion. Do not stop at it: look for the first error before it.
+
+**Preflight exit 4** (`PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)`). Each
+DAQ start runs `psdaq/psdaq/sim/preflight.sh` first. Since F11's fix, a probe killed by its outer
+timeout prints `HUNG: <probe> killed by its <N> s outer timeout (attempt <i>)` and runs once more;
+exit 4 means a probe hung again, or hung after the 2 re-runs a preflight allows. Nothing was
+started, and it is not a leak or EPICS verdict (those stay exit 1 and exit 3, read at the first
+attempt). In a full check it shows as a `FAILED` line with `preflight rc=4` and the run ends `MATRIX
+FAIL`: a failed run (F11's row), not a cut. Stop the series, compare the `HUNG` times
+(`grep -n HUNG <the DAQ's dir>/logs/preflight.log`) with the sentinel lines, and start no run until
+the gate is open again.
 
 What to run after what:
 
