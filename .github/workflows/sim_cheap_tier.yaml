@@ -37,6 +37,8 @@ jobs:
           ./build_all.sh -d
 
       - name: Sim unit tests (every psdaq/psdaq/tests/test_sim*.py)
+        env:
+          PSDAQ_SIM_CORRUPT_SEQ: 9     # ci-break: drp_sim_frame inverts one payload byte of L1Accept 9
         run: bash psdaq/psdaq/sim/ci_cheap_tier.sh unit
 
       # The cheap tier's fakecam DAQ run is not run here: fakecam's drp imports l2si_drp
