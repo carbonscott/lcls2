@@ -1,0 +1,60 @@
+# One row per function of xtcdata/xtcdata/xtc.  status: modelled = Lean model + differential test;
+# implicit = exercised only inside another modelled function; out = not modelled, with the reason;
+# todo = not started.  "theorems" names the properties in lean/XtcLean that speak about the row.
+file	function	status	model	theorems
+TypeId.hh:39	TypeId(Type, unsigned)	modelled	TypeId.ofTypeVersion	id_ofTypeVersion, version_ofTypeVersion
+src/TypeId.cc:8	TypeId(const char*)	modelled	TypeId.ofString	version_ofString
+TypeId.hh:50	TypeId::value	modelled	TypeId.value	
+TypeId.hh:56	TypeId::version	modelled	TypeId.version	version_ofTypeVersion
+TypeId.hh:62	TypeId::id	modelled	TypeId.id	id_ofTypeVersion
+src/TypeId.cc:23	TypeId::name	modelled	TypeId.name	
+Damage.hh:36	Damage::increase(Value)	modelled	Damage.increaseValue	increaseValue_noop, increaseValue_userDefined, increaseValue_exact, userBits_increaseValue
+Damage.hh:40	Damage::increase(uint16_t)	modelled	Damage.increaseBits	userBits_increaseBits
+Damage.hh:44	Damage::bits	modelled	Damage.bits	bits_setUserBits
+Damage.hh:48	Damage::userBits() const	modelled	Damage.userBits	userBits_setUserBits
+Damage.hh:52	Damage::userBits(uint16_t)	modelled	Damage.setUserBits	userBits_setUserBits, bits_setUserBits
+Src.hh:20	Src(unsigned, Level::Type)	modelled	Src.ofValueLevel	level_ofValueLevel, val_ofValueLevel
+Src.hh:23	Src::level	modelled	Src.level	level_ofValueLevel
+Src.hh:24	Src::value	modelled	Src.val	val_ofValueLevel
+NamesId.hh:30	NamesId(unsigned, unsigned)	modelled	NamesId.make	make_spec, make_isSome
+NamesId.hh:43	NamesId::nodeId	modelled	NamesId.nodeId	make_spec
+NamesId.hh:44	NamesId::namesId	modelled	NamesId.namesId	make_spec
+TimeStamp.hh:59	TimeStamp(uint64_t)	modelled	TimeStamp.ofUInt64	value_ofUInt64
+TimeStamp.hh:54	TimeStamp(unsigned, unsigned)	modelled	TimeStamp.ofSecNsec	
+TimeStamp.hh:66	TimeStamp::value	modelled	TimeStamp.value	value_ofUInt64
+TimeStamp.hh:72	TimeStamp::from_ns	modelled	TimeStamp.fromNs	toNs_fromNs, toNs_fromNs_wraps
+TimeStamp.hh:81	TimeStamp::to_ns	modelled	TimeStamp.toNs	toNs_fromNs
+TimeStamp.hh:99	TimeStamp::isZero	modelled	TimeStamp.isZero	
+TimeStamp.hh:119	TimeStamp::operator>	modelled	TimeStamp.gt	gt_iff
+TimeStamp.hh:125	TimeStamp::operator==	modelled	TimeStamp.eq	eq_iff
+src/TimeStamp.cc:4	TimeStamp(double)	out		floating point; not in the pilot
+TimeStamp.hh:105	TimeStamp::asDouble	out		floating point; not in the pilot
+TimeStamp.hh:49	TimeStamp(const timespec&)	out		truncates long to 32 bits; not in the pilot
+Dgram.hh:19	TransitionBase(Type, Value, TimeStamp, uint32_t)	modelled	Env.make	service_make, type_make, readoutGroups_make
+Dgram.hh:23	TransitionBase::readoutGroups	modelled	Env.readoutGroups	readoutGroups_make
+Dgram.hh:26	TransitionBase::keepRaw	modelled	Env.keepRaw	
+Dgram.hh:39	Transition::control	modelled	Env.control	
+Dgram.hh:40	Transition::service	modelled	Env.service	service_make
+Dgram.hh:41	Transition::type	modelled	Env.type	type_make
+Dgram.hh:42	Transition::isEvent	modelled	Env.isEvent	
+Dgram.hh:43	Transition::isExtended	modelled	Env.isExtended	
+Dgram.hh:65	L1Dgram::reserved	modelled	Env.reserved	
+src/TransitionId.cc:5	TransitionId::name	modelled	transitionName	
+src/Level.cc:5	Level::name	modelled	levelName	
+Xtc.hh:94	Xtc::sizeofPayload	modelled	Xtc.sizeofPayload	sizeofPayload_toInt, sizeofPayload_nonneg_iff, sizeofPayload_neg, payloadSize_spec
+Xtc.hh:106	Xtc::alloc	modelled	Xtc.alloc	alloc_spec, alloc_wraps
+Xtc.hh:89	Xtc::payload	implicit	loop (x + 12)	
+Xtc.hh:98	Xtc::next	implicit	loop (x + extent)	
+Xtc.hh:24	Xtc constructors, operator=, operator new/delete	todo		copy and assignment reset extent to 12; operator new(char*) has the same check as alloc
+XtcIterator.hh:46	XtcIterator() default constructor	todo		leaves _root and _bufEnd unset
+src/XtcIterator.cc:40	XtcIterator::iterate	modelled	loop, iterate	loop_ne_fuel, iterate_ne_fuel, loop_no_oob, iterate_no_oob, loop_visits_lt, iterate_visits_lt, iterate_oob_with_exact_bufEnd, iterate_passes_xtc_past_bufEnd
+src/XtcFileIterator.cc:21	XtcFileIterator::next	modelled	fileNext, fileRun	fileNext_dgram_spec, fileRun_phantom_dgram, fileRun_uninit, payloadSize_spec
+src/XtcFileIterator.cc:56	XtcFileIterator::rewind	todo		
+ShapesData.hh	Name, Shape, Shapes, Data, ShapesData, Names, Alg	todo		the self-describing layer: next target
+Array.hh	Array<T>	todo		
+DescData.hh	DescData, DescribedData, CreateData, framework setters	todo		
+NameIndex.hh, NamesLookup.hh, VarDef.hh	NameIndex, NamesLookup, VarDef	todo		
+NamesIter, ConfigIter, DataIter	iterators built on XtcIterator	todo		
+Smd.hh, src/Smd.cc	Smd	todo		
+XtcUpdateIter.hh, src/XtcUpdateIter.cc	XtcUpdateIter	todo		
+BlockDgram.hh	BlockDgram	todo		

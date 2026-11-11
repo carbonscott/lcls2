@@ -1,0 +1,9 @@
+name = "xtclean"
+defaultTargets = ["XtcLean", "xtcdiff"]
+
+[[lean_lib]]
+name = "XtcLean"
+
+[[lean_exe]]
+name = "xtcdiff"
+root = "DiffMain"
