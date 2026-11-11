@@ -18,6 +18,9 @@ export PYTHONPATH=$TESTRELDIR/lib/python$pyver/site-packages
 export PROCMGR_EXPORT=RDMAV_FORK_SAFE=1,RDMAV_HUGEPAGES_SAFE=1,OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1,NUMEXPR_NUM_THREADS=1,PS_PARALLEL='none'
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 export QT_QPA_PLATFORM=offscreen
+# procmgr start refuses to run without it (ProcMgr.py:964-967); on S3DF it names the site's
+# firmware submodules, which no type of this run reads
+export SUBMODULEDIR=${SUBMODULEDIR:-$TESTRELDIR/no-submodules}
 
 unit() {
     shopt -s nullglob
@@ -25,7 +28,10 @@ unit() {
     echo "sim test files collected: ${#files[@]} (glob psdaq/psdaq/tests/test_sim*.py at $(git rev-parse --short HEAD 2>/dev/null))"
     printf '  %s\n' "${files[@]}"
     (( ${#files[@]} > 0 )) || { echo "no sim test files found"; return 1; }
-    python -m pytest -rs "${files[@]}"
+    # in the isolation env, as every sim process runs: some tests call daq_sim.main, which
+    # re-executes itself through sim_env.sh (daq_sim.ensure_env) when it is not sourced
+    source psdaq/psdaq/sim/sim_env.sh
+    python -m pytest -rfEs "${files[@]}"
 }
 
 daq() {
@@ -39,7 +45,7 @@ daq() {
     # procmgr's rcfile for this host, as procmgrd.s3df.conf is S3DF's (daq_sim reads DAQ_SIM_RCFILE)
     export DAQ_SIM_RCFILE=$wd.procmgrd.conf
     printf 'PORTBASE=29000\nPROCSERVBIN=%s\nCONDABASE=%s\n' "$procserv" "$condabase" > "$DAQ_SIM_RCFILE"
-    echo "host $(hostname), $(nproc) CPUs, $(free -g | awk '/Mem:/{print $2}') GB; procServ $procserv; rcfile $DAQ_SIM_RCFILE:"
+    echo "host $(hostname), $(nproc --all) CPUs, $(free -g | awk '/Mem:/{print $2}') GB; procServ $procserv; rcfile $DAQ_SIM_RCFILE:"
     cat "$DAQ_SIM_RCFILE"
     [[ -n ${PSDAQ_SIM_CORRUPT_SEQ:-} ]] && echo "PSDAQ_SIM_CORRUPT_SEQ=$PSDAQ_SIM_CORRUPT_SEQ (deliberate break: one payload byte inverted)"
 
