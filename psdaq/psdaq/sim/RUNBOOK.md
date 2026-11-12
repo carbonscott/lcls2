@@ -1543,7 +1543,7 @@ nodeB`), in `<WD>/matrix/hosts/nodeB`, under LOCK_B. nodeA runs its own types me
 LOCK_A. Their results join this run's, and each type line names its node. The programs run and
 features a, b, c and e run on nodeA. Feature d runs over both hosts and holds both locks. Coverage
 then reads the evidence of all of them; both hosts write to the same evidence dir
-(`$DAQ_SIM_EVIDENCE`: `--evidence` alone does not reach the cycles), which they must share. The three deliberate breaks stay
+(`$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence`; `--evidence` alone does not reach the cycles), which they must share. The three deliberate breaks stay
 separate commands (below).
 
 ```bash

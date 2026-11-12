@@ -256,6 +256,9 @@ on a GitHub-hosted runner and runs `bash psdaq/psdaq/sim/ci_cheap_tier.sh unit`:
 ends with e.g. `412 passed, 10 skipped` (at 946ef0ff1; skips name `needs $SUBMODULEDIR (the DAQ env)`
 or `could not import 'ami'`), in about 7-10 min. Read it with `gh pr checks <n> --repo
 carbonscott/lcls2` and `gh run view <run id> --repo carbonscott/lcls2 --log | grep -E 'collected|passed|SKIPPED|FAILED'`.
+When `--log` prints nothing (gh 2.45.0 did for some runs), read the job's log through the API:
+`J=$(gh run view <run id> --repo carbonscott/lcls2 --json jobs --jq '.jobs[0].databaseId')`, then
+`gh api repos/carbonscott/lcls2/actions/jobs/$J/logs | grep -E 'collected|passed|SKIPPED|FAILED'`.
 
 **The DAQ part, on one S3DF node.** The fakecam DAQ run is not on GitHub's runners: fakecam's drp
 imports `l2si_drp` (`psdaq/psdaq/configdb/xpmdet_config.py`) from slaclab/l2si-drp, which is
@@ -352,6 +355,9 @@ medians of 14 probes and 10 fakecam tries on an ada node, 2026-11-11 19:00-19:32
 | fakecam try, wall | 63 s | 126 s |
 
 `load` and `others` have no gate; write them down (that day: load1 median 15, others median 140).
+On G the probe can print two OpenMPI warnings before its `PROBE` line (`shmem: mmap: an error
+occurred ...` and `create_and_attach: unable to create shared memory BTL coordinating structure`);
+on 2026-11-12 (sdfada016) they came with an open gate and a passing full check.
 Probe again before each run of a series (step 11).
 
 A probe taken once misses short stalls of a whole node (seconds in which a process is frozen or a
@@ -414,9 +420,12 @@ This is the sentinel that ran from 2026-11-11 22:55:56Z (`work/sentinel/sentinel
 root: the same /sdf/group file, fields, millisecond times, log and stop files; its /tmp file was
 `/tmp/sdh-sentinel-<node>.touch`, where this one uses `/tmp/sentinel-<node>.touch`) with one field
 added, `root_stat`. The script above has run as written since 2026-11-12 (sdfmilan151,
-sdfmilan175, sdfada016); the gate below has not run on S3DF as written. The 2026-11-11 one did not
+sdfmilan175, sdfada016, with `SENT_DIR=$ROOT/sms/work/sentinel`), and the gate below first ran, over
+that dir, before full check sms1 at d6d0b398b (2026-11-12 08:15-08:16Z; open, every gap at most
+1.06 s). The 2026-11-11 one did not
 time a file under $ROOT: its only lookup there was the untimed check for the STOP files, and the
-29 same-second stalls it recorded on three nodes (2.8-5.3 s, FLAKES.md F11) showed only as gaps between lines, with every timed field at most 0.04 s. So the gate reads the gaps
+29 same-second stalls it recorded on three nodes (2.8-5.3 s, FLAKES.md F11) showed only as gaps
+between lines, with every timed field at most 0.04 s. So the gate reads the gaps
 between lines as well as the fields:
 
 ```bash
@@ -507,9 +516,10 @@ The step has 32 CPUs and 120 GB, as every full check at the campaign's final com
 `launch.sh`). Every
 run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
 earlier results (`"carried": true` in the summary). The run takes 25-40 min (one run took 38 min
-in a slow period). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
-(A's 11 types and the programs run print a line as each ends; B's and G's lines are prefixed
-`[<host>]` until the summary). When it has ended, read the summary only:
+in a slow period). Poll `grep -E '^(  \[[^]]*\] )?(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
+(A's 11 types and the programs run print a line as each ends; until the summary, B's and G's lines,
+`FAILED` among them, are indented two spaces and prefixed `[<host>]`, e.g. `  [sdfmilan082] FAILED
+types/tt/counts: ...`, so a plain `^(TYPE|...)` misses them). When it has ended, read the summary only:
 
 ```bash
 sed -n '/^==== MATRIX SUMMARY/,$p' $ROOT/work/mx-c1.log | grep -E '^(TYPE|PROGRAMS|FEATURE|coverage:|whole|FAILED|MATRIX)'
@@ -632,7 +642,7 @@ What to run after what:
 | a sync (step 5) | build (6), unit tests (7), the cheap tier (8: CI on the pull request and the S3DF run with its corrupt break), the full check, the three breaks and coverage (10) at the sync head, before the merge |
 | a sim change (`psdaq/psdaq/sim`, the sim parts of the drp) | build, unit tests, cheap tier; the types or sections it touches (`daq_sim matrix -w <new dir> --types <T>` or `--only <section>`); the full check before it merges if it touches anything the full check runs |
 | a production (non-sim) change | the same command at the base and at the head (the row's reproducer, or the affected types), so the change shows as the difference; then the full check at the head |
-| a change to `.md` files only | nothing: the last full check still stands for the code |
+| a change to `.md` files only, after the merge | nothing: the last full check still stands for the code (on a sync branch before its merge, step 5: a new full check at the new head) |
 | a failed full check | the list above; a fix is a new commit, which needs its own full check |
 
 ## 12. Where the logs are and how to read a failure
