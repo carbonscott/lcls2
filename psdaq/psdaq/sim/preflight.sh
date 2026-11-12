@@ -95,12 +95,18 @@ say "pvget rc=$rc"; [[ $rc -eq 0 ]] && { say "LEAK: pvget got $PV"; leak=1; }
 say "=== 2b. p4p (pvxs) client get, as control.py uses (must time out)"
 cat > $tmpd/p4p.py <<'PY'
 import sys
-from p4p.client.thread import Context, TimeoutError
-c = Context('pva')
+from p4p.client.thread import TimeoutError
+from psdaq.sim.pvwait import context     # the build's; retries only PVXS's IPv6 bind race (flake register F12)
+try:
+    c = context(who='preflight p4p')
+except Exception as e:
+    print("p4p probe broke:", type(e).__name__, e); sys.exit(2)
 try:
     v = c.get(sys.argv[1], timeout=5.0); print("REACHED", sys.argv[1], v); sys.exit(1)
 except TimeoutError as e:
     print("p4p timeout:", e); sys.exit(0)
+except Exception as e:
+    print("p4p probe broke:", type(e).__name__, e); sys.exit(2)
 finally:
     c.close()
 PY
@@ -120,9 +126,9 @@ sleep 4
 # a hung probe here re-runs while the IOC is still up
 probe 'local pvget' 12 2 - pvget -w 5 SIMW3:PREFLIGHT:VAL; prc=$rc
 probe 'local caget' 12 2 - caget -w 5 SIMW3:PREFLIGHT:VAL; crc=$rc
-probe 'local p4p' 20 2 - python -c "
-from p4p.client.thread import Context
-c=Context('pva'); print('p4p local get:', float(c.get('SIMW3:PREFLIGHT:VAL', timeout=5.0))); c.close()"; xrc=$rc
+probe 'local p4p' 20 0 - python -c "
+from psdaq.sim.pvwait import context
+c=context(who='preflight local p4p'); print('p4p local get:', float(c.get('SIMW3:PREFLIGHT:VAL', timeout=5.0))); c.close()"; xrc=$rc
 say "local pvget rc=$prc caget rc=$crc p4p rc=$xrc"
 echo "listening sockets of the IOC (pid $iocpid):"; ss -tulpn 2>/dev/null | grep -E "pid=$iocpid[,)]" | awk '{print $1, $5}' | sort -u
 cleanup
