@@ -9,13 +9,14 @@
 # It never sends a packet to a facility host on purpose: the pswww probe goes
 # through the env's dead proxy, and the no-proxy check is a local route lookup only.
 #
-# Time bounds. A probe's network part is bounded inside the client: pvget/caget -w 5, p4p get timeout=5.0
-# (preflight_p4p.py). Starting a client is not part of that bound: the interpreter, its imports, the EPICS tools'
+# Time bounds. A probe's network part is bounded inside the client: curl -m 10, requests timeout=10,
+# pvget/caget -w 5, p4p get timeout=5.0 (preflight_p4p.py). Starting a client is not part of that bound: the interpreter, its imports, the EPICS tools'
 # shared libraries and the loopback IOC load from the DAQ's conda env, on a shared filesystem whose metadata
 # latency varies (on S3DF, weka /sdf/group: importing p4p is ~3,400 stat/open calls, 5-7 s on 2026-11-12, and
 # more when the filesystem is slow). Start-up is bounded only by one budget for the whole preflight, PF_BUDGET
 # seconds (default 200; daq_sim.py gives the preflight 240 s, so it always prints its own verdict). A client
-# stopped by that budget (rc 124/137) proved nothing, and the log says it was stopped.
+# stopped by that budget (rc 124/137) proved nothing: the log says NOT-PROVEN and the preflight fails (an
+# isolation probe -> exit 1, a positive-control client -> exit 3).
 SIMDIR=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 REPO=$(cd "$SIMDIR/../../.." && pwd)
 if [[ -z "$CONDA_PREFIX" || "$ENV_TYPE" != daq ]]; then
@@ -28,6 +29,8 @@ say() { printf '%s %s\n' "$(date +%H:%M:%S)" "$*"; }
 PF_BUDGET=${PF_BUDGET:-200}
 left() { local l=$(( PF_BUDGET - SECONDS )); (( l < 1 )) && l=1; echo $l; }   # what is left of the budget, s
 stopped() { [[ $1 -eq 124 || $1 -eq 137 ]]; }                                  # rc of a client `timeout` stopped
+# an isolation probe the budget stopped did not show that nothing answers: it fails the preflight like a leak
+notproven() { stopped $1 || return 1; say "NOT-PROVEN: $2 was stopped by the preflight budget (PF_BUDGET=$PF_BUDGET s) before it finished: isolation not shown"; leak=1; }
 say "=== preflight on $(hostname) ($(hostname -f 2>/dev/null)) job=${SLURM_JOB_ID:-none} step=${SLURM_STEP_ID:-none} user=$(id -un)"
 say "=== OS: $(. /etc/os-release; echo $PRETTY_NAME)  kernel $(uname -r)"
 say "=== device check: ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1"
@@ -38,10 +41,13 @@ printf 'CONFIGDB_AUTH is %s\n' "$( [[ -z "${CONFIGDB_AUTH}" ]] && echo 'set-but-
 [[ -n "$CONFIGDB_AUTH" ]] && { say "LEAK-RISK: CONFIGDB_AUTH non-empty"; leak=1; }
 
 say "=== 1. HTTPS to pswww through the env (must FAIL)"
-timeout -k 2 20 curl -sS -m 10 -o /dev/null -w 'http_code=%{http_code}\n' https://pswww.slac.stanford.edu/ws/devconfigdb/ws/configDB/ 2>&1; rc=$?
+timeout -k 2 $(left) curl -sS -m 10 -o /dev/null -w 'http_code=%{http_code}\n' https://pswww.slac.stanford.edu/ws/devconfigdb/ws/configDB/ 2>&1; rc=$?
 say "curl rc=$rc (0 would mean pswww answered)"; [[ $rc -eq 0 ]] && { say "LEAK: curl reached pswww"; leak=1; }
-timeout -k 2 25 python - <<'PY'; rc=$?
+notproven $rc curl
+timeout -k 2 $(left) python - <<'PY'; rc=$?
+import time; t0 = time.monotonic()
 import requests, sys
+print("requests probe: imports done in %.1f s" % (time.monotonic() - t0), flush=True)
 for url in ["https://pswww.slac.stanford.edu/ws/devconfigdb/ws/configDB/",
             "https://pswww.slac.stanford.edu/ws-auth/devlgbk/lgbk/ws/activeexperiment_for_instrument_station"]:
     try:
@@ -50,7 +56,8 @@ for url in ["https://pswww.slac.stanford.edu/ws/devconfigdb/ws/configDB/",
         print("blocked:", type(e).__name__, str(e)[:160])
 sys.exit(0)
 PY
-say "python-requests rc=$rc (1 would mean pswww answered)"; [[ $rc -ne 0 ]] && { say "LEAK: requests reached pswww (or probe broke)"; leak=1; }
+say "python-requests rc=$rc (1 would mean pswww answered)"
+if ! notproven $rc python-requests && [[ $rc -ne 0 ]]; then say "LEAK: requests reached pswww (or probe broke)"; leak=1; fi
 say "=== 1b. without the proxy env, would the node route to pswww? (local lookup only, no packet sent)"
 ip=$(getent hosts pswww.slac.stanford.edu | awk '{print $1}' | head -1)
 echo "pswww resolves to: ${ip:-<none>}"; [[ -n "$ip" ]] && ip route get "$ip" 2>&1 | head -1
@@ -58,25 +65,18 @@ echo "(a route here means the dead proxy env is the ONLY barrier for HTTP client
 
 say "=== 2. pvget (pvAccessCPP) of a production-looking PV (must time out)"
 PV=DAQ:NEH:XPM:0:PART:5:Master
-timeout -k 2 20 pvget -w 5 $PV 2>&1 | tail -3; rc=${PIPESTATUS[0]}
+timeout -k 2 $(left) pvget -w 5 $PV 2>&1 | tail -3; rc=${PIPESTATUS[0]}
 say "pvget rc=$rc"; [[ $rc -eq 0 ]] && { say "LEAK: pvget got $PV"; leak=1; }
+notproven $rc pvget
 say "=== 2b. p4p (pvxs) client get, as control.py uses (must time out)"
-timeout -k 2 25 python - "$PV" <<'PY'; rc=$?
-import sys
-from p4p.client.thread import Context, TimeoutError
-c = Context('pva')
-try:
-    v = c.get(sys.argv[1], timeout=5.0); print("REACHED", sys.argv[1], v); sys.exit(1)
-except TimeoutError as e:
-    print("p4p timeout:", e); sys.exit(0)
-finally:
-    c.close()
-PY
-say "p4p rc=$rc"; [[ $rc -ne 0 ]] && { say "LEAK: p4p got $PV (or probe broke)"; leak=1; }
+timeout -k 2 $(left) python $SIMDIR/preflight_p4p.py timeout "$PV" 2>&1 | tail -3; rc=${PIPESTATUS[0]}
+say "p4p rc=$rc"
+if ! notproven $rc p4p && [[ $rc -ne 0 ]]; then say "LEAK: p4p got $PV (or probe broke)"; leak=1; fi
 say "=== 3. caget of a production-looking PV (must time out)"
 CPV=DAQ:NEH:XPM:0:PART:5:L0Delay
-timeout -k 2 20 caget -w 5 $CPV 2>&1 | tail -3; rc=${PIPESTATUS[0]}
+timeout -k 2 $(left) caget -w 5 $CPV 2>&1 | tail -3; rc=${PIPESTATUS[0]}
 say "caget rc=$rc"; [[ $rc -eq 0 ]] && { say "LEAK: caget got $CPV"; leak=1; }
+notproven $rc caget
 
 say "=== 4. POSITIVE CONTROL: softIocPVA on loopback with the same env (must SUCCEED)"
 tmpd=$(mktemp -d /tmp/w3pf.XXXXXX)
