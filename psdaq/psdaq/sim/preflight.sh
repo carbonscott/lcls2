@@ -84,7 +84,18 @@ cat > $tmpd/pf.db <<'DB'
 record(ao, "SIMW3:PREFLIGHT:VAL") { field(VAL, "42.5") }
 DB
 ( cd $tmpd && exec softIocPVA -S -d pf.db > $tmpd/ioc.log 2>&1 ) & iocpid=$!
-sleep 4
+# wait for the IOC's own start (it loads from the conda env too), not a fixed time: iocInit ends with this line
+t=${EPOCHREALTIME/./}
+until grep -q 'iocRun: All initialization complete' $tmpd/ioc.log 2>/dev/null; do
+  kill -0 $iocpid 2>/dev/null && (( SECONDS < PF_BUDGET )) || break
+  sleep 0.2
+done
+if grep -q 'iocRun: All initialization complete' $tmpd/ioc.log 2>/dev/null; then
+  say "loopback IOC (pid $iocpid) started in $(( (${EPOCHREALTIME/./} - t) / 1000 )) ms"
+else
+  say "loopback IOC (pid $iocpid) did not finish starting ($( kill -0 $iocpid 2>/dev/null && echo "still starting when the budget ran out" || echo exited)):"
+  tail -5 $tmpd/ioc.log
+fi
 timeout -k 2 $(left) pvget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; prc=${PIPESTATUS[0]}
 timeout -k 2 $(left) caget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; crc=${PIPESTATUS[0]}
 timeout -k 2 $(left) python $SIMDIR/preflight_p4p.py get SIMW3:PREFLIGHT:VAL 2>&1 | tail -3; xrc=${PIPESTATUS[0]}
