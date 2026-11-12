@@ -1,0 +1,17 @@
+# R/sms/work/brk-sms2.log: its lines matching ^===|^BREAK|^FAILED, verbatim
+=== sdfada010 job 44435421 HEAD 8cc9e688c dirty 0 2026-11-12T09:20:52Z
+BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/epix100/transitions: setState configured -> error; setState allocated -> connected; status stream error: epix100_0 did not respond to configure; status stream error: 1 client did not respond to configure; never reached running; ended in 'connected', started in 'reset'; epix100_0 log: WARNING:psdaq.sim.rogue_dev:FAULT ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x1000010 reads back 0x7fffffff / rogue_dev: FAULT ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay @AxiStreamDma(sim://127.0.0.1:31052,0x0)+0x1000010 reads back 0x7fffffff / ERROR:pyrogue.Command.BaseCommand.ePixBoard.LoadConfig:Block::checkTransaction: General Error: Verify error for block ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay with address 0x01000010. Byte: 0. Got: 0xff, 
+FAILED types/epix100/drp-alive: epix100_0 drp pid 1764686 GONE after the run (now no process)
+FAILED types/epix100/counts: simxpm L1Accepts None, TEB_WrtCt None, psana2 events None, with epix100 data None: NOT equal and >= 1000
+FAILED types/epix100/per-event: xtc2_check --det epix100: did not run
+FAILED types/epix100/evidence: no evidence record for det:drp:epix100 (the cycle failed)
+BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed)
+FAILED types/fakecam/transitions: setState paused -> running; status stream error: teb0 did not respond to disable; status stream error: fakecam_0 did not respond to disable; ended in 'running', started in 'reset'
+FAILED types/fakecam/drp-alive: fakecam_0 drp pid 1768999 GONE after the run (now no process)
+FAILED types/fakecam/counts: simxpm L1Accepts 1722, TEB_WrtCt None, psana2 events 0, with fakecam data 0: NOT equal and >= 1000
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL: the file is empty (0 B)
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed)
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x8a1a7fad != 0x8a1a7f52']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)

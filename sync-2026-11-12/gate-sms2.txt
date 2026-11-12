@@ -1,0 +1,16 @@
+PROBE sdfmilan151 2026-11-12T08:54:08Z load 8.19 8.77 9.89 others 81 import_s 2.638883293 dd_s 0.690286 cuinit_s none
+PROBE sdfmilan175 2026-11-12T08:54:15Z load 8.17 8.11 8.44 others 83 import_s 2.562356941 dd_s 0.67121 cuinit_s none
+[sdfada010:1710326] shmem: mmap: an error occurred while determining whether or not /lscratch/cwang31/tmp/ompi.sdfada010.18262/jf.0/1239220224/shared_mem_cuda_pool.sdfada010 could be created.
+[sdfada010:1710326] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+PROBE sdfada010 2026-11-12T08:54:22Z load 13.01 12.71 12.82 others 145 import_s 1.581933923 dd_s 0.6774 cuinit_s 0.078 rc0
+# fakecam try (gate-fakecam2-1.log):
+MATRIX_EXIT=0 in 52 s
+MATRIX PASS (7 assertions)
+==== MATRIX SUMMARY at HEAD 8cc9e688c5dfde92339e22cc19ec5a3fe530381d (tracked files modified: False), host sdfmilan151, job 44435234 step 12, 2026-11-12T00:54:32.523-08:00 .. 2026-11-12T00:55:24.682-08:00
+=== sdfmilan151 job 44435234 HEAD 8cc9e688c dirty 0 2026-11-12T08:54:32Z
+TYPE fakecam      node sdfmilan151 job 44435234 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/cheap-1112T0854/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1863 psana2 1863 with-data 1863 per-event PASS PASS
+SENT sdfmilan151 lines15=890 max_field=0.020 max_gap=1.03 err=0 last_age=2s OK
+SENT sdfmilan175 lines15=889 max_field=0.045 max_gap=1.06 err=0 last_age=2s OK
+SENT sdfada010 lines15=215 max_field=0.018 max_gap=1.02 err=0 last_age=3s OK
+# sdfada010 sentinel started 08:51:59Z: its 15-min window held 215 lines (~3.6 min)
+GATE OPEN 2026-11-12T08:55:33Z (all PROBE under limits, fakecam 52 s, SENT OK x3); starting full check sms2 at 8cc9e688c
