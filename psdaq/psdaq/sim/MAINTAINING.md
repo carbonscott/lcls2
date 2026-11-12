@@ -340,37 +340,103 @@ medians of 14 probes and 10 fakecam tries on an ada node, 2026-11-11 19:00-19:32
 Probe again before each run of a series (step 11).
 
 A probe taken once misses short stalls of a whole node (seconds in which a process is frozen or a
-`stat` under /sdf/group hangs; FLAKES.md F11). So keep one sentinel per node (A, B, G) running for
-the whole series, each in a step of its own (it holds no lock and starts no DAQ process); it writes
-one line a second:
+file lookup on the shared filesystems hangs; FLAKES.md F11). So keep one sentinel per node (A, B, G)
+running for the whole series, each in a step of its own (it holds no lock and starts no DAQ
+process). It writes about one line a second, with millisecond times, to
+`$ROOT/work/sentinel/<node>.log`:
 
 ```bash
-cat > $ROOT/sentinel.sh <<'EOF'
+mkdir -p $ROOT/work/sentinel
+cat > $ROOT/sentinel.sh <<'EOF2'
 #!/bin/bash
-# sentinel.sh: once a second, the time of a stat under /sdf/group, of one under /tmp, and how far sleep 1 overran
-exec python3 -u - $ROOT/work/sentinel-$(hostname -s).log <<'PY'
+# sentinel.sh: about once a second, one line to $D/<node>.log (D defaults to $ROOT/work/sentinel):
+#   <UTC time, ms>Z group_stat=<s> tmp_stat=<s> root_stat=<s> sleep_over=<s> prev_write=<s>
+#   group_stat: os.stat() of a conda file under /sdf/group; tmp_stat: of a file under /tmp;
+#   root_stat: of this script, a file under $ROOT (/sdf/data); sleep_over: how far sleep(1) overran;
+#   prev_write: writing and flushing the previous line (the log is under $ROOT too).
+# A stat that raises prints ERR:<name> in place of its time.
+# Stops when $D/STOP or $D/STOP.<node> exists (checked every line), or when the step ends.
+D=${SENT_DIR:-$ROOT/work/sentinel}
+exec /usr/bin/python3 -u - "$D" "$(hostname -s)" "$(readlink -f "$0")" <<'PY'
 import os, sys, time, datetime
-G = '/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/ps-4.5.16/bin/python'
-log = open(sys.argv[1], 'a', buffering=1)
-def ts(p):
-    t = time.monotonic(); os.stat(p); return time.monotonic() - t
+D, node, F = sys.argv[1:4]
+G = '/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3.9'
+T = '/tmp/sentinel-%s.touch' % node
+open(T, 'a').close()
+log = open(os.path.join(D, node + '.log'), 'a', buffering=1)
+stops = [os.path.join(D, 'STOP'), os.path.join(D, 'STOP.' + node)]
+def tstat(p):
+    t0 = time.monotonic()
+    try:
+        os.stat(p)
+    except OSError as e:
+        return 'ERR:' + e.__class__.__name__
+    return '%.4f' % (time.monotonic() - t0)
+def utc():
+    return datetime.datetime.utcnow().isoformat(timespec='milliseconds') + 'Z'
+log.write('# sentinel start node=%s pid=%d group_file=%s tmp_file=%s root_file=%s\n' % (node, os.getpid(), G, T, F))
+pw = 0.0
 while True:
-    g, t = ts(G), ts('/tmp'); s = time.monotonic(); time.sleep(1)
-    log.write('%sZ group_stat=%.3f tmp_stat=%.3f sleep_over=%.3f\n' % (
-        datetime.datetime.utcnow().isoformat(timespec='seconds'), g, t, time.monotonic() - s - 1))
+    if any(os.path.exists(s) for s in stops):
+        log.write('# sentinel stop file seen %s\n' % utc()); break
+    now = utc(); g, t, r = tstat(G), tstat(T), tstat(F)
+    s0 = time.monotonic(); time.sleep(1); so = time.monotonic() - s0 - 1.0
+    w0 = time.monotonic()
+    log.write('%s group_stat=%s tmp_stat=%s root_stat=%s sleep_over=%.4f prev_write=%.4f\n' % (now, g, t, r, so, pw))
+    pw = time.monotonic() - w0
 PY
-EOF
-export ROOT
+EOF2
+export ROOT; rm -f $ROOT/work/sentinel/STOP*
 for n in $A $B; do nohup srun --jobid=$JOB --overlap -w $n --ntasks=1 --cpus-per-task=1 --mem=256M bash $ROOT/sentinel.sh > /dev/null 2>&1 & done
 nohup srun --jobid=$GJOB --overlap -w $G --ntasks=1 --cpus-per-task=1 --mem=256M bash $ROOT/sentinel.sh > /dev/null 2>&1 &
-# the gate's sentinel half: each node's largest value over the last 15 min (900 lines) must be 3 or less
-for n in $A $B $G; do tail -900 $ROOT/work/sentinel-$n.log | grep -oE '=[0-9.-]+' | tr -d = | sort -g | tail -1 | sed "s/^/$n max /"; done
 ```
 
+To stop one node's sentinel, `touch $ROOT/work/sentinel/STOP.<node>`; to stop all of them,
+`touch $ROOT/work/sentinel/STOP`. Each sees the file within about a second, writes `# sentinel stop
+file seen <time>` and exits, which ends its step. Remove the STOP files before the next series.
+
+This is the sentinel that ran from 2026-11-11 22:55:56Z (`work/sentinel/sentinel.sh` of the campaign
+root: the same /sdf/group and /tmp files, fields, millisecond times, log and stop files) with one field
+added, `root_stat`. That one did not time a file under $ROOT: its only lookup there was the
+untimed check for the STOP files, and the 18 same-second stalls recorded on three nodes that night
+(2.8-5.1 s, FLAKES.md F11) showed only as gaps between lines, with every timed field at most 0.04 s.
+So the gate reads the gaps between lines as well as the fields:
+
+```bash
+# the gate's sentinel half, per node: over the last 15 min, the largest field, the largest gap between
+# consecutive lines, ERR count and the age of the last line; OK only if field <= 3 s, gap <= 4 s, no ERR, age <= 60 s
+for n in $A $B $G; do tail -n 2000 $ROOT/work/sentinel/$n.log | python3 -c '
+import sys, datetime
+node = sys.argv[1]; now = datetime.datetime.now(datetime.timezone.utc).timestamp()
+mx = gap = 0.0; err = nl = 0; prev = last = None
+for L in sys.stdin:
+    f = L.split()
+    if L.startswith("#") or len(f) < 4: continue
+    t = datetime.datetime.strptime(f[0], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=datetime.timezone.utc).timestamp()
+    last = t
+    if now - t <= 900:
+        nl += 1
+        if prev is not None: gap = max(gap, t - prev)
+        for kv in f[1:]:
+            v = kv.split("=")[1]
+            if v.startswith("ERR"): err += 1
+            else: mx = max(mx, float(v))
+    prev = t
+age = now - last if last else 1e9
+ok = nl > 0 and mx <= 3 and gap <= 4 and err == 0 and age <= 60
+print("SENT %s lines15=%d max_field=%.3f max_gap=%.2f err=%d last_age=%.0fs %s" % (node, nl, mx, gap, err, age, "OK" if ok else "SHUT"))
+' $n; done
+```
+
+A line normally follows the one before it by 1.0-1.1 s (the sleep plus the stats); a gap of more
+than 4 s means about 3 s in which the loop was stalled somewhere it does not time.
+
 **The gate before each full check.** Start a run only when every probe is under its "do not start
-above" value (within 2x of its baseline) and no sentinel line of A, B or G in the last 15 min has a
-value over 3 s. Write the gate's lines down with the run. The gate lowers the odds; it does not
-protect: on 2026-11-11 a gate passed at about 22:10Z and F11 hit the run started after it at 22:21Z.
+above" value (within 2x of its baseline) and every node's sentinel line above says `OK`. Write the
+gate's lines down with the run. The gate is a precaution; it has not been shown to lower the odds,
+and it does not protect: on 2026-11-11 a gate passed at about 22:10Z (the probes alone, `PROBE`
+lines at 22:10:42Z and 22:13:11Z; no sentinel ran before 22:55:56Z) and F11 hit the run started
+after it at 22:21Z.
 
 The one command (RUNBOOK §3p, "Everything, over every node of the campaign"), in a step on A: the
 types shared between A and B (each under its node's lock), the GPU DRP's types on G, the programs
@@ -487,6 +553,16 @@ attempt). In a full check it shows as a `FAILED` line with `preflight rc=4` and 
 FAIL`: a failed run (F11's row), not a cut. Stop the series, compare the `HUNG` times
 (`grep -n HUNG <the DAQ's dir>/logs/preflight.log`) with the sentinel lines, and start no run until
 the gate is open again.
+
+A preflight failure takes two other forms in a full check:
+- `up FAILED: Command ... timed out after 240 seconds`, with no `preflight rc=` line: the preflight
+  as a whole ran past `daq_sim up`'s 240 s (a stall outside the probes, which the 223 s bound of the
+  probes does not cover). `daq_sim up` then tears down what carries the work dir's tag and starts
+  nothing. A failed run, not a cut.
+- `preflight rc=1` with `LEAK: p4p got ... (or probe broke)` in `preflight.log` and a traceback
+  ending `RuntimeError: Unable to bind random UDP6 port` before it: the p4p probe could not make its
+  client context (FLAKES.md F12), not a leak. A failed run all the same. Any other `LEAK:` line
+  is a real leak verdict: stop everything and find what reached the facility service.
 
 What to run after what:
 
