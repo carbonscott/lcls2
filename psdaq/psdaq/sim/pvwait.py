@@ -20,6 +20,7 @@ that read is not covered (with bldcas stopped 20 s, hpsBldServer exits and hpsBl
 """
 
 import argparse
+import datetime
 import os
 import sys
 import time
@@ -42,15 +43,24 @@ def split(argv):
     return argv[:k], argv[k + 1:]
 
 
-def context(attempts=10):
-    """A PVA client context from the environment; only PVXS's IPv6 bind race is retried (as daq_sim.pva_context)."""
+def context(attempts=10, conf=None, who='pvwait'):
+    """A PVA client context: from the environment, or from `conf` alone when it is given.  Every p4p client context
+    made by code under psdaq/psdaq/sim comes from here (daq_sim.pva_context, gui_witness.pva_context, preflight.sh's
+    p4p probes); not the web GUI's (psdaq/psdaq/webgui: events.py, plots_api.py, pvgui_api.py) or the tests' own
+    (test_sim_hsd.py, test_simxpm.py, webgui/tests: webgui_harness.py, pvgui_checks.py).  PVXS
+    binds the client's IPv6 search socket to the port number the kernel gave its IPv4 one, and raises
+    RuntimeError(PVA_BIND_RACE) when another IPv6 UDP socket of the node holds that number: that error alone is
+    retried, at most `attempts` times, with one line on stderr per retry; any other error, and the last attempt's,
+    is raised."""
     from p4p.client.thread import Context
     for n in range(1, attempts + 1):
         try:
-            return Context('pva')
+            return Context('pva') if conf is None else Context('pva', conf=conf, useenv=False)
         except RuntimeError as e:
             if str(e) != PVA_BIND_RACE or n == attempts:
                 raise
+            print(f'{datetime.datetime.now().astimezone().isoformat(timespec="milliseconds")} {who}: PVA client '
+                  f'context: {e} (attempt {n} of {attempts}), retrying', file=sys.stderr, flush=True)
 
 
 def wait(pvs, timeout, ctx, out=sys.stdout):

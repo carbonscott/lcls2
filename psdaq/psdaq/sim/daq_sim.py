@@ -120,6 +120,13 @@ PVBASE = 'DAQ:SIM'
 XPM = 0
 EP = 'ep_domain=lo,ep_provider=tcp'     # libfabric tcp on loopback (Collection.cc getNicIp)
 PROCS = ('control', 'teb0', DETECTOR + '_0')     # with --segments N: + DETECTOR_1 .. DETECTOR_<N-1> (procs())
+# F13: 'up' waits for every DRP (drp_aliases) to say 'Ready for transitions', up to DRP_READY_S (or the type's
+# 'ready_s' where that is longer), since control's rollcall waits only 30 s: tt's init (its Python
+# configuration) once took longer than that (flake register F13)
+DRP_READY_S = 180
+DRP_READY_WHY = "its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log"
+# the config DB seed of each detector ('up', psdaq.sim.configdb_seed), s: tt's took 43 s on a slow node (F13)
+SEED_TIMEOUT_S = 240
 # drp -k settings per simulated detector type (up --det).  BEB types (psdaq.sim.rogue_dev) get
 # EventBatcher-framed buffers sized for their frame (psdaq/drp/MemPoolSim.cc) and their config
 # from the type's own store; 'det_yaml' is the firmware YAML a production config is made from.
@@ -515,6 +522,18 @@ def procs(state):
         (SERVER_GUI_PROCS if state.get('gui') and state.get('pvservers') else ()) + \
         (PVSERVER_PROCS if state.get('pvservers') else ()) + (TPR_PROCS if state.get('tpr') else ()) + \
         (HPS_PROCS if state.get('hps') else ()) + (WAVE8PVS_PROCS if state.get('wave8pvs') else ())
+
+
+def drp_aliases(state):
+    """The procmgr ids of procs(state) that run a DRP (drp, drp_gpu, drp_pva, drp_udpencoder, drp_bld, epicsArch):
+    the --det type's segments, the --also DRPs, pvcam_0, epics_0, encoder_0 and bld_0.  Each says 'Ready for
+    transitions' once its detector's init has returned, and only then answers control's rollcall.  Chosen by role:
+    not the event builders, AMI (ami-node_0, ami-worker_0), the GUIs (pvrtmon_0) or the stand-ins."""
+    return tuple(dict.fromkeys(
+        (DETECTOR + '_0',) + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1))) +
+        tuple(a['alias'] for a in state.get('also', ())) + (PVA_PROCS if state.get('pva') else ()) +
+        (EPICS_PROCS if state.get('epics') else ()) + (UDP_PROCS[:1] if state.get('udp') else ()) +
+        (BLD_PROCS if state.get('bld') else ())))
 
 
 def procmgr_status(state):
@@ -1164,12 +1183,17 @@ def cmd_up(args):
             seeds.append((a['det'], 0, (['--det-type', a['det']] if a['det'] != 'fakecam' else []) +
                           (['--det-yaml', yaml.format(**os.environ)] if yaml else [])))
         for i, (name, segm, dargs) in enumerate(seeds):
-            r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
-                                '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
-                                '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
-                                '--sim-length', str(args.length)] + dargs +
-                               (['--allow-host', bind] if two else []),
-                               env=env, capture_output=True, text=True, timeout=60)
+            try:
+                r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
+                                    '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
+                                    '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
+                                    '--sim-length', str(args.length)] + dargs +
+                                   (['--allow-host', bind] if two else []),
+                                   env=env, capture_output=True, text=True, timeout=SEED_TIMEOUT_S)
+            except subprocess.TimeoutExpired as e:  # its stderr so far: bytes on POSIX even with text=True
+                err = e.stderr.decode(errors='replace') if isinstance(e.stderr, bytes) else (e.stderr or '')
+                raise Fail(f'configdb_seed of {name} segment {segm} not done after {SEED_TIMEOUT_S} s: '
+                           f'{err.strip()[-400:]}') from None
             with open(work.path('logs', 'seed.log'), 'a' if i else 'w') as out:
                 out.write(r.stdout + r.stderr)
             if r.returncode != 0:
@@ -1344,8 +1368,10 @@ def cmd_up(args):
         work.save(state)
         if gui:
             _wait_control_gui(work, 120)
-        if sim_type.get('ready_s'):
-            _wait_drps_ready(work, state, sim_type['ready_s'], sim_type.get('ready_why', ''))
+        # F13: control's rollcall (30 s) finds only a DRP that says 'Ready for transitions': wait for every DRP,
+        # for every type, as long as the type's own 'ready_s' where that is longer
+        _wait_drps_ready(work, state, max(DRP_READY_S, sim_type.get('ready_s', 0)),
+                         sim_type.get('ready_why') or DRP_READY_WHY)
         if w8:                          # its imports from the site env and its PVs take a while
             _wait_wave8pvs(work, 300)
         dstate = _control_state(args.platform)
@@ -1484,19 +1510,11 @@ PVA_BIND_RACE = 'Unable to bind random UDP6 port'
 
 
 def pva_context(attempts=10):
-    """A new PVA client context, for one pv_get or pv_put call (which closes it).  PVXS binds the client's
-    IPv6 search socket to the port number the kernel gave its IPv4 one, and raises RuntimeError(PVA_BIND_RACE)
-    when another IPv6 UDP socket of the node holds that number: that error alone is retried, at most
-    `attempts` times; any other error, and the last attempt's, is raised."""
-    from p4p.client.thread import Context
-    for n in range(1, attempts + 1):
-        try:
-            return Context('pva')
-        except RuntimeError as e:
-            if str(e) != PVA_BIND_RACE or n == attempts:
-                raise
-            print(f'{now()} daq_sim: PVA client context: {e} (attempt {n} of {attempts}), retrying',
-                  file=sys.stderr, flush=True)
+    """A new PVA client context, for one pv_get or pv_put call (which closes it).  PVXS's IPv6 bind race
+    (RuntimeError(PVA_BIND_RACE)) alone is retried, at most `attempts` times (psdaq.sim.pvwait.context);
+    any other error, and the last attempt's, is raised."""
+    from psdaq.sim import pvwait
+    return pvwait.context(attempts, who='daq_sim')
 
 
 def pv_put(name, value, timeout=5.0):
@@ -1615,14 +1633,14 @@ def _wait_ca(name, timeout, proc=None):
             raise Fail(f'{name} does not answer over CA')
         time.sleep(0.5)
 def _wait_drps_ready(work, state, timeout, why=''):
-    """Wait until each DRP's log says 'Ready for transitions' (PGPDetectorApp, once its detector's
+    """Wait until each DRP's log (drp_aliases) says 'Ready for transitions' (PGPDetectorApp, once its detector's
     init has returned; drp_gpu's after its CUDA start too): control's rollcall finds only a DRP
     that is.  Only the alias's newest procmgr log counts (an earlier 'up' in the same workdir left
     its own); the timeout names what the DRP was doing ('why', the type's 'ready_why')."""
     import glob
     t0 = time.monotonic()
     end = t0 + timeout
-    pending = [i for i in procs(state) if i.startswith(DETECTOR + '_')]
+    pending = list(drp_aliases(state))
     while pending:
         for alias in list(pending):
             logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')), key=os.path.getmtime)

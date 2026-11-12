@@ -150,13 +150,13 @@ def test_every_gpu_type_waits_for_ready_for_transitions():
         assert 'cuInit' in t.get('ready_why', ''), det
 
 
-def _ready_state(tmp_path, monkeypatch, det, status='RUNNING'):
+def _ready_state(tmp_path, monkeypatch, det, status='RUNNING', drp='drp_gpu'):
     monkeypatch.setattr(daq_sim, 'DETECTOR', daq_sim.DETECTOR)
     monkeypatch.setattr(daq_sim, 'DRP', daq_sim.DRP)
     monkeypatch.setattr(daq_sim, 'PROCS', daq_sim.PROCS)
     clock = iter(range(0, 100000, 50))  # daq_sim's own clock only: 50 s per reading, no sleeping
     monkeypatch.setattr(daq_sim, 'time', types.SimpleNamespace(monotonic=lambda: next(clock), sleep=lambda s: None))
-    daq_sim.use_det(det, 'drp_gpu')
+    daq_sim.use_det(det, drp)
     monkeypatch.setattr(daq_sim, 'procmgr_status',
                         lambda state: ({i: (status, '1') for i in daq_sim.procs(state)}, 'procmgr status'))
     work = daq_sim.Work(str(tmp_path))
@@ -185,3 +185,28 @@ def test_wait_drps_ready_waits_for_the_newest_log(tmp_path, monkeypatch):
     (d / f'10_03:00:00_node:{det}_0.log').write_text('cuInit failed\n')
     with pytest.raises(daq_sim.Fail, match=f'{det}_0 not ready for transitions .not RUNNING.'):
         daq_sim._wait_drps_ready(work, state, 300, why)
+
+
+def test_wait_drps_ready_waits_for_every_drp(tmp_path, monkeypatch):
+    """F13: 'up' waits for every DRP of every type (drp_aliases, by role: the --det type's segments, the --also
+    DRPs, drp_pva, epicsArch, drp_udpencoder, drp_bld; never AMI, the event builders or the GUIs, which never say
+    'Ready for transitions'), DRP_READY_S (180 s) by default and a type's own 'ready_s' where that is longer; a
+    secondary DRP that never says it fails the wait, naming it and its detector's init."""
+    det = 'fakecam'
+    work, state, d = _ready_state(tmp_path, monkeypatch, det, drp='drp')
+    state.update({'segments': 2, 'also': [{'alias': 'epix100_0', 'det': 'epix100', 'group': 1}], 'pva': True,
+                  'epics': True, 'udp': True, 'bld': True, 'meb': True, 'ami': True, 'gui': True})
+    drps = ('fakecam_0', 'fakecam_1', 'epix100_0', 'pvcam_0', 'epics_0', 'encoder_0', 'bld_0')
+    assert daq_sim.drp_aliases(state) == drps
+    assert not {'teb0', 'meb0', 'ami-node_0', 'ami-worker_0', 'pvrtmon_0', 'simenc'} & set(daq_sim.drp_aliases(state))
+    assert set(drps) <= set(daq_sim.procs(state))
+    assert daq_sim.DRP_READY_S == 180 and 'init' in daq_sim.DRP_READY_WHY
+    assert daq_sim.SIM_TYPES['epixuhr3x2']['ready_s'] >= daq_sim.DRP_READY_S
+    assert all(t['ready_s'] >= daq_sim.DRP_READY_S for t in daq_sim.GPU_SIM_TYPES.values())
+    for alias in drps:
+        (d / f'10_03:00:00_node:{alias}.log').write_text('<I> Ready for transitions\n' if alias != 'bld_0' else '')
+    with pytest.raises(daq_sim.Fail) as e:
+        daq_sim._wait_drps_ready(work, state, daq_sim.DRP_READY_S, daq_sim.DRP_READY_WHY)
+    assert str(e.value).startswith(f'bld_0 not ready for transitions after 180 s: {daq_sim.DRP_READY_WHY}')
+    (d / '10_03:00:00_node:bld_0.log').write_text('<I> Ready for transitions\n')
+    daq_sim._wait_drps_ready(work, state, daq_sim.DRP_READY_S, daq_sim.DRP_READY_WHY)
