@@ -82,7 +82,11 @@ nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
 sleep 45; cat $ROOT/daq_sim_up.log
 ```
 `up` takes about 30 s:
-- The preflight takes about 22 s and must print `PREFLIGHT PASS`.
+- The preflight takes about 30 s (22-38 s on S3DF milano nodes) and must print `PREFLIGHT PASS`. Most of that time
+  is starting its Python and EPICS clients from the conda env on the shared filesystem (importing p4p alone takes
+  5-7 s on S3DF). Each probe's network part has its own bound (5 s for the EPICS gets); starting the clients is
+  bounded only by one budget for the whole preflight, `PF_BUDGET` (200 s, inside `up`'s 240 s limit). A client
+  stopped by that budget is logged `NOT-PROVEN` and fails the preflight.
 - The config DB is seeded, and the run DB and simxpm start.
 - procmgr starts control, teb0 and fakecam_0.
 - `up` waits for all three to be RUNNING and for control to answer in state `reset`.
