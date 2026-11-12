@@ -396,11 +396,13 @@ To stop one node's sentinel, `touch $ROOT/work/sentinel/STOP.<node>`; to stop al
 file seen <time>` and exits, which ends its step. Remove the STOP files before the next series.
 
 This is the sentinel that ran from 2026-11-11 22:55:56Z (`work/sentinel/sentinel.sh` of the campaign
-root: the same /sdf/group and /tmp files, fields, millisecond times, log and stop files) with one field
-added, `root_stat`. That one did not time a file under $ROOT: its only lookup there was the
-untimed check for the STOP files, and the 18 same-second stalls recorded on three nodes that night
-(2.8-5.1 s, FLAKES.md F11) showed only as gaps between lines, with every timed field at most 0.04 s.
-So the gate reads the gaps between lines as well as the fields:
+root: the same /sdf/group file, fields, millisecond times, log and stop files; its /tmp file was
+`/tmp/sdh-sentinel-<node>.touch`, where this one uses `/tmp/sentinel-<node>.touch`) with one field
+added, `root_stat`. The script above and the gate below have not run on S3DF as written. The one
+that ran did not time a file under $ROOT: its only lookup there was the untimed check for the STOP
+files, and the 29 same-second stalls it recorded on three nodes (2.8-5.3 s, FLAKES.md F11) showed
+only as gaps between lines, with every timed field at most 0.04 s. So the gate reads the gaps
+between lines as well as the fields:
 
 ```bash
 # the gate's sentinel half, per node: over the last 15 min, the largest field, the largest gap between
@@ -438,6 +440,23 @@ and it does not protect: on 2026-11-11 a gate passed at about 22:10Z (the probes
 lines at 22:10:42Z and 22:13:11Z; no sentinel ran before 22:55:56Z) and F11 hit the run started
 after it at 22:21Z.
 
+The gate is the rule above, gaps included (`gap <= 4 s`). The campaign's own gate before full-check
+run 1 at e223e91cb (2026-11-12 00:53Z) printed the sentinel gaps for information only and opened;
+its window held gaps of 5.33 s (sdfmilan031, sdfmilan082) and 5.24 s (sdfada018), so by this rule it
+would have stayed shut. That run failed by F13, not by a stall.
+
+**What the gate cannot see.** Neither the probes nor the sentinel see a slow start of one
+detector type's own code. On 2026-11-11 tt's DRP on sdfmilan082 took longer to answer control's
+rollcall in each of seven full checks (1.3, 1.6, 3.7, 16.5, 20.0 and 29.985 s, then a miss of the
+30 s window; FLAKES.md F13), and tt's config DB seed step went from 6.2 to 43.4 s, while that node's
+`import_s` stayed under its limit (4.47-4.92 s against 5.8 s) and its sentinel showed no stall
+around the miss.
+Since F13's fix, `daq_sim up` waits for every DRP and prints `<alias> ready for transitions after
+N s` for each: read those N in every full check (`grep -rh 'ready for transitions after'
+$ROOT/work/mx-<TAG>.log`) and compare them with FLAKES.md F13's table. An N that climbs from run to
+run is this drift coming back; the wait covers a start of up to 180 s (the type's `ready_s` where
+that is longer), and past that `up` fails.
+
 The one command (RUNBOOK §3p, "Everything, over every node of the campaign"), in a step on A: the
 types shared between A and B (each under its node's lock), the GPU DRP's types on G, the programs
 run and features a, b, c, e on A, d over both, then coverage over all of their evidence. Write it
@@ -458,11 +477,13 @@ daq_sim matrix -w $W --hosts $A,$B --locks /tmp/daq-$A.lock,/tmp/daq-$B.lock \
 echo "MATRIX_EXIT=$? $(date -u +%FT%TZ)"
 EOF
 export WT A B G JOB GJOB ROOT CUDA
-nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G \
+nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=32 --mem=120G \
   bash $ROOT/mx.sh c1 > $ROOT/work/mx-c1.log 2>&1 &
 ```
 
-Every run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
+The step has 32 CPUs and 120 GB, as every full check at the campaign's final commits had (its
+`launch.sh`). Every
+run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
 earlier results (`"carried": true` in the summary). The run takes 25-40 min (one run took 38 min
 in a slow period). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
 (A's 11 types and the programs run print a line as each ends; B's and G's lines are prefixed
@@ -559,10 +580,28 @@ A preflight failure takes two other forms in a full check:
   as a whole ran past `daq_sim up`'s 240 s (a stall outside the probes, which the 223 s bound of the
   probes does not cover). `daq_sim up` then tears down what carries the work dir's tag and starts
   nothing. A failed run, not a cut.
-- `preflight rc=1` with `LEAK: p4p got ... (or probe broke)` in `preflight.log` and a traceback
-  ending `RuntimeError: Unable to bind random UDP6 port` before it: the p4p probe could not make its
-  client context (FLAKES.md F12), not a leak. A failed run all the same. Any other `LEAK:` line
-  is a real leak verdict: stop everything and find what reached the facility service.
+- `preflight rc=1` with `LEAK: p4p got ... (or probe broke)` in `preflight.log`, after 9 lines
+  `preflight p4p: PVA client context: Unable to bind random UDP6 port (attempt <n> of 10), retrying`,
+  then `p4p probe broke: RuntimeError Unable to bind random UDP6 port` and `p4p rc=2`: the p4p probe
+  could not make its client context in 10 attempts (FLAKES.md F12), not a leak. A failed run all the
+  same. (Before e223e91cb the same race showed as a traceback ending `RuntimeError: Unable to bind
+  random UDP6 port`, then `p4p rc=1`, at the first failed bind.) A broken probe also prints a
+  `LEAK:` line (`(or probe broke)`, `p4p probe broke: <exception>`, or an import error of
+  `psdaq.sim.pvwait` when the build is missing or older). Treat every `LEAK:` line as a real leak
+  verdict until the log shows `p4p probe broke` or a traceback and no `REACHED` line: stop
+  everything and find what reached the facility service.
+
+A DRP that was not ready in time (FLAKES.md F13) takes three forms:
+- before F13's fix (e223e91cb and earlier): in the type's `control` pmlog, `<W> drp/<alias> did not
+  respond to rollcall`, then in the matrix log `FAILED <section>/<T>/transitions: ... status stream
+  error: at least one DRP is required ... never reached running`; the DRP's own pmlog stops in its
+  detector's init, with no `Ready for transitions`;
+- since F13's fix, a DRP that never got there: `up FAILED: <alias> not ready for transitions after
+  180 s: its detector's init ...` (or after the type's `ready_s`), then the teardown;
+- since F13's fix, a DRP that died before it got there: `up FAILED: <alias> not ready for
+  transitions (not RUNNING): ...`, within seconds of the death.
+Each is a failed run. Read the DRP's pmlog for where its init stopped, and the `ready for
+transitions after N s` lines of the run's other types for a node-wide slowdown.
 
 What to run after what:
 
@@ -600,7 +639,7 @@ production defaults are unchanged. Each sim drp's pmlog shows it as
 means the kwarg was not passed; with the line, it is F1 coming back (FLAKES.md).
 
 To find a register symptom in a failed run (F8's is in the run's own log):
-`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired|RuntimeError: Unable to bind|Future already retrieved|pvwait: timeout|ami_count' W $ROOT/work/mx-<TAG>.log --include='*.log' | head`
+`grep -rn -E '_pending queue overflow|FATAL: Segmentation Fault|Uncaught exception|hasn.t connected|TimeoutExpired|RuntimeError: Unable to bind|probe broke|Future already retrieved|pvwait: timeout|ami_count|did not respond to rollcall|not ready for transitions' W $ROOT/work/mx-<TAG>.log --include='*.log' | head`
 (remember F3's shutdown lines appear in nearly every DRP log). `daq_sim: PVA client context: Unable to
 bind random UDP6 port (attempt <n> of 10), retrying` is benign, F6's fix absorbing the race; only
 `RuntimeError: Unable to bind` is F6. F9 is in the unit tests' log: `grep -n 'assert 200 <='
