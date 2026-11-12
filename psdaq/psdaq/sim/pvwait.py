@@ -45,7 +45,9 @@ def split(argv):
 
 def context(attempts=10, conf=None, who='pvwait'):
     """A PVA client context: from the environment, or from `conf` alone when it is given.  Every p4p client context
-    the sim makes comes from here (daq_sim.pva_context, gui_witness.pva_context, preflight.sh's p4p probes).  PVXS
+    made by code under psdaq/psdaq/sim comes from here (daq_sim.pva_context, gui_witness.pva_context, preflight.sh's
+    p4p probes); not the web GUI's (psdaq/psdaq/webgui: events.py, plots_api.py, pvgui_api.py) or the tests' own
+    (test_sim_hsd.py, test_simxpm.py, webgui/tests: webgui_harness.py, pvgui_checks.py).  PVXS
     binds the client's IPv6 search socket to the port number the kernel gave its IPv4 one, and raises
     RuntimeError(PVA_BIND_RACE) when another IPv6 UDP socket of the node holds that number: that error alone is
     retried, at most `attempts` times, with one line on stderr per retry; any other error, and the last attempt's,
