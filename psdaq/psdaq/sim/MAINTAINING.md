@@ -116,7 +116,9 @@ cd $ROOT/wt-trial
 echo "upstream commits not in sim-main: $(git log --oneline origin/sim-main..upstream/master | wc -l)"
 git merge --no-commit --no-ff upstream/master; echo MERGE_EXIT=$?   # 0 clean or nothing to merge, 1 conflicts
 git diff --name-only --diff-filter=U        # the conflicting files
-git diff --cached --stat | tail -1          # size of what comes in
+git diff --cached --stat | tail -1          # size of what merged cleanly; with a conflict the conflicting files
+                                            # are left out: git diff --stat origin/sim-main...upstream/master
+                                            # gives all of it
 git rev-parse -q --verify MERGE_HEAD >/dev/null && git merge --abort    # only if a merge is in progress
 cd $ROOT/lcls2 && git worktree remove $ROOT/wt-trial && git branch -D scratch/trial-$D
 ```
@@ -254,7 +256,7 @@ srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G bash -
 grep -E '^TYPE|^FAILED|^MATRIX' $ROOT/work/cheap.log
 ```
 
-Expected, the run (exit 0; N at least 1000, typically 1800-2200 at 1 kHz, the same three times):
+Expected, the run (exit 0; N at least 1000, typically 1300-3000 at 1 kHz, the same three times):
 ```
 TYPE fakecam      node <A> job <JOB> run <W>/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ <N> psana2 <N> with-data <N> per-event PASS PASS
 TYPE fakecam      (the same line again)
