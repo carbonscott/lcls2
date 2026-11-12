@@ -1,0 +1,9 @@
+=== sdfada016 job 44243826 step 207 builds/82a2868fe HEAD 82a2868fed81d1228de0c5d68e14edda194f01aa dirty 0 2026-11-12T02:46:42Z
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/f13pr/cheap-1112T0246/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1795 psana2 1795 with-data 1795 per-event PASS PASS
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 in 51 s 2026-11-12T02:47:33Z
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/f13pr/cheap-1112T0246/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1805 psana2 1805 with-data 1805 per-event FAIL FAIL
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x921949c9 != 0x92194936']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (2 of 7 assertions failed)
+MATRIX_EXIT=1 in 49 s 2026-11-12T02:48:22Z

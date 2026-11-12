@@ -1,0 +1,114 @@
+exedev@velvet-comet:redo$ export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM
+2026-11-12T02:48:52+00:00
+velvet-comet
+exedev@velvet-comet:redo$ ssh -t sdfiana025 bash --rcfile $R/work/f13pr/rec-rc.sh -i
+cwang31@sdfiana025:82a2868fe$ srun --jobid=44243826 --overlap -w sdfada016 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/work/f13pr/node-rc.sh -ii
+cwang31@sdfada016:82a2868fe$ git log -1 --format='%H %cI'   # H'', immutable build R/builds/82a2868fe
+82a2868fed81d1228de0c5d68e14edda194f01aa 2026-11-11T17:53:17-08:00
+cwang31@sdfada016:82a2868fe$ git diff --stat 5257855b1 HEAD   # against the base (sim-main)
+ CHANGELOG.md                           |   7 +++++++
+ psdaq/psdaq/sim/ami_check.py           |   6 ++++--
+ psdaq/psdaq/sim/coverage.py            |   2 ++
+ psdaq/psdaq/sim/daq_sim.py             |  79 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------
+ psdaq/psdaq/sim/gui_witness.py         |   8 ++++----
+ psdaq/psdaq/sim/preflight.sh           |  85 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------
+ psdaq/psdaq/sim/pvwait.py              | 105 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ psdaq/psdaq/tests/test_sim_drpgpu.py   |  29 +++++++++++++++++++++++++++--
+ psdaq/psdaq/tests/test_sim_programs.py |   4 +++-
+ psdaq/psdaq/tests/test_sim_pvwait.py   |  45 +++++++++++++++++++++++++++++++++++++++++++++
+ 10 files changed, 326 insertions(+), 44 deletions(-)
+cwang31@sdfada016:82a2868fe$ echo "local changes: $(git status --short --untracked-files=no | wc -l)"; date -u; hostname
+local changes: 0
+Thu Nov 12 02:48:58 AM UTC 2026
+sdfada016
+cwang31@sdfada016:82a2868fe$ # F13 at H'': fakecam's drp SIGSTOPped 45 s from its first appearance by an outside watcher; up now waits for 'Ready for transitions'
+cwang31@sdfada016:82a2868fe$ bash $R/work/f13pr/f13run.sh 82a2868fe rec-fc drp fakecam stop 45 0 --only types --types fakecam
+rec-fc MATRIX_EXIT=0 2026-11-12T02:50:40Z wall 95 s
+cwang31@sdfada016:82a2868fe$ bash $R/work/f13pr/summ3.sh rec-fc | cut -c1-200
+## rec-fc
+=== rec-fc on sdfada016 job 44243826 step 208 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:49:05Z
+18:49:30.565 SEEN pid 452933 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:49:30.715 STOP pid 452933 0.1 s after first seen, state T
+18:50:15.745 CONT pid 452933 after 45.1 s stopped (45.2 s after first seen), state R
+  fakecam up| 2026-11-11T18:49:29.347-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T18:50:19.656-08:00 daq_sim: fakecam_0 ready for transitions after 45 s (pmlogs/2026/11/11_18:49:29_sdfada016:fakecam_0.log)
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ 2803 psana2 2803 with-data 2803 per-event PASS PASS
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T02:50:40Z wall 95 s
+cwang31@sdfada016:82a2868fe$ # F13 before (e223e91cb) and after (82a2868fe), and the guardrails: one line per run
+cwang31@sdfada016:82a2868fe$ bash $R/work/f13pr/tot.sh | cut -c1-170
+b-fc1 e223e91cb STOP pid 296387  |  drp/fakecam_0 did not respond to rollcall | MATRIX FAIL (4 of 7 assertions failed) | MATRIX_EXIT=1
+b-fc2 e223e91cb STOP pid 301389  |  drp/fakecam_0 did not respond to rollcall | MATRIX FAIL (4 of 7 assertions failed) | MATRIX_EXIT=1
+b-fc3 e223e91cb STOP pid 306694  |  drp/fakecam_0 did not respond to rollcall | MATRIX FAIL (4 of 7 assertions failed) | MATRIX_EXIT=1
+b-fc4 e223e91cb STOP pid 310929  |  drp/fakecam_0 did not respond to rollcall | MATRIX FAIL (4 of 7 assertions failed) | MATRIX_EXIT=1
+b-fc5 e223e91cb STOP pid 316195  |  drp/fakecam_0 did not respond to rollcall | MATRIX FAIL (4 of 7 assertions failed) | MATRIX_EXIT=1
+a-fc1 82a2868fe STOP pid 323032  | fakecam_0 ready for transitions after 46 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc2 82a2868fe STOP pid 334545  | fakecam_0 ready for transitions after 46 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc3 82a2868fe STOP pid 343061  | fakecam_0 ready for transitions after 46 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc4 82a2868fe STOP pid 348658  | fakecam_0 ready for transitions after 46 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc5 82a2868fe STOP pid 354235  | fakecam_0 ready for transitions after 44 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc6 82a2868fe STOP pid 359708  | fakecam_0 ready for transitions after 45 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc7 82a2868fe STOP pid 364894  | fakecam_0 ready for transitions after 46 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc8 82a2868fe STOP pid 369936  | fakecam_0 ready for transitions after 45 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc9 82a2868fe STOP pid 375058  | fakecam_0 ready for transitions after 45 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-fc10 82a2868fe STOP pid 380242  | fakecam_0 ready for transitions after 45 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-tt1 82a2868fe no-watcher-action | tt_0 ready for transitions after 2 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-tt2 82a2868fe no-watcher-action | tt_0 ready for transitions after 2 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+a-tt3 82a2868fe no-watcher-action | tt_0 ready for transitions after 2 s  | MATRIX PASS (7 assertions) | MATRIX_EXIT=0
+b-pg1 e223e91cb STOP pid 425838  |  drp/epics_0 did not respond to rollcall | MATRIX FAIL (2 of 8 assertions failed) | MATRIX_EXIT=1
+b-pg2 e223e91cb STOP pid 434700  |  drp/epics_0 did not respond to rollcall | MATRIX FAIL (2 of 8 assertions failed) | MATRIX_EXIT=1
+a-pg1 82a2868fe STOP pid 411605  | epics_0 ready for transitions after 42 s  | MATRIX PASS (8 assertions) | MATRIX_EXIT=0
+g-hang 82a2868fe STOP pid 398325  | not ready for transitions after 180 s up FAILED: fakecam_0 not ready for transitions after 180 s | MATRIX FAIL (1 of 2 assertions fail
+g-dead2 82a2868fe STOP pid 443985 KILL pid 443985  |  up FAILED: fakecam_0 not ready for transitions (not RUNNING) | MATRIX FAIL (1 of 2 assertions failed) | MATRIX_EXIT=
+cwang31@sdfada016:82a2868fe$ # item 2's single-node S3DF command at H'' (MAINTAINING.md step 8), run before this recording: fakecam, then --break corrupt
+cwang31@sdfada016:82a2868fe$ grep -a -E '^=== |^TYPE|^FAILED|^MATRIX' $R/work/f13pr/fc.log | awk '!s[$0]++' | cut -c1-230
+=== sdfada016 job 44243826 step 207 builds/82a2868fe HEAD 82a2868fed81d1228de0c5d68e14edda194f01aa dirty 0 2026-11-12T02:46:42Z
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/f13pr/cheap-1112T0246/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1795 psana2 1795 
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 in 51 s 2026-11-12T02:47:33Z
+TYPE fakecam      node sdfada016 job 44243826 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/f13pr/cheap-1112T0246/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 180
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0x921949c9 != 0x92194936']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (2 of 7 assertions failed)
+MATRIX_EXIT=1 in 49 s 2026-11-12T02:48:22Z
+cwang31@sdfada016:82a2868fe$ # the full checks at H'' so far
+cwang31@sdfada016:82a2868fe$ grep -a -H -E '^=== matrix|coverage: at|^MATRIX |MATRIX_EXIT' $R/work/hrun3/mx-h*.log | cut -c1-200
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h1.log:=== matrix h1 on sdfmilan031 job 44243825 step 130 builds/82a2868fe HEAD 82a2868fe dirty 0 gpu sdfada018 job 442453
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h1.log:coverage: at 82a2868fe: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h1.log:  PASS coverage: at 82a2868fe: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h1.log:MATRIX PASS (201 assertions)
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h1.log:MATRIX_EXIT=0 2026-11-12T02:39:27Z
+/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/work/hrun3/mx-h2.log:=== matrix h2 on sdfmilan031 job 44243825 step 137 builds/82a2868fe HEAD 82a2868fe dirty 0 gpu sdfada018 job 442453
+cwang31@sdfada016:82a2868fe$ # F12 at e223e91cb: preflight with the bind-failure shim at P=0.3 (before at faecb0797, after) and P=1.0
+cwang31@sdfada016:82a2868fe$ grep -a -h -E '^RESULT (before|after|g-)' $R/work/f6b/results.log | cut -c1-120
+RESULT before-1 P=0.3 rc=0 wall=36.5s retry=0 injected=0 active=1 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:46:56Z
+RESULT before-2 P=0.3 rc=0 wall=33.1s retry=0 injected=0 active=1 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:47:43Z
+RESULT before-3 P=0.3 rc=0 wall=34.1s retry=0 injected=0 active=1 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:48:29Z
+RESULT before-4 P=0.3 rc=3 wall=29.7s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:53:04Z
+RESULT before-5 P=0.3 rc=3 wall=30.6s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:53:46Z
+RESULT before-6 P=0.3 rc=0 wall=30.0s retry=0 injected=0 active=1 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:54:27Z
+RESULT before-7 P=0.3 rc=1 wall=25.6s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:55:04Z
+RESULT before-8 P=0.3 rc=1 wall=25.1s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:55:40Z
+RESULT before-9 P=0.3 rc=1 wall=25.1s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:56:17Z
+RESULT before-10 P=0.3 rc=3 wall=30.6s retry=0 injected=1 active=1 runtimeerr=1 broke=0 hung=0 end=2026-11-12T00:56:58Z
+RESULT after-1 P=0.3 rc=0 wall=30.1s retry=1 injected=1 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:57:45Z
+RESULT after-2 P=0.3 rc=0 wall=29.5s retry=1 injected=1 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:58:25Z
+RESULT after-3 P=0.3 rc=0 wall=29.8s retry=1 injected=1 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:59:06Z
+RESULT after-4 P=0.3 rc=0 wall=30.4s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T00:59:48Z
+RESULT after-5 P=0.3 rc=0 wall=42.0s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:00:42Z
+RESULT after-6 P=0.3 rc=0 wall=36.7s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:01:32Z
+RESULT after-7 P=0.3 rc=0 wall=33.0s retry=4 injected=4 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:02:23Z
+RESULT after-8 P=0.3 rc=0 wall=32.2s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:03:08Z
+RESULT after-9 P=0.3 rc=0 wall=31.1s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:03:52Z
+RESULT after-10 P=0.3 rc=0 wall=31.3s retry=0 injected=0 active=2 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:04:36Z
+RESULT g-p1-1 P=1.0 rc=1 wall=26.6s retry=18 injected=20 active=2 runtimeerr=1 broke=1 hung=0 end=2026-11-12T01:05:16Z
+RESULT g-plain P=none rc=0 wall=31.6s retry=0 injected=0 active=0 runtimeerr=0 broke=0 hung=0 end=2026-11-12T01:06:01Z
+cwang31@sdfada016:82a2868fe$ git rev-parse HEAD; date -u +%FT%TZ
+82a2868fed81d1228de0c5d68e14edda194f01aa
+2026-11-12T02:50:51Z
+cwang31@sdfada016:82a2868fe$ exit
+exit
+cwang31@sdfiana025:82a2868fe$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@velvet-comet:redo$ 

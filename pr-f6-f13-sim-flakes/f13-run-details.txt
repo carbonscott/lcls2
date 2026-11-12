@@ -1,0 +1,100 @@
+## b-fc1
+=== b-fc1 on sdfada016 job 44243826 step 183 builds/e223e91cb HEAD e223e91cb dirty 0 2026-11-12T02:02:04Z
+18:02:56.124 SEEN pid 296387 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:02:56.275 STOP pid 296387 0.1 s after first seen, state T
+18:03:41.292 CONT pid 296387 after 45.1 s stopped (45.2 s after first seen), state Z
+  fakecam up| 2026-11-11T18:02:54.844-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam cycle| 2026-11-11T18:03:34.284-08:00 [warning] drp/fakecam_0 did not respond to rollcall
+  fakecam cycle| 2026-11-11T18:03:34.391-08:00 [error] at least one DRP is required
+  FAIL types/fakecam/transitions: setState allocated -> unallocated; status stream error: at least one DRP is required; status stream error: alloc failed to change state; never reached running
+FAILED types/fakecam/transitions: setState allocated -> unallocated; status stream error: at least one DRP is required; status stream error: alloc failed to change state; never reached running
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ None psana2 None with-data None per-event FAIL FAIL
+FAILED types/fakecam/transitions: setState allocated -> unallocated; status stream error: at least one DRP is required; status stream error: alloc failed to change state; never reached running
+FAILED types/fakecam/counts: simxpm L1Accepts None, TEB_WrtCt None, psana2 events None, with fakecam data None: NOT equal and >= 1000
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: did not run
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (4 of 7 assertions failed)
+MATRIX_EXIT=1 2026-11-12T02:03:42Z wall 98 s
+## a-fc1
+=== a-fc1 on sdfada016 job 44243826 step 188 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:10:32Z
+18:11:11.877 SEEN pid 323032 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:11:12.028 STOP pid 323032 0.1 s after first seen, state T
+18:11:57.061 CONT pid 323032 after 45.1 s stopped (45.2 s after first seen), state D
+  fakecam up| 2026-11-11T18:11:10.244-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T18:12:02.340-08:00 daq_sim: fakecam_0 ready for transitions after 46 s (pmlogs/2026/11/11_18:11:10_sdfada016:fakecam_0.log)
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ 1807 psana2 1807 with-data 1807 per-event PASS PASS
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T02:12:25Z wall 113 s
+## a-tt1
+=== a-tt1 on sdfada016 job 44243826 step 198 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:28:39Z
+18:29:34.721 NEVER SEEN
+  tt up| 2026-11-11T18:29:07.790-08:00 daq_sim: procmgr start daq_sim.cnf
+  tt up| 2026-11-11T18:29:15.506-08:00 daq_sim: tt_0 ready for transitions after 2 s (pmlogs/2026/11/11_18:29:08_sdfada016:tt_0.log)
+TYPE tt           node sdfada016 job 44243826 run ... DAQ 1691 psana2 1691 with-data 1691 per-event PASS PASS
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T02:29:34Z wall 55 s
+## b-pg1
+=== b-pg1 on sdfada016 job 44243826 step 204 builds/e223e91cb HEAD e223e91cb dirty 0 2026-11-12T02:40:10Z
+18:40:45.266 SEEN pid 425838 state D: epicsArch -P tst -C localhost -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/wor
+18:40:45.416 STOP pid 425838 0.1 s after first seen, state T
+18:41:30.437 CONT pid 425838 after 45.1 s stopped (45.2 s after first seen), state R
+  programs up| 2026-11-11T18:40:43.283-08:00 daq_sim: procmgr start daq_sim.cnf
+  programs cycle| 2026-11-11T18:41:20.889-08:00 [warning] drp/epics_0 did not respond to rollcall
+PROGRAMS fakecam      node sdfada016 job 44243826 run ... DAQ 1617 psana2 1617 with-data 1617 per-event PASS FAIL
+FAILED programs/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+FAILED programs/checks: system DRP checks: FAIL ['no stream has the epicsArch variables sim_count/sim_const', 'epicsArch: sim_const, sim_count or sim_l0acc has no value in any event']; ami check: PASS; gui witness: PASS;
+MATRIX FAIL (2 of 8 assertions failed)
+MATRIX_EXIT=1 2026-11-12T02:42:51Z wall 161 s
+## a-pg1
+=== a-pg1 on sdfada016 job 44243826 step 203 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:36:14Z
+18:36:48.591 SEEN pid 411605 state D: epicsArch -P tst -C localhost -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/wor
+18:36:48.742 STOP pid 411605 0.1 s after first seen, state T
+18:37:33.762 CONT pid 411605 after 45.1 s stopped (45.2 s after first seen), state D
+  programs up| 2026-11-11T18:36:46.764-08:00 daq_sim: procmgr start daq_sim.cnf
+  programs up| 2026-11-11T18:36:53.339-08:00 daq_sim: fakecam_0 ready for transitions after 0 s (pmlogs/2026/11/11_18:36:47_sdfada016:fakecam_0.log)
+  programs up| 2026-11-11T18:36:53.341-08:00 daq_sim: pvcam_0 ready for transitions after 0 s (pmlogs/2026/11/11_18:36:47_sdfada016:pvcam_0.log)
+  programs up| 2026-11-11T18:36:53.344-08:00 daq_sim: encoder_0 ready for transitions after 0 s (pmlogs/2026/11/11_18:36:47_sdfada016:encoder_0.log)
+  programs up| 2026-11-11T18:37:35.498-08:00 daq_sim: epics_0 ready for transitions after 42 s (pmlogs/2026/11/11_18:36:47_sdfada016:epics_0.log)
+PROGRAMS fakecam      node sdfada016 job 44243826 run ... DAQ 1600 psana2 1600 with-data 1600 per-event PASS PASS
+MATRIX PASS (8 assertions)
+MATRIX_EXIT=0 2026-11-12T02:40:07Z wall 233 s
+## g-hang
+=== g-hang on sdfada016 job 44243826 step 201 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:31:34Z
+18:31:59.721 SEEN pid 398325 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:31:59.875 STOP pid 398325 0.1 s after first seen, state T
+18:35:12.651 end: pid 398325 gone, 192.8 s after STOP
+  fakecam up| 2026-11-11T18:31:58.395-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T18:35:04.179-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions after 180 s: its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+  FAIL types/fakecam/up: exit 1: 2026-11-11T18:35:04.179-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions after 180 s: its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+FAILED types/fakecam/up: exit 1: 2026-11-11T18:35:04.179-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions after 180 s: its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ None psana2 None with-data None per-event not run FAIL
+FAILED types/fakecam/up: exit 1: 2026-11-11T18:35:04.179-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions after 180 s: its detector's init (the DRP's start-up and its detector's configuration) has not return
+MATRIX FAIL (1 of 2 assertions failed)
+MATRIX_EXIT=1 2026-11-12T02:35:12Z wall 218 s
+## g-dead2
+=== g-dead2 on sdfada016 job 44243826 step 206 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:45:41Z
+18:46:07.434 SEEN pid 443985 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:46:07.585 STOP pid 443985 0.1 s after first seen, state T
+18:46:13.436 KILL pid 443985 6.0 s after first seen
+  fakecam up| 2026-11-11T18:46:06.101-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T18:46:14.242-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions (not RUNNING): its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+  FAIL types/fakecam/up: exit 1: 2026-11-11T18:46:14.242-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions (not RUNNING): its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+FAILED types/fakecam/up: exit 1: 2026-11-11T18:46:14.242-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions (not RUNNING): its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ None psana2 None with-data None per-event not run FAIL
+FAILED types/fakecam/up: exit 1: 2026-11-11T18:46:14.242-08:00 daq_sim: up FAILED: fakecam_0 not ready for transitions (not RUNNING): its detector's init (the DRP's start-up and its detector's configuration) has not retu
+MATRIX FAIL (1 of 2 assertions failed)
+MATRIX_EXIT=1 2026-11-12T02:46:22Z wall 41 s
+## g-dead
+=== g-dead on sdfada016 job 44243826 step 202 builds/82a2868fe HEAD 82a2868fe dirty 0 2026-11-12T02:35:16Z
+18:35:41.833 SEEN pid 408424 state D: drp -P tst -C localhost -D fakecam -d sim://127.0.0.1:31052 -l 0x1 -o /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardenin
+18:35:47.884 KILL pid 408424 6.1 s after first seen
+  fakecam up| 2026-11-11T18:35:40.587-08:00 daq_sim: procmgr start daq_sim.cnf
+  fakecam up| 2026-11-11T18:35:46.060-08:00 daq_sim: fakecam_0 ready for transitions after 0 s (pmlogs/2026/11/11_18:35:40_sdfada016:fakecam_0.log)
+TYPE fakecam      node sdfada016 job 44243826 run ... DAQ None psana2 None with-data None per-event FAIL FAIL
+FAILED types/fakecam/transitions: setState allocated -> unallocated; status stream error: fakecam_0 did not respond to alloc; status stream error: 1 client did not respond to alloc; never reached running
+FAILED types/fakecam/drp-alive: fakecam_0 drp pid 408424 GONE after the run (now no process)
+FAILED types/fakecam/counts: simxpm L1Accepts None, TEB_WrtCt None, psana2 events None, with fakecam data None: NOT equal and >= 1000
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: did not run
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (5 of 7 assertions failed)
+MATRIX_EXIT=1 2026-11-12T02:36:10Z wall 54 s

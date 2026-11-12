@@ -1,0 +1,22 @@
+[
+ {"send": "export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM"},
+ {"send": "ssh -t sdfiana025 bash --rcfile $R/work/f13pr/rec-rc.sh -i", "expect": "cwang31@sdfiana025", "timeout": 120},
+ {"send": "srun --jobid=44243826 --overlap -w sdfada016 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/work/f13pr/node-rc.sh -i", "expect": "cwang31@sdfada016", "timeout": 180},
+ {"send": "git log -1 --format='%H %cI'   # H'', immutable build R/builds/82a2868fe"},
+ {"send": "git diff --stat 5257855b1 HEAD   # against the base (sim-main)"},
+ {"send": "echo \"local changes: $(git status --short --untracked-files=no | wc -l)\"; date -u; hostname"},
+ {"send": "# F13 at H'': fakecam's drp SIGSTOPped 45 s from its first appearance by an outside watcher; up now waits for 'Ready for transitions'"},
+ {"send": "bash $R/work/f13pr/f13run.sh 82a2868fe rec-fc drp fakecam stop 45 0 --only types --types fakecam", "expect": "^rec-fc MATRIX_EXIT", "timeout": 900},
+ {"send": "bash $R/work/f13pr/summ3.sh rec-fc | cut -c1-200"},
+ {"send": "# F13 before (e223e91cb) and after (82a2868fe), and the guardrails: one line per run"},
+ {"send": "bash $R/work/f13pr/tot.sh | cut -c1-170"},
+ {"send": "# item 2's single-node S3DF command at H'' (MAINTAINING.md step 8), run before this recording: fakecam, then --break corrupt"},
+ {"send": "grep -a -E '^=== |^TYPE|^FAILED|^MATRIX' $R/work/f13pr/fc.log | awk '!s[$0]++' | cut -c1-230"},
+ {"send": "# the full checks at H'' so far"},
+ {"send": "grep -a -H -E '^=== matrix|coverage: at|^MATRIX |MATRIX_EXIT' $R/work/hrun3/mx-h*.log | cut -c1-200"},
+ {"send": "# F12 at e223e91cb: preflight with the bind-failure shim at P=0.3 (before at faecb0797, after) and P=1.0"},
+ {"send": "grep -a -h -E '^RESULT (before|after|g-)' $R/work/f6b/results.log | cut -c1-120"},
+ {"send": "git rev-parse HEAD; date -u +%FT%TZ"},
+ {"send": "exit", "expect": "cwang31@sdfiana025", "timeout": 60},
+ {"send": "exit", "expect": "exedev@", "timeout": 60}
+]

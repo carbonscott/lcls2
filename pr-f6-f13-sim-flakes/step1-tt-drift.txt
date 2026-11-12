@@ -1,0 +1,18 @@
+=== s1-tt1 on sdfmilan082 job 44243825 step 123 builds/e223e91cb HEAD e223e91cb dirty 0 2026-11-12T01:49:37Z
+  tt up| 2026-11-11T17:50:09.280-08:00 daq_sim: preflight rc=0: 17:50:09 PREFLIGHT PASS  (logs/preflight.log)
+  tt up| 2026-11-11T17:50:46.145-08:00 daq_sim: config DB seeded: tst/BEAM/tt_0 key=2 written
+  tt up| 2026-11-11T17:50:52.978-08:00 daq_sim: procmgr start daq_sim.cnf
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T01:51:51Z wall 134 s
+=== s1-tt2 on sdfmilan082 job 44243825 step 124 builds/e223e91cb HEAD e223e91cb dirty 0 2026-11-12T01:52:02Z
+  tt up| 2026-11-11T17:52:33.979-08:00 daq_sim: preflight rc=0: 17:52:33 PREFLIGHT PASS  (logs/preflight.log)
+  tt up| 2026-11-11T17:53:09.945-08:00 daq_sim: config DB seeded: tst/BEAM/tt_0 key=2 written
+  tt up| 2026-11-11T17:53:16.379-08:00 daq_sim: procmgr start daq_sim.cnf
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T01:54:14Z wall 132 s
+=== s1-tt3 on sdfmilan082 job 44243825 step 125 builds/e223e91cb HEAD e223e91cb dirty 0 2026-11-12T01:54:26Z
+  tt up| 2026-11-11T17:54:57.374-08:00 daq_sim: preflight rc=0: 17:54:57 PREFLIGHT PASS  (logs/preflight.log)
+  tt up| 2026-11-11T17:55:33.124-08:00 daq_sim: config DB seeded: tst/BEAM/tt_0 key=2 written
+  tt up| 2026-11-11T17:55:39.556-08:00 daq_sim: procmgr start daq_sim.cnf
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 2026-11-12T01:56:38Z wall 132 s
