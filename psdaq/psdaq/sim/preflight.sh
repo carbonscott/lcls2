@@ -8,6 +8,14 @@
 #             3 = isolation OK but the loopback positive control failed (local EPICS broken)
 # It never sends a packet to a facility host on purpose: the pswww probe goes
 # through the env's dead proxy, and the no-proxy check is a local route lookup only.
+#
+# Time bounds. A probe's network part is bounded inside the client: pvget/caget -w 5, p4p get timeout=5.0
+# (preflight_p4p.py). Starting a client is not part of that bound: the interpreter, its imports, the EPICS tools'
+# shared libraries and the loopback IOC load from the DAQ's conda env, on a shared filesystem whose metadata
+# latency varies (on S3DF, weka /sdf/group: importing p4p is ~3,400 stat/open calls, 5-7 s on 2026-11-12, and
+# more when the filesystem is slow). Start-up is bounded only by one budget for the whole preflight, PF_BUDGET
+# seconds (default 200; daq_sim.py gives the preflight 240 s, so it always prints its own verdict). A client
+# stopped by that budget (rc 124/137) proved nothing, and the log says it was stopped.
 SIMDIR=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 REPO=$(cd "$SIMDIR/../../.." && pwd)
 if [[ -z "$CONDA_PREFIX" || "$ENV_TYPE" != daq ]]; then
@@ -17,6 +25,9 @@ source $SIMDIR/sim_env.sh
 [[ "$SIM_ENV_SOURCED" == 1 ]] || { echo "PREFLIGHT: sim_env.sh not sourced"; exit 2; }
 leak=0; posfail=0
 say() { printf '%s %s\n' "$(date +%H:%M:%S)" "$*"; }
+PF_BUDGET=${PF_BUDGET:-200}
+left() { local l=$(( PF_BUDGET - SECONDS )); (( l < 1 )) && l=1; echo $l; }   # what is left of the budget, s
+stopped() { [[ $1 -eq 124 || $1 -eq 137 ]]; }                                  # rc of a client `timeout` stopped
 say "=== preflight on $(hostname) ($(hostname -f 2>/dev/null)) job=${SLURM_JOB_ID:-none} step=${SLURM_STEP_ID:-none} user=$(id -un)"
 say "=== OS: $(. /etc/os-release; echo $PRETTY_NAME)  kernel $(uname -r)"
 say "=== device check: ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1"
@@ -74,12 +85,13 @@ record(ao, "SIMW3:PREFLIGHT:VAL") { field(VAL, "42.5") }
 DB
 ( cd $tmpd && exec softIocPVA -S -d pf.db > $tmpd/ioc.log 2>&1 ) & iocpid=$!
 sleep 4
-timeout -k 2 15 pvget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; prc=${PIPESTATUS[0]}
-timeout -k 2 15 caget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; crc=${PIPESTATUS[0]}
-timeout -k 2 20 python -c "
-from p4p.client.thread import Context
-c=Context('pva'); print('p4p local get:', float(c.get('SIMW3:PREFLIGHT:VAL', timeout=5.0))); c.close()" 2>&1 | tail -2; xrc=${PIPESTATUS[0]}
+timeout -k 2 $(left) pvget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; prc=${PIPESTATUS[0]}
+timeout -k 2 $(left) caget -w 5 SIMW3:PREFLIGHT:VAL 2>&1 | tail -2; crc=${PIPESTATUS[0]}
+timeout -k 2 $(left) python $SIMDIR/preflight_p4p.py get SIMW3:PREFLIGHT:VAL 2>&1 | tail -3; xrc=${PIPESTATUS[0]}
 say "local pvget rc=$prc caget rc=$crc p4p rc=$xrc"
+for x in pvget:$prc caget:$crc p4p:$xrc; do
+  stopped ${x#*:} && say "NOT-PROVEN: ${x%%:*} was stopped by the preflight budget (PF_BUDGET=$PF_BUDGET s) before it finished"
+done
 echo "listening sockets of the IOC (pid $iocpid):"; ss -tulpn 2>/dev/null | grep -E "pid=$iocpid[,)]" | awk '{print $1, $5}' | sort -u
 kill $iocpid 2>/dev/null; wait $iocpid 2>/dev/null
 # libca auto-spawns caRepeater on EPICS_CA_REPEATER_PORT (15065); kill only the one on that port, owned by us
