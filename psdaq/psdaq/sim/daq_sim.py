@@ -120,6 +120,13 @@ PVBASE = 'DAQ:SIM'
 XPM = 0
 EP = 'ep_domain=lo,ep_provider=tcp'     # libfabric tcp on loopback (Collection.cc getNicIp)
 PROCS = ('control', 'teb0', DETECTOR + '_0')     # with --segments N: + DETECTOR_1 .. DETECTOR_<N-1> (procs())
+# F13: 'up' waits for every DRP (drp_aliases) to say 'Ready for transitions', up to DRP_READY_S (or the type's
+# 'ready_s' where that is longer), since control's rollcall waits only 30 s: tt's init (its Python
+# configuration) once took longer than that (flake register F13)
+DRP_READY_S = 180
+DRP_READY_WHY = "its detector's init (the DRP's start-up and its detector's configuration) has not returned: see the DRP's log"
+# the config DB seed of each detector ('up', psdaq.sim.configdb_seed), s: tt's took 43 s on a slow node (F13)
+SEED_TIMEOUT_S = 240
 # drp -k settings per simulated detector type (up --det).  BEB types (psdaq.sim.rogue_dev) get
 # EventBatcher-framed buffers sized for their frame (psdaq/drp/MemPoolSim.cc) and their config
 # from the type's own store; 'det_yaml' is the firmware YAML a production config is made from.
@@ -517,6 +524,18 @@ def procs(state):
         (HPS_PROCS if state.get('hps') else ()) + (WAVE8PVS_PROCS if state.get('wave8pvs') else ())
 
 
+def drp_aliases(state):
+    """The procmgr ids of procs(state) that run a DRP (drp, drp_gpu, drp_pva, drp_udpencoder, drp_bld, epicsArch):
+    the --det type's segments, the --also DRPs, pvcam_0, epics_0, encoder_0 and bld_0.  Each says 'Ready for
+    transitions' once its detector's init has returned, and only then answers control's rollcall.  Chosen by role:
+    not the event builders, AMI (ami-node_0, ami-worker_0), the GUIs (pvrtmon_0) or the stand-ins."""
+    return tuple(dict.fromkeys(
+        (DETECTOR + '_0',) + tuple(f'{DETECTOR}_{i}' for i in range(1, state.get('segments', 1))) +
+        tuple(a['alias'] for a in state.get('also', ())) + (PVA_PROCS if state.get('pva') else ()) +
+        (EPICS_PROCS if state.get('epics') else ()) + (UDP_PROCS[:1] if state.get('udp') else ()) +
+        (BLD_PROCS if state.get('bld') else ())))
+
+
 def procmgr_status(state):
     """{id: (status, pid)} from 'procmgr status'."""
     r = subprocess.run(procmgr_cmd(state, 'status'), cwd=state['workdir'], capture_output=True,
@@ -660,6 +679,18 @@ HPS_PROCS = ('hpsbldcas', 'hpsbldsvc', 'hpsbldcpa')    # the procmgr ids of gui_
 HPS_ENTRY = ''' {{ id:'{id}', flags:'s', env:'{env}',
    cmd:'{cmd}' }},
 '''
+# F7: hpsBldCopy aborts (std::future_error) if a PV it reads is not found within PVBase::ready()'s 30 s, which its
+# client's search schedule (pvAccessCPP: again at about 7.6, 15.2, 30.4 s) can miss for a server up ~15 s late, and procmgr
+# starts it with the servers of those PVs (bldcas, hpsBldServer); it starts behind psdaq.sim.pvwait, which waits up to
+# HPS_PV_WAIT s for its five PVs (-I's PAYLOAD, ADDR, PORT; -O's ADDR, PORT) and then execs it (same pid)
+HPS_PV_WAIT = 120
+
+
+def hps_pvwait(argv):
+    """The pvwait words before hpsBldCopy's command line `argv`."""
+    from psdaq.sim import pvwait
+    i, o = argv[argv.index('-I') + 1], argv[argv.index('-O') + 1]
+    return pvwait.command([f'{i}:PAYLOAD', f'{i}:ADDR', f'{i}:PORT', f'{o}:ADDR', f'{o}:PORT'], HPS_PV_WAIT)
 # --wave8pvs (R6b): wave8pvs (lab3-wave8.cnf: wave8pvs --l 0) under procmgr in a site conda env of its own, the one
 # $PSDAQ_SIM_WAVE8PVS_ENV names (its python, PATH, LD_LIBRARY_PATH and PYTHONPATH in the entry's env), with the wave8
 # package's python from the source tarball $PSDAQ_SIM_WAVE8PVS_SRC unpacked under <workdir>/wave8pvs; its board is
@@ -791,8 +822,10 @@ def extra_entries(workdir, platform, verbose=False, meb=False, ami_bin=None, pva
     if hps:
         from psdaq.sim import gui_witness
         for name, H in gui_witness.HPS_PROGRAMS.items():
+            argv = gui_witness.hps_argv(name, PVBASE, P['hps'])
+            wait = hps_pvwait(argv) if name == 'hpsBldCopy' else []
             out += HPS_ENTRY.format(id=H['id'], env=' '.join(f'{k}={v}' for k, v in gui_witness.hps_env(
-                name, P['hps']).items()), cmd=' '.join([name] + gui_witness.hps_argv(name, PVBASE, P['hps'])))
+                name, P['hps']).items()), cmd=' '.join(wait + [name] + argv))
     if wave8pvs:                        # wave8pvs_prepare()'s result
         out += WAVE8PVS.format(python=wave8pvs['python'], base=WAVE8PVS_BASE, env=' '.join(
             f'{k}={v}' for k, v in wave8pvs_env(wave8pvs, workdir, P['wave8pvs']).items()))
@@ -1150,12 +1183,17 @@ def cmd_up(args):
             seeds.append((a['det'], 0, (['--det-type', a['det']] if a['det'] != 'fakecam' else []) +
                           (['--det-yaml', yaml.format(**os.environ)] if yaml else [])))
         for i, (name, segm, dargs) in enumerate(seeds):
-            r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
-                                '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
-                                '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
-                                '--sim-length', str(args.length)] + dargs +
-                               (['--allow-host', bind] if two else []),
-                               env=env, capture_output=True, text=True, timeout=60)
+            try:
+                r = subprocess.run([py, '-m', 'psdaq.sim.configdb_seed', '--url', cfg_url,
+                                    '--inst', INSTRUMENT, '--alias', CONFIG_ALIAS, '--trigger', TRIGGER,
+                                    '--det', name, '--segm', str(segm), '--sim-seed', str(args.seed),
+                                    '--sim-length', str(args.length)] + dargs +
+                                   (['--allow-host', bind] if two else []),
+                                   env=env, capture_output=True, text=True, timeout=SEED_TIMEOUT_S)
+            except subprocess.TimeoutExpired as e:  # its stderr so far: bytes on POSIX even with text=True
+                err = e.stderr.decode(errors='replace') if isinstance(e.stderr, bytes) else (e.stderr or '')
+                raise Fail(f'configdb_seed of {name} segment {segm} not done after {SEED_TIMEOUT_S} s: '
+                           f'{err.strip()[-400:]}') from None
             with open(work.path('logs', 'seed.log'), 'a' if i else 'w') as out:
                 out.write(r.stdout + r.stderr)
             if r.returncode != 0:
@@ -1330,8 +1368,10 @@ def cmd_up(args):
         work.save(state)
         if gui:
             _wait_control_gui(work, 120)
-        if sim_type.get('ready_s'):
-            _wait_drps_ready(work, state, sim_type['ready_s'], sim_type.get('ready_why', ''))
+        # F13: control's rollcall (30 s) finds only a DRP that says 'Ready for transitions': wait for every DRP,
+        # for every type, as long as the type's own 'ready_s' where that is longer
+        _wait_drps_ready(work, state, max(DRP_READY_S, sim_type.get('ready_s', 0)),
+                         sim_type.get('ready_why') or DRP_READY_WHY)
         if w8:                          # its imports from the site env and its PVs take a while
             _wait_wave8pvs(work, 300)
         dstate = _control_state(args.platform)
@@ -1466,10 +1506,20 @@ def link_full(alias, share):
     return rec
 
 
+PVA_BIND_RACE = 'Unable to bind random UDP6 port'
+
+
+def pva_context(attempts=10):
+    """A new PVA client context, for one pv_get or pv_put call (which closes it).  PVXS's IPv6 bind race
+    (RuntimeError(PVA_BIND_RACE)) alone is retried, at most `attempts` times (psdaq.sim.pvwait.context);
+    any other error, and the last attempt's, is raised."""
+    from psdaq.sim import pvwait
+    return pvwait.context(attempts, who='daq_sim')
+
+
 def pv_put(name, value, timeout=5.0):
     """Put a PV over PVA; None on success, else the error."""
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         ctx.put(name, value, timeout=timeout)
         return None
@@ -1583,14 +1633,14 @@ def _wait_ca(name, timeout, proc=None):
             raise Fail(f'{name} does not answer over CA')
         time.sleep(0.5)
 def _wait_drps_ready(work, state, timeout, why=''):
-    """Wait until each DRP's log says 'Ready for transitions' (PGPDetectorApp, once its detector's
+    """Wait until each DRP's log (drp_aliases) says 'Ready for transitions' (PGPDetectorApp, once its detector's
     init has returned; drp_gpu's after its CUDA start too): control's rollcall finds only a DRP
     that is.  Only the alias's newest procmgr log counts (an earlier 'up' in the same workdir left
     its own); the timeout names what the DRP was doing ('why', the type's 'ready_why')."""
     import glob
     t0 = time.monotonic()
     end = t0 + timeout
-    pending = [i for i in procs(state) if i.startswith(DETECTOR + '_')]
+    pending = list(drp_aliases(state))
     while pending:
         for alias in list(pending):
             logs = sorted(glob.glob(work.path('pmlogs', '*', '*', f'*:{alias}.log')), key=os.path.getmtime)
@@ -1816,8 +1866,7 @@ COUNTERS = ('TEB_EvtCt', 'TEB_WrtCt', 'TEB_TrCt', 'MEB_EvtCt', 'MEB_TrCt', 'MEB_
 
 
 def pv_get(name, timeout=3.0):
-    from p4p.client.thread import Context
-    ctx = Context('pva')
+    ctx = pva_context()
     try:
         return ctx.get(name, timeout=timeout)
     except Exception as e:

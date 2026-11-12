@@ -915,10 +915,10 @@ def hpsdbuscas_names(prefix):
 
 def pva_context(port):
     """A p4p client context that searches only the PVA server whose search (broadcast) port is `port`
-    on 127.0.0.1."""
-    from p4p.client.thread import Context
-    return Context('pva', conf={'EPICS_PVA_ADDR_LIST': f'127.0.0.1:{port}', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
-                                'EPICS_PVA_BROADCAST_PORT': str(port)}, useenv=False)
+    on 127.0.0.1 (PVXS's IPv6 bind race alone is retried: psdaq.sim.pvwait.context)."""
+    from psdaq.sim import pvwait
+    return pvwait.context(conf={'EPICS_PVA_ADDR_LIST': f'127.0.0.1:{port}', 'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
+                                'EPICS_PVA_BROADCAST_PORT': str(port)}, who='gui_witness')
 
 
 def server_prepare(name, params, port):
