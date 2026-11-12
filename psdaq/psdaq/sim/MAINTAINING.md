@@ -32,8 +32,15 @@ salloc --no-shell --account=lcls:prjdat21 --qos=normal --partition=ada --gres=gp
 squeue -u $USER -o '%.10i %.12j %.8T %.20R'
 ```
 
+Each `salloc --no-shell` waits until its job starts, so give each its own shell (or end it with
+`&`): one that pends then does not hold up the other. Slurm prints times in US Pacific (`squeue
+--start`, `sacct`); this document's times are UTC.
+
 A request can pend: the account has a node cap per partition, and squeue's reason then reads
 `AssocGrpNodeLimit`. Wait, or release a job of yours you no longer need (`scancel <your job id>`).
+When the partition is busy (reason `Priority` or `Resources`), a shorter `--time` lets backfill start
+the job sooner; it must still cover the build and the checks (on 2026-11-12 an ada request of 16 h
+pended; at 2:30:00 it started).
 Then name what you got (every later step uses these variables; export them in each new shell):
 
 ```bash
@@ -150,8 +157,8 @@ Upstream comes in by a merge commit on a branch of its own, never by rebase:
 
 ```bash
 D=$(date -u +%F); U=$(git -C $ROOT/lcls2 rev-parse --short upstream/master)
-git -C $ROOT/lcls2 worktree add $ROOT/wt-sync -b sync/upstream-$D origin/sim-main
-cd $ROOT/wt-sync
+git -C $ROOT/lcls2 worktree add $ROOT/wt-sync-$D -b sync/upstream-$D origin/sim-main   # a new dir per sync
+cd $ROOT/wt-sync-$D
 git merge --no-ff upstream/master -m "Merge upstream master ($U) into sim-main"; echo MERGE_EXIT=$?
 ```
 
@@ -162,7 +169,8 @@ On conflicts (`git diff --name-only --diff-filter=U`):
 - Any other file: keep both sides' changes. Take upstream's version of production code and re-apply
   the sim's edit on top (the sim's edits to upstream files are small, so this stays short); never drop
   an upstream change to make a sim test pass.
-- Then `git add <files> && git commit --no-edit`, and list each conflicting file and how it was
+- Then `git add <files> && git commit --no-edit --cleanup=strip` (without `--cleanup=strip` the
+  message keeps git's `# Conflicts:` lines), and list each conflicting file and how it was
   resolved in the pull request's description.
 
 ```bash
@@ -174,7 +182,9 @@ gh pr create --repo carbonscott/lcls2 --base sim-main --head sync/upstream-$D \
 
 Then steps 6 to 10 at the branch's head. Merge the pull request (`gh pr merge <n> --repo
 carbonscott/lcls2 --merge`, a merge commit) only after its CI is green and the full check passed at
-that same head; any later push to the branch needs a new full check. Afterwards
+that same head; any later push to the branch needs a new full check at the new head, even a push
+of `.md` files only, so the merge stays bound to the head the check ran at (step 11's row for `.md`
+files is for a change made after the merge). Afterwards
 `git fetch origin && git merge-base --is-ancestor upstream/master origin/sim-main; echo $?` prints 0.
 
 ## 6. Build (on the ada node)
@@ -183,7 +193,7 @@ drp_gpu links against `libcuda.so.1`, which milano nodes do not have (`cannot fi
 /lib64/libcuda.so.1`, `BUILD_EXIT=1`), so build on G. The GPU subprojects are git wraps: fetch them on
 sdfiana025 (compute nodes have no internet).
 
-WT is the checkout under test. After a sync it is step 5's worktree: `export WT=$ROOT/wt-sync`.
+WT is the checkout under test. After a sync it is step 5's worktree: `export WT=$ROOT/wt-sync-$D` (step 5's D).
 On a first visit, or when step 3 found nothing to merge, it is a detached worktree of sim-main
 (no branch, nothing to push):
 
@@ -208,7 +218,9 @@ ls $WT/install/bin/{drp,drp_gpu,teb,control}
 
 Expected: `BUILD_EXIT=0` (minutes the first time; 28 s for an incremental one), and the four files
 exist. The milano nodes run the same `install/` from the shared filesystem. `warning: Failed to
-hardlink files; falling back to full copy` is harmless.
+hardlink files; falling back to full copy` is harmless, and so are nvcc's `Support for offline
+compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release`
+and NumPy's `Using deprecated NumPy API`.
 
 ## 7. Sim unit tests (on S3DF)
 
@@ -226,7 +238,8 @@ tail -4 $ROOT/work/ut.log
 ```
 
 Expected: `0 failed`, `PYTEST_EXIT=0`; at def58eaf8, 16 files, `421 passed, 1 skipped` (skip:
-`could not import 'ami'`). A skip for any other reason is a finding.
+`could not import 'ami'`); at 5439ffc8d, 17 files (667dc551c added `test_sim_pvwait.py`), `425
+passed, 1 skipped`, the same skip. A skip for any other reason is a finding.
 
 CI (step 8) is the authoritative run of the unit tier; this S3DF run is a second look, on nodes that
 can be slow (FLAKES.md F9 is a timing test that fails there). When a test fails here and passes in CI,
@@ -243,6 +256,9 @@ on a GitHub-hosted runner and runs `bash psdaq/psdaq/sim/ci_cheap_tier.sh unit`:
 ends with e.g. `412 passed, 10 skipped` (at 946ef0ff1; skips name `needs $SUBMODULEDIR (the DAQ env)`
 or `could not import 'ami'`), in about 7-10 min. Read it with `gh pr checks <n> --repo
 carbonscott/lcls2` and `gh run view <run id> --repo carbonscott/lcls2 --log | grep -E 'collected|passed|SKIPPED|FAILED'`.
+When `--log` prints nothing (gh 2.45.0 did for some runs), read the job's log through the API:
+`J=$(gh run view <run id> --repo carbonscott/lcls2 --json jobs --jq '.jobs[0].databaseId')`, then
+`gh api repos/carbonscott/lcls2/actions/jobs/$J/logs | grep -E 'collected|passed|SKIPPED|FAILED'`.
 
 **The DAQ part, on one S3DF node.** The fakecam DAQ run is not on GitHub's runners: fakecam's drp
 imports `l2si_drp` (`psdaq/psdaq/configdb/xpmdet_config.py`) from slaclab/l2si-drp, which is
@@ -250,7 +266,7 @@ SLAC-internal. It runs on one node, no GPU, in a few minutes (well under 15):
 
 ```bash
 srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G bash -c '
-  source $ROOT/simenv.sh $WT && W=$ROOT/work/cheap-$(date -u +%m%dT%H%M) && mkdir -p $W-ev && t0=$(date +%s) &&
+  source $ROOT/simenv.sh $WT && W=$ROOT/work/cheap-$(date -u +%m%dT%H%M) && mkdir -p $W-ev && export DAQ_SIM_EVIDENCE=$W-ev && t0=$(date +%s) &&
   daq_sim matrix -w $W --only types --types fakecam --lock $LOCK --evidence $W-ev; echo "MATRIX_EXIT=$? in $(( $(date +%s)-t0 )) s";
   daq_sim matrix -w $W --break corrupt --lock $LOCK; echo MATRIX_EXIT=$?' > $ROOT/work/cheap.log 2>&1
 grep -E '^TYPE|^FAILED|^MATRIX' $ROOT/work/cheap.log
@@ -276,8 +292,8 @@ MATRIX_EXIT=1
 **Reading a run's output (steps 8 to 10).** `daq_sim matrix` prints each `TYPE`/`PROGRAMS` line
 when that run ends and again in its summary, under `==== MATRIX SUMMARY`: the same result twice,
 not two runs. The summary also prints `whole matrix at this HEAD (with carried results): ...`, the
-state of the whole matrix given only what this work dir holds. A partial run (steps 8 and 9, the
-breaks) prints `FAIL; not run: types/cspad ... programs coverage; failed:
+state of the whole matrix given only what this work dir holds (a `--break` run prints no such
+line). A partial run (steps 8 and 9) prints `FAIL; not run: types/cspad ... programs coverage; failed:
 types/det:drp_gpu:<type>/runnable ...` there (without `--gpu-host`, the five GPU DRP types the
 coverage status marks RUN count as not runnable): expected, not a failure of this run. The verdict
 of what a command ran is its exit code (`MATRIX_EXIT`) and its `MATRIX PASS|FAIL` line; only the
@@ -289,7 +305,7 @@ On a first visit, before the full check, prove three detector types and the prog
 
 ```bash
 srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=16 --mem=32G bash -c '
-  source $ROOT/simenv.sh $WT && W=$ROOT/work/first-$(date -u +%m%dT%H%M) && mkdir -p $W-ev &&
+  source $ROOT/simenv.sh $WT && W=$ROOT/work/first-$(date -u +%m%dT%H%M) && mkdir -p $W-ev && export DAQ_SIM_EVIDENCE=$W-ev &&
   daq_sim matrix -w $W --only types --types fakecam,epix100,opal --lock $LOCK --evidence $W-ev; echo MATRIX_EXIT=$?;
   daq_sim matrix -w $W --only programs --ami-src $AMI --lock $LOCK --evidence $W-ev; echo MATRIX_EXIT=$?' > $ROOT/work/first.log 2>&1
 grep -E '^TYPE|^PROGRAMS|^FAILED|^MATRIX' $ROOT/work/first.log
@@ -339,6 +355,9 @@ medians of 14 probes and 10 fakecam tries on an ada node, 2026-11-11 19:00-19:32
 | fakecam try, wall | 63 s | 126 s |
 
 `load` and `others` have no gate; write them down (that day: load1 median 15, others median 140).
+On G the probe can print two OpenMPI warnings before its `PROBE` line (`shmem: mmap: an error
+occurred ...` and `create_and_attach: unable to create shared memory BTL coordinating structure`);
+on 2026-11-12 (sdfada016) they came with an open gate and a passing full check.
 Probe again before each run of a series (step 11).
 
 A probe taken once misses short stalls of a whole node (seconds in which a process is frozen or a
@@ -400,10 +419,13 @@ file seen <time>` and exits, which ends its step. Remove the STOP files before t
 This is the sentinel that ran from 2026-11-11 22:55:56Z (`work/sentinel/sentinel.sh` of the campaign
 root: the same /sdf/group file, fields, millisecond times, log and stop files; its /tmp file was
 `/tmp/sdh-sentinel-<node>.touch`, where this one uses `/tmp/sentinel-<node>.touch`) with one field
-added, `root_stat`. The script above and the gate below have not run on S3DF as written. The one
-that ran did not time a file under $ROOT: its only lookup there was the untimed check for the STOP
-files, and the 29 same-second stalls it recorded on three nodes (2.8-5.3 s, FLAKES.md F11) showed
-only as gaps between lines, with every timed field at most 0.04 s. So the gate reads the gaps
+added, `root_stat`. The script above has run as written since 2026-11-12 (sdfmilan151,
+sdfmilan175, sdfada016, with `SENT_DIR=$ROOT/sms/work/sentinel`), and the gate below first ran, over
+that dir, before full check sms1 at d6d0b398b (2026-11-12 08:15-08:16Z; open, every gap at most
+1.06 s). The 2026-11-11 one did not
+time a file under $ROOT: its only lookup there was the untimed check for the STOP files, and the
+29 same-second stalls it recorded on three nodes (2.8-5.3 s, FLAKES.md F11) showed only as gaps
+between lines, with every timed field at most 0.04 s. So the gate reads the gaps
 between lines as well as the fields:
 
 ```bash
@@ -455,7 +477,8 @@ rollcall in each of seven full checks (1.3, 1.6, 3.7, 16.5, 20.0 and 29.985 s, t
 around the miss.
 Since F13's fix, `daq_sim up` waits for every DRP and prints `<alias> ready for transitions after
 N s` for each: read those N in every full check (`grep -rh 'ready for transitions after'
-$ROOT/work/mx-<TAG>.log`) and compare them with FLAKES.md F13's table. An N that climbs from run to
+$ROOT/work/mx-<TAG>.log`) and compare them with every DRP's N in FLAKES.md F13's row (full-check
+run 1 at 82a2868fe). An N that climbs from run to
 run is this drift coming back; the wait covers a start of up to 180 s (the type's `ready_s` where
 that is longer), and past that `up` fails.
 
@@ -471,7 +494,7 @@ cat > $ROOT/mx.sh <<'EOF'
 TAG=$1; source $ROOT/simenv.sh $WT || exit 9
 W=$ROOT/work/mx-$TAG; EV=$W-ev
 [ -e $W ] && { echo "$W exists: take a new TAG"; exit 2; }
-mkdir -p $EV
+mkdir -p $EV; export DAQ_SIM_EVIDENCE=$EV    # where each DAQ cycle writes its evidence record
 echo "=== full check $TAG on $(hostname -s) job $SLURM_JOB_ID gpu $G job $GJOB $(date -u +%FT%TZ)"
 daq_sim matrix -w $W --hosts $A,$B --locks /tmp/daq-$A.lock,/tmp/daq-$B.lock \
   --gpu-host $G --gpu-job $GJOB --gpu-gres gpu:l40s:1 --gpu-lock /tmp/daq-$G.lock \
@@ -483,13 +506,20 @@ nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=32 --mem=120G
   bash $ROOT/mx.sh c1 > $ROOT/work/mx-c1.log 2>&1 &
 ```
 
+`DAQ_SIM_EVIDENCE` is where each DAQ cycle writes its evidence record. `--evidence` reaches only
+coverage and the other hosts' `daq_sim matrix` (`matrix.py`), not the cycles, which fall back to
+`$WT/.daq_sim/evidence` (`coverage.evidence_dir`); without the export, A's records would land there
+and coverage over `$EV` would not see them. The full check of the 2026-11-11 sync (def58eaf8)
+exported it the same way. Steps 8 and 9 export it too.
+
 The step has 32 CPUs and 120 GB, as every full check at the campaign's final commits had (its
 `launch.sh`). Every
 run gets a new TAG, so a new work dir and a new evidence dir: a reused one would carry
 earlier results (`"carried": true` in the summary). The run takes 25-40 min (one run took 38 min
-in a slow period). Poll `grep -E '^(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
-(A's 11 types and the programs run print a line as each ends; B's and G's lines are prefixed
-`[<host>]` until the summary). When it has ended, read the summary only:
+in a slow period). Poll `grep -E '^(  \[[^]]*\] )?(TYPE|PROGRAMS|FAILED|MATRIX)' $ROOT/work/mx-c1.log`
+(A's 11 types and the programs run print a line as each ends; until the summary, B's and G's lines,
+`FAILED` among them, are indented two spaces and prefixed `[<host>]`, e.g. `  [sdfmilan082] FAILED
+types/tt/counts: ...`, so a plain `^(TYPE|...)` misses them). When it has ended, read the summary only:
 
 ```bash
 sed -n '/^==== MATRIX SUMMARY/,$p' $ROOT/work/mx-c1.log | grep -E '^(TYPE|PROGRAMS|FEATURE|coverage:|whole|FAILED|MATRIX)'
@@ -612,7 +642,7 @@ What to run after what:
 | a sync (step 5) | build (6), unit tests (7), the cheap tier (8: CI on the pull request and the S3DF run with its corrupt break), the full check, the three breaks and coverage (10) at the sync head, before the merge |
 | a sim change (`psdaq/psdaq/sim`, the sim parts of the drp) | build, unit tests, cheap tier; the types or sections it touches (`daq_sim matrix -w <new dir> --types <T>` or `--only <section>`); the full check before it merges if it touches anything the full check runs |
 | a production (non-sim) change | the same command at the base and at the head (the row's reproducer, or the affected types), so the change shows as the difference; then the full check at the head |
-| a change to `.md` files only | nothing: the last full check still stands for the code |
+| a change to `.md` files only, after the merge | nothing: the last full check still stands for the code (on a sync branch before its merge, step 5: a new full check at the new head) |
 | a failed full check | the list above; a fix is a new commit, which needs its own full check |
 
 ## 12. Where the logs are and how to read a failure
