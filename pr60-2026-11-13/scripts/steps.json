@@ -1,0 +1,83 @@
+[
+ {
+  "send": "export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM"
+ },
+ {
+  "send": "# PR #60's head 358be9a60 (sim/preflight-slowfs-2) on sdfmilan061, a Slurm step in job 44815799 reached through sdfiana025"
+ },
+ {
+  "send": "ssh -t sdfiana025 srun --jobid=44815799 --overlap -w sdfmilan061 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/pr60/rc.sh -i",
+  "expect": "cwang31@sdfmilan061",
+  "timeout": 240
+ },
+ {
+  "send": "cd $R/wt-pr60d"
+ },
+ {
+  "send": "git log -1 --format=\"%H %cI\""
+ },
+ {
+  "send": "git log --oneline -7   # the PR's 6 commits on sim-main 71958f4e8"
+ },
+ {
+  "send": "echo \"local changes: $(git status --short --untracked-files=no | wc -l)\"; date -u; hostname"
+ },
+ {
+  "send": "source ./setup_env_daq.sh >/dev/null 2>&1; echo DAQ_ENV=$CONDA_DEFAULT_ENV",
+  "timeout": 300
+ },
+ {
+  "send": "# the changed preflight as daq_sim up runs it, under this node's DAQ lock: expect PREFLIGHT PASS, rc 0"
+ },
+ {
+  "send": "flock -w 900 /tmp/daq-sdfmilan061.lock bash psdaq/psdaq/sim/preflight.sh; echo \"preflight_rc=$?\"",
+  "expect": "^preflight_rc=\\d",
+  "timeout": 420
+ },
+ {
+  "send": "# a budget too small for the probes: no verdict is read, exit 4 (HUNG)"
+ },
+ {
+  "send": "PF_BUDGET=12 flock -w 900 /tmp/daq-sdfmilan061.lock bash psdaq/psdaq/sim/preflight.sh; echo \"budget12_rc=$?\"",
+  "expect": "^budget12_rc=\\d",
+  "timeout": 180
+ },
+ {
+  "send": "# the gate before the full check: load probes on its three nodes, the sentinels, a fakecam try and its corrupt break"
+ },
+ {
+  "send": "grep -E '^=== |^PROBE|^SENT|^MATRIX' $R/pr60/work/gate-4.log"
+ },
+ {
+  "send": "# the full check at this head (sdfmilan061 + sdfmilan062, GPU types on sdfada018), run before this recording:"
+ },
+ {
+  "send": "grep -E '^=== |^coverage: at|^whole|^MATRIX |MATRIX_EXIT' $R/pr60/work/mx-pr60-4.log"
+ },
+ {
+  "send": "# its three deliberate breaks (each must exit 1):"
+ },
+ {
+  "send": "grep -E '^BREAK' $R/pr60/work/brk-pr60-4.log"
+ },
+ {
+  "send": "# coverage over the full check's evidence:"
+ },
+ {
+  "send": "grep -E '^[0-9]+ rows, |^PASS$|^FAIL|COV_EXIT' $R/pr60/work/cov-pr60-4.log"
+ },
+ {
+  "send": "# the before/after runs (a7a8fa94d against this head), interleaved, on this node:"
+ },
+ {
+  "send": "grep -E '^(STALL|CTX|IOC-BROKEN)' $R/pr60/work/faults-4.log"
+ },
+ {
+  "send": "git rev-parse HEAD; date -u +%FT%TZ"
+ },
+ {
+  "send": "exit",
+  "expect": "exedev@",
+  "timeout": 60
+ }
+]

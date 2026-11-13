@@ -1,0 +1,217 @@
+exedev@velvet-comet:redo$ export R=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening; date -Is; hostname   # this machine: the exe.dev VM
+2026-11-13T21:52:23+00:00
+velvet-comet
+exedev@velvet-comet:redo$ # PR #60's head 358be9a60 (sim/preflight-slowfs-2) on sdfmilan061, a Slurm step in job 44815799 reached through sdfiana025
+exedev@velvet-comet:redo$ ssh -t sdfiana025 srun --jobid=44815799 --overlap -w sdfmilan061 --ntasks=1 --cpus-per-task=8 --mem=16G --pty bash --rcfile $R/pr60/rc.sh -i
+cwang31@sdfmilan061:~$ cd $R/wt-pr60d
+cwang31@sdfmilan061:wt-pr60d$ git log -1 --format="%H %cI"
+358be9a60246f0281f6027468ef31d415524a2b2 2026-11-13T12:45:35-08:00
+cwang31@sdfmilan061:wt-pr60d$ git log --oneline -7   # the PR's 6 commits on sim-main 71958f4e8
+358be9a60 (HEAD, origin/sim/preflight-slowfs-2) sim preflight: the docs say what a stall does to a probe
+73fd4d642 sim preflight: preflight_p4p.py's docstring says what a stall does
+dfa309a56 sim preflight: p4p probe without its SIGALRM backstop; an error making its client is a broken probe
+a7a8fa94d sim docs: the preflight's start-up budget and preflight_p4p.py (F11, F12, R11)
+524378805 sim preflight: one start-up budget for all probes (PF_BUDGET 200 s), not a fixed outer timeout per probe
+64d6e414f sim preflight: the p4p probes as preflight_p4p.py, imports timed, F12's context from the file next to it
+71958f4e8 (origin/sim-main, origin/HEAD) Merge pull request #59 from carbonscott/sync/upstream-2026-11-12
+cwang31@sdfmilan061:wt-pr60d$ echo "local changes: $(git status --short --untracked-files=no | wc -l)"; date -u; hostname
+local changes: 0
+Fri Nov 13 09:52:30 PM UTC 2026
+sdfmilan061
+cwang31@sdfmilan061:wt-pr60d$ source ./setup_env_daq.sh >/dev/null 2>&1; echo DAQ_ENV=$CONDA_DEFAULT_ENV
+DAQ_ENV=daq_20250402_r9
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # the changed preflight as daq_sim up runs it, under this node's DAQ lock: expect PREFLIGHT PASS, rc 0
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ flock -w 900 /tmp/daq-sdfmilan061.lock bash psdaq/psdaq/sim/preflight.sh; echo "preflight_rc=$?"
+13:52:38 === preflight on sdfmilan061 (sdfmilan061.sdf.slac.stanford.edu) job=44815799 step=50 user=cwang31
+13:52:38 === OS: Rocky Linux 9.6 (Blue Onyx)  kernel 5.14.0-570.58.1.el9_6.x86_64
+13:52:38 === device check: ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+13:52:38 === isolation env
+ALL_PROXY=http://127.0.0.1:9
+EPICS_BASE_HOST_BIN=/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/epics/bin/linux-x86_64
+EPICS_BASE=/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/epics
+EPICS_BASE_VERSION=7.0.7.0
+EPICS_CA_ADDR_LIST=127.0.0.1
+EPICS_CA_AUTO_ADDR_LIST=NO
+EPICS_CA_NAME_SERVERS=
+EPICS_CA_REPEATER_PORT=15065
+EPICS_CAS_AUTO_BEACON_ADDR_LIST=NO
+EPICS_CAS_BEACON_ADDR_LIST=127.0.0.1
+EPICS_CA_SERVER_PORT=15064
+EPICS_CAS_INTF_ADDR_LIST=127.0.0.1
+EPICS_CAS_SERVER_PORT=15064
+EPICS_HOST_ARCH=linux-x86_64
+EPICS_PVA_ADDR_LIST=127.0.0.1
+EPICS_PVA_AUTO_ADDR_LIST=NO
+EPICS_PVA_BROADCAST_PORT=15076
+EPICS_PVA_NAME_SERVERS=
+EPICS_PVAS_AUTO_BEACON_ADDR_LIST=NO
+EPICS_PVAS_BEACON_ADDR_LIST=127.0.0.1
+EPICS_PVAS_BROADCAST_PORT=15076
+EPICS_PVA_SERVER_PORT=15075
+EPICS_PVAS_INTF_ADDR_LIST=127.0.0.1
+EPICS_PVAS_SERVER_PORT=15075
+FI_PROVIDER=tcp
+http_proxy=http://127.0.0.1:9
+HTTP_PROXY=http://127.0.0.1:9
+https_proxy=http://127.0.0.1:9
+HTTPS_PROXY=http://127.0.0.1:9
+NO_PROXY=localhost,127.0.0.1,sdfmilan061,sdfmilan061
+CONFIGDB_AUTH is set-but-EMPTY
+13:52:38 === 1. HTTPS to pswww through the env (must FAIL)
+curl: (7) Failed to connect to 127.0.0.1 port 9 after 0 ms: Could not connect to server
+http_code=000
+13:52:38 curl rc=7 (0 would mean pswww answered)
+requests probe: imports done in 0.3 s
+blocked: ProxyError HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/devconfigdb/ws/configDB/ (Caused by ProxyError('Unable to conn
+blocked: ProxyError HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws-auth/devlgbk/lgbk/ws/activeexperiment_for_instrument_station (
+13:52:39 python-requests rc=0 (1 would mean pswww answered)
+13:52:39 === 1b. without the proxy env, would the node route to pswww? (local lookup only, no packet sent)
+pswww resolves to: 134.79.138.139
+134.79.138.139 via 172.24.48.7 dev enp65s0np0 src 172.24.48.161 uid 18262 
+(a route here means the dead proxy env is the ONLY barrier for HTTP clients that honour it)
+13:52:39 === 2. pvget (pvAccessCPP) of a production-looking PV (must time out)
+Timeout
+DAQ:NEH:XPM:0:PART:5:Master 
+13:52:44 pvget rc=1
+13:52:44 === 2b. p4p (pvxs) client get, as control.py uses (must time out)
+p4p probe: imports done in 0.9 s
+p4p timeout after 5.0 s (GET_TIMEOUT 5 s): 
+13:52:50 p4p rc=0
+13:52:50 === 3. caget of a production-looking PV (must time out)
+Channel connect timed out: 'DAQ:NEH:XPM:0:PART:5:L0Delay' not found.
+13:52:55 caget rc=1
+13:52:55 === 4. POSITIVE CONTROL: softIocPVA on loopback with the same env (must SUCCEED)
+13:52:56 loopback IOC (pid 454900) started in 622 ms
+SIMW3:PREFLIGHT:VAL <undefined>              42.5 
+SIMW3:PREFLIGHT:VAL            42.5
+p4p probe: imports done in 1.0 s
+p4p local get: 42.5 in 0.02 s
+13:52:57 local pvget rc=0 caget rc=0 p4p rc=0
+listening sockets of the IOC (pid 454900):
+tcp 127.0.0.1:15064
+tcp 127.0.0.1:15075
+udp 0.0.0.0:35092
+udp 0.0.0.0:35790
+udp 0.0.0.0:51307
+udp 0.0.0.0:55321
+udp 127.0.0.1:15064
+udp 127.0.0.1:15076
+udp 172.24.48.161:15076
+udp 172.24.63.255:15076
+udp 224.0.0.128:15076
+killing our caRepeater pid 454885
+13:52:58 === summary: leak=0 positive_control_fail=0
+13:52:58 PREFLIGHT PASS
+preflight_rc=0
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # a budget too small for the probes: no verdict is read, exit 4 (HUNG)
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ PF_BUDGET=12 flock -w 900 /tmp/daq-sdfmilan061.lock bash psdaq/psdaq/sim/preflight.sh; echo "budget12_rc=$?"
+13:52:59 === preflight on sdfmilan061 (sdfmilan061.sdf.slac.stanford.edu) job=44815799 step=50 user=cwang31
+13:52:59 === OS: Rocky Linux 9.6 (Blue Onyx)  kernel 5.14.0-570.58.1.el9_6.x86_64
+13:52:59 === device check: ls /dev/datadev* /dev/pcie_adc* /dev/tpr* 2>&1
+ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+13:53:00 === isolation env
+ALL_PROXY=http://127.0.0.1:9
+EPICS_BASE_HOST_BIN=/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/epics/bin/linux-x86_64
+EPICS_BASE=/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/epics
+EPICS_BASE_VERSION=7.0.7.0
+EPICS_CA_ADDR_LIST=127.0.0.1
+EPICS_CA_AUTO_ADDR_LIST=NO
+EPICS_CA_NAME_SERVERS=
+EPICS_CA_REPEATER_PORT=15065
+EPICS_CAS_AUTO_BEACON_ADDR_LIST=NO
+EPICS_CAS_BEACON_ADDR_LIST=127.0.0.1
+EPICS_CA_SERVER_PORT=15064
+EPICS_CAS_INTF_ADDR_LIST=127.0.0.1
+EPICS_CAS_SERVER_PORT=15064
+EPICS_HOST_ARCH=linux-x86_64
+EPICS_PVA_ADDR_LIST=127.0.0.1
+EPICS_PVA_AUTO_ADDR_LIST=NO
+EPICS_PVA_BROADCAST_PORT=15076
+EPICS_PVA_NAME_SERVERS=
+EPICS_PVAS_AUTO_BEACON_ADDR_LIST=NO
+EPICS_PVAS_BEACON_ADDR_LIST=127.0.0.1
+EPICS_PVAS_BROADCAST_PORT=15076
+EPICS_PVA_SERVER_PORT=15075
+EPICS_PVAS_INTF_ADDR_LIST=127.0.0.1
+EPICS_PVAS_SERVER_PORT=15075
+FI_PROVIDER=tcp
+http_proxy=http://127.0.0.1:9
+HTTP_PROXY=http://127.0.0.1:9
+https_proxy=http://127.0.0.1:9
+HTTPS_PROXY=http://127.0.0.1:9
+NO_PROXY=localhost,127.0.0.1,sdfmilan061,sdfmilan061
+CONFIGDB_AUTH is set-but-EMPTY
+13:53:00 === 1. HTTPS to pswww through the env (must FAIL)
+curl: (7) Failed to connect to 127.0.0.1 port 9 after 0 ms: Could not connect to server
+http_code=000
+13:53:00 curl rc=7 (0 would mean pswww answered)
+requests probe: imports done in 0.3 s
+blocked: ProxyError HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/devconfigdb/ws/configDB/ (Caused by ProxyError('Unable to conn
+blocked: ProxyError HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws-auth/devlgbk/lgbk/ws/activeexperiment_for_instrument_station (
+13:53:00 python-requests rc=0 (1 would mean pswww answered)
+13:53:00 === 1b. without the proxy env, would the node route to pswww? (local lookup only, no packet sent)
+pswww resolves to: 134.79.138.139
+134.79.138.139 via 172.24.48.7 dev enp65s0np0 src 172.24.48.161 uid 18262 
+(a route here means the dead proxy env is the ONLY barrier for HTTP clients that honour it)
+13:53:00 === 2. pvget (pvAccessCPP) of a production-looking PV (must time out)
+Timeout
+DAQ:NEH:XPM:0:PART:5:Master 
+13:53:05 pvget rc=1
+13:53:05 === 2b. p4p (pvxs) client get, as control.py uses (must time out)
+p4p probe: imports done in 1.0 s
+13:53:11 HUNG: p4p not finished when the preflight budget ran out (PF_BUDGET=12 s, stopped after 6 s, rc=124): not read as a verdict
+13:53:11 === summary: leak=0 positive_control_fail=0 hung=p4p
+13:53:11 PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)
+budget12_rc=4
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # the gate before the full check: load probes on its three nodes, the sentinels, a fakecam try and its corrupt break
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ grep -E '^=== |^PROBE|^SENT|^MATRIX' $R/pr60/work/gate-4.log
+=== gate 4 2026-11-13T21:13:44Z WT HEAD 358be9a60246f0281f6027468ef31d415524a2b2 dirty 0
+PROBE sdfmilan061 2026-11-13T21:13:53Z load 8.98 9.09 9.29 others 91 import_s 3.591611665 dd_s 0.670502 cuinit_s none
+PROBE sdfmilan062 2026-11-13T21:14:05Z load 8.88 8.27 8.16 others 81 import_s 4.615570137 dd_s 0.656188 cuinit_s none
+PROBE sdfada018 2026-11-13T21:14:13Z load 8.35 7.93 9.17 others 65 import_s 2.429160947 dd_s 0.649392 cuinit_s 0.079 rc0
+SENT sdfmilan061 lines15=885 max_field=1.870 max_gap=2.88 err=0 last_age=3s OK
+SENT sdfmilan062 lines15=884 max_field=1.833 max_gap=2.84 err=0 last_age=3s OK
+SENT sdfada018 lines15=881 max_field=2.630 max_gap=3.64 err=0 last_age=5s OK
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 in 51 s
+MATRIX FAIL (2 of 7 assertions failed)
+MATRIX_EXIT=1
+=== gate 4 end 2026-11-13T21:16:01Z
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # the full check at this head (sdfmilan061 + sdfmilan062, GPU types on sdfada018), run before this recording:
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ grep -E '^=== |^coverage: at|^whole|^MATRIX |MATRIX_EXIT' $R/pr60/work/mx-pr60-4.log
+=== sdfmilan061 job 44815799 HEAD 358be9a60 dirty 0 2026-11-13T21:16:06Z
+=== full check pr60-4 on sdfmilan061 job 44815799 gpu sdfada018 job 44815797 2026-11-13T21:16:06Z
+coverage: at 358be9a60: 78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+whole matrix at this HEAD (with carried results): PASS
+MATRIX PASS (201 assertions)
+MATRIX_EXIT=0 2026-11-13T21:41:57Z
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # its three deliberate breaks (each must exit 1):
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ grep -E '^BREAK' $R/pr60/work/brk-pr60-4.log
+BREAK register exit 1: MATRIX FAIL (5 of 7 assertions failed) 2026-11-13T21:44:19Z
+BREAK kill-drp exit 1: MATRIX FAIL (5 of 7 assertions failed) 2026-11-13T21:45:31Z
+BREAK corrupt exit 1: MATRIX FAIL (2 of 7 assertions failed) 2026-11-13T21:46:23Z
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # coverage over the full check's evidence:
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ grep -E '^[0-9]+ rows, |^PASS$|^FAIL|COV_EXIT' $R/pr60/work/cov-pr60-4.log
+78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence
+PASS
+COV_EXIT=0
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ # the before/after runs (a7a8fa94d against this head), interleaved, on this node:
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ grep -E '^(STALL|CTX|IOC-BROKEN)' $R/pr60/work/faults-4.log
+STALL base4 at a7a8fa94d: PREFLIGHT_RC=1 13:49:15 PREFLIGHT FAIL: facility service reachable
+STALL head4 at 358be9a60: PREFLIGHT_RC=0 13:49:54 PREFLIGHT PASS
+CTX base4 at a7a8fa94d: rc=0 13:50:09 PREFLIGHT PASS
+CTX head4 at 358be9a60: rc=1 13:50:23 PREFLIGHT FAIL: facility service reachable
+IOC-BROKEN exit at 358be9a60: rc=3 in 34 s: 13:50:57 PREFLIGHT FAIL: loopback EPICS positive control failed
+IOC-BROKEN hang at 358be9a60: rc=4 in 60 s: 13:51:57 PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ git rev-parse HEAD; date -u +%FT%TZ
+358be9a60246f0281f6027468ef31d415524a2b2
+2026-11-13T21:53:23Z
+(daq_20250402_r9) cwang31@sdfmilan061:wt-pr60d$ exit
+exit
+Shared connection to sdfiana025 closed.
+exedev@velvet-comet:redo$ 

@@ -1,0 +1,47 @@
+=== faults on sdfmilan061 job 44815799 2026-11-13T21:48:35Z base a7a8fa94d513f2fdd40a49ec4db9650a8c0fa232 fix 358be9a60246f0281f6027468ef31d415524a2b2 dirty 0/0
+watcher: 21:48:42.878 SIGSTOP pid 445591 comm=python (python /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/wt-pr60/psdaq/psdaq/sim/preflight_p4) for 25 s
+watcher: 21:49:07.906 SIGCONT pid 445591
+STALL base4 at a7a8fa94d: PREFLIGHT_RC=1 13:49:15 PREFLIGHT FAIL: facility service reachable
+p4p probe: imports done in 1.0 s
+psdaq/psdaq/sim/preflight.sh: line 49: 445590 Alarm clock             timeout -k 2 $secs "$@"
+13:49:07 p4p rc=142
+13:49:07 LEAK: p4p got DAQ:NEH:XPM:0:PART:5:Master (or probe broke)
+p4p probe: imports done in 1.0 s
+13:49:15 local pvget rc=0 caget rc=0 p4p rc=0
+13:49:15 === summary: leak=1 positive_control_fail=0
+watcher: 21:49:22.270 SIGSTOP pid 447018 comm=python (python /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/wt-pr60d/psdaq/psdaq/sim/preflight_p) for 25 s
+watcher: 21:49:47.299 SIGCONT pid 447018
+STALL head4 at 358be9a60: PREFLIGHT_RC=0 13:49:54 PREFLIGHT PASS
+p4p probe: imports done in 1.0 s
+p4p timeout after 25.1 s (GET_TIMEOUT 5 s): 
+13:49:47 p4p rc=0
+p4p probe: imports done in 1.0 s
+13:49:54 local pvget rc=0 caget rc=0 p4p rc=0
+13:49:54 === summary: leak=0 positive_control_fail=0
+ctx base4: copy differs from a7a8fa94d in: pvwait.py 
+CTX base4 at a7a8fa94d: rc=0 13:50:09 PREFLIGHT PASS
+p4p probe: imports done in 1.1 s
+p4p timeout after 0.0 s (GET_TIMEOUT 5 s): injected: no client context (pr60 test copy of pvwait.py)
+13:50:02 p4p rc=0
+p4p probe: imports done in 1.0 s
+13:50:09 local pvget rc=0 caget rc=0 p4p rc=0
+13:50:09 === summary: leak=0 positive_control_fail=0
+ctx head4: copy differs from 358be9a60 in: pvwait.py 
+CTX head4 at 358be9a60: rc=1 13:50:23 PREFLIGHT FAIL: facility service reachable
+p4p probe: imports done in 1.0 s
+p4p probe broke: TimeoutError injected: no client context (pr60 test copy of pvwait.py)
+13:50:16 p4p rc=2
+13:50:16 LEAK: p4p got DAQ:NEH:XPM:0:PART:5:Master (or probe broke)
+p4p probe: imports done in 1.0 s
+13:50:23 local pvget rc=0 caget rc=0 p4p rc=0
+13:50:23 === summary: leak=1 positive_control_fail=0
+IOC-BROKEN exit at 358be9a60: rc=3 in 34 s: 13:50:57 PREFLIGHT FAIL: loopback EPICS positive control failed
+13:50:41 loopback IOC (pid 450125) exited before it finished starting:
+fake softIocPVA (pr60 ioc-broken): exits at once, rc 1
+13:50:57 local pvget rc=1 caget rc=1 p4p rc=3
+13:50:57 === summary: leak=0 positive_control_fail=1
+IOC-BROKEN hang at 358be9a60: rc=4 in 60 s: 13:51:57 PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)
+fake softIocPVA (pr60 ioc-broken): never finishes iocInit
+13:51:57 HUNG: the loopback IOC not finished when the preflight budget ran out (PF_BUDGET=60 s, still starting after 42265 ms): not read as a verdict
+13:51:57 === summary: leak=0 positive_control_fail=0 hung=the loopback IOC
+=== end 2026-11-13T21:51:57Z

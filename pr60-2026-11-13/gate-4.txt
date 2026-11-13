@@ -1,0 +1,18 @@
+=== gate 4 2026-11-13T21:13:44Z WT HEAD 358be9a60246f0281f6027468ef31d415524a2b2 dirty 0
+PROBE sdfmilan061 2026-11-13T21:13:53Z load 8.98 9.09 9.29 others 91 import_s 3.591611665 dd_s 0.670502 cuinit_s none
+PROBE sdfmilan062 2026-11-13T21:14:05Z load 8.88 8.27 8.16 others 81 import_s 4.615570137 dd_s 0.656188 cuinit_s none
+PROBE sdfada018 2026-11-13T21:14:13Z load 8.35 7.93 9.17 others 65 import_s 2.429160947 dd_s 0.649392 cuinit_s 0.079 rc0
+SENT sdfmilan061 lines15=885 max_field=1.870 max_gap=2.88 err=0 last_age=3s OK
+SENT sdfmilan062 lines15=884 max_field=1.833 max_gap=2.84 err=0 last_age=3s OK
+SENT sdfada018 lines15=881 max_field=2.630 max_gap=3.64 err=0 last_age=5s OK
+TYPE fakecam      node sdfmilan061 job 44815799 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/pr60/work/cheap-1113T2114/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1926 psana2 1926 with-data 1926 per-event PASS PASS
+TYPE fakecam      node sdfmilan061 job 44815799 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/pr60/work/cheap-1113T2114/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1926 psana2 1926 with-data 1926 per-event PASS PASS
+MATRIX PASS (7 assertions)
+MATRIX_EXIT=0 in 51 s
+TYPE fakecam      node sdfmilan061 job 44815799 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/pr60/work/cheap-1113T2114/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1965 psana2 1965 with-data 1965 per-event FAIL FAIL
+TYPE fakecam      node sdfmilan061 job 44815799 run /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/pr60/work/cheap-1113T2114/break-corrupt/types/fakecam/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 DAQ 1965 psana2 1965 with-data 1965 per-event FAIL FAIL
+FAILED types/fakecam/per-event: xtc2_check --det fakecam: FAIL ['event 500: payload pattern broken: 1 of 60 payload words differ, first lane 0 w32 0xe5e818b0 != 0xe5e8184f']
+FAILED types/fakecam/evidence: no evidence record for det:drp:fakecam (the cycle failed)
+MATRIX FAIL (2 of 7 assertions failed)
+MATRIX_EXIT=1
+=== gate 4 end 2026-11-13T21:16:01Z

@@ -1,0 +1,40 @@
+=== sdfmilan061 job 44815799 HEAD 358be9a60 dirty 0 2026-11-13T21:09:58Z
+files 17
+/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/lib/python3.9/site-packages/pytest_asyncio/plugin.py:208: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts ==============================
+platform linux -- Python 3.9.21, pytest-8.3.4, pluggy-1.5.0
+PySide6 6.7.2 -- Qt runtime 6.7.2 -- Qt compiled 6.7.2
+rootdir: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-daq-hardening/wt-pr60d/psdaq
+configfile: pyproject.toml
+plugins: qt-4.4.0, asyncio-0.24.0
+asyncio: mode=strict, default_loop_scope=None
+collected 426 items
+
+psdaq/psdaq/tests/test_sim_calibws.py ....                               [  0%]
+psdaq/psdaq/tests/test_sim_configdb.py .......                           [  2%]
+psdaq/psdaq/tests/test_sim_configdb_seed_store.py .                      [  2%]
+psdaq/psdaq/tests/test_sim_coverage.py ................................. [ 10%]
+........................................................................ [ 27%]
+........................................................................ [ 44%]
+......................................................                   [ 57%]
+psdaq/psdaq/tests/test_sim_drpgpu.py ..............                      [ 60%]
+psdaq/psdaq/tests/test_sim_features.py ....................              [ 65%]
+psdaq/psdaq/tests/test_sim_framer.py ..........................          [ 71%]
+psdaq/psdaq/tests/test_sim_hsd.py ....                                   [ 72%]
+psdaq/psdaq/tests/test_sim_lgbk.py ....                                  [ 73%]
+psdaq/psdaq/tests/test_sim_matrix.py ........................            [ 78%]
+psdaq/psdaq/tests/test_sim_programs.py ......s........................   [ 85%]
+psdaq/psdaq/tests/test_sim_pvwait.py ...                                 [ 86%]
+psdaq/psdaq/tests/test_sim_rogue_dev.py ............................     [ 93%]
+psdaq/psdaq/tests/test_sim_sim_path.py ..                                [ 93%]
+psdaq/psdaq/tests/test_sim_sls.py ............                           [ 96%]
+psdaq/psdaq/tests/test_sim_xpmdet_types.py .......                       [ 98%]
+psdaq/psdaq/tests/test_simxpm.py ........                                [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] psdaq/psdaq/tests/test_sim_programs.py:125: could not import 'ami': No module named 'ami'
+================== 425 passed, 1 skipped in 222.68s (0:03:42) ==================
+PYTEST_EXIT=0 2026-11-13T21:13:44Z
