@@ -5,6 +5,7 @@ per TCP connection: <int32 fnum><args>, reply <int32 ret>[1000-byte message on F
 with the env's own client tools (sls_detector_put/get) on PATH, one test also drives simsls
 through them.  Every socket is on 127.0.0.1."""
 
+import json
 import os
 import shutil
 import socket
@@ -279,3 +280,135 @@ def test_daq_sim_points_the_module_data_at_loopback():
     assert d['user']['port'] == 31056 and d[':types:']['user']['port'] == 'UINT16'
     assert kw['slsHosts'] == '127.0.0.1:31054' and kw['sim_udp_port'] == '31056'
     assert kw['segNums'] == '0'
+
+
+# ---- the hutch's beam (--beam FILE) -----------------------------------------------------------
+
+def write_beam(path, transmission, is_open):
+    """FILE as a beam feed writes it: a new file renamed over the old one."""
+    tmp = str(path) + '.tmp'
+    with open(tmp, 'w') as f:
+        json.dump({'transmission': transmission, 'open': is_open, 'note': 'ignored'}, f)
+    os.replace(tmp, str(path))
+
+
+def stated_model(seed, n, t, is_open, known=True):
+    """Frame n written out from the formula in simsls's module doc, not from its code."""
+    i = np.arange(512 * 1024, dtype=np.uint64)
+    dark = 1000 + (pattern.pattern(seed, n, i, 16).astype(np.int64) & 0x3f)
+    row, col = np.divmod(np.arange(512 * 1024), 1024)
+    dr, dc = row - 256., col - 512.
+    x = (np.sqrt(dr * dr + dc * dc) - 180.) / 40.
+    s = np.rint(12000. * np.maximum(0., 1. - x * x))
+    e = (900 + int(pattern.mix((n * 0x9e37 + seed) & 0xffffffff)) % 201) / 1000.
+    g = t * e if (known and is_open) else 0.
+    img = np.minimum(dark + np.floor(s * g + 0.5).astype(np.int64), 0x3fff).astype(np.uint16)
+    stamp = b'HS' + bytes([1, (1 if is_open else 0) | (2 if known else 0)]) + struct.pack('<dI', t, seed)
+    img[:16] = np.frombuffer(stamp, np.uint8)
+    return img
+
+
+def signal_pixels(img):
+    return np.asarray(img).ravel()[16:].astype(np.float64)
+
+
+@pytest.mark.parametrize('t, is_open', [(1.0, True), (0.443303, True), (0.121119, True), (0.264907, False)])
+def test_beam_frame_is_the_stated_model(tmp_path, t, is_open):
+    f = tmp_path / 'beam.json'
+    write_beam(f, t, is_open)
+    m = simsls.Module(seed=SEED, beam=str(f))
+    for n in (1, 2, 1000, 123456):
+        img = m.frame_image(n)
+        assert img.dtype == np.uint16 and img.shape == (512 * 1024,)
+        assert np.array_equal(img, stated_model(SEED, n, t, is_open)), n
+        assert simsls.read_stamp(img) == (t, is_open, True, SEED)
+        assert int((img >> 14).max()) == 0                     # gain bits 0: no pixel is 'hot'
+    assert np.array_equal(simsls.coupled_image(SEED, 7, t, is_open), stated_model(SEED, 7, t, is_open))
+
+
+def test_without_beam_frames_are_unchanged():
+    m = simsls.Module(seed=SEED)
+    idx = np.arange(512 * 1024, dtype=np.uint64)
+    for n in (1, 2, 99):
+        assert np.array_equal(m.frame_image(n), pattern.pattern(SEED, n, idx, 16).astype(np.uint16))
+    assert simsls.read_stamp(m.frame_image(1)) is None and 'beam_changes' not in m.counts
+
+
+def test_beam_change_applies_from_the_next_frame(tmp_path):
+    f = tmp_path / 'beam.json'
+    write_beam(f, 1.0, True)
+    m = simsls.Module(seed=SEED, beam=str(f))
+    bright = m.frame_image(1)
+    assert signal_pixels(bright).max() > 10000
+    write_beam(f, 1.0, False)                                  # the stopper closes
+    dark = m.frame_image(2)
+    assert simsls.read_stamp(dark) == (1.0, False, True, SEED)
+    px = signal_pixels(dark)
+    assert px.min() >= 1000 and px.max() <= 1063               # the dark band: pedestal + 0-63 noise
+    assert abs(px.mean() - 1031.5) < 0.2
+    assert np.array_equal(dark, stated_model(SEED, 2, 1.0, False))
+    write_beam(f, 0.25, True)
+    assert simsls.read_stamp(m.frame_image(3))[:2] == (0.25, True)
+    assert m.counts['beam_changes'] == 3
+
+
+def test_mean_signal_follows_the_transmission(tmp_path):
+    """The step check of a joint demo: (mean - 1031.5) / full-beam signal = T, within E_n."""
+    f = tmp_path / 'beam.json'
+    m = simsls.Module(seed=SEED, beam=str(f))
+    s = simsls.beam_profile()[16:].mean()
+    assert 1300 < s < 1450                                     # about 1380 ADU at full beam
+    for n, t in enumerate((1.0, 0.443303, 0.264907, 0.121119), start=10):
+        write_beam(f, t, True)
+        got = signal_pixels(m.frame_image(n)).mean() - 1031.5
+        want = t * simsls.pulse_energy(SEED, n) * s
+        assert abs(got - want) < 0.002 * want + 0.2, (t, got, want)
+    assert {simsls.pulse_energy(SEED, n) for n in range(1, 2000)} <= {x / 1000. for x in range(900, 1101)}
+
+
+def test_beam_state_unknown_until_valid_and_bad_files_keep_the_last(tmp_path):
+    f = tmp_path / 'beam.json'
+    m = simsls.Module(seed=SEED, beam=str(f))
+    img = m.frame_image(1)                                     # no file yet: unknown, dark
+    assert simsls.read_stamp(img) == (0., False, False, SEED) and signal_pixels(img).max() <= 1063
+    f.write_text('{"transmission": 0.5')                       # not JSON
+    assert simsls.read_stamp(m.frame_image(2))[2] is False
+    write_beam(f, 0.5, True)
+    assert simsls.read_stamp(m.frame_image(3)) == (0.5, True, True, SEED)
+    for bad in ('{"transmission": -1, "open": true}', '{"transmission": "nan", "open": true}',
+                '{"transmission": 0.1, "open": 1}', '{"open": true}', '[]'):
+        f.write_text(bad)
+        assert simsls.read_stamp(m.frame_image(4)) == (0.5, True, True, SEED), bad
+    assert m.beam.errors == 6
+
+
+def test_one_frame_per_trigger_follows_the_beam(sim, tmp_path):
+    """Through the module's own data path: each trigger's frame is made with FILE's state then."""
+    f = tmp_path / 'beam.json'
+    write_beam(f, 0.443303, True)
+    sim.module.beam, sim.module.model = simsls.BeamFile(str(f)), simsls.BeamModel(sim.module.base)
+    sim.module.counts['beam_changes'] = 0
+    p = sim.port
+    rx = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 128 << 10)
+    rx.bind(('127.0.0.1', 0))
+    rx.settimeout(5)
+    sim.module.rcvbuf = rx.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
+    configure(p, rx.getsockname()[1])
+    ok(p, 107, 'Q', (1,))
+    ok(p, 19)
+    trig = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    for frame, (t, is_open) in ((1, (0.443303, True)), (2, (0.443303, False))):
+        write_beam(f, t, is_open)
+        trig.sendto(b'TRIG', ('127.0.0.1', p))
+        packets = {}
+        while len(packets) < 128:
+            d = rx.recv(9000)
+            h = simsls.HEADER.unpack(d[:48])
+            assert h[0] == frame
+            packets[h[2]] = d[48:]
+        img = np.frombuffer(b''.join(packets[k] for k in range(128)), np.uint16)
+        assert np.array_equal(img, stated_model(SEED, frame, t, is_open))
+    ok(p + 1, 20)
+    rx.close()
+    trig.close()
