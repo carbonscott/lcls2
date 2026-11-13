@@ -598,19 +598,22 @@ the same, so the failed run stands against the child too.
    signal`; it has never failed an assertion. Do not stop at it: look for the first error before it.
 
 **Preflight exit 4** (`PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)`). Each
-DAQ start runs `psdaq/psdaq/sim/preflight.sh` first. Since F11's fix, a probe killed by its outer
-timeout prints `HUNG: <probe> killed by its <N> s outer timeout (attempt <i>)` and runs once more;
-exit 4 means a probe hung again, or hung after the 2 re-runs a preflight allows. Nothing was
-started, and it is not a leak or EPICS verdict (those stay exit 1 and exit 3, read at the first
-attempt). In a full check it shows as a `FAILED` line with `preflight rc=4` and the run ends `MATRIX
+DAQ start runs `psdaq/psdaq/sim/preflight.sh` first. Every probe runs under what is left of one
+budget for the whole preflight, `PF_BUDGET` (200 s), so a probe that stalls and then finishes is read
+as usual; exit 4 means a probe was still running when the budget ran out: `HUNG: <probe> not finished
+when the preflight budget ran out (PF_BUDGET=200 s, stopped after <N> s, rc=124): not read as a
+verdict`. (Between F11's fix, 43b3c8d40, and 524378805, each probe had its own outer timeout
+of 12-45 s and one re-run: `HUNG: <probe> killed by its <N> s outer timeout (attempt <i>)`.) Nothing was
+started, and it is not a leak or EPICS verdict (those stay exit 1 and exit 3; a leak seen before the
+hang still exits 1). In a full check it shows as a `FAILED` line with `preflight rc=4` and the run ends `MATRIX
 FAIL`: a failed run (F11's row), not a cut. Stop the series, compare the `HUNG` times
 (`grep -n HUNG <the DAQ's dir>/logs/preflight.log`) with the sentinel lines, and start no run until
 the gate is open again.
 
 A preflight failure takes two other forms in a full check:
 - `up FAILED: Command ... timed out after 240 seconds`, with no `preflight rc=` line: the preflight
-  as a whole ran past `daq_sim up`'s 240 s (a stall outside the probes, which the 223 s bound of the
-  probes does not cover). `daq_sim up` then tears down what carries the work dir's tag and starts
+  as a whole ran past `daq_sim up`'s 240 s (a stall outside the probes, which the budget does not
+  stop). `daq_sim up` then tears down what carries the work dir's tag and starts
   nothing. A failed run, not a cut.
 - `preflight rc=1` with `LEAK: p4p got ... (or probe broke)` in `preflight.log`, after 9 lines
   `preflight p4p: PVA client context: Unable to bind random UDP6 port (attempt <n> of 10), retrying`,
@@ -618,8 +621,9 @@ A preflight failure takes two other forms in a full check:
   could not make its client context in 10 attempts (FLAKES.md F12), not a leak. A failed run all the
   same. (Before e223e91cb the same race showed as a traceback ending `RuntimeError: Unable to bind
   random UDP6 port`, then `p4p rc=1`, at the first failed bind.) A broken probe also prints a
-  `LEAK:` line (`(or probe broke)`, `p4p probe broke: <exception>`, or an import error of
-  `psdaq.sim.pvwait` when the build is missing or older). Treat every `LEAK:` line as a real leak
+  `LEAK:` line (`(or probe broke)`, `p4p probe broke: <exception>`, or, before 64d6e414f, an import
+  error of `psdaq.sim.pvwait` when the build was missing or older; `preflight_p4p.py` now takes
+  `pvwait.py` from its own directory). Treat every `LEAK:` line as a real leak
   verdict until the log shows `p4p probe broke` or a traceback and no `REACHED` line: stop
   everything and find what reached the facility service.
 
