@@ -15,7 +15,7 @@ Everything in `psdaq/psdaq/sim/`:
 |---|---|
 | `daq_sim.py` (console script `daq_sim`) | `up` / `status` / `cycle` / `e2e` / `down`: the one command |
 | `sim_env.sh` | Isolation env. EPICS CA and PVA stay on loopback, on ports 15064/15065/15075/15076. HTTP(S) goes to a dead proxy at `http://127.0.0.1:9`. Production credentials are emptied. `FI_PROVIDER=tcp`. `daq_sim` sources it itself. |
-| `preflight.sh` | Fail-closed check that `daq_sim up` runs first. It must print `PREFLIGHT PASS`. |
+| `preflight.sh`, `preflight_p4p.py` | Fail-closed check that `daq_sim up` runs first. It must print `PREFLIGHT PASS`. `preflight_p4p.py` is its p4p client probe. |
 | `configdb_server.py`, `configdb_seed.py` | Config DB stand-in, seeded with `tst/BEAM/tmoteb_0` (persistValue 0xdeadbeef) and `tst/BEAM/fakecam_0` (`user.sim_seed`). |
 | `lgbk_server.py` | Run DB / eLog stand-in. Experiment `tstx00001`; runs are numbered from 1. |
 | `calibws_server.py` | Calibration constants stand-in (the `calib_ws` that `psalg.calibdb` reads), for `drp_gpu -D epixuhr3x2` (§3h). |
@@ -83,7 +83,13 @@ nohup srun --jobid=$JOB --ntasks=1 --cpus-per-task=32 --mem=64G \
 sleep 45; cat $ROOT/daq_sim_up.log
 ```
 `up` takes about 30 s:
-- The preflight takes about 22 s and must print `PREFLIGHT PASS`.
+- The preflight takes 19-38 s on S3DF milano nodes and must print `PREFLIGHT PASS`. Most of that time is
+  starting its Python and EPICS clients from the conda env on the shared filesystem (importing p4p alone took 1-9 s
+  on S3DF on 2026-11-12). Each probe's network part has its own bound (5 s for the EPICS gets); starting the clients is
+  bounded only by one budget for the whole preflight, `PF_BUDGET` (200 s, inside `up`'s 240 s limit). A probe
+  still running when that budget runs out is not read as a verdict: the preflight prints `HUNG: ...` and exits 4.
+  A probe that stalls past its client's own deadline (wall-clock time) reads as that client's no answer: for a leak
+  probe, no leak.
 - The config DB is seeded, and the run DB and simxpm start.
 - procmgr starts control, teb0 and fakecam_0.
 - `up` waits for all three to be RUNNING and for control to answer in state `reset`.
