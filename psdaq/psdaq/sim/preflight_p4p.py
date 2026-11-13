@@ -6,9 +6,11 @@
 
 GET_TIMEOUT bounds the network part: search, connect and get. Nothing else is bounded here: starting the interpreter
 and importing p4p read the DAQ's conda env from a shared filesystem and their time varies with it (see "Time bounds"
-in preflight.sh), and a probe that stalls is preflight.sh's to stop (its budget: HUNG, exit 4, never a verdict), not
-this script's. The first line says how long the imports took, so a probe that preflight.sh's budget stopped before
-it reached the network is told apart from one that reached it.
+in preflight.sh). Only preflight.sh's budget stops a stalled probe, and only a probe still running when the budget
+runs out is HUNG (exit 4, no verdict). A stall that ends sooner is read as usual, and one that overlaps the get's
+wait uses that wait up: GET_TIMEOUT is wall-clock time, so a probe frozen through it reads as no answer (exit 0 in
+'timeout' mode, 3 in 'get' mode). The first line says how long the imports took and the timeout line how long the
+get took, so a stalled probe shows in the log.
 
 The client context comes from pvwait.context (flake register F12: it retries only PVXS's IPv6 bind race), taken
 from the pvwait.py next to this file, so the probe never depends on which psdaq build is on the path.
