@@ -600,7 +600,8 @@ the same, so the failed run stands against the child too.
 **Preflight exit 4** (`PREFLIGHT FAIL: probe hung (not a leak verdict, not an EPICS verdict)`). Each
 DAQ start runs `psdaq/psdaq/sim/preflight.sh` first. Every probe runs under what is left of one
 budget for the whole preflight, `PF_BUDGET` (200 s), so a probe that stalls and then finishes is read
-as usual; exit 4 means a probe was still running when the budget ran out: `HUNG: <probe> not finished
+as usual (a stall past its client's own wall-clock deadline reads as no answer: for a leak probe, no
+leak); exit 4 means a probe was still running when the budget ran out: `HUNG: <probe> not finished
 when the preflight budget ran out (PF_BUDGET=200 s, stopped after <N> s, rc=124): not read as a
 verdict`. (Between F11's fix, 43b3c8d40, and 524378805, each probe had its own outer timeout
 of 12-45 s and one re-run: `HUNG: <probe> killed by its <N> s outer timeout (attempt <i>)`.) Nothing was

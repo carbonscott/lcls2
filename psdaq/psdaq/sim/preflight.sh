@@ -1,5 +1,5 @@
 #!/bin/bash
-# preflight.sh -- fail-closed isolation check for the hardware-free DAQ.
+# preflight.sh -- fail-closed isolation check for the hardware-free DAQ: daq_sim up starts nothing unless it exits 0.
 # Run ON THE COMPUTE NODE, e.g.
 #   srun --jobid=<job> --ntasks=1 --cpus-per-task=2 --mem=4G bash psdaq/psdaq/sim/preflight.sh
 # Exit codes: 0 = isolated and local EPICS works
@@ -14,12 +14,15 @@
 # metadata latency varies (on S3DF, weka /sdf/group: importing p4p is ~3,400 stat/open calls, 3-9 s on
 # 2026-11-12, and more when the filesystem is slow). So start-up has no bound per probe, only one budget for the
 # whole preflight: every probe runs under `timeout` with what is left of PF_BUDGET seconds (default 200; daq_sim
-# up gives the preflight 240 s, so the preflight prints its own verdict). Commands outside the probes (hostname -f,
-# getent, ss) have no timeout of their own: their time counts against the budget, and a stall in one past 240 s
+# up gives the preflight 240 s, so the preflight prints its own verdict; PF_BUDGET is not checked: give it a whole
+# number of seconds). Commands outside the probes (such as hostname -f, getent, ip route, ss and the clean-up's wait
+# for the IOC) have no timeout of their own: their time counts against the budget, and a stall in one past 240 s
 # ends in daq_sim up's timeout, which also starts nothing. A probe stopped by the budget
 # (rc 124, or 137 after the -k grace) is never read as a verdict, pass or fail: it prints 'HUNG: ...' and the
 # preflight ends with exit 4. It is not re-run: the budget a re-run would need is spent. A probe that stalls
-# and then finishes within the budget is read as usual. Any other rc is read at once, as before.
+# and then finishes within the budget is read as usual, and a client's own bound is wall-clock time: a stall past
+# that deadline reads as the client's no answer (for a leak probe, no leak; for the positive control, exit 3), even
+# if a server would have answered. Any other rc is read at once, as before.
 # It never sends a packet to a facility host on purpose: the pswww probe goes
 # through the env's dead proxy, and the no-proxy check is a local route lookup only.
 SIMDIR=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)

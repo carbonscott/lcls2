@@ -88,6 +88,8 @@ sleep 45; cat $ROOT/daq_sim_up.log
   on S3DF on 2026-11-12). Each probe's network part has its own bound (5 s for the EPICS gets); starting the clients is
   bounded only by one budget for the whole preflight, `PF_BUDGET` (200 s, inside `up`'s 240 s limit). A probe
   still running when that budget runs out is not read as a verdict: the preflight prints `HUNG: ...` and exits 4.
+  A probe that stalls past its client's own deadline (wall-clock time) reads as that client's no answer: for a leak
+  probe, no leak.
 - The config DB is seeded, and the run DB and simxpm start.
 - procmgr starts control, teb0 and fakecam_0.
 - `up` waits for all three to be RUNNING and for control to answer in state `reset`.
