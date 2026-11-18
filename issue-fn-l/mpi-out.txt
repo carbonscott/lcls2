@@ -1,0 +1,6 @@
+== mpirun -n 3, bigdata path 200 chars
+      2 rank done, 0 events
+      1 rank done, 20 events
+== mpirun -n 3, bigdata path 201 chars
+      3 FileNotFoundError: [Errno 2] No such file or directory: np.str_('$T/d…d/tmoacr019-r0004-s000-c000.xtc')
+      1 MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD

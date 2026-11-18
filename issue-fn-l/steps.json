@@ -1,0 +1,43 @@
+[
+ {
+  "send": "ssh -t sdfiana025 bash --rcfile /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/fnl-repro/rec_rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 120
+ },
+ {
+  "send": "hostname; date -Is"
+ },
+ {
+  "send": "source /sdf/group/lcls/ds/ana/sw/conda2/manage/bin/psconda.sh >/dev/null; echo \"conda env: $CONDA_DEFAULT_ENV\"; P=$(python -c 'import psana, os; print(os.path.dirname(psana.__file__))'); echo $P",
+  "timeout": 300
+ },
+ {
+  "send": "grep -n FN_L $P/dgrammanager.py     # the xtc file list is a NumPy array of 200-char strings"
+ },
+ {
+  "send": "python -c \"import numpy as np; p = 'x' * 265; print(len(p), '->', len(np.asarray([p], dtype='U200')[0]))\"     # NumPy cuts longer strings silently",
+  "timeout": 120
+ },
+ {
+  "send": "head -4 repro_fn_l.py; ls -l /sdf/data/lcls/ds/prj/public01/xtc/tmoacr019-r0004-s000-c000.xtc2"
+ },
+ {
+  "send": "python repro_fn_l.py 2>psana-stderr.txt | tee repro-out.txt",
+  "timeout": 900
+ },
+ {
+  "send": "grep -a -o 'No such file.*' psana-stderr.txt | head -1 | sed 's/d\\{20,\\}/d\u2026d/g'     # psana's own error: the path lost its last character"
+ },
+ {
+  "send": "T=$(mktemp -d); D=$(python mkdir_n.py $T 201); strace -f -qq -e trace=openat,stat,newfstatat,statx -o $T/trace.txt python -c \"from psana import DataSource; DataSource(files='$D/tmoacr019-r0004-s000-c000.xtc2')\" >/dev/null 2>&1; grep -a 'r0004-s000-c000.xtc' $T/trace.txt | sed \"s/d\\{20,\\}/d\u2026d/g; s|$T|\\$T|g; s/^[0-9]* //\"     # the kernel's view: stat on the full path, open on the cut one",
+  "timeout": 300
+ },
+ {
+  "send": "python repro_fn_l.py --patch 2>/dev/null | tee repro-patch-out.txt | tail -11     # same script, FN_L raised to 4096 first",
+  "timeout": 900
+ },
+ {
+  "send": "for n in 200 201; do D=$(python mkdir_n.py $T $n); echo \"== mpirun -n 3, bigdata path $n chars\"; mpirun -n 3 python mpi_check.py $D 2>&1 | grep -a -E 'rank done|^FileNotFoundError|MPI_ABORT was' | sed \"s/d\\{20,\\}/d\u2026d/g; s|$T|\\$T|g\" | sort | uniq -c; done 2>&1 | tee mpi-out.txt",
+  "timeout": 600
+ }
+]

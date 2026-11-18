@@ -1,0 +1,28 @@
+psana /sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana  FN_L=200
+
+bigdata path 65 chars, smalldata path 79 chars
+Problem reading dgram header.
+  files=<s000 bigdata file>     OK   3622 events
+  exp, run, dir, max_events=20  OK   20 events
+
+bigdata path 199 chars, smalldata path 213 chars
+Problem reading dgram header.
+  files=<s000 bigdata file>     OK   3622 events
+  exp, run, dir, max_events=20  OK   20 events
+
+bigdata path 200 chars, smalldata path 214 chars
+Problem reading dgram header.
+  files=<s000 bigdata file>     OK   3622 events
+  exp, run, dir, max_events=20  OK   20 events
+
+bigdata path 201 chars, smalldata path 215 chars
+  files=<s000 bigdata file>     FAIL AttributeError: 'Logger' object has no attribute 'exception'
+                                (while handling FileNotFoundError: psana opened a 200-char path ending '...-s000-c000.xtc')
+  exp, run, dir, max_events=20  FAIL SystemExit: 1
+                                (while handling FileNotFoundError: psana opened a 200-char path ending '...-s000-c000.xtc')
+
+bigdata path 260 chars, smalldata path 274 chars
+  files=<s000 bigdata file>     FAIL AttributeError: 'Logger' object has no attribute 'exception'
+                                (while handling FileNotFoundError: psana opened a 200-char path ending '...dddddddddddddd')
+  exp, run, dir, max_events=20  FAIL SystemExit: 1
+                                (while handling FileNotFoundError: psana opened a 200-char path ending '...dddddddddddddd')
