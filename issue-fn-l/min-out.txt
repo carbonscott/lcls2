@@ -1,0 +1,25 @@
+215 chars, exists: True
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/singlefile_ds.py", line 52, in _setup_run
+    self.dm = DgramManager(file, config_consumers=[self.dsparms])
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/dgrammanager.py", line 153, in __init__
+    [os.open(xtc_file, os.O_RDONLY) for xtc_file in self.xtc_files],
+     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: np.str_('/lscratch/cwang31/tmp/tmp724l1ugd/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/tmoacr019-r0004')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/fnl-repro/min_repro.py", line 10, in <module>
+    ds = DataSource(files=path)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/datasource.py", line 250, in DataSource
+    return SingleFileDataSource(*args, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/singlefile_ds.py", line 15, in __init__
+    self._setup_run()
+    ~~~~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/singlefile_ds.py", line 56, in _setup_run
+    self.logger.exception(f"Failed to set up run for file: {file}")
+    ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Logger' object has no attribute 'exception'
+exit 1
