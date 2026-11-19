@@ -96,7 +96,8 @@ class Keys(unittest.TestCase):
             self.assertEqual(make_keys_v3.main(['--check']), 0)
 
     def test_every_scored_case_has_a_key_with_closed_lists(self):
-        cat = json.load(open(os.path.join(os.path.dirname(HERE), 'catalog.json')))
+        with open(os.path.join(os.path.dirname(HERE), 'catalog.json')) as f:
+            cat = json.load(f)
         want = {c['id'] for c in cat['cases'] if c['set'] in ('core', 'full')}
         self.assertEqual(set(KEYS['cases']), want)
         for cid, k in KEYS['cases'].items():
@@ -275,6 +276,17 @@ class Caching(Base):
         self.score('reg-cfg-tt', rec(problems=[cause('tt_0', 'configure', 'Verify error')]), 'Another report.', cache=cache)
         self.assertEqual(self.calls(), 'xjjjx')                   # same statement: the judge votes come from the cache
 
+    def test_the_default_command_saves_no_session_and_the_cache_ignores_the_command(self):
+        argv = score.Caller().argv()
+        self.assertEqual(argv[:2], ['claude', '-p'])
+        self.assertIn('--no-session-persistence', argv)             # no folder per call under ~/.claude/projects
+        cache = os.path.join(self.tmp, 'cache')
+        prompt = 'REPORT:\n<<<\nA report.\n>>>'
+        first = score.Caller('fake', self.xcmd, cache).call(prompt, 'extract')
+        again = score.Caller('fake', ['false'], cache).call(prompt, 'extract')     # another command, same model and prompt
+        self.assertEqual((first['cached'], again['cached'], again['text']), (False, True, first['text']))
+        self.assertEqual(self.calls(), 'x')
+
 
 class Pipeline(Base):
     def test_main_scores_a_results_folder_and_keeps_quiet_ids_quiet(self):
@@ -308,6 +320,7 @@ class Pipeline(Base):
             text = f.read()
         self.assertIn('ALL', text)
         self.assertIn('"scorer_calls": 5', text)
+        self.assertIn(' scorer calls ', text.splitlines()[0])        # not 'calls': pilot.py's calls are calls to evidence
 
 
 if __name__ == '__main__':

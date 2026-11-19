@@ -4,6 +4,7 @@ evidence.py.  No model calls: the agent is a scripted program.
     python3 -m unittest discover -s tests -v
 """
 import datetime
+import io
 import json
 import os
 import shutil
@@ -12,6 +13,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
@@ -22,6 +24,26 @@ import tree      # noqa: E402
 
 EVAL = os.path.dirname(HERE)
 T0 = '2026-11-09 12:12:52'
+
+
+def read_file(path, mode='r'):
+    with open(path, mode) as f:
+        return f.read()
+
+
+def write_file(path, data, mode='w'):
+    with open(path, mode) as f:
+        f.write(data)
+
+
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
+def write_json(obj, path):
+    with open(path, 'w') as f:
+        json.dump(obj, f)
 
 
 def epoch_of(local):
@@ -37,13 +59,13 @@ def write_pool(work, name, prefix, host, procs, ym='2026/11', day='2026-11-09'):
     hhmmss = prefix[3:]
     for proc, lines in sorted(procs.items()):
         f = '%s_%s:%s.log' % (prefix, host, proc)
-        open(os.path.join(logs, f), 'w').write('\n'.join(lines) + '\n')
+        write_file(os.path.join(logs, f), '\n'.join(lines) + '\n')
         t = epoch_of('%s %s' % (day, hhmmss)) + 60
         os.utime(os.path.join(logs, f), (t, t))
         files.append(f)
     s = {'prefix': prefix, 'host': host, 'ym': ym, 'start': '%s %s' % (day, hhmmss), 'files': files, 'planted': [],
          'first': '%s %s' % (day, hhmmss), 'last': '%s %s' % (day, hhmmss), 'zst': False}
-    json.dump({'leaks': [], 'compress_before': None, 'sessions': [s]}, open(os.path.join(pdir, 'pool.json'), 'w'))
+    write_json({'leaks': [], 'compress_before': None, 'sessions': [s]}, os.path.join(pdir, 'pool.json'))
     return s
 
 
@@ -76,8 +98,8 @@ class Fixture(object):
                                'key_source': 'planted', 'key': {'fault': {'component': ['tt_0'], 'transition': ['configure'], 'mechanism': ['Verify error'],
                                                                           'summary': 'tt_0 failed configure: Verify error.'}, 'sessions': ['09_12:12:52']}}]}
         self.catalog = os.path.join(self.tmp, 'catalog.json')
-        json.dump(self.cat, open(self.catalog, 'w'))
-        self.table = json.load(open(os.path.join(EVAL, 'cases_v3.json')))
+        write_json(self.cat, self.catalog)
+        self.table = read_json(os.path.join(EVAL, 'cases_v3.json'))
         self.table['cases'] = [{'id': 'c1', 'families': ['A', 'B'], 'pool': 'one', 'healthy': False, 'keyed_launches': ['09_12:12:52'],
                                 'crib': 'tt_0 failed configure: Verify error.', 'starve_component': 'tt_0',
                                 'starve_files': ['09_12:12:52_sdfmilan001:tt_0.log'],
@@ -92,7 +114,7 @@ class Fixture(object):
         for c in self.table['cases']:
             c['m1'].update((k, self.manifest['cases'][c['id']][k]) for k in ('keyed_stamp', 'keyed_dir', 'keyed_files', 'starve_files', 'pointer'))
         self.cases_v3 = os.path.join(self.tmp, 'cases_v3.json')
-        json.dump(self.table, open(self.cases_v3, 'w'))
+        write_json(self.table, self.cases_v3)
 
 
 class Tree(unittest.TestCase, Fixture):
@@ -116,7 +138,7 @@ class Tree(unittest.TestCase, Fixture):
 
     def test_text_is_rewritten_hutch_and_dates_but_nothing_else(self):
         p = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11/17_12:12:52_drp-srcf-cmp014:control.log')
-        text = open(p).read()
+        text = read_file(p)
         self.assertNotIn('tst', text)
         self.assertIn('2026-11-17 12:12:01,001 mfx-control[101]', text)
         self.assertIn('/sdf/data/lcls/ds/mfx/mfxx00001/', text)
@@ -127,7 +149,7 @@ class Tree(unittest.TestCase, Fixture):
         self.assertEqual(tree.node_names(text), [])
         self.assertIn('Tue, 17 Nov 2026 20:13:00 GMT', text)
         self.assertIn('@ Tue Nov 17 12:12:03 2026', text)
-        self.assertEqual(len(text.splitlines()), len(open(os.path.join(self.work, 'pools', harvest.pool_id('one'), 'logs/2026/11/09_12:12:52_sdfmilan001:control.log')).read().splitlines()))
+        self.assertEqual(len(text.splitlines()), len(read_file(os.path.join(self.work, 'pools', harvest.pool_id('one'), 'logs/2026/11/09_12:12:52_sdfmilan001:control.log')).splitlines()))
         self.assertEqual(self.manifest['stale_local_dates'], 0)
         self.assertEqual(self.manifest['cases']['c1']['leftovers'], {})
         self.assertEqual((self.manifest['cases']['c1']['node_leftovers'], self.manifest['shared_node_leftovers']), (0, 0))
@@ -143,7 +165,7 @@ class Tree(unittest.TestCase, Fixture):
 
     def test_partition_configs_sit_in_daq_scripts(self):
         p = os.path.join(self.roots, 'm1', 'c1', tree.SCRIPTS, 'mfx.py')
-        text = open(p).read()
+        text = read_file(p)
         self.assertIn('{ host: collect_host,          id: "control", flags: "spu"', text)
         self.assertIn('collect_host = "drp-srcf-cmp014"', text)
         self.assertIn('control -P mfx', text)
@@ -211,7 +233,7 @@ class Tree(unittest.TestCase, Fixture):
         for l in m2['launches']:
             for f in l['files']:
                 a, b = (os.path.join(r, 'shared', l['dir'], f) for r in (self.roots, out2))
-                self.assertEqual((open(a, 'rb').read(), int(os.stat(a).st_mtime)), (open(b, 'rb').read(), int(os.stat(b).st_mtime)))
+                self.assertEqual((read_file(a, 'rb'), int(os.stat(a).st_mtime)), (read_file(b, 'rb'), int(os.stat(b).st_mtime)))
 
     def test_dst_and_utc_shift(self):
         # 2026-11-09 21:36 PST is 05:36Z on the 10th; moved to 2026-09-16 (PDT) it is 04:36Z on the 17th
@@ -261,7 +283,7 @@ class Hosts(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get('HUTCH_RESOURCES'), 'set HUTCH_RESOURCES to the hutch-resources skill folder')
     def test_hosts_are_the_maps_mfx_hosts(self):
-        m = json.load(open(os.path.join(os.environ['HUTCH_RESOURCES'], 'resources', 'mfx-resources.json')))
+        m = read_json(os.path.join(os.environ['HUTCH_RESOURCES'], 'resources', 'mfx-resources.json'))
         nodes = m['code']['daq_nodes']['verified_active_assignments_2026_09_20']
         h = tree.HOSTS['mfx']
         for host in [h['collect'], h['gui'], h['monitor']] + h['drps']:
@@ -294,7 +316,7 @@ class RunV3(unittest.TestCase, Fixture):
     def setUp(self):
         Fixture.make(self)
         self.agent = os.path.join(self.tmp, 'agent.py')
-        open(self.agent, 'w').write(FAKE_M1)
+        write_file(self.agent, FAKE_M1)
         self.out = os.path.join(self.tmp, 'results')
 
     def tearDown(self):
@@ -307,7 +329,8 @@ class RunV3(unittest.TestCase, Fixture):
             args += ['--skills', s]
         if control:
             args += ['--control', control]
-        return run.main(args)
+        with redirect_stdout(io.StringIO()):
+            return run.main(args)
 
     def one(self, arm):
         (name,) = os.listdir(os.path.join(self.out, arm))
@@ -316,24 +339,24 @@ class RunV3(unittest.TestCase, Fixture):
     def test_m1_prompt_has_hutch_vague_time_and_today_but_no_path_or_window(self):
         self.assertEqual(self.run_('m1-none', 'm1'), 0)
         d = self.one('m1-none')
-        prompt = open(os.path.join(d, 'prompt.txt')).read()
+        prompt = read_file(os.path.join(d, 'prompt.txt'))
         self.assertIn('MFX hutch', prompt)
         self.assertIn('Wednesday 2026-11-18, 09:40', prompt)
         self.assertIn('On Tuesday around lunch', prompt)
         self.assertIn('ask-operator', prompt)
         for leak in ('/sdf', 'tstopr', 'mfxopr', '12:12', '2026-11-17', 'logs'):
             self.assertNotIn(leak, prompt)
-        meta = json.load(open(os.path.join(d, 'meta.json')))
+        meta = read_json(os.path.join(d, 'meta.json'))
         self.assertEqual((meta['mode'], meta['control'], meta['total_cost_usd'], meta['model'], meta['turns']), ('m1', None, 0.25, 'claude-haiku-x', 4))
         self.assertTrue(meta['logs_src'].endswith(os.path.join('roots', 'm1', 'c1')))
 
     def test_ask_operator_answers_from_the_table_and_logs_each_question(self):
         self.run_('m1-none', 'm1')
         d = self.one('m1-none')
-        (q,) = [json.loads(l) for l in open(os.path.join(d, 'operator.jsonl'))]
+        (q,) = [json.loads(l) for l in read_file(os.path.join(d, 'operator.jsonl')).splitlines()]
         self.assertEqual((q['question'], q['rule'], q['answer']), ('When exactly was that?', 'when', 'Tuesday the 17th, around 12:15.'))
-        self.assertIn('operator: Tuesday the 17th', open(os.path.join(d, 'final.md')).read())
-        self.assertEqual(json.load(open(os.path.join(d, 'meta.json')))['operator_questions'], 1)
+        self.assertIn('operator: Tuesday the 17th', read_file(os.path.join(d, 'final.md')))
+        self.assertEqual(read_json(os.path.join(d, 'meta.json'))['operator_questions'], 1)
 
     def test_operator_default_answer(self):
         c = self.table['cases'][0]
@@ -343,22 +366,22 @@ class RunV3(unittest.TestCase, Fixture):
 
     def test_pointer_adds_the_path_and_window(self):
         self.run_('m1-pointer', 'm1', 'pointer')
-        prompt = open(os.path.join(self.one('m1-pointer'), 'prompt.txt')).read()
+        prompt = read_file(os.path.join(self.one('m1-pointer'), 'prompt.txt'))
         self.assertTrue(prompt.endswith('The DAQ logs are in %s/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-17 '
                                         'between 12:12 and 12:14.' % os.path.join(self.roots, 'm1', 'c1')), prompt[-200:])
 
     def test_crib_puts_the_mechanism_first_at_m0(self):
         self.run_('crib', 'm0', 'crib', extra=['--dry-run'])
-        prompt = open(os.path.join(self.one('crib'), 'prompt.txt')).read()
+        prompt = read_file(os.path.join(self.one('crib'), 'prompt.txt'))
         self.assertTrue(prompt.startswith('A DAQ expert who has already read these logs says: tt_0 failed configure: Verify error.'))
         self.assertIn('around 12:13', prompt)
 
     def test_starved_m0_mounts_the_starved_pool(self):
         self.run_('starved', 'm0', 'starved', extra=['--dry-run'])
-        meta = json.load(open(os.path.join(self.one('starved'), 'meta.json')))
+        meta = read_json(os.path.join(self.one('starved'), 'meta.json'))
         self.assertEqual(sorted(os.listdir(os.path.join(meta['logs_src'], '2026', '11'))),
                          ['09_12:12:52_sdfmilan001:control.log', '09_12:12:52_sdfmilan001:teb0.log'])
-        self.assertIn(meta['logs_src'], open(os.path.join(self.one('starved'), 'prompt.txt')).read())
+        self.assertIn(meta['logs_src'], read_file(os.path.join(self.one('starved'), 'prompt.txt')))
 
     def test_starved_m1_and_evidence_never_found_is_censored(self):
         self.assertEqual(self.run_('m1-starved', 'm1', 'starved'), 0)
@@ -375,16 +398,16 @@ class RunV3(unittest.TestCase, Fixture):
         a, b = os.path.join(self.tmp, 'skA'), os.path.join(self.tmp, 'skB')
         for root, s in ((a, 'psana-daq'), (b, 'hutch-resources')):
             os.makedirs(os.path.join(root, s))
-            open(os.path.join(root, s, 'SKILL.md'), 'w').write('# ' + s)
+            write_file(os.path.join(root, s, 'SKILL.md'), '# ' + s)
         self.run_('m1-both', 'm1', skills=(a, b), extra=['--dry-run'])
         d = self.one('m1-both')
         self.assertEqual(sorted(os.listdir(os.path.join(d, 'ws', '.claude', 'skills'))), ['hutch-resources', 'psana-daq'])
-        self.assertEqual(json.load(open(os.path.join(d, 'meta.json')))['skills'], '%s,%s' % (a, b))
+        self.assertEqual(read_json(os.path.join(d, 'meta.json'))['skills'], '%s,%s' % (a, b))
 
     def test_controls_need_their_mode_and_run_ids_differ_by_mode(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
             self.run_('x', 'm0', 'pointer', extra=['--dry-run'])
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
             self.run_('x', 'm1', 'crib', extra=['--dry-run'])
         self.assertNotEqual(run.run_id('c1', 1), run.run_id('c1', 1, 'm1|'))
         self.assertEqual(run.run_id('c1', 1), run.run_id('c1', 1, ''))
@@ -415,12 +438,12 @@ class Evidence(unittest.TestCase):
         self.tmp = tempfile.mkdtemp(prefix='daqev-')
         self.root = os.path.join(self.tmp, 'root', '2026', '11')
         os.makedirs(self.root)
-        open(os.path.join(self.root, self.KEYED[0]), 'w').write('%s\n%s\nshort\n' % (self.BANNER, self.LINE))
+        write_file(os.path.join(self.root, self.KEYED[0]), '%s\n%s\nshort\n' % (self.BANNER, self.LINE))
         if shutil.which('zstd'):
             z = subprocess.run(['zstd', '-q', '-c'], input=b'2026-11-17 21:13:21,000 mfx-drp[7]: <I> Collector thread started now\n',
                                stdout=subprocess.PIPE, check=True).stdout     # -c, not '-o FILE -': zstd 1.4.4 (RHEL 8) misreads that
-            open(os.path.join(self.root, self.KEYED[1]), 'wb').write(z)
-        open(os.path.join(self.root, '16_08:00:00_node1:control.log'), 'w').write('%s\n%s\n' % (self.BANNER, self.OTHER))
+            write_file(os.path.join(self.root, self.KEYED[1]), z, 'wb')
+        write_file(os.path.join(self.root, '16_08:00:00_node1:control.log'), '%s\n%s\n' % (self.BANNER, self.OTHER))
         self.prints = evidence.fingerprints(os.path.join(self.tmp, 'root'), self.KEYED)
 
     def tearDown(self):
@@ -428,7 +451,7 @@ class Evidence(unittest.TestCase):
 
     def calls(self, *pairs):
         p = os.path.join(self.tmp, 't.jsonl')
-        open(p, 'w').write(stream(*pairs))
+        write_file(p, stream(*pairs))
         return evidence.calls_to_evidence(p, self.KEYED, self.prints)
 
     def test_shared_banner_is_not_a_fingerprint(self):
@@ -466,7 +489,7 @@ class Evidence(unittest.TestCase):
         ev = stream(('Read', {'file_path': '/sdf/' + self.KEYED[0]}, 'File content (40000 tokens) exceeds maximum allowed tokens'),
                     ('Read', {'file_path': '/sdf/' + self.KEYED[0], 'limit': 50}, '     1\t' + self.BANNER))
         ev = ev.replace('"tool_use_id": "u0", ', '"tool_use_id": "u0", "is_error": true, ')
-        open(p, 'w').write(ev)
+        write_file(p, ev)
         r = evidence.calls_to_evidence(p, self.KEYED, self.prints)
         self.assertEqual((r['calls'], r['first']['why']), (1, 'Read of ' + self.KEYED[0]))
 
@@ -487,7 +510,7 @@ class Evidence(unittest.TestCase):
 
     def test_json_escapes_are_undone_before_matching(self):
         quoted = 'mfx-drp[7]: <E> "drp_0" C:\\x 2026-11-17 21:13:22 stopped here'
-        open(os.path.join(self.root, self.KEYED[0]), 'a').write(quoted + '\n')
+        write_file(os.path.join(self.root, self.KEYED[0]), quoted + '\n', 'a')
         evidence._cache.clear()
         self.prints = evidence.fingerprints(os.path.join(self.tmp, 'root'), self.KEYED)
         self.assertIn(quoted[:40], self.prints)
@@ -520,10 +543,10 @@ class Evidence(unittest.TestCase):
                                                                  'list /sdf/home/m/mfxopr/daq/logs/2026/11 --start a --end b'}))
         self.assertFalse(evidence.is_guidance('Read', {'file_path': '/sdf/home/m/mfxopr/daq/logs/2026/11/' + self.KEYED[0]}))
         p = os.path.join(self.tmp, 't.jsonl')
-        open(p, 'w').write(stream(('Skill', {'skill': 'psana-daq'}, 'loaded'),
-                                  ('Read', {'file_path': '/work/.claude/skills/psana-daq-logs/SKILL.md'}, 'x'),
-                                  ('Bash', {'command': 'ask-operator when'}, 'Tuesday'),
-                                  ('Bash', {'command': 'grep -h E *control.log'}, self.LINE)))
+        write_file(p, stream(('Skill', {'skill': 'psana-daq'}, 'loaded'),
+                             ('Read', {'file_path': '/work/.claude/skills/psana-daq-logs/SKILL.md'}, 'x'),
+                             ('Bash', {'command': 'ask-operator when'}, 'Tuesday'),
+                             ('Bash', {'command': 'grep -h E *control.log'}, self.LINE)))
         r = evidence.calls_to_evidence(p, self.KEYED, self.prints)
         ng = evidence.calls_to_evidence(p, self.KEYED, self.prints, skip=evidence.is_guidance)
         self.assertEqual((r['calls'], ng['calls'], ng['total']), (3, 1, 2))
@@ -542,8 +565,8 @@ class BundledV3(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.table = json.load(open(os.path.join(EVAL, 'cases_v3.json')))
-        cls.cat = json.load(open(os.path.join(EVAL, 'catalog.json')))
+        cls.table = read_json(os.path.join(EVAL, 'cases_v3.json'))
+        cls.cat = read_json(os.path.join(EVAL, 'catalog.json'))
         cls.cases = {c['id']: c for c in cls.cat['cases']}
 
     def test_anchor_rule_picks_the_listed_cases(self):
@@ -576,6 +599,7 @@ class BundledV3(unittest.TestCase):
         tmp = tempfile.mkdtemp(prefix='daqeval3b-')
         try:
             with tarfile.open(os.path.join(EVAL, 'data', 'pools.tar.gz')) as tar:
+                tar.extraction_filter = getattr(tarfile, 'fully_trusted_filter', None)   # as before; no Python 3.12+ warning
                 tar.extractall(tmp)
             _pools, placed = tree.placements(tmp, self.table['cases'], self.cat)
             mine = {rec['case']: (ln, rec) for ln, rec in placed if rec['case']}
@@ -595,7 +619,7 @@ class BundledV3(unittest.TestCase):
                     continue
                 k = self.cases[c['id']]['key']
                 pdir = os.path.join(tmp, 'pools', harvest.pool_id(c['pool']))
-                (s,) = [s for s in json.load(open(os.path.join(pdir, 'pool.json')))['sessions'] if s['prefix'] in k['sessions']]
+                (s,) = [s for s in read_json(os.path.join(pdir, 'pool.json'))['sessions'] if s['prefix'] in k['sessions']]
                 want = [f for f in s['files'] if ':%s.log' % c['starve_component'] in f or
                         any(len(m) >= 6 and m.lower() in tree.read_log(os.path.join(pdir, 'logs', s['ym'], f)).lower() for m in k['fault']['mechanism'])]
                 self.assertEqual(c['starve_files'], want, c['id'])

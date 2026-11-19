@@ -212,7 +212,8 @@ def overall(vb, vc):
 
 
 def main(path, model_default='default', model_m0='haiku'):
-    rows = json.load(open(path))
+    with open(path) as f:
+        rows = json.load(f)
     out = {
         'P2_controls_M0_haiku': controls(rows, 'A', 'm0', model_m0, 'crib', 20.0),
         'P3_controls_M1_default': controls(rows, 'B', 'm1', model_default, 'pointer', 12.5),

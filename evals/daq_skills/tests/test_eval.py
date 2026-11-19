@@ -2,13 +2,17 @@
 
     python3 -m unittest discover -s tests -v
 """
+import io
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import time
 import unittest
+from contextlib import redirect_stdout
+from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
@@ -21,6 +25,26 @@ KEY = {'fault': {'component': ['tt_0'], 'transition': ['configure'], 'mechanism'
                  'summary': 'tt_0 aborted in configure: Verify error on TriggerDelay'},
        'expect_skills': ['psana-daq', 'psana-daq-logs'], 'forbid_skills': ['psana-daq-history'], 'sessions': ['09_12:12:52']}
 HEALTHY = {'fault': None, 'independent': ['double free'], 'sessions': []}
+
+
+def read_file(path, mode='r'):
+    with open(path, mode) as f:
+        return f.read()
+
+
+def write_file(path, data, mode='w'):
+    with open(path, mode) as f:
+        f.write(data)
+
+
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
+def write_json(obj, path):
+    with open(path, 'w') as f:
+        json.dump(obj, f)
 
 
 def report(cause, conf='high', extra=''):
@@ -114,6 +138,17 @@ class Judge(unittest.TestCase):
         self.assertEqual(judge.parse('{"verdict": "partial", "right_launch": null, "reason": "says "x" here"}')['verdict'], 'partial')
         self.assertIsNone(judge.parse('{"verdict": "maybe"}'))
 
+    def test_the_default_judge_command_saves_no_session(self):
+        seen = []
+
+        def fake_run(argv, **kw):
+            seen.append(argv)
+            return subprocess.CompletedProcess(argv, 0, json.dumps({'result': '{"verdict": "correct", "reason": "x"}'}), '')
+        with mock.patch.object(judge.subprocess, 'run', fake_run):
+            self.assertEqual(judge.judge_once('Q?', KEY, 'A report.', 'sonnet')['verdict'], 'correct')
+        self.assertEqual(seen[0][:2], ['claude', '-p'])
+        self.assertIn('--no-session-persistence', seen[0])
+
     def test_wrong_launch_is_wrong_whatever_the_judge_says(self):
         self.assertEqual(judge.parse('{"verdict": "correct", "right_launch": false}')['verdict'], 'wrong')
 
@@ -132,7 +167,7 @@ class BundledLogs(unittest.TestCase):
     def test_archive_has_every_pool_and_file_the_catalog_names(self):
         import tarfile
         path = os.path.join(os.path.dirname(HERE), 'data', 'pools.tar.gz')
-        cat = json.load(open(os.path.join(os.path.dirname(HERE), 'catalog.json')))
+        cat = read_json(os.path.join(os.path.dirname(HERE), 'catalog.json'))
         with tarfile.open(path) as tar:
             names = set(tar.getnames())
             for name, pool in cat['pools'].items():
@@ -184,9 +219,9 @@ class Pipeline(unittest.TestCase):
             '09_18:00:00_node1:control.log': '2026-11-09 18:00:02,000 tst-control[2]: <I> start\n',
         }
         for n, text in self.files.items():
-            open(os.path.join(logs, n), 'w').write(text)
+            write_file(os.path.join(logs, n), text)
             os.utime(os.path.join(logs, n), (1000000000, 1000000000))
-        open(os.path.join(self.rundir, 'daq_sim.state.json'), 'w').write('{"fault": "TriggerDelay"}')
+        write_file(os.path.join(self.rundir, 'daq_sim.state.json'), '{"fault": "TriggerDelay"}')
         ses = {'run': 'work/break-register/wd-secret', 'ym': '2026/11', 'host': 'node1'}
         self.cat = {'version': 2, 'logs_path': '/sdf/home/t/tstopr/daq/logs',
                     'context': 'Logs are under /sdf/home/t/tstopr/daq/logs. Offline review.',
@@ -198,7 +233,7 @@ class Pipeline(unittest.TestCase):
                               {'id': 'c2', 'tier': 3, 'set': 'full', 'pool': 'day', 'question': 'Around 12:13?',
                                'key_source': 'planted', 'key': KEY}]}
         self.catalog = os.path.join(self.tmp, 'catalog.json')
-        json.dump(self.cat, open(self.catalog, 'w'))
+        write_json(self.cat, self.catalog)
         self.work = os.path.join(self.tmp, 'work')
 
     def tearDown(self):
@@ -218,7 +253,7 @@ class Pipeline(unittest.TestCase):
 
     def test_harvest_hides_paths_and_the_sims_announcement_but_keeps_the_evidence(self):
         info = self.harvest()
-        text = ''.join(open(os.path.join(self.pool_dir(), n)).read() for n in os.listdir(self.pool_dir()))
+        text = ''.join(read_file(os.path.join(self.pool_dir(), n)) for n in os.listdir(self.pool_dir()))
         for hidden in ('wd-secret', 'break-register', self.root, 'rogue_dev'):
             self.assertNotIn(hidden, text)
         self.assertIn('Verify error for block Top.TriggerDelay', text)
@@ -232,9 +267,10 @@ class Pipeline(unittest.TestCase):
 
     def test_harvest_fails_a_pool_that_still_holds_a_hint_word(self):
         p = os.path.join(self.rundir, 'pmlogs', '2026', '11', '09_12:12:52_node1:tt_0.log')
-        open(p, 'a').write('note: running under break-register harness\n')
+        write_file(p, 'note: running under break-register harness\n', 'a')
         self.assertIn('break', [h['word'] for h in self.harvest()['leaks']])
-        self.assertEqual(harvest.main(['--catalog', self.catalog, '--root', self.root, '--out', self.work, '--pool', 'one']), 1)
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(harvest.main(['--catalog', self.catalog, '--root', self.root, '--out', self.work, '--pool', 'one']), 1)
 
     def test_segmentation_fault_is_not_a_hint(self):
         self.assertEqual(harvest.leak_scan(harvest.OWN_WORDS.sub('', '<C> FATAL: Segmentation Fault - stack'), ['fault'], []), [])
@@ -249,23 +285,25 @@ class Pipeline(unittest.TestCase):
 
     def run_agent(self, arm='skills', skills=None, extra=()):
         agent = os.path.join(self.tmp, 'agent.py')
-        open(agent, 'w').write(FAKE_AGENT)
+        write_file(agent, FAKE_AGENT)
         if skills is None:
             skills = os.path.join(self.tmp, 'skills')
             for s in ('psana-daq', 'psana-daq-logs'):
                 os.makedirs(os.path.join(skills, s), exist_ok=True)
-                open(os.path.join(skills, s, 'SKILL.md'), 'w').write('# ' + s)
+                write_file(os.path.join(skills, s, 'SKILL.md'), '# ' + s)
         self.results = os.path.join(self.tmp, 'results')
-        return run.main(['--catalog', self.catalog, '--work', self.work, '--arm', arm, '--skills', skills, '--out', self.results,
-                         '--no-sandbox', '--agent-cmd', sys.executable + ' ' + agent] + list(extra))
+        with redirect_stdout(io.StringIO()):
+            return run.main(['--catalog', self.catalog, '--work', self.work, '--arm', arm, '--skills', skills, '--out', self.results,
+                             '--no-sandbox', '--agent-cmd', sys.executable + ' ' + agent] + list(extra))
 
     def test_run_judge_and_grade_end_to_end(self):
         self.harvest()
         self.assertEqual(self.run_agent(), 0)
         self.assertEqual(self.run_agent('none', 'none'), 0)
         jd = os.path.join(self.tmp, 'judge.py')
-        open(jd, 'w').write(FAKE_JUDGE)
-        self.assertEqual(judge.main(['--catalog', self.catalog, '--results', self.results, '--judge-cmd', sys.executable + ' ' + jd]), 0)
+        write_file(jd, FAKE_JUDGE)
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(judge.main(['--catalog', self.catalog, '--results', self.results, '--judge-cmd', sys.executable + ' ' + jd]), 0)
         rows = grade.collect(self.results, grade.load_catalog(self.catalog))
         self.assertEqual([(r['arm'], r['case'], r['cause']['verdict'], r['cause']['by']) for r in rows],
                          [('none', 'c1', 'correct', 'judge'), ('skills', 'c1', 'correct', 'judge')])
@@ -293,15 +331,16 @@ class Pipeline(unittest.TestCase):
         """A shell one-liner as the agent: its plain output is the report; its commands are not checked."""
         self.harvest()
         agent = os.path.join(self.tmp, 'agent.sh')
-        open(agent, 'w').write('cat > /dev/null\nls agent-skills > /dev/null || exit 3\n'
-                               'echo "tt_0 aborted in configure in launch 09_12:12:52: Verify error on TriggerDelay"\n')
+        write_file(agent, 'cat > /dev/null\nls agent-skills > /dev/null || exit 3\n'
+                          'echo "tt_0 aborted in configure in launch 09_12:12:52: Verify error on TriggerDelay"\n')
         skills = os.path.join(self.tmp, 'skills')
         os.makedirs(os.path.join(skills, 'psana-daq'))
-        open(os.path.join(skills, 'psana-daq', 'SKILL.md'), 'w').write('# x')
+        write_file(os.path.join(skills, 'psana-daq', 'SKILL.md'), '# x')
         self.results = os.path.join(self.tmp, 'results')
-        self.assertEqual(run.main(['--catalog', self.catalog, '--work', self.work, '--arm', 'other', '--skills', skills,
-                                   '--skills-path', 'agent-skills', '--out', self.results, '--no-sandbox',
-                                   '--agent-cmd', 'sh ' + agent]), 0)
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(run.main(['--catalog', self.catalog, '--work', self.work, '--arm', 'other', '--skills', skills,
+                                       '--skills-path', 'agent-skills', '--out', self.results, '--no-sandbox',
+                                       '--agent-cmd', 'sh ' + agent]), 0)
         (row,) = grade.collect(self.results, grade.load_catalog(self.catalog))
         self.assertEqual((row['cause']['verdict'], row['readonly']['pass'], row['routing']['pass']), ('correct', None, None))
         self.assertEqual(grade.summarize([row])['other']['readonly'], '0/0')
@@ -310,21 +349,21 @@ class Pipeline(unittest.TestCase):
         self.harvest()
         self.run_agent(extra=['--dry-run', '--preface', 'Load the psana-daq skill first.'])
         d = os.path.join(self.results, 'skills', run.run_id('c1', 1))
-        self.assertTrue(open(os.path.join(d, 'prompt.txt')).read().startswith('Load the psana-daq skill first.\n\nLogs are under'))
-        self.assertEqual(json.load(open(os.path.join(d, 'meta.json')))['preface'], 'Load the psana-daq skill first.')
+        self.assertTrue(read_file(os.path.join(d, 'prompt.txt')).startswith('Load the psana-daq skill first.\n\nLogs are under'))
+        self.assertEqual(read_json(os.path.join(d, 'meta.json'))['preface'], 'Load the psana-daq skill first.')
 
     def test_dry_run_starts_no_agent(self):
         self.harvest()
         self.run_agent(extra=['--dry-run'])
         d = os.path.join(self.results, 'skills', run.run_id('c1', 1))
-        self.assertTrue(json.load(open(os.path.join(d, 'meta.json')))['dry_run'])
+        self.assertTrue(read_json(os.path.join(d, 'meta.json'))['dry_run'])
         self.assertFalse(os.path.exists(os.path.join(d, 'transcript.jsonl')))
         self.assertEqual(grade.collect(self.results, grade.load_catalog(self.catalog)), [])
 
     def test_a_many_launch_report_about_another_launch_is_wrong(self):
         d = os.path.join(self.tmp, 'r')
         os.makedirs(d)
-        open(os.path.join(d, 'final.md'), 'w').write(report('tt_0 aborted in configure at 20:12:52: Verify error on TriggerDelay'))
+        write_file(os.path.join(d, 'final.md'), report('tt_0 aborted in configure at 20:12:52: Verify error on TriggerDelay'))
         self.assertEqual(grade.grade_run(KEY, d, tier=1)['cause']['verdict'], 'correct')
         g = grade.grade_run(KEY, d, tier=3)['cause']
         self.assertEqual((g['verdict'], g['by']), ('wrong', 'keywords+launch'))

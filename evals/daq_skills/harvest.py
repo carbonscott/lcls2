@@ -149,7 +149,8 @@ def harvest_pool(name, pool, root, out, allow_extra=()):
         words = HINTS + hint_words(s['run'], [LOGNAME.match(n).group(3) for n in names] + [s['host']])
         for n in names:
             p = os.path.join(src, n)
-            lines = open(p, errors='replace').read().splitlines(True)
+            with open(p, errors='replace') as f:
+                lines = f.read().splitlines(True)
             keep = []
             for l in lines:
                 if any(rx.search(l) for rx in STRIP):
@@ -186,7 +187,8 @@ def main(argv=None):
     ap.add_argument('--out', required=True)
     ap.add_argument('--pool', action='append', help='only these pools')
     a = ap.parse_args(argv)
-    cat = json.load(open(a.catalog))
+    with open(a.catalog) as f:
+        cat = json.load(f)
     bad = 0
     for name in sorted(cat['pools']):
         if a.pool and name not in a.pool:

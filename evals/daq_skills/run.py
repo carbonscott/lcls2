@@ -92,6 +92,16 @@ HIDE = ['projects', 'skills', 'plugins', 'todos', 'shell-snapshots', 'file-histo
         'feedback', 'cache', 'session-env']
 
 
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
+def read_text(path, errors=None):
+    with open(path, errors=errors) as f:
+        return f.read()
+
+
 def run_id(case, rep, salt=''):
     """Opaque folder name of one run; salt (mode and control) only when not the plain m0 run."""
     return 'r' + hashlib.sha1(('%s|%d' % (case, rep) + ('|' + salt if salt else '')).encode()).hexdigest()[:8]
@@ -133,7 +143,8 @@ class Operator(object):
         self.bin = os.path.join(self.dir, 'bin')
         self.sock = os.path.join(self.dir, 's', 'sock')
         path = os.path.join(self.bin, 'ask-operator')
-        open(path, 'w').write(ASK_OPERATOR)
+        with open(path, 'w') as f:
+            f.write(ASK_OPERATOR)
         os.chmod(path, 0o755)
         open(log_path, 'a').close()
         op = self
@@ -200,7 +211,7 @@ def read_stream(path):
     """(final text, result event, kind) of an agent's output.  kind is 'stream-json' for
     Claude Code's event stream, else 'text': the whole output is then the report."""
     result, last, ev_result, events = None, '', {}, 0
-    raw = open(path, errors='replace').read()
+    raw = read_text(path, 'replace')
     for line in raw.splitlines():
         try:
             ev = json.loads(line)
@@ -279,14 +290,14 @@ def setup(cat, case, a):
 
 def run_one(cat, case, a, rep):
     if case.get('family') != 'C':
-        pool = json.load(open(os.path.join(a.work, 'pools', pool_id(case['pool']), 'pool.json')))
+        pool = read_json(os.path.join(a.work, 'pools', pool_id(case['pool']), 'pool.json'))
         if pool.get('leaks') and not a.allow_leaks:
             raise SystemExit('%s: harvest found leaks in its pool; fix them before running' % case['id'])
     salt = '' if a.mode == 'm0' and not a.control else '%s|%s' % (a.mode, a.control or '')
     d = os.path.abspath(os.path.join(a.out, a.arm, run_id(case['id'], rep, salt)))
     meta_path = os.path.join(d, 'meta.json')
     if a.resume and os.path.exists(meta_path):
-        old = json.load(open(meta_path))
+        old = read_json(meta_path)
         if old.get('exit') == 0 and not old.get('error') and os.path.getsize(os.path.join(d, 'final.md')) > 0:
             return old, True
     logs, mount, prompt, v3 = setup(cat, case, a)
@@ -298,7 +309,8 @@ def run_one(cat, case, a, rep):
         for s in sorted(os.listdir(sk)):
             if os.path.exists(os.path.join(sk, s, 'SKILL.md')):
                 shutil.copytree(os.path.join(sk, s), os.path.join(ws, a.skills_path, s))
-    open(os.path.join(d, 'prompt.txt'), 'w').write(prompt)
+    with open(os.path.join(d, 'prompt.txt'), 'w') as f:
+        f.write(prompt)
     cmd = shlex.split(a.agent_cmd) if a.agent_cmd else AGENT + (['--model', a.model] if a.model else [])
     meta = {'case': case['id'], 'arm': a.arm, 'repeat': rep,
             'skills': ','.join(os.path.abspath(s) for s in a.skills_dirs) or 'none',
@@ -337,15 +349,18 @@ def run_one(cat, case, a, rep):
                 op.close()
         meta['seconds'] = round(time.time() - t0, 1)
         final, res, meta['transcript'] = read_stream(os.path.join(d, 'transcript.jsonl'))
-        open(os.path.join(d, 'final.md'), 'w').write(final)
+        with open(os.path.join(d, 'final.md'), 'w') as f:
+            f.write(final)
         usage = res.get('usage') or {}
         meta.update(turns=res.get('num_turns'), cost_usd=res.get('total_cost_usd'), total_cost_usd=res.get('total_cost_usd'),
                     output_tokens=usage.get('output_tokens'), model=next(iter(res.get('modelUsage') or {}), None))
         if op:
-            meta['operator_questions'] = sum(1 for _ in open(os.path.join(d, 'operator.jsonl')))
+            with open(os.path.join(d, 'operator.jsonl')) as f:
+                meta['operator_questions'] = sum(1 for _ in f)
         if res.get('is_error') or not final.strip():
-            meta['error'] = (final or open(os.path.join(d, 'stderr.txt')).read())[:300]
-    json.dump(meta, open(meta_path, 'w'), indent=1)
+            meta['error'] = (final or read_text(os.path.join(d, 'stderr.txt')))[:300]
+    with open(meta_path, 'w') as f:
+        json.dump(meta, f, indent=1)
     return meta, False
 
 
@@ -388,7 +403,7 @@ def main(argv=None):
     ap.add_argument('--allow-leaks', action='store_true')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args(argv)
-    cat = json.load(open(a.catalog))
+    cat = read_json(a.catalog)
     a.skills_dirs = [s for s in a.skills if s != 'none']
     if 'none' in a.skills and a.skills_dirs:
         ap.error("--skills none cannot be combined with a skills folder")
@@ -412,7 +427,7 @@ def main(argv=None):
         a.real_root = os.path.abspath(a.real_root)
         a.views = os.path.abspath(a.views or os.path.join(a.work, 'roots', 'real'))
     if a.mode == 'm1' or a.control:
-        a.table = json.load(open(a.cases_v3))
+        a.table = read_json(a.cases_v3)
         a.table_cases = dict((c['id'], c) for c in a.table['cases'])
         unknown = [c for c in a.case or [] if c not in a.table_cases and c not in real_ids]
         if unknown:
