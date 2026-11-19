@@ -212,13 +212,19 @@ class Page(unittest.TestCase):
             p = json.load(f)
         p['amendments'] = [{'when': '2026-11-19T15:45Z', 'what': ['Located is read on the launch the report concludes about.']}]
         write(self.preds, p)
-        html, _ = self.build('--m0-commit', '0d628f9', '--verdict-note', 'Review pending.')
+        html, _ = self.build('--m0-commit', '0d628f9', '--verdict-note', 'Review pending.', '--amendment-written', '2026-11-20T00:50Z')
         self.assertIn('(6 runs, M0 controls) run at commit <code>0d628f9</code>', html)
         self.assertEqual(html.count('<p class="vnote">Review pending.</p>'), 2)      # findings and the verdict section
-        self.assertIn('Controls, printed beside the verdict as P3 asks: P3, M1, family B: positive PASS, negative', html)
+        # beside each positive control: how many runs would flip it (2 here: pointer 2/2 against none 0/2)
+        self.assertIn('Controls, printed beside the verdict as P3 asks: P3, M1, family B: positive PASS (2 runs from flipping), negative', html)
         self.assertIn('P3 controls (family B alone): pointer 2/2 (100.0%) against none 0/2 (0.0%)', html)
         self.assertIn('<b>Amendment (2026-11-19T15:45Z)</b>: Located is read on the launch the report concludes about.', html)
+        self.assertIn('<b>Amendment time</b>: The predictions file labels the amendment 2026-11-19T15:45Z; it was written at about '
+                      '2026-11-20T00:50Z, before the first counted run started (2026-11-20T01:01:00Z).', html)
         self.assertIn('Descriptive only, not a verdict', html)
+        # the P6 rules on the guidance-free count (no skills or map arm here: both shares 0, so REFUTED)
+        self.assertIn('and the P6 rules on that count read REFUTED in family B', html)
+        self.assertIn('<h2>Runs that failed or were not located (', html)
 
     def test_corrections_and_trust(self):
         html, _ = self.build()
@@ -241,13 +247,110 @@ class Page(unittest.TestCase):
         self.assertIn('<li>A note.</li>', html)
 
     def test_three_m0_scorings_and_scoring_commit(self):
-        shutil.copy(os.path.join(self.m0, 'scored-keyfix.json'), os.path.join(self.m0, 'scored-sc.json'))
-        html, _ = self.build('--m0-scoring', 'keys as run=scored.json', '--m0-scoring', 'fixed key=scored-keyfix.json',
-                             '--m0-scoring', 'corrected scorer=scored-sc.json', '--scoring-commit', 'feed123')
+        with open(os.path.join(self.m0, 'scored-keyfix.json')) as f:
+            doc = json.load(f)
+        doc['rows'][-1]['outcome']['cause'] = True                   # one starved run passes: a third, different scoring
+        write(os.path.join(self.m0, 'scored-sc.json'), doc)
+        args = ('--m0-scoring', 'keys as run=scored.json', '--m0-scoring', 'fixed key=scored-keyfix.json',
+                '--m0-scoring', 'corrected scorer=scored-sc.json', '--scoring-commit', 'feed123')
+        html, _ = self.build(*args)
         self.assertIn('<th class="n">Score, keys as run</th><th class="n">Score, fixed key</th><th class="n">Score, corrected scorer</th>', html)
         self.assertIn('run at commit <code>abc123def456</code>, scored at <code>feed123</code>', html)
         self.assertIn('Family A at M0 (the P2 control runs, corrected scorer)', html)
-        self.assertIn('P2, M0 Haiku (corrected scorer): positive', html)
+        self.assertIn('P2, M0 Haiku, corrected scorer: positive', html)
+
+    def test_identical_m0_scorings_share_a_column(self):
+        shutil.copy(os.path.join(self.m0, 'scored-keyfix.json'), os.path.join(self.m0, 'scored-sc.json'))
+        html, _ = self.build('--m0-scoring', 'keys as run=scored.json', '--m0-scoring', 'fixed key=scored-keyfix.json',
+                             '--m0-scoring', 'corrected scorer=scored-sc.json',
+                             '--m0-scoring-note', 'fixed key=This scoring uses a key fixed after the results.')
+        self.assertIn('<th class="n">Score, keys as run</th><th class="n">Score, fixed key (and corrected scorer, identical)</th>'
+                      '<th>Runs, marked by the current scoring</th>', html)
+        self.assertIn('Family A at M0 (the P2 control runs, fixed key (and corrected scorer, identical))', html)
+        self.assertIn('P2, M0 Haiku, fixed key (and corrected scorer, identical): positive', html)
+        # the findings give each P2 line its gap and margin, and the note of the fixed key
+        self.assertIn('P2 controls, M0 Haiku, fixed key (and corrected scorer, identical): crib 2/2 (100.0%) against none 2/2 '
+                      '(100.0%), +0.0 points (needs +20), positive control fails', html)
+        self.assertEqual(html.count('This scoring uses a key fixed after the results.'), 2)     # findings and the P2 block
+        # usage still counts every file: two re-scores
+        self.assertIn('$0.30 + $0.10 re-score (fixed key) + $0.10 re-score (corrected scorer)', html)
+        self.assertIn('Corrected scorer: <code>scored-sc.json</code>', html)
+
+    def test_positive_control_notes(self):
+        d = {'verdict': {'P3_controls_M1_default': {'pointer': [15, 16, 93.75], 'none': [13, 16, 81.25], 'positive_pass': True,
+                                                    'positive_margin_needed': 12.5}},
+             'first_verdict': {'P3_controls_M1_default': {'pointer': [14, 16, 87.5], 'none': [13, 16, 81.25], 'positive_pass': False}},
+             'p2': []}
+        self.assertEqual(report_v3.pos_beside(d, 'P3'),
+                         ' (exactly at the +12.5 margin; FAIL (14/16 vs 13/16) as first scored; one run from flipping)')
+        d['verdict']['P3_controls_M1_default'].update(pointer=[16, 16, 100.0])
+        d['first_verdict']['P3_controls_M1_default']['positive_pass'] = True
+        self.assertEqual(report_v3.pos_beside(d, 'P3'), ' (2 runs from flipping)')
+
+    def healthy_records(self):
+        """real-month-edge (keyed launch 30_06:20:41, 06:20:41 to 18:02:21): none r1 blames a 16:28:47 launch it dates
+        2026-10-29 (inside the keyed launch by its time alone: a false alarm); pointer r1 blames 21:34:00, after the keyed
+        launch, so its failure is placed elsewhere (and it is not located).  A first scoring had pointer r1 as a false alarm."""
+        with open(os.path.join(self.out, 'scored.json')) as f:
+            doc = json.load(f)
+        rec = lambda t, day: {'verdict_kind': 'fault', 'problems': [{'role': 'cause', 'launch_time': t, 'tz': 'local',
+                                                                     'component': 'meb0_first', 'stage': 'running', 'mechanism': 'x'}],
+                              'launches': [{'time': t, 'date': day, 'tz': 'local', 'status': 'failed'}]}
+        for row in doc['rows']:
+            if row['id'] == 'C.none.default/redge1':
+                row['record'] = rec('16:28:47', '2026-10-29')
+                row['facts']['verdict_kind'] = 'fault'
+            if row['id'] == 'C.pointer.default/redge1':
+                row['record'] = rec('21:34:00', '2026-10-30')
+                row['facts']['verdict_kind'] = 'fault'
+                row['outcome']['outcome'] = 'benign-defect-noted'
+        write(os.path.join(self.out, 'scored.json'), doc)
+        first = [dict(r) for r in self.rows]
+        for r in self.rows:
+            if r['run_id'] == 'C.pointer.default/redge1':
+                r['healthy_outcome'], r['located'] = 'benign-defect-noted', False     # concluded about the launch it blames
+        write(os.path.join(self.out, 'rows.json'), self.rows)
+        for r in first:
+            if r['run_id'] == 'C.pointer.default/redge1':
+                r['healthy_outcome'] = 'false-alarm'
+        fp = os.path.join(self.tmp, 'first-x')
+        write(os.path.join(fp, 'rows.json'), first)
+        write(os.path.join(fp, 'usage.json'), {'scorer_usd': 0.5, 'scorer_fresh_usd_this_call': 0.5})
+        return fp
+
+    def test_failure_placed_elsewhere_day_used_and_sc1(self):
+        fp = self.healthy_records()
+        html, err = self.build('--first-pilot', fp)
+        self.assertNotIn('differs from scored.json', err)      # the placement recomputed from the records agrees with the scorer
+        self.assertIn('title="C.pointer.default/redge1">failure placed elsewhere, not located</span>', html)
+        self.assertIn('<td class="n">1 / 0 / 1 / 0</td>', html)            # C pointer: clean / benign / placed elsewhere / false alarm
+        self.assertIn('<td class="n">0 / 0 / 0 / 2</td>', html)            # C none: two false alarms
+        self.assertIn('Healthy cases: 2 of 4 runs gave a fault verdict. 1 of them place every cause in another launch than the '
+                      'keyed one, so they are not false alarms (failure placed elsewhere: C pointer: 1); 2 are false alarms '
+                      '(C none: 2)', html)
+        self.assertIn('outcome: <span class="ok">benign-defect-noted (a failure placed in another launch)</span>', html)
+        self.assertIn('1 of the 2 false alarms (C.none.default/redge1; case real-month-edge) give the day of the failure they '
+                      'blame (Thu 2026-10-29, launch 29_16:28:47), but the scorer places a cause by its time alone on the case&#x27;s '
+                      'day (the extraction records a time, not a day), so it lands inside the keyed launch 30_06:20:41 (06:20:41 to '
+                      '18:02:21) and they stay false alarms. With the day used, 1 of the 4 healthy runs would be a false alarm '
+                      '(C.none.default/redge2, which gives no cause).', html)
+        self.assertIn('Of the 2 healthy runs that gave a fault verdict, 1 place every cause in another launch than the keyed one '
+                      'and are not false alarms; 1 of them blame a time outside the case&#x27;s window (real-month-edge). On the '
+                      'control arms the change moved healthy runs by none +0 and pointer +1 in family C, which works for the '
+                      'positive controls.', html)
+
+    def test_first_scoring_usage_and_sources(self):
+        fp = self.healthy_records()
+        html, _ = self.build('--first-pilot', fp, '--m0-commit', '0d628f9', '--scoring-commit', 'feed123',
+                             '--scoring-note', 'abc999 changes only a docstring')
+        self.assertIn('$0.50 first scoring (first-x) + $0.60 re-score (pilot-x)', html)
+        self.assertIn('<td class="n">$19.10</td>', html)                    # 18.00 agent + 0.50 + 0.60
+        self.assertIn('come to $0.60 (usage.json scorer_usd)', html)
+        tmp = os.path.basename(self.tmp)
+        self.assertIn('Run of record: the corrected scoring, <code>%s/pilot-x</code> (pilot) and <code>%s/m0-x</code> (M0, '
+                      '<code>scored-keyfix.json</code>); first scoring: <code>%s/first-x</code>. Commits: agent runs '
+                      '<code>abc123def456</code>, M0 runs <code>0d628f9</code>, scoring <code>feed123</code> (abc999 changes only '
+                      'a docstring).' % (tmp, tmp, tmp), html)
 
     def test_flips(self):
         rule = report_v3.pos_rule(12.5)

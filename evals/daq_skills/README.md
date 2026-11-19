@@ -26,7 +26,7 @@ S3DF interactive nodes).
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests          # 169 tests, OK, no model calls (a few skip without zstd or a skills checkout)
+python3 -m unittest discover -s tests          # 173 tests, OK, no model calls (a few skip without zstd or a skills checkout)
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 python3 tree.py --work $WORK                   # family B's tree in $WORK/roots, about a minute; ends "8 cases, window check passed for all"
 OUT=$HOME/daq-eval-results                     # your results go here
@@ -251,7 +251,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 169 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 173 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
