@@ -52,7 +52,8 @@ CLASSES = (
                               r"|PV \S+ (?:failed to connect|not connected|disconnected)")),
     ('no_response', re.compile(r'\bdid not respond to (?!rollcall)[a-z]+')),
     ('state_failed', re.compile(r'\b[a-z]+ failed to change state\b')),
-    ('crash', re.compile(r'core dumped|Segmentation fault|SIG(?:SEGV|BUS|ABRT|FPE)\b|received signal|cleaning up on signal'
+    ('crash', re.compile(r'core dumped|Segmentation fault|SIG(?:SEGV|BUS|ABRT|FPE)\b'
+                         r'|(?:received signal|cleaning up on signal):? *(?!Terminated)\w'
                          r'|terminate called|Exited with exit code [1-9]|\bKilled\b|\*\*\*\* python error')),
     ('traceback', re.compile(r'Traceback \(most recent call last\)')),
 )
@@ -62,7 +63,7 @@ PREFILTER = ("<E> |<C> |<F> |didn't connect|Failed to get parameters for PV|did 
              "|core dumped|Segmentation fault|SIGSEGV|SIGBUS|SIGABRT|SIGFPE|received signal|cleaning up on signal"
              "|terminate called|Exited with exit code|Killed|python error|Traceback|not connected|disconnected|failed to connect"
              "|ClientSocket: Cannot connect|Failed to allocate lane|failed to execute|connect failed|linksConnect"
-             "|checkTransaction|Aborted")
+             "|checkTransaction|Aborted|Illegal XPM")
 
 # Failure lines in control.log (the <E> message text).
 F_NAMED = (('no_response', re.compile(r'^(?P<comp>[A-Za-z]\w*) did not respond to (?P<tr>[a-z]+)')),
@@ -85,8 +86,9 @@ MECHANISMS = (
     ('exec-not-found', re.compile(r'failed to execute \S+: No such file')),
     ('eb-link-connect', re.compile(r'(?:Teb|Meb)Contributor connect failed|linksConnect')),
     ('rogue-transaction', re.compile(r'Block::checkTransaction: General Error')),
+    ('xpm-remote-link-id', re.compile(r'Illegal XPM Remote link id')),
     ('python-error', re.compile(r'\*\*\*\* python error|Traceback \(most recent call last\)')),
-    ('abort', re.compile(r'Aborted|core dumped|received signal|cleaning up on signal')),
+    ('abort', re.compile(r'Aborted|core dumped|(?:received signal|cleaning up on signal):? *(?!Terminated)\w')),
 )
 
 # Widest readings of the parts of a day, in hours from that day's midnight.
@@ -209,7 +211,7 @@ def list_launches(root, start, end):
 # ----------------------------------------------------------------------------- analysis
 
 def parse_control(path):
-    out = {'first_ts': None, 'last_ts': None, 'states': [], 'errors': []}
+    out = {'first_ts': None, 'last_ts': None, 'states': [], 'state_times': [], 'errors': []}
     for line in open_text(path):
         m = ISO.match(line.rstrip('\n'))
         if not m:
@@ -220,16 +222,25 @@ def parse_control(path):
         sm = re.match(r'Finished processing state (\w+) enter callbacks', msg)
         if sm:
             out['states'].append(sm.group(1))
+            out['state_times'].append((ts, sm.group(1)))
         if lvl == 'E' and who.endswith('-control'):
             out['errors'].append((ts, msg.strip()))
     return out
 
 
-def failure_of(errors):
-    """First failure in control.log and the components it names.  errors: [(ts, msg)] in order."""
+# The transition under way in each state (for failures that do not name their transition).
+NEXT = {'reset': 'rollcall', 'unallocated': 'alloc', 'allocated': 'connect', 'connected': 'configure',
+        'configured': 'beginrun', 'starting': 'beginstep', 'paused': 'enable', 'running': 'running'}
+
+
+def failure_of(errors, state_times=()):
+    """First failure in control.log and the components it names.  errors: [(ts, msg)] in order;
+    state_times: [(ts, state entered)] in order, used to stage event-builder complaints."""
     events = []
     for ts, msg in errors:
         t = dt.datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
+        now = [st for when, st in state_times if when <= ts]
+        under_way = NEXT.get(now[-1], now[-1]) if now else 'rollcall'
         for kind, rx in F_NAMED:
             m = rx.match(msg)
             if m:
@@ -238,13 +249,13 @@ def failure_of(errors):
         else:
             m = F_EB_ITEM.match(msg)
             if m:
-                events.append((t, 'eb_missing', 'running', m.group('comp')))
+                events.append((t, 'eb_missing', under_way, m.group('comp')))
                 continue
             for kind, rx in (('eb_missing', F_EB_HEAD), ('eb_missing', F_EB_QUIET), ('state_failed', F_STATE),
                              ('phase_failed', F_PHASE), ('no_response', F_UNNAMED)):
                 m = rx.match(msg)
                 if m:
-                    events.append((t, kind, m.groupdict().get('tr', 'running'), None))
+                    events.append((t, kind, m.groupdict().get('tr', under_way), None))
                     break
     if not events:
         return None
@@ -258,8 +269,9 @@ def failure_of(errors):
 
 
 def scan_file(path):
-    """Class counts, severe-line counts and the first mechanism label of one file."""
-    classes, sev, mech = {}, {'E': 0, 'C': 0}, None
+    """Class counts, severe-line counts and the most specific mechanism label (earliest in MECHANISMS)
+    found anywhere in one file."""
+    classes, sev, rank = {}, {'E': 0, 'C': 0}, len(MECHANISMS)
     for line in prefiltered(path):
         c = classify(line)
         if c:
@@ -267,12 +279,11 @@ def scan_file(path):
         m = SEVERE.search(line)
         if m and not BENIGN_C.search(line):
             sev[m.group(1)] += 1
-        if mech is None:
-            for label, rx in MECHANISMS:
-                if rx.search(line):
-                    mech = label
-                    break
-    return {'classes': classes, 'severe': sev, 'mechanism': mech}
+        for k in range(rank):
+            if MECHANISMS[k][1].search(line):
+                rank = k
+                break
+    return {'classes': classes, 'severe': sev, 'mechanism': MECHANISMS[rank][0] if rank < len(MECHANISMS) else None}
 
 
 def analyse(launch, jobs=1, pool=None):
@@ -285,7 +296,7 @@ def analyse(launch, jobs=1, pool=None):
         scans = [scan_file(p) for p in paths]
     ctl = [p for p in paths if parse_name(os.path.basename(p))['comp'] == 'control'
            and os.path.dirname(p) == os.path.normpath(launch['dir'])]
-    c = parse_control(ctl[0]) if ctl else {'first_ts': None, 'last_ts': None, 'states': [], 'errors': []}
+    c = parse_control(ctl[0]) if ctl else {'first_ts': None, 'last_ts': None, 'states': [], 'state_times': [], 'errors': []}
     classes, severe, mech = {}, {}, {}
     for p, s in zip(paths, scans):
         comp = parse_name(os.path.basename(p))['comp']
@@ -296,7 +307,7 @@ def analyse(launch, jobs=1, pool=None):
             severe[comp] = [severe.get(comp, [0, 0])[0] + s['severe']['E'], severe.get(comp, [0, 0])[1] + s['severe']['C']]
         if s['mechanism'] and comp not in mech:
             mech[comp] = s['mechanism']
-    fail = failure_of(c['errors'])
+    fail = failure_of(c['errors'], c['state_times'])
     end = c['last_ts'].replace(' ', 'T') if c['last_ts'] else launch['start'].isoformat()
     inv = {'id': launch['id'], 'start': launch['start'].isoformat(), 'end': end,
            'files': sorted(launch['files']), 'restarts': sorted(launch['restarts']),
@@ -313,8 +324,8 @@ def launch_key(inv, mech):
     key = {'inventory': {'reached_running': inv['n_running'] > 0, 'n_running': inv['n_running'],
                          'failed': inv['failure'] is not None, 'classes': classes}}
     f = inv['failure']
-    if f is None:
-        key['component'] = 'healthy' if inv['n_running'] > 0 else 'not keyed'
+    if f is None:     # healthy: reached running, no failure line; idle: no failure line, never ran
+        key['component'] = 'healthy' if inv['n_running'] > 0 else 'idle'
         return key
     if len(f['components']) == 1:
         comp = f['components'][0]
@@ -473,18 +484,22 @@ def cmd_check(args):
     for case in spec['cases']:
         start, end = widest_window(case['today'], case['phrase'])
         invs = inventory(args.root, start - dt.timedelta(days=3), end, args.jobs)
+        comp = {i['id']: i['key']['component'] for i in invs}
         there = in_window(invs, start, end)
-        extra = [i for i in there if i not in case['keyed_launches']]
-        missing = [i for i in case['keyed_launches'] if i not in there]
-        ok = not extra and not missing
-        bad += not ok
-        print('%-14s %-26s %s .. %s  launches in window: %d  %s' % (
+        target = comp.get(case['target'])
+        problems = ['not keyed but in window: ' + i for i in there if i not in case['keyed_launches']]
+        problems += ['keyed but outside window: ' + i for i in case['keyed_launches'] if i not in there]
+        problems += ['%s: %s, a second answer beside the target' % (i, comp[i] if isinstance(comp[i], str) else
+                                                                    comp[i]['component'] + '@' + comp[i]['stage'])
+                     for i in there if i != case['target'] and not compatible(target, comp[i])]
+        if target is None or target in ('not keyed', 'idle'):
+            problems.append('target %s has no key here (%s)' % (case['target'], target))
+        bad += bool(problems)
+        print('%-16s %-22s %s .. %s  launches in window: %2d  %s' % (
             case['id'], '"%s"' % case['phrase'], start.strftime('%m-%d %H:%M'), end.strftime('%m-%d %H:%M'),
-            len(there), 'UNIQUE' if ok else 'AMBIGUOUS'))
-        for i in extra:
-            print('    not keyed but in window: ' + i)
-        for i in missing:
-            print('    keyed but outside window: ' + i)
+            len(there), 'UNIQUE' if not problems else 'AMBIGUOUS'))
+        for p in problems:
+            print('    ' + p)
     return 1 if bad else 0
 
 
@@ -510,13 +525,24 @@ def phrases_for(today):
     return out
 
 
+def same_fault(a, b):
+    return isinstance(a, dict) and isinstance(b, dict) and (a['component'], a['stage']) == (b['component'], b['stage'])
+
+
+def compatible(target, other):
+    """May `other` share a window with `target`?  Only if the window still has one answer: other is
+    healthy or idle, or failed the same way (same component and stage), as a retry would."""
+    return other in ('healthy', 'idle') or same_fault(target, other)
+
+
 def candidates(invs, lag_days=(1, 2, 3)):
-    """(launch id, today, phrase, n launches in window) for every keyed or healthy launch whose widest
-    window holds that launch alone.  `today` is 1-3 days after the launch's start."""
+    """(launch id, today, phrase, n launches in window) for every component-keyed or healthy launch
+    whose widest window holds no launch incompatible with it.  `today` is 1-3 days after its start."""
     out = []
+    comp = {i['id']: i['key']['component'] for i in invs}
     for inv in invs:
-        comp = inv['key']['component']
-        if comp == 'not keyed':
+        c = comp[inv['id']]
+        if c in ('not keyed', 'idle'):
             continue
         a = dt.datetime.strptime(inv['start'], '%Y-%m-%dT%H:%M:%S')
         for lag in lag_days:
@@ -526,19 +552,19 @@ def candidates(invs, lag_days=(1, 2, 3)):
                 if not (w0 <= a < w1):
                     continue
                 there = in_window(invs, w0, w1)
-                if there == [inv['id']]:
-                    out.append((inv['id'], today, phrase))
+                if all(i == inv['id'] or compatible(c, comp[i]) for i in there):
+                    out.append((inv['id'], today, phrase, len(there)))
     return out
 
 
 def cmd_candidates(args):
     with open(args.inventory) as f:
         invs = json.load(f)
-    for lid, today, phrase in candidates(invs):
+    for lid, today, phrase, n in candidates(invs):
         inv = [i for i in invs if i['id'] == lid][0]
         comp = inv['key']['component']
         label = comp if isinstance(comp, str) else '%s@%s/%s' % (comp['component'], comp['stage'], comp['mechanism'])
-        print('%-30s %s  %-22s %s' % (lid, today, phrase, label))
+        print('%-30s %s  %-22s %2d  %s' % (lid, today, phrase, n, label))
     return 0
 
 

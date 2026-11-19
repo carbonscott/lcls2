@@ -89,9 +89,9 @@ def make_tree(root):
 
 
 CASES = {'cases': [
-    {'id': 'syn-fail', 'today': '2026-09-19', 'phrase': 'yesterday evening',
+    {'id': 'syn-fail', 'today': '2026-09-19', 'phrase': 'yesterday evening', 'target': 'current/2026/09/18_20:00:00',
      'keyed_launches': ['current/2026/09/18_20:00:00']},
-    {'id': 'syn-old', 'today': '2026-09-17', 'phrase': 'yesterday morning',
+    {'id': 'syn-old', 'today': '2026-09-17', 'phrase': 'yesterday morning', 'target': 'previous/2026/09/16_10:00:00',
      'keyed_launches': ['previous/2026/09/16_10:00:00']}]}
 
 
@@ -145,10 +145,21 @@ class Inventory(Base):
         two = self.inv()['current/2026/09/20_09:00:00']['key']
         self.assertEqual((two['component'], two['named']), ('not keyed', ['jungfrau_0', 'jungfrau_1']))
 
+    def test_specific_mechanism_beats_the_traceback_before_it(self):
+        p = write(self.root, 'x/t.log', 'Traceback (most recent call last):\n  File "a.py"\n'
+                  'RuntimeError: Illegal XPM Remote link id. Try TxPllReset.\nmfx-drp[1]: <C> **** python error\n')
+        self.assertEqual(rm.scan_file(p)['mechanism'], 'xpm-remote-link-id')
+
     def test_healthy_launch(self):
         k = self.inv()['previous/2026/09/16_10:00:00']['key']
         self.assertEqual(k['component'], 'healthy')
         self.assertEqual((k['inventory']['failed'], k['inventory']['n_running']), (False, 1))
+
+    def test_normal_stop_is_not_a_crash(self):
+        self.assertIsNone(rm.classify('jungfrau cleaning up on signal: Terminated'))
+        self.assertEqual(rm.classify('jungfrau cleaning up on signal: Aborted'), 'crash')
+        self.assertEqual(rm.classify('epix100 received signal: Aborted'), 'crash')
+        self.assertIsNone(rm.classify('[x] error: *** JOB 1 ON h CANCELLED AT t DUE to SIGNAL Terminated ***'))
 
     def test_failure_ignores_later_stages_for_the_key(self):
         f = self.inv()['current/2026/09/18_20:00:00']['failure']
@@ -157,8 +168,11 @@ class Inventory(Base):
     def test_failure_named_only_by_the_event_builder(self):
         f = rm.failure_of([('2026-09-18 20:00:00', "teb0: TEB didn't hear from:"),
                            ('2026-09-18 20:00:00', 'teb0: jungfrau_2'),
-                           ('2026-09-18 20:00:01', 'cannot set config alias in state \'running\'')])
+                           ('2026-09-18 20:00:01', 'cannot set config alias in state \'running\'')],
+                          [('2026-09-18 19:00:00', 'paused'), ('2026-09-18 19:00:01', 'running')])
         self.assertEqual((f['kind'], f['stage'], f['components']), ('eb_missing', 'running', ['jungfrau_2']))
+        f = rm.failure_of([('2026-09-18 20:00:00', 'teb0: jungfrau_2')], [('2026-09-18 19:00:00', 'connected')])
+        self.assertEqual(f['stage'], 'configure')     # the event builder gave up during configure
         self.assertIsNone(rm.failure_of([('2026-09-18 20:00:00', "cannot set config alias in state 'running'")]))
 
 
@@ -190,11 +204,12 @@ class Cli(Base):
         spec = jload(self.cases)
         spec['cases'][0]['phrase'] = 'Friday'          # 09-18 is a Friday; whole day still one launch
         spec['cases'].append({'id': 'syn-amb', 'today': '2026-09-21', 'phrase': 'over the weekend',
-                              'keyed_launches': ['current/2026/09/18_20:00:00']})
+                              'target': 'current/2026/09/18_20:00:00',
+                              'keyed_launches': ['current/2026/09/18_20:00:00', 'current/2026/09/20_09:00:00']})
         jsave(spec, self.cases)
         rc, out = self.run_cli('check', '--root', self.root, '--cases', self.cases)
         self.assertEqual(rc, 1)
-        self.assertIn('not keyed but in window: current/2026/09/20_09:00:00', out)
+        self.assertIn('current/2026/09/20_09:00:00: not keyed, a second answer beside the target', out)
 
     def test_keys_update_then_verify_then_detect_change(self):
         self.assertEqual(self.run_cli('keys', '--root', self.root, '--cases', self.cases, '--update')[0], 0)
@@ -242,9 +257,19 @@ class Cli(Base):
 
     def test_candidates_are_alone_in_their_window(self):
         got = rm.candidates(list(self.inv().values()), lag_days=(1,))
-        self.assertIn(('current/2026/09/18_20:00:00', '2026-09-19', 'yesterday evening'), got)
-        self.assertIn(('previous/2026/09/16_10:00:00', '2026-09-17', 'yesterday morning'), got)
+        self.assertIn(('current/2026/09/18_20:00:00', '2026-09-19', 'yesterday evening', 1), got)
+        self.assertIn(('previous/2026/09/16_10:00:00', '2026-09-17', 'yesterday morning', 1), got)
         self.assertFalse([c for c in got if c[0] == 'current/2026/09/20_09:00:00'])   # not keyed
+        # the whole of Friday 09-18 also holds the 20:00 launch only; the weekend adds the unkeyed one
+        self.assertIn(('current/2026/09/18_20:00:00', '2026-09-20', 'Friday evening', 1), rm.candidates(
+            list(self.inv().values()), lag_days=(2,)))
+
+    def test_compatible_neighbours(self):
+        f = {'component': 'jungfrau_0', 'stage': 'alloc'}
+        self.assertTrue(rm.compatible(f, 'healthy') and rm.compatible(f, 'idle'))
+        self.assertTrue(rm.compatible(f, dict(f, mechanism='x')))
+        self.assertFalse(rm.compatible(f, {'component': 'jungfrau_0', 'stage': 'configure'}))
+        self.assertFalse(rm.compatible(f, 'not keyed'))
 
     def test_name_scan_counts_without_values(self):
         write(self.root, CUR + '/2026/09/18_20:00:00_drp-srcf-cmp014:teb0.log',

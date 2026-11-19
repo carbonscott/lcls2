@@ -19,7 +19,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 49 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 53 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -101,7 +101,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 49 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 53 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
@@ -189,6 +189,21 @@ the cold-start mode mounts read-only at `/sdf`: the months the cases touch from 
 `daq/scripts/` and `.psdaq/`. Past `--max-bytes` (default 2 GB) it drops the largest files that
 no case needs and lists them in `<ROOT>.manifest.json`. Add `--rsh "ssh -F <config>"` if your
 S3DF host needs an ssh config, `--dry-run` to see the plan.
+
+The seven cases (keys from `keys`, uniqueness from `check`, both run on S3DF and on a fetched copy):
+
+| id | today | phrase | target launch | key | why chosen |
+|---|---|---|---|---|---|
+| real-pv-cfg | 2026-10-23 | Wednesday morning | `daq/logs/2026/10/21_08:21:25` | t_zero_alvium_0, configure, pv-get-parameters | fault, current tree; 3 idle launches beside it |
+| real-qadc-run | 2026-11-05 | yesterday evening | `daq/logs/2026/11/04_16:52:14` | qadc_0, running, abort | fault during running; healthy launches on both sides |
+| real-pre-cutover | 2026-09-17 | yesterday afternoon | `2026/09/16_15:05:23` (old root) | timing_1, alloc, xpm-remote-link-id | fault only in the previous tree |
+| real-month-edge | 2026-11-02 | Friday morning | `daq/logs/2026/10/30_06:20:41` | healthy | today in November, launch in the October folder |
+| real-healthy-sun | 2026-10-27 | Sunday afternoon | `daq/logs/2026/10/25_17:47:57` | healthy | alone in its window |
+| real-healthy-nov | 2026-11-08 | Thursday afternoon | `daq/logs/2026/11/05_11:30:53` | healthy | alone in its window |
+| real-pre-cutover-ok | 2026-09-18 | Tuesday afternoon | `2026/09/15_14:37:58` (old root) | healthy | daq/logs/2026/09 exists but starts on the 17th |
+
+Every case has an `operator` table (symptom, when, what next, detectors) for the ask-operator
+command, and `operator_default` for any other question.
 
 How the keys are made (all by script, no reading by hand):
 
