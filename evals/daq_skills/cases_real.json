@@ -1,0 +1,3062 @@
+{
+ "about": "Family C of the DAQ-skill eval v3: cold-start (M1) cases on REAL MFX DAQ logs from /sdf/home/m/mfxopr on S3DF (world-readable). No log content is kept here: only window specs (today, a vague phrase, launch ids, file names, sha256 of the decompressed bytes) and the keys real_mfx.py computes. Get the logs with `python3 real_mfx.py fetch --dest ROOT`; verify with `keys` and `check`.",
+ "cases": [
+  {
+   "cause_scope": "component+stage",
+   "id": "real-pv-cfg",
+   "keyed_launches": [
+    "current/2026/10/21_08:21:25",
+    "current/2026/10/21_08:27:48",
+    "current/2026/10/21_10:56:59",
+    "current/2026/10/21_11:09:45"
+   ],
+   "kind": "fault",
+   "launches": [
+    {
+     "end": "2026-10-21T08:26:18",
+     "files": [
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "ab51614a50cba90492ff36c48744c7008fabdae0c16b0f069b32c59654f1e7e1"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:control.log",
+       "sha256": "41db023026bf044fd80e9ada1fd4ae1644886ac17dbf1e3f3e0322d39bb029ec"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:epics_0.log",
+       "sha256": "4ccadbeeef0ff712c9878b23b5c6e898abbe07994a7c6ad740bba252e0142ca5"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "ac169cc15c6ced68636430ae1f6bd27fd79c8f6d2bed0ce1f1451bbfce4ae676"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "ae28cb92d0b9105408f2e073ce8fc0c17c15f4f8bd0479c442d9d4a7e55a40d0"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp014:teb0.log",
+       "sha256": "850ae63f305a79a8e5892af7b46d519be208bd491f51c3245de7e6670e76b81a"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "999ca00b4efb6a784c50e0bfebeb576126af098f274e1e07361ed3fbacd9a76d"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "695c9d7e2da2388e0d3b1e8d566ceff7e74ad2cdd7bb3bbd8b76c9143013f858"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "9e9cde168656330ce522e0cf081cdc9de49b56547759be405869c17e06faac9e"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "2711db6e57539f56e384720beeec31864efcd0af74858dee024d9549ab1ad85e"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "9f571f255f5c921b184a776143e002f004b94db1415b21e2a21ab8aedf606d72"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "ee32acb551a51a03c997ea0f5494503fcc4daa6744f4f2f3662b9379d2654a3c"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp042:bld_0.log",
+       "sha256": "dc284f58d10378181e2d211da66f71bb285cb701f2d4c00d03880bdbae1ad1d8"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "a5b4dde613a5a1302bfff4748f1befd684db4f1c061c9074238fe39c89832b91"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp042:timing_1.log",
+       "sha256": "490faa24348ed5d78c4cb97c48caf5f7fcf7df5ed2d62db9cafb51987bed1198"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "aedfc5ff838bb5e20d0b915c301f7c978ef45906e39b80e50cd3fd1d68f9f20c"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon005:mebuser0.log",
+       "sha256": "243451985e9f7b746a9383aeef99139f134fd34e84bd6d635587c836e7fe10e7"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "528aa696f571278b2339a1d4174721760424b0407538320776e6fddbe3da4c2a"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "b4005a6927bf6b47a83b2ba59b0238f34c08a0b94127e1f807662e3864808378"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "62f0874ff5b930b3924c73d8f3a792594f3998117873dc0be27db9811c61e3cc"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "73070fac1e7d52ee1098aad2e0a4f82237e0c1266c9c5ace638a405c90e787ac"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "89ed8842b199b717d032b9f8b1a0f8543187c5b3d810763c2ebbe7f1c5ca5be8"
+      },
+      {
+       "name": "21_08:21:25_drp-srcf-mon006:meb0_first.log",
+       "sha256": "3d8a2303003c734d801d24e02246d0c1dcb3dc98270b742659313c39b56e5fd3"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:ami-client_first.log",
+       "sha256": "710fe33ee5a81b157457a905800691cbe7a5399d247679e5b8c7c6c47f2b2724"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:control_gui.log",
+       "sha256": "9367737ba02bc805d1f938e12ebbd456bc3e86bded59cb80dc4441921fb44286"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:daqstat.log",
+       "sha256": "00a5feb29c186f3c17f25753ed4f88755783a235c2ea9eceeede7e96ea0fd844"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:det_protec_mon.log",
+       "sha256": "c774cbee7e57fcf41455546863de3107657795ef204b61db28cd3688d7ce1d30"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:groupca.log",
+       "sha256": "637e9dc8f656c51c115284f79db14940cfcb48adb8d6d2f3f0ae979f2654d5e6"
+      },
+      {
+       "name": "21_08:21:25_mfx-daq:xpmpva.log",
+       "sha256": "40f3ce502b66f5418f2c6c08d83f94d5b8efb30c59734294b33d7a379d62597d"
+      }
+     ],
+     "id": "current/2026/10/21_08:21:25",
+     "key": {
+      "component": {
+       "component": "t_zero_alvium_0",
+       "first_time": "2026-10-21T08:26:03",
+       "kind": "phase_error",
+       "mechanism": "pv-get-parameters",
+       "stage": "configure"
+      },
+      "inventory": {
+       "classes": {
+        "crash": [
+         "ami-prefetch_0_first",
+         "epix100_0_0",
+         "epix100_1_0",
+         "jungfrau_0",
+         "jungfrau_1",
+         "jungfrau_2",
+         "jungfrau_3",
+         "jungfrau_4"
+        ],
+        "pv_connect": [
+         "inline_alvium_0",
+         "t_zero_alvium_0"
+        ],
+        "state_failed": [
+         "control",
+         "control_gui"
+        ],
+        "traceback": [
+         "ami-node_0_first",
+         "ami-prefetch_0_first",
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": true,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-10-21T08:21:25"
+    },
+    {
+     "end": "2026-10-21T08:30:15",
+     "files": [
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "3e905c022bc5e4288528edef6a18a0aadbce67e793759893bc2e8e1eaad1fdf0"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:control.log",
+       "sha256": "e27133bf6e93b8714c33cb7ffd20dfdac995f362a7514cc433539220f0481a0f"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:epics_0.log",
+       "sha256": "0f25614eba07e910c0a936f43ae8d3e3f1db4854de02fb7e80f8671974a2c6c6"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "2656958ac63061b080a8f4faf89447218af0a9c5fd2ce902a812833ff0a861ac"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "b08698f9ad07c43ca27e08b196752a98902f86a55f633fa84b58e35fb1ab6725"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp014:teb0.log",
+       "sha256": "fb95d6279134b516eaae175632529b4ec3970ab2a431ccac6a7ca382b82cb701"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "aa55d24ff37bc706cfebac26002fcef35fc30c4bc62b724af10b2df3143e2556"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "0b170e0cce9a9cc9d357abb34cac5c9511dbdc72d1a0a89956bbc9728e9ef359"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "0248c1206ebdc281b313ca9b086e215ad201fab855456fb9e5315c2212a109f5"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "b8e6b2545d17a62ad9d66f85406729acfd4458d72dc8c56e15d2f9d4a0aed52a"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "5b8c5852b566b8ffa75ece2ef315e336e0fdb12c727bfb7a1256a242b827a325"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "faad4898d2993747fd8b704316049429ee8f9a1721d27a83e57d77b3cfd958d0"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp042:bld_0.log",
+       "sha256": "83ea5d2ee1012e0c6eb6fe489a4d6610eeacab59387e9c50ffca4c8ea9afea21"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "3cfcee6c2ebe68d6fd9789c747adbcf557518a1c197dbaf5330ed4628772577b"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp042:timing_1.log",
+       "sha256": "6e28bdb72ddbf5c503794d75b7cc09985a429a0f062e3c74c62ed1f07d37b901"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "d0597ce007bb2654553835cf44ac7dcd5916902f22b6fdf471f6615c07a172b9"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon005:mebuser0.log",
+       "sha256": "10069d3f06954a3e79648a6916370894e85b1b62e986e7c94d50d19cd19ef7b5"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "0a0f2f3bc9157dad743b5d6e2dc801790ef49e565031e69864d72f655e9605f0"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "3cffdf18bbf12ff6be450487a3f90f66e863bb4867c96c799634f411f2665902"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "56a555d963a837fd14af9f185d2da02a973b4c9e3185feccd6acd7cc495c2b0a"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "c7d0cf9ee0b6ac0340ca3a15da589c83e03d7d67fe7ff9c459f5504ce36c87df"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "4c2dd982010c2136e20dde22b32d7fcbc99bcf5168557fff235dc1e6ac778142"
+      },
+      {
+       "name": "21_08:27:48_drp-srcf-mon006:meb0_first.log",
+       "sha256": "d80a32345e26c36343e984f9e5f630117e262ac795fafc95e89dc879e52dad55"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:ami-client_first.log",
+       "sha256": "86920b831a4c9f661197350a440c38c4a13739bb8923b28fc460d8c0841bea08"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:control_gui.log",
+       "sha256": "44f9d23d0bdf1927c412d93f86fff64972504bf461eae5cdd18f65c102d91fa9"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:daqstat.log",
+       "sha256": "2e914ac3a181e2b1137ced966549801093aab2dbaa9b03e1ac6eeb1b37680e7b"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:det_protec_mon.log",
+       "sha256": "fd62403895a0c78c2ee07f8958744b8d061d8b102e10e1d2f6a73512399efa14"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:groupca.log",
+       "sha256": "bf85c16addd7d13d35586af2dc62c644354e0155358e2a54d1d2c723f1bb3d28"
+      },
+      {
+       "name": "21_08:27:48_mfx-daq:xpmpva.log",
+       "sha256": "eef1ed036fdee56a7e34a017c8b5bd72963299ffbb143ded3440a8f37fa940e9"
+      }
+     ],
+     "id": "current/2026/10/21_08:27:48",
+     "key": {
+      "component": "idle",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "jungfrau_0",
+         "jungfrau_1",
+         "jungfrau_2",
+         "jungfrau_3",
+         "jungfrau_4"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-10-21T08:27:48"
+    },
+    {
+     "end": "2026-10-21T10:57:04",
+     "files": [
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "c161dc8e08b7cf83e506aeaf62452d1b1f830cd0baf05355cc29664310e108df"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:control.log",
+       "sha256": "014fd4895d9c4e00d2414a37683c8f5776dc0a4706130a1d30e3effa9d23a6c9"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:epics_0.log",
+       "sha256": "871664782777d38cb0eb3ac46eae9745d76d63ada53c4db8a3d3b58f0e5b2bb0"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "1c13ce539f3bec43696faed098ee4198fa5bff4ac704e602d74391233653f535"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "89e27c0094bb6215d89bf8677c9ccae4c5cdb1d70fa667422d7cb56f78c6eef8"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp014:teb0.log",
+       "sha256": "ba3592269fe67641113670998196d0f4ec1247b279c12b152c61776243de90e5"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "bdaf8361ff568298dd4bf081fb6f6ac5bbd4173d314b3ec08dc5c6b4aa30aa19"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "d5704c7d82928f37a763e99fc254ab9edcd63f03f7d2fad654668fc77ae25d00"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "28c3338965796c4d923fee7a34b99ad173365113e85ce9a4e9074d571e965d26"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "c86e3efbf9116ca180d55c4a68110f8766d5e0103013607b20ccb89deaa8ea0d"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "f96da6ce23678ea58c266273f48612b6d860d5554ea7eab3a717780ea4b68e17"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "c7a50f2d7b70071af51a276940f7e4c60d27189c53300bde5b0d2a08cec41ed2"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp042:bld_0.log",
+       "sha256": "e2a887c92c5a5ddc7ad3a26e392c46d9d25898819d0f868667f5b1b5bd6598bb"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "2ac7f47dbb4e55869f3dca82cea70ac016982a95ea65674afe9913ca9d213b9c"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp042:timing_1.log",
+       "sha256": "761d9c0cffb626c6e97a9f491db5b295dcaf55543f8f50bfb64ff6f4a4e376cf"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "e521f23dbfb848c6a771dd957a05f77c928fba63c06e3c771a024a468916f2dd"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon005:mebuser0.log",
+       "sha256": "627f2aa056477e736f428c60c2e9eaba4dbd097776cd3616cb1588376fa283c9"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "244079c388aba23ba9c34b831decac190f2fdcd0a0f48239017486e36d24dac7"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "ad7805590bc1a8ff015aebd29dde1c42cae21e7088041965a14183607e7c2d64"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "4f5310b635f7e30f8e96bfc913afba13c68d2e58c193de524f9cd8bc25a3c69d"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "a5a323d253ab9c1963a76636a23b194cc560f07ce899543c33a9a3f2c4c825c8"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "de8c59b211b50b52873e820c514e5ceba8bd566488653d8c1e9902190728a84d"
+      },
+      {
+       "name": "21_10:56:59_drp-srcf-mon006:meb0_first.log",
+       "sha256": "8758eec23155fe89c12403a65ea1a3140c1ba3ecaff988c92d6bca60b817c63f"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:ami-client_first.log",
+       "sha256": "a6130b3e5d23a531e2efaef7d889765bc2b56e2f6ff4df1de46cec506e5a8511"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:control_gui.log",
+       "sha256": "89a7e93515697d58e4171ca21af26ca2d58ed1a76c23e5d4ac2f1290ba940899"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:daqstat.log",
+       "sha256": "4b1a1a343b7235fa084600ab79f3e6187da7ac86aa512e3d1bc89ddc76d02770"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:det_protec_mon.log",
+       "sha256": "3093f62642fcb8f8b46b63c4b90b2bcd0d2b426a58215966da07fb0a67aec86a"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:groupca.log",
+       "sha256": "31e99c7494f1cc68ac117267cb9c6a63a236205e1c7ef7d1796c249566e52112"
+      },
+      {
+       "name": "21_10:56:59_mfx-daq:xpmpva.log",
+       "sha256": "dcab0da0836328f821f92e472b792bb6c5d904f586f10cf087e2ed00f394d95b"
+      }
+     ],
+     "id": "current/2026/10/21_10:56:59",
+     "key": {
+      "component": "idle",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-10-21T10:56:59"
+    },
+    {
+     "end": "2026-10-21T11:10:02",
+     "files": [
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "7ee6dc10486d58047914ed13e940be937b6260849c2c75d83d00295176a19575"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:control.log",
+       "sha256": "1d5ff5a122b370774b1919366d1138c6865575790cf97498c9cf6c06e9c66fe4"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:epics_0.log",
+       "sha256": "392ac17236e1a0c8836b6fb02fea36d01e818b76c413577dcf6b68593584fe4f"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "75739a82285db65a949aae975e1245eb6551d93a9bbc63e2faccf2cccf84ee29"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "5015218f123638eff87582301b36200b34720cc29346950a973e9ba5c7681f81"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp014:teb0.log",
+       "sha256": "36ab6e4d15e9a11cf487f29ef438626b5ea44416a8ada6103223ca4283e7a61a"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "36e734f0d930bc9ff6321fe2409007134f17ba23632ac12e22c55d728228b445"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "5e301c08ae8001ab3989606b7e1f5984fea5fb46c540ee0ff3157154c86ab52d"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "f51fdd45178d0167c0311ca9cd42cc175ccb40a7b856c2ff97d73a349e47571d"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "561ff4923aded55f7791227e5932929a070851211b8d2bde39f658c8bd5b0d24"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "224b293d41ab7d7b0ae17ecabde55b21ff751b50a4c944a2b27a81c7e709df35"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "33ecc448b4444a379260b44015a04307a005533a8183f4535f00403b9cdeea45"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp042:bld_0.log",
+       "sha256": "387a940f0c502e0311411ffd324ab993cf97e4c5fcfbda9b1db2220dae7565af"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "d2aea1e94daee1b25691616a87b9ed05450695e1120ad7ce9e5787d0f08b5fd9"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp042:timing_1.log",
+       "sha256": "289341c741362fa9acc53a992faea1591eb736cbc037ff1b057e0f1702ded87a"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "0e62f301480ea415439c45e5fab624cfd8b90ed3b4aeaf541df574c5b5860a21"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon005:mebuser0.log",
+       "sha256": "c48a63aaea9937eacf70acb327237696762bbaa73527d77662ba97059d80e108"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "9dd7de318a93f23973dda037b6ef5f1f49b5527c807a0c9ddfea0d0c7a38fe8c"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "61e947347f537481f3a4882e0615b32c219ab73a66b914f16b2cba3c94a9d08a"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "27e3b500f666317da4ac8bffb422ff7ef7692ff65877b22cd80c9f4989178762"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "6361f3259ec9d3ecb8b1a2ae5b263b88232aa0cfc3c48b21dbd1355424eccd58"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "d3e64066bb7aa69d8372eaa3401538849ee05978ad945b639fc7272653fb9f91"
+      },
+      {
+       "name": "21_11:09:45_drp-srcf-mon006:meb0_first.log",
+       "sha256": "76e756c80870033b24e865ae6e2ff3d00ba07940a566ee56c52b88ce04282240"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:ami-client_first.log",
+       "sha256": "a2694a109eba6875a9a593f05404d32a55b9c2a1a9dea385128ef2f935216067"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:control_gui.log",
+       "sha256": "28d73c0fa2a411bfe65cda1a7e95405b057ed1139c1bffb2cebbef419f663bc9"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:daqstat.log",
+       "sha256": "79543f9c374a1a20a35330efe26a0c3009567fa1828e610b89374cc0dfaed389"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:det_protec_mon.log",
+       "sha256": "cfa652d934f1a5ef5be1c6891b31a519af02a59b8ad2e2fd18515db65ed0b26d"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:groupca.log",
+       "sha256": "1169caaa460c7735bcab7605a6066458cfde72cc4b1e0f1eb674d690d1b485c9"
+      },
+      {
+       "name": "21_11:09:45_mfx-daq:xpmpva.log",
+       "sha256": "58c13f2b71c53854a516b63d64449a3ab88f895b0a0f9e09aaffe2bcbf2eef94"
+      }
+     ],
+     "id": "current/2026/10/21_11:09:45",
+     "key": {
+      "component": "idle",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-10-21T11:09:45"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "The DAQ would not configure.",
+    "what next": "We restarted the DAQ a few times during the morning.",
+    "when": "Around half past eight in the morning."
+   },
+   "phrase": "Wednesday morning",
+   "target": "current/2026/10/21_08:21:25",
+   "today": "2026-10-23",
+   "why": "current tree; configure fails on one camera DRP whose own log says it could not get a PV's parameters; three later launches in the window are idle"
+  },
+  {
+   "cause_scope": "component+stage",
+   "id": "real-qadc-run",
+   "keyed_launches": [
+    "current/2026/11/04_15:54:09",
+    "current/2026/11/04_16:52:14",
+    "current/2026/11/04_17:18:46"
+   ],
+   "kind": "fault",
+   "launches": [
+    {
+     "end": "2026-11-04T16:41:23",
+     "files": [
+      {
+       "name": "04_15:54:09_drp-srcf-cmp014:control.log",
+       "sha256": "3309dd84fea1de00e15762341f1031f1a48d35933dd22f10fe7cd53cfe3b4886"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp014:teb0.log",
+       "sha256": "3de3bf589a60620df8780d9e941f405861d369b31fe531ac682fb12a6ef5d26d"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "6b810e019e0991e6c01383a55e2e823e802309a047a48cf47709b0cc22601748"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "ce4af92a7c82df8933a299bb6a7019a4054015f29decd2696ddffad9ba014b79"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "4965643d3e42d538b5f54738860f3ad14c83037de71b2fba3c45ebe7196d9f1c"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "d51cc0185ff5d6dfb12427115668ba7f6aae46057d6a3323e91c41e0404664b6"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "2ba0187ee27bf3d68c1c5be0ca60ac46eec087a4e79d6be1b8be459920c85280"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "fdb70677361b115cf175be741395c68dfc50f8f0c423d442570061b4cae769ef"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "7acf6fb229b0e9f4a72ca5f77f9cddabd03eb0938263c5d3a34a7fdccf78fc15"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:bld_0.log",
+       "sha256": "65dec72e23ad9cdd4747bdc3577850270441e9f3ee505428da4e3be4c2413b1c"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:epics_0.log",
+       "sha256": "0bcc576cadbf00af97ce25edea5b1cb170e655be08dfec8f3c461f2b0bd22813"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "ef8e7f137423d2102c999787ef33b6252c860d6ef825c111923335a9b734a3af"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "11f2c2b0da760dc646721da3189d8e1759b8aa68c812197ee8e39193c70ae329"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "7e410bf05918e908263adfff5b34025abfb6fb6c076dd89cc7cbfeacd6be243e"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp042:timing_1.log",
+       "sha256": "70cf537eaeee4a6048aa7c7c56282adb5490b242ba2fd5523cb624e19235ea23"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "7bad268e82d37205a54a7ff53a35495c1deda868ba1e584dd22953369d465421"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon005:mebuser0.log",
+       "sha256": "d9963a0115a1d0beee0f68488f9ef7bd50d4c65f50a8d21cedf6d80a7b074ae9"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "9ff8470a1182b84cf6a036e4876126356d4c55a3be97b300dd6880ed9235868f"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "e19e10225223655e941f8c42530589a7b91fcec026756c3f5c55fb180a74805a"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "7dbc3855a980bb1b107fd5664bb460bcc4755cfa4f9d55c757348f2736f9b204"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "2854e0a7e9fd2b5cd7ff842cf38a50cbc082f112358810dcc66df47a6a1c4c40"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "21ba975e671d37384a77cc09b76889dc9fa28402b62691b69d9bc53520f4d2ea"
+      },
+      {
+       "name": "04_15:54:09_drp-srcf-mon006:meb0_first.log",
+       "sha256": "0a63525f4093b32e1497f0cbd4b0826ab216f4dcf0f7e7cd8c8e28469fc89ed2"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:ami-client_first.log",
+       "sha256": "b9873dddf17ff535768181a2095d2f978f70fcaa199400b312fe7fd8f2a1a73f"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:control_gui.log",
+       "sha256": "8340337bc6baa59718afdf48c7b540f5e545e6d58aa6589e32f4cba89a5ab2fa"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:daqstat.log",
+       "sha256": "aea2b95c58a6a39c8c6216d68c794b2d789de08db426700d4fcdf2614ede9d6c"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:det_protec_mon.log",
+       "sha256": "98b0f4443aabfa7548bdff0f862077fdbaaab4b42da8cd2004c571cbbe479674"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:groupca.log",
+       "sha256": "7786e814309858d94638905c3bb87af068f3553a578216e6e3b3412f9004d598"
+      },
+      {
+       "name": "04_15:54:09_mfx-daq:xpmpva.log",
+       "sha256": "7574adeb66d44b522c0312544bf88e42b1f9ad0e739391e5be41667a36d07c02"
+      }
+     ],
+     "id": "current/2026/11/04_15:54:09",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "ami-prefetch_0_first",
+         "det_protec_mon",
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "traceback": [
+         "ami-export_first",
+         "ami-node_0_first",
+         "ami-prefetch_0_first",
+         "epix100_0_0",
+         "groupca",
+         "xpmpva"
+        ]
+       },
+       "failed": false,
+       "n_running": 22,
+       "reached_running": true
+      }
+     },
+     "start": "2026-11-04T15:54:09"
+    },
+    {
+     "end": "2026-11-04T17:08:34",
+     "files": [
+      {
+       "name": "04_16:52:14_drp-srcf-cmp014:control.log",
+       "sha256": "0197558d1a816cd1a8be8b20b0a58fc17093c39effbc602f66976f8934ae492c"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp014:teb0.log",
+       "sha256": "d18d00afcad006147aaae7847f533e8017e4e8fc8e8ca456411d2246bbdab1df"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "26d96b077d93e6a8c8339c3b7781fe5d13e93f409cfa6c4076df43b17f1006a5"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "3e40db9b344f6026ca37e3eff3e4e46c549f9896d346f0375c055fcd44cee480"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "ffc54a60b416f6bfc91dc685c6dcb53cac939a307ff9cc1891da44f27bab1136"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "dcd9187ce1b4ed14a80e5102b6a16f7915cfa7f85b406e881ed2aff9239cf39a"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "5911444aff3e030691185a2ca89c486ce1953b1124e2b2a6f0455ac212c65fa7"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "5266922c985164c3135968287ee210fb51a6a2cc105bbf7110f5e8d3a324c683"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "19fcde008a8698a6db7d4e8975c52030f462fb88b6bc52c2424bcab7b5d1dc12"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:bld_0.log",
+       "sha256": "c8282d568556c4f3931e4b78692ceca6f031162c57bd85033221c596f81b230b"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:epics_0.log",
+       "sha256": "f562c10b8d1950394dec45c826a7b55e4692ff5ebee4b6498f86cd18c3ec4a02"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "f2d0a870fe149bcadd52ab607ea1594d70c9a16c14799431937984de9fbd0385"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "d83d35ef491c7bf0a3360da8c01c3e1117322c3faa2572fcc487c23ec28fa69d"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "cea00f18ee4f67d9a2a239d2cfc358c46651cebac26c421e8f13aac1c887bb0b"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp042:timing_1.log",
+       "sha256": "477c1b0b33898ac004af650e398428494c8826b923787dbf631f4756bd1f7690"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "4ec1ee7c123de25393df31e7f3b82755e5d1167c44b0418cf006ae36b2220802"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon005:mebuser0.log",
+       "sha256": "578f063115d72edf0fc93248a1d523495921d1fa02b2580065cce208e61c6fdc"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "b2a3083c4df242280a78384dd58cad117c80eb1ec47f6ec69464943272df161c"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "eb5b4ff7ce6f4cf4611ecbce95139a713a9edf9fdd469b218fbc12ed588df0c3"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "720290bd3eb6a1bd8cc223acc8a4578da3e8e23429157d6b1517662ca6ccc84a"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "d3b6ce372051d8076414c75c500246ddedea0951dec9355ba42fd60806282003"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "ef8dc84f767be0c1ff242e989af5f4b7a3598aceabe855d6c2cecd1030746ca7"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon006:meb0_first.log",
+       "sha256": "b17432d1a185002af9566e4c1ab7997d2dc0d6e72b67b7c60f8450b28c7dcec7"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon013:ami-node_1_first.log",
+       "sha256": "c7e0a4f004699c59ffe46499b03105171b023af052cdeceaa4acbad37b7e273d"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon013:ami-prefetch_1_first.log",
+       "sha256": "a5e9fb7d4e311c366556a8bcf9b5d226e5f149f4ce0bd26c742b12ca365f261c"
+      },
+      {
+       "name": "04_16:52:14_drp-srcf-mon013:meb1_first.log",
+       "sha256": "86053cd34e89627218e337bc3fbc04cd64d6b2e2eaaa57db2b85406eb1d8b089"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:ami-client_first.log",
+       "sha256": "4a73553429abaae37a14a379e1da409767dd067b4a54a762d2c47c2731b8f692"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:control_gui.log",
+       "sha256": "bbebf56abb3fa8c398612651f7970ac3627405fd61634210f04637ba73519eb1"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:daqstat.log",
+       "sha256": "fa45401b7fd48785ebe1870e3a1b7386ba1e10ea5f03d57c15e25d28e2945dbf"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:det_protec_mon.log",
+       "sha256": "faa7cfffd0c3ae8e4dbc7c3d6be6d35db6eb47b1a60054e199cd374c4b583b55"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:groupca.log",
+       "sha256": "61e2291e5717206956298e8a18b56642232930fa1719c1513e983c5dfcd0553f"
+      },
+      {
+       "name": "04_16:52:14_mfx-daq:xpmpva.log",
+       "sha256": "0a8cd8d78d12645f1175a87a8c4ea7c9ad07497dc84a6b4bc79f7a34de41d00e"
+      }
+     ],
+     "id": "current/2026/11/04_16:52:14",
+     "key": {
+      "component": {
+       "component": "qadc_0",
+       "first_time": "2026-11-04T17:08:07",
+       "kind": "eb_missing",
+       "mechanism": "abort",
+       "stage": "running"
+      },
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "qadc_0"
+        ],
+        "no_response": [
+         "control",
+         "control_gui"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "state_failed": [
+         "control",
+         "control_gui"
+        ],
+        "traceback": [
+         "epix100_0_0"
+        ]
+       },
+       "failed": true,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-11-04T16:52:14"
+    },
+    {
+     "end": "2026-11-04T17:44:59",
+     "files": [
+      {
+       "name": "04_17:18:46_drp-srcf-cmp014:control.log",
+       "sha256": "95bcf2ccae3b327036093620e963e589f937d9c2b891c77af1dcc57f7c1734f4"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp014:teb0.log",
+       "sha256": "f4ef07f09e6bfa715bc6c9404462a043bd50f659576451cf7ba33a2f5094996d"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "326bc9725725832e1a790732f6b9c1f78f187118118f4b872fbb1db844df9a9f"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "0f161d9ae4122ed50fef00f84f071e9623c426bcd19dbefd37bfaac37cacc020"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "6319b616110c0d10e1562803002c588c18494a60f6ed0f398c2b72a3757bca7c"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "7d14bc9b5ce1dce8227720775bf8b110da7008966b71e6d93ca7cdf77a6d4e2c"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "db60c0e572e805221d24243316cc9df65c7b2aab9f37f0189af99f5b76bdb9d5"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "987f13f4eb61d0dfffec87362c88f307063f7fe639c1bfa7cd1b5f0d359b38b1"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "cc51c5fd3d46e505fb98390c4879a6ea10bcfd564af3f513b6828b5373fb0062"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:bld_0.log",
+       "sha256": "17392e1fa4659b46c8c81e2e245f619554bccd14c198286deb4ecaf6ecbd4974"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:epics_0.log",
+       "sha256": "c70e7313332f7f056ef0e7c9b506c26569492b347aba90434d55897c735981ae"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "16fda6e2220b9058b7e41967b4bb931323b9cea5d22d20190ed8d14f1f0ccce3"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "86db2355ae7364223d5c97ca5c3c254da80c4827fec25fa870eaa71b0f42f84b"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "d2113c291d919b01449b2bc13c7ae995406d22a67b74b0ea4d0f0791a83eef3e"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp042:timing_1.log",
+       "sha256": "cac0b33ee69b54b39916ffebaa78ae0631c007fee95cacb36e602ddb196a5c9c"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "4781a29e76374e08df84d64e21fbd53573016d6a0735aa0e25b3ce1f65b59ebc"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon005:mebuser0.log",
+       "sha256": "cc20b13444815a75be4163f35ef12e3076d33718c14016fa2f741059918aadfc"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "9a4d10cfd5383f30e3fabd099949e358008f025d7e7205f341997aba76d8be5e"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "1de4feabd9a7ba84fb6b945499401d6dcc7c7aafce19ed1aecac2700ffac88c4"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "a13e78c993d6161818068560385f747e3f9ec630d36d6d1e6149dee2c71d2a52"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "991c8159317ed41bf090d849f474bdd67b1c9cfcbb802d60e054a87237274372"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "2ed7e333fcc331fd57c5e1c1003b71be57646c771d6af7bef5446b52e1606db4"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon006:meb0_first.log",
+       "sha256": "a0638c68213a5784b7162efc1bbbbf80a0cd857b13f0f0b8be7a1a681c0bd8bd"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon013:ami-node_1_first.log",
+       "sha256": "58754234effe10ac0073dae999b40fb9daa68182aaf4737d748845c8806a636b"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon013:ami-prefetch_1_first.log",
+       "sha256": "eaa184de51efe6b98b75684a586334cd87d01fdb3063622bce7d106079f0dcb7"
+      },
+      {
+       "name": "04_17:18:46_drp-srcf-mon013:meb1_first.log",
+       "sha256": "16a0fe54204fe55358618dac33aa1e76173b8f99acbc835434f192eb001f7419"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:ami-client_first.log",
+       "sha256": "0acc93b3abf8e38538c883dd725601f729c6a1bbcafa550f1b95e620471df4c2"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:control_gui.log",
+       "sha256": "d7595c4031997cb3f066ca6fd2c8f612a96c37ddc25832909786c2e8a4e2b1ef"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:daqstat.log",
+       "sha256": "10af1960e6d0eaf4209e86ec5ad1923062b10f2d3843ad4f00262c6e744ad95f"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:det_protec_mon.log",
+       "sha256": "77edbe568b0906de7e92461414569cdd75038f9d93022ab78fe0b32976d8a059"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:groupca.log",
+       "sha256": "d4ac45ad3f87af19d05eb236382b0a6edf5a05fb10244f65c6e62d98887df966"
+      },
+      {
+       "name": "04_17:18:46_mfx-daq:xpmpva.log",
+       "sha256": "39c20fde20dbf4262fdd164643e6fa4574818ba787b1a4906fd02cdc8bc078ad"
+      }
+     ],
+     "id": "current/2026/11/04_17:18:46",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "traceback": [
+         "epix100_0_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 3,
+       "reached_running": true
+      }
+     },
+     "start": "2026-11-04T17:18:46"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "Something went wrong in the middle of a run, so we stopped the DAQ.",
+    "what next": "We shut the DAQ down and started it again, and the next runs were fine.",
+    "when": "A little after five in the evening."
+   },
+   "phrase": "yesterday evening",
+   "target": "current/2026/11/04_16:52:14",
+   "today": "2026-11-05",
+   "why": "current tree; during running the event builders stop hearing from one digitizer DRP, which then fails to disable and aborts; healthy launches on both sides"
+  },
+  {
+   "cause_scope": "component+stage",
+   "id": "real-pre-cutover",
+   "keyed_launches": [
+    "previous/2026/09/16_13:58:21",
+    "previous/2026/09/16_14:45:56",
+    "previous/2026/09/16_15:05:23",
+    "previous/2026/09/16_15:09:40",
+    "previous/2026/09/16_16:25:49",
+    "previous/2026/09/16_16:34:58",
+    "previous/2026/09/16_17:11:11"
+   ],
+   "kind": "fault",
+   "launches": [
+    {
+     "end": "2026-09-16T13:59:51",
+     "files": [
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "012730f30ac01cd2df3f8ccd86896aa5ed1feabe46f5653a955802b98417719b"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:bld_0.log",
+       "sha256": "323b4f4bdc555828b98adf0b279e49fb45e65ad0dde8e40b564cedfa13699d44"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:control.log",
+       "sha256": "92b810dabfb8021b8220487ab382b2806fd00e95a97c5c6bbc356378e512e263"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:epics_0.log",
+       "sha256": "074a08d8770e5748daaf9af97c69cfa6c427256664e9cc022001715122ad22f7"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "2eed2e03f3728039d6f066887bf55536d0108321c48784c40818c5d3cf856f22"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "544ee6787badac72ba68f518b90a546691d30a160552787ed662250180d98ac6"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "d476ffd083033e0e2754a437607ded838beb098c601860c2db5e442232516012"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:teb0.log",
+       "sha256": "56f3625c49c70d4253e1ddef756a08d1cd7fb795ce11a0de4e151a7f87976a4c"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp014:timing_1.log",
+       "sha256": "3e9acb72a395baba9b01349a089ad82c7096d683a1294a285e9759669e8fb53e"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "4b4423ee6c36fe400eede245583370423c6bb2cd6639332be6cedeebc8054df0"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "2c187e82801d060e21e21da40d48174f15ce684434a09bd34d1eaa072e0f6cdc"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "94e967c78b6ce2f10b2adb1b7a270a9c246cda35256816a1e8b2307e5da3a088"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "43b53f9cc2215925fdf902675fb0d5e4b477343f3cd2288009d3a64a916bfb8f"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "2c0b5d94b073c8eb7a7245666d22320ccef18e3dbedfeb94a6ae2a8574e9a93f"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "93cdde330d61f79c8c7c08902bd1bbffa6fab07dd86739ec0211f9898fcd8d65"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "7046fe11d4fe443f852a3efa899c5eaaca40d74628a78815fa0536ab7e64fe7e"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon005:mebuser0.log",
+       "sha256": "ea256aa6bc366d26480920939e96e31963730551bc8ecc6012de28eb54655d52"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "05acbbfd536364d2dc217a3ed8e90240e55c3f515c7bb3e9ffcbd2e7f96b0dd2"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "fb95ef7caf042cf3ce23478773bcf33ead823bf6145137e38e2c3f2955b4060a"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "31387c38afb6db692c9f7c30c3727b56e1c3d245ba7b39f7a9f651fd8794a5a1"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "5ec5a07983f07e0b27d4a06cbd4a4e25a84a15666a1aa79afe4bbf7e1ff24400"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "7a58d48a8095c3652aec571f6e93d59d8ea0cdc292bfcf554aefc45ea5edb809"
+      },
+      {
+       "name": "16_13:58:21_drp-srcf-mon006:meb0_first.log",
+       "sha256": "18110dbb3c85a936b23c1fdfc90c5e12bbb986bb9225e7d51e2513dba0732123"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:ami-client_first.log",
+       "sha256": "71434939797d3a9e4a79a4934bc54fcab51eaa99957c44af31e9ea3b8e75a0d6"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:control_gui.log",
+       "sha256": "b75de9572da014f07c6ab42bb980ef9571467527b551238227e2c7013b479a4b"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:daqstat.log",
+       "sha256": "dc697785d0da80a2d38ceee679cbd9b4d993a4232f0616fee585ea2ed5f0505a"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:det_protec_mon.log",
+       "sha256": "49350f3ae7790762bf710fbe81b77ca0c62f44c9ea2951c87cd07c22b1ac2791"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:groupca.log",
+       "sha256": "7c33413c0709c22cbbb2f6a3a7f7d701e92e0d9e26240ca11610dab98ba170e9"
+      },
+      {
+       "name": "16_13:58:21_mfx-daq:xpmpva.log",
+       "sha256": "7988dd1eb61e694ff507fd4c41eeaa519289f2aca330a782caaa887f39bfa88b"
+      }
+     ],
+     "id": "previous/2026/09/16_13:58:21",
+     "key": {
+      "component": "idle",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "jungfrau_0",
+         "jungfrau_1",
+         "jungfrau_2",
+         "jungfrau_3",
+         "jungfrau_4"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "groupca"
+        ]
+       },
+       "failed": false,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-09-16T13:58:21"
+    },
+    {
+     "end": "2026-09-16T14:47:29",
+     "files": [
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "7a12edfe9b3b575ad6893f4755f4486afb1a4f91ebcd894c5b9285aa85e7a541"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:bld_0.log",
+       "sha256": "7faeee6616693fe3e82575038e40a7620c25b3b3c225a1e674da73f8106b4056"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:control.log",
+       "sha256": "c9e1a826793ff928803f6180ca526aa544f285aef29e64bbf96906940a7dbb28"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:epics_0.log",
+       "sha256": "3eca6d3aea93f64427d3a938f0f01c345554b2815d8722bfea6fa64fc5249f61"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "93d45d8c8b7683207f20bf1c9dc9111bc9b3043b7dab8689bab939ef5d1da5f1"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "6bc3d376d987114c28c9d453357b6e47d9fc54e82acb5eb9748dd1149431e4a7"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "396eb81d96b0ed809f4859d691a44735497aa06d1274e766853067b00c641311"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:teb0.log",
+       "sha256": "fcc718605b38d5ef608559c314e401f993a26b24b363bf7e5ed311716976c039"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp014:timing_1.log",
+       "sha256": "3bebe701026150bcdd01a566b4fd892ce0e805c3decbebc1f310afd07b7fd1c7"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "feeca9c37b28d63c1f0ba8225f3997ac1393c42da56af141d8acf1f11f0a9648"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "4eac2b652210791dcb4e9ff29e5b40fe76fd4c2b8f5df5d7c38f810abdf12152"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "8d565415c4cd9c1c0a1fadbcd1b0bac3c380da68c9e8588b5f665a20a8ffa010"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "72feb9fe1b8af62d866e9a84f98037efddf3e1512464cf4410a507f325c8ab02"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "2a09e53e58f4db9c425afdfbe78a25afbed7c3fb5613b7040522583102eae770"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "aaa4b0fb452d1b63528e8386484e5210b53331e7dd6a4e25b685cd5a2fe6bcfa"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "5ed4fd63a4aed89bcb054c76b65b4c78f4de4992d1c8d8ec1e561652938c00c1"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon005:mebuser0.log",
+       "sha256": "950e91a34154adb8fc3cb649fd697d1dfdb0468e68613d9ba0875e1ae2e85449"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "0a388881659fdf4a2811c225925fe923cd2c05679d4b5671434d2e3de859ae3e"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "f32cfc55fa1cfdb1bb0d3aa27b0e95a7a87a40bfbf473f49e880d401a9789654"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "035c1ed4465362e54acfd21e827e951c480996a9eb79a18d50eefe194ac1c0d2"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "0a7d8cc4d73fcc9d523c8f1eee9548aae3c993444882ee7973fca56abda980eb"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "fa535b34d1f286248793dde91e39a240c5f8d1025cc0b66bb8d9f1d4fe663abd"
+      },
+      {
+       "name": "16_14:45:56_drp-srcf-mon006:meb0_first.log",
+       "sha256": "7fe2db200ba49854ad6a1a1571f724788195ac41fa3099b477066893c78246cc"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:ami-client_first.log",
+       "sha256": "9f404beb0f4ece78ca838417b697b36f64125a95568d6ebf4d21511231d49947"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:control_gui.log",
+       "sha256": "c9c170082b95314d81d1eaca6529c5c160ef1baba5e0b73042fde5351d0a859f"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:daqstat.log",
+       "sha256": "1a4ba6ddd3cfa068c4653cd2a2f37d7353f2a1dd9a19e8af3b82d047d40083f8"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:det_protec_mon.log",
+       "sha256": "1055e7d849384774c570c85af73e53bc632a23281f780f68dea90709b4bacb19"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:groupca.log",
+       "sha256": "48e60110b934842201949992a5d373594180e375effa5657c60050f5e670c4f8"
+      },
+      {
+       "name": "16_14:45:56_mfx-daq:xpmpva.log",
+       "sha256": "47934e0223ef8ff32abc31fc7c2d3c37a78f22e14c6d6232141ef30974fa8023"
+      }
+     ],
+     "id": "previous/2026/09/16_14:45:56",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-16T14:45:56"
+    },
+    {
+     "end": "2026-09-16T15:06:59",
+     "files": [
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "c1cb781ec7ebe00850ecadea3ebe71723b797939f87d9644465bd6a241294fb2"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:bld_0.log",
+       "sha256": "57633db677392eebdee211d2228d8f6b1c2435541312a956fdb3ff1b6363ce72"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:control.log",
+       "sha256": "796ce726cb23d747e7934d99de96a7ad8c52ff4749a86015d69e21e256b18ef6"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:epics_0.log",
+       "sha256": "77fdc8301a2b3df7ae434028ee0430e426fc7f2506d17979c6767d3dd3c90c81"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "76028e31b1d2db75df7c868cb6ce791a1cc71eb4f6389cd8c14e982f7113bd0f"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "7143f2033a50b90ee68e1f7328886efacbf80d3926e00175d59e4753011f4d8f"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "c7d4b01e7367b3b0f1228fcab0b1a206efa99d00473d34e1669a83dc8c63c9ed"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:teb0.log",
+       "sha256": "7bc637d0d04f465accc53fb96e12efc0c623cb5b3cf1fe7e0f2ef5b53bf09d94"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp014:timing_1.log",
+       "sha256": "b190e710649e3a5aa4d674b5187c27734e474bb6b040552f90706daa135813dd"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "6077c11c59061dceebd46ed7d7ee8830d6591fb1ed38a5dd55e9da0ba3020f59"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "ef7004f9470cdedf7f44f4403c44b8ac65ceec52c81095c59b536f3191d1a762"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "83c02966b545453a0177d844872cca97c261a291e8ec3f88faafc41bc6b64938"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "c2f2723f08cb37623a27231afa49e5dd284dbf630933e278ddb19c342437e049"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "ab9a133aa76133b3353119b2437bdbfd5a4327a7abaccbb7342eb7adb993c81a"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "af468153253ad62c0bbcb3c8898db451c440df4cb790527de7b3af8d89a4ec0d"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "40afdf2964cc965486ec6af3cc736e75221c63517cb9cbcd8d2e6a8c52d00a65"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon005:mebuser0.log",
+       "sha256": "59d316f9eeceb94e51434cf09d3c51093debd6f0c80996afa4ad756239948cb3"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "a046370928459ea10431f6a0dcf04defc413645a12b19a22612fcc85095f3730"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "837196b4dc2de0fb9245ac0ff67782c2de0d5c18603483e379bb42e89576945b"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "80d95d1985436996ff46af620fc2814c4bcab0022407f5940e99d9893ef38a3b"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "e30c3e0cb1b7846c2c86a4dc58d43e1c25f130aa0fe99beab6868a371f2f1553"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "de03e04910fb5c3e18de2b87f3c2532e10fec6784483d09529811c9904d47e43"
+      },
+      {
+       "name": "16_15:05:23_drp-srcf-mon006:meb0_first.log",
+       "sha256": "8977d3fd50f5500f9565e68d64de469554c48ba3558ee04e0ada1a0280d946d5"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:ami-client_first.log",
+       "sha256": "eed1970ea88243b80d4576744d75520273af713cad62c7594cb1c3ddfd9ef61e"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:control_gui.log",
+       "sha256": "07f1a96064c7f569ef054de8b60d6ce721ff8d544158f796607a95d62049e419"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:daqstat.log",
+       "sha256": "72b201cd352791d45bb558a275adbfa093b6fc8b9ea032056f2fe82419988098"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:det_protec_mon.log",
+       "sha256": "44beea646b8e1acf66515555d464c71b299445270a2e4ca103e0e6830f897d30"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:groupca.log",
+       "sha256": "e208244b8757242cba11fe8174bd73ed2de9071cc084f04548dbf808ffbb8ff1"
+      },
+      {
+       "name": "16_15:05:23_mfx-daq:xpmpva.log",
+       "sha256": "8c0cd2a80d92165ffd921a38db77abff185313d03bb8e3d8e9788f77e08c0faf"
+      }
+     ],
+     "id": "previous/2026/09/16_15:05:23",
+     "key": {
+      "component": {
+       "component": "timing_1",
+       "first_time": "2026-09-16T15:06:44",
+       "kind": "no_response",
+       "mechanism": "xpm-remote-link-id",
+       "stage": "alloc"
+      },
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "timing_1",
+         "xpmpva"
+        ],
+        "no_response": [
+         "control",
+         "control_gui"
+        ],
+        "state_failed": [
+         "control",
+         "control_gui"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "timing_1",
+         "xpmpva"
+        ]
+       },
+       "failed": true,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-09-16T15:05:23"
+    },
+    {
+     "end": "2026-09-16T15:20:13",
+     "files": [
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "a6b5739a7be01ec47ce6f58197b740d03ca858b6e2bfe9797630422707acf4ff"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:bld_0.log",
+       "sha256": "f5d498add2f66c98d2e0b6cf36326b26dbb315234a400756db8c9e0f911337f4"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:control.log",
+       "sha256": "c754861fa4da8114406d3b4771a329d56aafe2b1df9cea29f0bfa8afa6d5530c"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:epics_0.log",
+       "sha256": "4ca5bb01e42894c4611632770b85de6ffb53ee790c2e3053b1e03e3f919c18a4"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "81fa70ad41eeed5e772c06ea645c5d15d63b7d959efdf391b504e966a3960d9b"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "48dbdee4e8ec963f6562fb83496be2edb183f439c3e4288ebaf893d5b5045afe"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "56c82a698f13512faaf40c92193106c8ed25451abe42cf3bacfc5ede6b058a8a"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:teb0.log",
+       "sha256": "5bd60823f5426ef0e2334311d9c54a1788d52efc42d491918966ec1d9a167789"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp014:timing_1.log",
+       "sha256": "c53c77e5d82e07ee5cefdaa76bbeb531c33dc8c62b63a6ab59a0262ca61056e5"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "27d43a73c4bd0eaaad935bdd9f9fcc18a9e3f2d9db802d8268d096ddc6f213a2"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "e0c937a26f51b7e50d550011aad22e80116eb6be54806636f47ada0575726b2b"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "6473b78adafb2883e6daf3c2099f365fc0f5513265febf5ac3019fecca3194f2"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "761e3e67b3cd77c3c326fdfa23eb5838ad66a2fbe042040bb3f68e1555305564"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "e6cbacd61208d756c8489fe3661ebd9fd296d56f3ef844f4c01c45aa662e74ee"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "c161447df21e0ba5fba7c32601c52d2747f699f7deffd89f95847a524f89da1d"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "8a2e1ca2f637dca52865d470aa5b4851aaadc4b0500cdfbf56ebd4af45d0a3bc"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon005:mebuser0.log",
+       "sha256": "bd0eedf90d66c9a27b4e5377efc87b5c403db3dd24485d49d9f23306c6268f2c"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "2bf9d614b7a9cd1d488690ab58830d43a19bd9b7789ddbf32db4ae2094e4eaf7"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "d36a9d1a4f59cf09e377b731d9d9c8d7252cbe2c43f263936ae8994ed72e6c40"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "4d0c4727ee87deba2724a4a18f9137db3e3c64bd90c68551532b75f62bdd2dca"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "b58b7408eef68abeef4db4328faf650178ca131ef7fa8a6124838977639a4e5e"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "0592e5c12e38a69b7e4fd2a8d4d16aded0cd636ca3a1e66f31f991148c25afdf"
+      },
+      {
+       "name": "16_15:09:40_drp-srcf-mon006:meb0_first.log",
+       "sha256": "3da9e796003534e18e9833bef8f9344f7d3cf1709ae08e291a598de9af7247d6"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:ami-client_first.log",
+       "sha256": "d51e0fbc760aa58c9c7efcf7a6fd05311ddfd1a1be8eeb233855ced256408980"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:control_gui.log",
+       "sha256": "1d779a931844742279fe160a6b1d71f10be3bca18b6d95ccf5d83dce64442817"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:daqstat.log",
+       "sha256": "3240913d7594fb219b7d0d6aa6a29bea882ce92786b3485f2548265d49bec970"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:det_protec_mon.log",
+       "sha256": "427fa148e53373951399eaa9915329eac96dafba8f87a08d8b31b1ca7ecc8e5b"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:groupca.log",
+       "sha256": "45e166c5747ab4131c14ee558e414109ad4a52a7a188f6b7e961394f0cbaf424"
+      },
+      {
+       "name": "16_15:09:40_mfx-daq:xpmpva.log",
+       "sha256": "7bac667a4dbd3a62ee1b25b30fbadc1482522654b4e0847a68af1bca065ef2c6"
+      }
+     ],
+     "id": "previous/2026/09/16_15:09:40",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "control_gui",
+         "daqstat",
+         "det_protec_mon",
+         "epix100_0_0",
+         "epix100_1_0",
+         "groupca",
+         "timing_1",
+         "xpmpva"
+        ],
+        "pv_connect": [
+         "timing_1"
+        ],
+        "traceback": [
+         "ami-export_first",
+         "det_protec_mon",
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 2,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-16T15:09:40"
+    },
+    {
+     "end": "2026-09-16T16:28:12",
+     "files": [
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "e7849a73ca3a69b411b487bac1581dbbbcd6c1c3ba8ca7160f6b10d250eb96ef"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:bld_0.log",
+       "sha256": "8638fab75fe58152a56146c0a97e40776744f4d7398faaac0dd2ef8d8bf47171"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:control.log",
+       "sha256": "eccefed8ee0c655998415cf9933a73748f7c3bc259ffe1b5555bb7348176cea6"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:epics_0.log",
+       "sha256": "b1cdb606e549866c6a958c0f8c1dd4e65f65d74317ef50491e3609ae9608933c"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "7cb621ac09ff9d1c858673b0d6c7dc9e43110434893e1cb59e2924114fc02471"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "7fb6fb22c0b1de9270998c1dc2b29046294ac1adb671042800af65b39c19cd7f"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "13f0bdab9e517d1d96caee0949329d6e1d2076259ad60301d9c704f5e8959385"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:teb0.log",
+       "sha256": "4cb7966711c5bd9ebdc94d4485683787fdb14d964ff6b4fa6c96eb60f11b6b62"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp014:timing_1.log",
+       "sha256": "9215e437b8b459cd27a2c25db60d5f9f2c50d8bf04bee31dc0dd4a9d104e85ca"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "42acde4a558fdc8b5ed772471937236f9ecad78f6c3a035b15508e7eac85a7eb"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "a063f670e831cc613979a93e2466574a16a90698a984b4cfa48bcce05079542b"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "a3f79bd4bde2007c01ffee01b4c09e305baddf3ab413c96af52c91364156c52a"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "8a6addf7f0e75eec5c30ee741d6f85d9b7f14bf76e5b61d1b9655ed96a0b3ec0"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "90ab2f1b2a1fa0ccbcb594c318335dd20066a274a5e9d845843fb45040d24c75"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "dcd0e0d31207db768663804ea153a5ba6ac1f566d1529c3aa1e7527e4f312c45"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "8dc682dc89837a312624b8c3efc9ed2c5b43742b16eed7156043149245edd399"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon005:mebuser0.log",
+       "sha256": "a7f2770a976a96f1e36a42d37d0f0b8b10dedd9132a791564526d9ad951ecebb"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "f924b347c2044c2dd25e9feb6dbaafb9aa66dd7ebf5c561168d7397384b2e008"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "18ef5ce16895a343a0e4301d82d6cb7735b926a4d26537fed953968e9329fe63"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "219215e547a5f222cf38ecfa901417df8b1e272a28e7da4c9f67a7e87f2ade61"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "f6d7acfd23685d5ebc46e5b49cc0dee2e921c4ed3a7e1111bc4378029e6cf0a8"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "9eb2fa1ae46eb44991ba74e8a38bda780c65f0b65b2dc003bad41beaf2438bde"
+      },
+      {
+       "name": "16_16:25:49_drp-srcf-mon006:meb0_first.log",
+       "sha256": "026f35f7f5827a1f162717468f2b850139337a9e4a1ecdb631e82853cd5e49ee"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:ami-client_first.log",
+       "sha256": "4dd58d3787cc2cc70a7b47778cc3c7f7591c7909ec9443c1e90550d962ce3b72"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:control_gui.log",
+       "sha256": "1ca0b1aef41f03b4337ff061f108e8fe0a67cb4a102bbc6335ad002dce774dc0"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:daqstat.log",
+       "sha256": "8ce44c5a41f0a6e1d5064c393da171865c47b46a8c87e56ddb1809bff0a2b000"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:det_protec_mon.log",
+       "sha256": "b531f4b7a69314e2dfa4d90db2c9f78694f9e026a41b6179c0ec91c2148a1fbc"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:groupca.log",
+       "sha256": "771686359b84ca7f75b465c821a235935f8ef23fb9f8d46f7ba7db18a48d5126"
+      },
+      {
+       "name": "16_16:25:49_mfx-daq:xpmpva.log",
+       "sha256": "cbb8fcb979aa33017a1b5fdbed8defe7a33ecf654ea1f078902fd3820df796c1"
+      }
+     ],
+     "id": "previous/2026/09/16_16:25:49",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-16T16:25:49"
+    },
+    {
+     "end": "2026-09-16T16:41:54",
+     "files": [
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "ada3736293a790d7f805372d64ff078ba1b318d5b2f5a539fe6e6db6c08b63a9"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:bld_0.log",
+       "sha256": "62bd5ad69422a58788841f376418a6af0da3f9936e2c1816b5fff1e0072c814e"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:control.log",
+       "sha256": "e23f31c4c5b58ab18d1ee9634826fef124521dc919768e04771180fcb13f2c8a"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:epics_0.log",
+       "sha256": "50067054f32e2ab3e809579a61cd6a276aaf99bbc3fd1f065fb569497db5ae05"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "1bfd7198d38e8694c6cf82d1e4f56a4a2e65cebb53dadac4b688183872eecddb"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "641d16eba9d2f212693070bbb8f02926311a7ec29ac503a24627a94942cbdece"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "427b92bd172a58ff3126f8d0b4a76b1eed2e32823d5a0cf51ab17de3cbf7ea12"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:teb0.log",
+       "sha256": "96de2e031947951ba01e97d6c5cdd661c6a687cf2c14a60ba53a1d176d935c03"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp014:timing_1.log",
+       "sha256": "c7f41f88be2cc373f1daac0be8f6d86755c3eb633c194b21344eddfc4e7ecee8"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "b5a8980e5da416936ffce24327d2c88bbb5cbee35932c49aeea0bca251b2d2e7"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "7f40b8c8030346f9b8214d70cc7705fa28d0acfc3ae2fae896145b6b78e61ebb"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "8647c42ace1ecfc8b8e94efa7dc2d2801cce0868eb66e9318171558854f5815c"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "200994a1ab44417232791f1309f797087337e82e30b890435467c7d0d426c7d4"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "4bd52c57b294306cf40e5f203201839b94d5746dbcac89d42fe9ca85482f0911"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "dff29b10705fc30e1c4668548a13aa03430a3c5a87242fd20ebcaa2a1faf09d9"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "0f313d652d1e900f77cd6397f8ad3c00d9e326b1b757cece352fa4032998d797"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon005:mebuser0.log",
+       "sha256": "d6508abec62f1bdabc185efaba3b6b9797a0b6ffd387b1dc3c6900f045a1ae6a"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "63d969ba4884e4fdfe37cd929df671e45ee9dea972dd51030fca6f093e236a98"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "fc014a0248b5aa0f124e7c35e87ed8e61f7f2894dedd011020de37c72e814050"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "1ca561b0546f09345e943b3355d6acc1bca8708aecf277e4b0ac0256929b6367"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "b527737355af5df896a5019d99df69000909c5cad5bd08aa49bfd9f2c98bbaf2"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "998bdf6a9e15ae70840424480b4293eeec84fdbdacf980de35491475d38c7c9f"
+      },
+      {
+       "name": "16_16:34:58_drp-srcf-mon006:meb0_first.log",
+       "sha256": "572c57185c459850574005b8d1c06347ea9cb1228ba468bd22932f57f172c9e9"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:ami-client_first.log",
+       "sha256": "9395d62835d62ec782ca49a812cf9eae1a9cb53404b84f5b131a7f7db192c505"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:control_gui.log",
+       "sha256": "321f0371b0f145ac806f1f198b2b27faab414e692b7e37f115f2ae3bd0d467ee"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:daqstat.log",
+       "sha256": "efa8ab5a3ac7230d7b4c1a7a666b9e2827197890d71a8d5116336327d1a5b270"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:det_protec_mon.log",
+       "sha256": "6fa96b6a5ad3939a605da7f99d77e68ee2ac7c5ddf23683f4636d587b137e76c"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:groupca.log",
+       "sha256": "cbe80a0bcad27138761bb483b0eb3e97cc486fa9315baf1689bc997f48b7b7af"
+      },
+      {
+       "name": "16_16:34:58_mfx-daq:xpmpva.log",
+       "sha256": "2a9236aac05e4f1293150b5ffba15fd6157849cc81ce1f57330d67f6304c98bb"
+      }
+     ],
+     "id": "previous/2026/09/16_16:34:58",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-16T16:34:58"
+    },
+    {
+     "end": "2026-09-16T17:14:00",
+     "files": [
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "c1768b49f4f03e912499e1230280e54dd797bca0e0af40f18a9d44f279fa97e1"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:bld_0.log",
+       "sha256": "85e6e82ed5cd3a2a0e2780a10a7c8dab7a716e1665058da31ef63bdde24a66e2"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:control.log",
+       "sha256": "7ad66fcb09baa8784d5939e55c91785d60c1d39f30df6bb9b0955b05f7f7998d"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:epics_0.log",
+       "sha256": "2d7822b4bd83d5cd069268c30ffc0498a5dfdb78b4243099eecad761cf6eaa2a"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "4d1702e6bc2a71e14f0ea5fd649a939a2a53a31840b94e0044013725d40b2557"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "0668bb373d59aeaa154f5cf2c9b670c512fb250041f07ae893ae51809b0b06f4"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "1d066f191dac99afcba77994c8ae84ec14b5e512ee98d920587c2252c32c95a7"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:teb0.log",
+       "sha256": "f1e9a8c8182b6f869694428d83ac8c2b7d5fa6c5f76826d13bbf32953ab9de2a"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp014:timing_1.log",
+       "sha256": "7912ead331a4973915268a20806e1f04900d54c6cd525b854bb242537c9337f3"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "969ee2d07e06213f6a37736b7799df04b4fc4d9c35683eab8c830c61d99a8995"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "2d7ced41e4750e6a15d57cc1c47ae382df9987624e9396895af22ec6ac2824cb"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "3704cff9920b006ae26904ca17df21de0e23cbbb783649e6eb3bb9ff2658a80c"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "d766fb2babf9dac54bf9b4cd7723d456451f067475a15f79b00ea5ab69b745b0"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "df98ce7fc533e25d4adfd5330817889d3d54e685750469e3705b6e6789adcdc9"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "e2c3ee09e5e0ed593fdd9aee41f99ea5ce51cc5f233c144d71cb20ddef4dfb58"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "eed64f49e11ea1f33d78309cc63589fdb089bbd37fb288045b602e2e9bf1f565"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon005:mebuser0.log",
+       "sha256": "d4213094f46537d6703b1d5fd22c7c756c91b4c9ec18c93a6d00c2cb0b3f54ac"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "122e1d93e163b4982e9d659eb981420b7fbeffb9a3898a677b3b4ae081db0e3c"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "99d5bcbe73877567c2ef1d9de420438113400ff394330d6e99e0721f200a5411"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "401f992a3261a3574d6f936186c76d1a52aac0eaf021942715951eb1c8a894f0"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "51860c5b2da43681bbb4e98b6e2a6f63a2fcf354946031939f6e6ba02730a219"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "5752145709bac269fac8229d7c1928be268f4d399c905acda34d3c5890af692c"
+      },
+      {
+       "name": "16_17:11:11_drp-srcf-mon006:meb0_first.log",
+       "sha256": "6d7fada301921278a51091290c1df028741d15cdf927188ece6a11aaea1f1f14"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:ami-client_first.log",
+       "sha256": "747c5c7abfc42aa665e3e87f57fdf919937737c79bd5a2d7e55dd40aaad58a8c"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:control_gui.log",
+       "sha256": "29afbf90a57d61b6977359fe94f035838d0885eabdd3254f86b3c6f23bd6ba2c"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:daqstat.log",
+       "sha256": "17e96dde764abcb3f353307f32b1d5f5bb972d9656db8f46b1007fd262d3674e"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:det_protec_mon.log",
+       "sha256": "863ace281c30e40e3e16b4d6f3d1f8d071a00ae72f0e51f2cf21b6b9abcfad85"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:groupca.log",
+       "sha256": "17aa206c71d139132264a7de454b41c049147ce3dab4d5770be370d0d6b295c3"
+      },
+      {
+       "name": "16_17:11:11_mfx-daq:xpmpva.log",
+       "sha256": "c67027f0ec56644f3638e85cb1b9ecf60b0c7137b0f05af5a65c19b800723fb5"
+      }
+     ],
+     "id": "previous/2026/09/16_17:11:11",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-16T17:11:11"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "The DAQ would not allocate.",
+    "what next": "We restarted again a few minutes later and it worked.",
+    "when": "Around three in the afternoon."
+   },
+   "phrase": "yesterday afternoon",
+   "target": "previous/2026/09/16_15:05:23",
+   "today": "2026-09-17",
+   "why": "before the 2026-09-17 09:29 cutover, so only in /sdf/home/m/mfxopr/2026/09 (daq/logs/2026/09 starts at 17_09:29:03); alloc fails on the timing DRP, which raises a Python error; the other launches are healthy or idle"
+  },
+  {
+   "id": "real-month-edge",
+   "keyed_launches": [
+    "current/2026/10/30_06:20:41"
+   ],
+   "kind": "healthy",
+   "launches": [
+    {
+     "end": "2026-10-30T18:02:21",
+     "files": [
+      {
+       "name": "30_06:20:41_drp-srcf-cmp014:control.log",
+       "sha256": "dad64e61369a33c1ccafb7be35385d3c1e5f9772f82ccf2c09dbb431054ccf95"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp014:teb0.log",
+       "sha256": "250191b722e181a0a760a7bade1a2d8f6f0b65f628141689706c4a95b36e8c78"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "c18d9eee93ada21704c706e9b7929f9e43c9e68d6cc748d03f42184b0649d92c"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "0ae3a48d589f36bef2a95b7a43354daa33ee1e6d76497fe5267ecadda426bd25"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "8419859761dbc62c75720f7d82466945e0bb35b1c961768b132b1fb64aac6c5a"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "e79f2c5c53608bb62bb738ea53cc071f12bcf52d56d99bdf0e42b80fb9a2e69b"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "09404a74d26aff2f6cd9de18d8b6c6796ed9f3dd1c8af37ca2fd062cfd38417d"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "306d4ae6ff074f829f965aae9af040da5e2c106e0e5e5cd9de4a34a7d3f1146d"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "9d47412a445d0dcaf52e9ac56923a599774d7a056af49153bec8f46d8793be60"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:bld_0.log",
+       "sha256": "d45bc21c373c528f02be63b3dc7160553bfd8359cf499ff3e0c0dc1b4f91c279"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:epics_0.log",
+       "sha256": "6d7d735a287ebe4ea4342a514d522cc26cae7a1fddac79e326ecd561a05a1b29"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "8b10fc05ff961764d2d4a7fb660d97449057f56f743c584fe583afd8f694c080"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "27a5a7ea68d8d4acc54988ac1cb1b5102aeac125c3662866ac0d68bd7eb85516"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "61b264a592a61705cda0b0db525b41e0688c8ff89d701f4ad5fdc584e2c1859c"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp042:timing_1.log",
+       "sha256": "931b423c52b54274ee0edaf68cb823db727676e27aca61f3da3fb88ba809df13"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "42dcd8fc207cb6eb5c473121d1b26e772522d63dd2079de26b4583eedc0dd09f"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon005:mebuser0.log",
+       "sha256": "5e143819734dfbbd69b40d6ff6d3dbf98cb2bbaee8b85d67fa2ed4742413ff5b"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "7e83a0908f1f5dd32584c4e4a2f656c423b84703586ea05dd88923ce6fa823ad"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "e23a757aadc2bb15179ec95e87a2b52ac27f673c38e6116683ff60466c770ee2"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "887db2a92ba2b19b841d8e84ac666595c766bdc51ea907511ddddf05a2a60c37"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "1dbc4d825f7ae84abce43faeb54982f4962e2eaf0243289cef58f765570aaed3"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "a854fb1780b280a1575673eadc433900defe0b899b47608ba0e7c08dcb738629"
+      },
+      {
+       "name": "30_06:20:41_drp-srcf-mon006:meb0_first.log",
+       "sha256": "09df4381757e37a8eb37da1dc25f1cc9d0657f16ba31ba4534bbe48d9980568c"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:ami-client_first.log",
+       "sha256": "d3d31527c8951d8c7938835df9ceff73a70c1ce950f25de99eb16842da4d3292"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:control_gui.log",
+       "sha256": "79237bdf0e0fe7ecec8975cefa7c6be690c0a5d7cf7400edcb5b79a25d6ef783"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:daqstat.log",
+       "sha256": "7c5289db532e1c747e26f1838d47d4a1c1923ffa8dbb7fc3909c1f86004003da"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:det_protec_mon.log",
+       "sha256": "2bcd65f36c144edd1a6b92fde7a39d8f763da7302b7446b776d11ef111e4c864"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:groupca.log",
+       "sha256": "d8d590b3c1b455774d818d9c7b411a6cbaedaa00e94fbad3e0d7bea06dd8e0b5"
+      },
+      {
+       "name": "30_06:20:41_mfx-daq:xpmpva.log",
+       "sha256": "aea727a6b564dcc4763786841221fb82ab297bdfa2ee562878e04cbebea630c0"
+      }
+     ],
+     "id": "current/2026/10/30_06:20:41",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "traceback": [
+         "ami-prefetch_0_first"
+        ]
+       },
+       "failed": false,
+       "n_running": 186,
+       "reached_running": true
+      }
+     },
+     "start": "2026-10-30T06:20:41"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "Nothing obvious. We started the DAQ early and took runs all day; the night shift asked us to make sure nothing went wrong.",
+    "what next": "We kept taking runs into the evening.",
+    "when": "We started it a bit after six in the morning."
+   },
+   "phrase": "Friday morning",
+   "target": "current/2026/10/30_06:20:41",
+   "today": "2026-11-02",
+   "why": "today is in November, the launch is in daq/logs/2026/10 (the last October launch); healthy, many runs"
+  },
+  {
+   "id": "real-healthy-sun",
+   "keyed_launches": [
+    "current/2026/10/25_17:47:57"
+   ],
+   "kind": "healthy",
+   "launches": [
+    {
+     "end": "2026-10-25T20:16:34",
+     "files": [
+      {
+       "name": "25_17:47:57_drp-srcf-cmp014:control.log",
+       "sha256": "0898e4ab92d43092d9f8ac2c6a2fd660a9bf42d7968ae794eb514ae3332b81b0"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp014:teb0.log",
+       "sha256": "279c8566c8877b5c330630fa7e508a6d44029fdf618cb8242b4449a0ce07a04f"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "926569ce565cd166462a8b832f5d705d551d67302d3b57fe7a135f9a6465a75c"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "9303b9ec3f191261477acd1b5cd6f135fde2e7f107223d5d0370c6709efb3840"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "26a4c423b0da0ab32eff77e42fb2d33c94404f666a71401ff769a945cb7faafc"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "e88d525c2126c515b20edc9e3663ea357659e0d7c353c217934c1f318ee690bc"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "9b1c6b42a9076473dc4240e7d365d679c949d06b4f6ee794694d5daa5060f902"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "5a99be7cd132dfcd39b18308053592a7b0bfd46ad9b806fafe0f97a6d26b018f"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "1500e60891c5a02b57523f4bf80ee8d189573813635355be0fc40646377ed624"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:bld_0.log",
+       "sha256": "422abbdc6fb26346bdc1a2ce7d0c78b8588f1d09678f18531dd32a41fe553ef8"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:epics_0.log",
+       "sha256": "5ac2fc64b59595cb03d8bff5b78924efa18734fbb66d2fd21aff21fb4c34f400"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "bfbd6d0d4b84d59eee635a2653fa36e38eca1ab32c983193197dcc856fced9db"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "99ed97d4cdc8fd4e7b900f47bccce48824e1d898a6734826f4ed189a2dd8b81e"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "50b8fdbeec6fc61e460c210bde027f5ee30b0ccc04a8574255a19610870ba160"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp042:timing_1.log",
+       "sha256": "6f7b44c77bdbef44aed30f3b8de14bc0e09713192f1aa9dcbb834f05dd4b773e"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "e834542e00ed2d5811ec8dd20dce9f2db34665a11aca5cc8e23876c9361ed066"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon005:mebuser0.log",
+       "sha256": "e69f50e20367501478b60bda4e16a1fe50abb1f977cbfbacbdbeaf8aa5db8674"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "ef5afb5c56a3d81ffdaffb2b60d05425acb4c6ff25363c84d9ded234415da2ec"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "eb2c40c16ab7789bb1de43baaa69202d1b481ce30e1dc2ef9c8508d1a84adff6"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "38fc663e777e96d98c0c7bd06caad811a4dfa3efd98b5061fb28767231dc55be"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "ba94b5647a7f832c5b6bd10d599b4cd76f871f45282b783de8ef4ba4dab28d7a"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "76127b5034c96db4befd99ff35cf4a6725f5632fb63187630b3b8a86253a8527"
+      },
+      {
+       "name": "25_17:47:57_drp-srcf-mon006:meb0_first.log",
+       "sha256": "b24e4f89f1705a6574d96a8bcaff7ee6c17e896685ea22fc477a0db62cdf642a"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:ami-client_first.log",
+       "sha256": "400df5e5a0c380c050a86d91093c28a33f3b821b45a09780fc68cd84ae59d685"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:control_gui.log",
+       "sha256": "a2604e8ea89083f0e9465d2096e1d7575061e68bcba8611303fc466df43ca697"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:daqstat.log",
+       "sha256": "4777b305f1800c2897c592b6a0d0e5d45a0339d59e91baab8b5e72d5a0af2015"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:det_protec_mon.log",
+       "sha256": "84636f7e69f4c5a78b36ce0490d650afd5431fa2333ada9e166d5c9026c993e3"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:groupca.log",
+       "sha256": "7c3e312a969d1af643a9e72b9c7b7118d19d248aa1b7db7d6695ed1a64cd44c1"
+      },
+      {
+       "name": "25_17:47:57_mfx-daq:xpmpva.log",
+       "sha256": "24207c15dd68c5a981e452b3d29940158b788c9ee743b29ab561d8778dfb547d"
+      }
+     ],
+     "id": "current/2026/10/25_17:47:57",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0",
+         "jungfrau_0",
+         "jungfrau_1",
+         "jungfrau_2",
+         "jungfrau_3",
+         "jungfrau_4",
+         "qadc_0"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "traceback": [
+         "ami-prefetch_0_first"
+        ]
+       },
+       "failed": false,
+       "n_running": 28,
+       "reached_running": true
+      }
+     },
+     "start": "2026-10-25T17:47:57"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "Nothing I noticed. We took runs all afternoon and into the evening.",
+    "what next": "We restarted it once in the evening to change something, I think.",
+    "when": "We started the DAQ late in the afternoon, before six."
+   },
+   "phrase": "Sunday afternoon",
+   "target": "current/2026/10/25_17:47:57",
+   "today": "2026-10-27",
+   "why": "current tree, weekend; the only launch in the window, healthy with many runs"
+  },
+  {
+   "id": "real-healthy-nov",
+   "keyed_launches": [
+    "current/2026/11/05_11:30:53"
+   ],
+   "kind": "healthy",
+   "launches": [
+    {
+     "end": "2026-11-05T11:59:13",
+     "files": [
+      {
+       "name": "05_11:30:53_drp-srcf-cmp014:control.log",
+       "sha256": "004f6118deca8d10d9254497ebd393039d73c1993a17457d835c33e9510b80b8"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp014:teb0.log",
+       "sha256": "daa09f5211619faba467a9531ca10b1c01424dec0d63b5d000f5989f435de421"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "8c3a51d38e706252286ef20d54ef5fb548fe6b41c9cf8482a284437321dfaba4"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "95f525b8d5e759bdc6f7df02592582db35edde104ccd0391df06401334f949eb"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "f2df5b90baafd8e66c56ddf35cff39e5452bcee83b70db2268fc7fe6472a8f85"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "54cb64752c32ea8d597ae02ffd9d4fe0c45d7d09a5ddd5e30cd31981218dd57a"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "0889b80808afffceeb14d20201a7a105e4ffc7b77ca82eefb3f6a756989f3c01"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "010ee4ba278e7aec44787ec7126f216102628a31e757915377008cc0e558c25a"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:alvium_tt_0.log",
+       "sha256": "163d55ea6aa49ff575d15a22162b1979adaa57e89f79a715d3923503d4a6b03e"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:bld_0.log",
+       "sha256": "68c345e32653405b49d46ec0bbbc008973bbd58345bc8c7cec5e9705f600fe83"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:epics_0.log",
+       "sha256": "9e57d167ba0cd50ff88dfa9ea172fb22f8d4cb25898efb7de00b764fa110fc51"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:inline_alvium_0.log",
+       "sha256": "3cbe6c41d1abbe2f1a67a2c29984120d120e4e50594b36555ad750aa616fad44"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:qadc_0.log",
+       "sha256": "ff745ae8bfae4a788563975451f22cd50b5e9059a5f0812a16ca57bf1ffa36ea"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:t_zero_alvium_0.log",
+       "sha256": "235eed3ca94f945d04afdbb2266ee86d9629fa183e9ae978fd971e262140285a"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp042:timing_1.log",
+       "sha256": "f73fde7ea4bacdd83fea569f7c25088b850a7965b6720f328263cd41a0e7812c"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "c514095f8f991cec4ff9ee16703ae139636fa4e59aa1d966b7e0e61d3e30e076"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon005:mebuser0.log",
+       "sha256": "9247aa0f5f4b435772fabd08c03b2def3c7c3d2ffa211fcb7865a9177b41bda9"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "ae2aa6a772ce6e62d745f5e68f442769b7612f9f2e6be67bc427703b762fdecc"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "de9e1986ad3c2218e2fcb12c26f5ca3f4866b74a595b27d84d96cec52aaf5dab"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "886f4307081c7c39825942293e80b853b1b209de8ef6927e4cc506512544563c"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "3025ab1ae9ad41957998f1b88dde263655092aa99e8fdc9f14183c48ee46a79a"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "b9400aa34128031fae4f3bb8ff43c84d4e48bebd5b79700dc8c0efeaa7f8463b"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon006:meb0_first.log",
+       "sha256": "55488f379875fccfbc5f2858bfbe494b672b47ac717e31091ca673f46d17f918"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon013:ami-node_1_first.log",
+       "sha256": "92ffa4aa0de77be4e2ecf3ecc3ac73089462632ca0c8a45d2c700b5876de3026"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon013:ami-prefetch_1_first.log",
+       "sha256": "d6b0bc878a1af28b9728865dc2b6c44054f7cd423915f7fdf4d47ba66d5f7084"
+      },
+      {
+       "name": "05_11:30:53_drp-srcf-mon013:meb1_first.log",
+       "sha256": "7cc1bb46d3affe395e2af28d6aad845757d684832f075eecb6d4d24d1b2f58f8"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:ami-client_first.log",
+       "sha256": "ca8b6de330f220e8852fe6374fe02717bfdbb61f93ad515fae6a92d8fcc61fa8"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:control_gui.log",
+       "sha256": "150ebcc00560841219c20751dd7c4d8dc07e9ca16dc8536b768708fb5c1810e3"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:daqstat.log",
+       "sha256": "107a381308bbb2e80bfab3a996e9a2af2580b8735db79e99b6e841a7d6733ed4"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:det_protec_mon.log",
+       "sha256": "892df73f6c2494a185c73455141e044ca085bea2f9df7153a7c01e0267f23314"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:groupca.log",
+       "sha256": "54b78bf26caad0ebe1e64e8f93861b9d6553099d2d053d2aa5d9ebf376990903"
+      },
+      {
+       "name": "05_11:30:53_mfx-daq:xpmpva.log",
+       "sha256": "8ce17a7c39421f5bfcb70b9bfe6d2b0816027b63fa11badd3a257a45ac5d9d7e"
+      }
+     ],
+     "id": "current/2026/11/05_11:30:53",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "pv_connect": [
+         "control",
+         "control_gui",
+         "epics_0"
+        ],
+        "traceback": [
+         "epix100_0_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 1,
+       "reached_running": true
+      }
+     },
+     "start": "2026-11-05T11:30:53"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "I'm not sure anything was wrong; someone said the DAQ looked odd, so we want it checked.",
+    "what next": "We took a run and then stopped for the day.",
+    "when": "Late morning into lunchtime."
+   },
+   "phrase": "Thursday afternoon",
+   "target": "current/2026/11/05_11:30:53",
+   "today": "2026-11-08",
+   "why": "current tree, recent; the only launch in the window, healthy, one run"
+  },
+  {
+   "id": "real-pre-cutover-ok",
+   "keyed_launches": [
+    "previous/2026/09/15_12:39:26",
+    "previous/2026/09/15_14:37:58"
+   ],
+   "kind": "healthy",
+   "launches": [
+    {
+     "end": "2026-09-15T12:39:26",
+     "files": [
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "1365fa36f25277fd9c93fda83f2358b335677d386b54adfcb6d905c1bdbf4c0f"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:bld_0.log",
+       "sha256": "b4b06d28e599f711c445652a7d676c885ed292794585ac60bf949baf1b02390a"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:control.log",
+       "sha256": "141e9476d03de9310b7abe73b3ff62ec9fec465f75c99d81e1f0a8ed60f458c7"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:epics_0.log",
+       "sha256": "b9d8b1c27fb7c235034cbe3e977374d1c7a83037985dad2719ca3f66fc7436f3"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "c7bfcdd40f58df18c423ed77645388c36c858ef772a9be72fb6efb2b2cbb38cd"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "ce91dcd81e39745a1946c339c64d912c68fa863d1b8b22e818e2b43a98a95c6e"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "b7c4fcdaea233e056bba59b0c6199fc633a6598149a621d3a617fe27853e6c3d"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:teb0.log",
+       "sha256": "99ef7386ef0aaefa71c1e1c0597dae6b4e362f4d904440135188c19b04aa5b91"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp014:timing_1.log",
+       "sha256": "54d635207bd2b42fd548e0fabea84b5ad177e3b674de018c84d052e16e87124f"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "6f009ed4e1dca4d9b3ff9a51ea827549da283c7c7aa4e4659f2529e1c7fefcac"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "ab6343952e803658fd09afc247a5f2bb8acb8d24739af8568e03c70c82c6af77"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "01b48c92da9055d066d5be833d67c7764eca331e301788774412856f0ff308c4"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "55edbd6a5b86704ffb9ed7506e350b048e35018547541a6fe77d14fade0725b1"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "2cfa7cfce11ef27708119dd0c397b096eb9d3e6ff5393db57f5e97eebc58ae27"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "7a5e76e4ca3e6483f604efd06bc905cf06856937ea3f4cb7c199a7fd7d862f24"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "67efd866a20100cac4e0a335adfc31aba965d4c826cf234503b7afc5f731c496"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon005:mebuser0.log",
+       "sha256": "2c5b85b0f48c1725891679ca5bef162e1dbd6ab2bbfb003d2640b30a7d71572f"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "ccbb1885f70fb706833d6883b00cc52c6d16add5f3989ac4d055e1acd6c3b820"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "829b737edffb7d7a65570390822af4c56c5912cc41ac8318814a1fdf95c3694e"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "50e9fb34a109c0f1a9d783cc2c18eb7a1a39155ce9f30850bb05acf4b8fa2891"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "832cea16a589194180d32c4a396e27bce25b693a21c8f1600c4081c980675cd7"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "6d70cf15abd79c39eb7189d3407815b348b54a89dd2648f2657f92a482fa1465"
+      },
+      {
+       "name": "15_12:39:26_drp-srcf-mon006:meb0_first.log",
+       "sha256": "9f5ee718e4cba3dfb0c7d9fb298b570572abaadd52d3a2061fb8ead2d04b6751"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:ami-client_first.log",
+       "sha256": "3ca57fdeec7eded3ee9600020d009f701f0db38803037f17591c019712bb145f"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:control_gui.log",
+       "sha256": "faad3fd3442283734c9feed5af7fef4fd3892c09e210019ae025016856d999b5"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:daqstat.log",
+       "sha256": "bae8b1b7cae605044acd02a966906bf182dbbd674f97131ce8338d7e868fc150"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:det_protec_mon.log",
+       "sha256": "d1fbce055c4f8b23a058f303b3a5424a4f3e1de5fd693383be3008365f82f6e2"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:groupca.log",
+       "sha256": "601a8d544a70cc236e4037a00d532c486abed21a0318d9e6f59d3daa9c45213e"
+      },
+      {
+       "name": "15_12:39:26_mfx-daq:xpmpva.log",
+       "sha256": "9bf164952d1cea42a4a77b991f6cb8583ad80eceddaacd7e0bcea2069bdc84a5"
+      }
+     ],
+     "id": "previous/2026/09/15_12:39:26",
+     "key": {
+      "component": "idle",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "alvium_tt_0",
+         "ami-export_first",
+         "ami-global_first",
+         "ami-manager_first",
+         "ami-node_0_first",
+         "ami-prefetch_0_first",
+         "bld_0",
+         "control",
+         "epics_0",
+         "epix100_0_0",
+         "epix100_1_0",
+         "inline_alvium_0",
+         "jungfrau_0",
+         "jungfrau_1",
+         "jungfrau_2",
+         "jungfrau_3",
+         "jungfrau_4",
+         "meb0_first",
+         "mebuser0",
+         "qadc_0",
+         "t_zero_alvium_0",
+         "teb0",
+         "timing_1"
+        ]
+       },
+       "failed": false,
+       "n_running": 0,
+       "reached_running": false
+      }
+     },
+     "start": "2026-09-15T12:39:26"
+    },
+    {
+     "end": "2026-09-15T15:02:30",
+     "files": [
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:alvium_tt_0.log",
+       "sha256": "c557e4685df858fc7acbd782212873e0bfedc94f01095af02eabef7fb1cc7eac"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:bld_0.log",
+       "sha256": "a43e944e7180b325e024c06a650a3b135c856b121c71715d73afa6e8599e81dc"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:control.log",
+       "sha256": "ca662da0220ab112f1c993a58357b4e62a122af6eaf54179814d0b9b2cfa7205"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:epics_0.log",
+       "sha256": "2c51da257c5fc1ae41b1ffeb32ad22fbbc35ea0cc640dc0495664d3d945fb381"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:inline_alvium_0.log",
+       "sha256": "e493c3460e92114f35fc70767fe390ca5730fa706818d5bc6ac268469e05d4d2"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:qadc_0.log",
+       "sha256": "2b3244a6e7566d2113d6485fec502562a967491834bffab212abb8a1eb1bf8e5"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:t_zero_alvium_0.log",
+       "sha256": "2cb7afa8cf1318fc018c29ae3408844167958a7b80f78299274db88fdef8317c"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:teb0.log",
+       "sha256": "47fc9f19e8a60b246d79458e0398d22ce1e37a0464475cce371ca947614c7da1"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp014:timing_1.log",
+       "sha256": "d6bab071d58c192942496100854501378b01e4aee9de171f7e77fea085c07396"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp031:epix100_0_0.log",
+       "sha256": "e041d4f5586848ab2e6575fefdbd7a66344326b1203ddb742271c57fc364630e"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp032:jungfrau_1.log",
+       "sha256": "cfcf39148d7d1a8c124372b701d6620fcccfd3c5f95f68c14eb4ea4200f8de7a"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp033:jungfrau_0.log",
+       "sha256": "f39c70b17c3dbf2ef01f9a3b73f0d6696599aa5ce4c9c5c113a3638f57a74de0"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp035:jungfrau_2.log",
+       "sha256": "386eadb6a9d89a8447dc04f120f6b3a24ed3d06e4e555ba36416bce23cffda78"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-cmp044:epix100_1_0.log",
+       "sha256": "e10d113f35fcb3025e392881792b7699c2bf44fa2a52691564d1014b20a10927"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon005:mebuser0.log",
+       "sha256": "2c8198ffeedc573ddecb137dbcb4b02d815fbf83b1a06891e5598ddd7e03f054"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:ami-export_first.log",
+       "sha256": "76a15c487d8faccbf89c95ab382640fdf392778b0c7ad6e2576c88dd07db9427"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:ami-global_first.log",
+       "sha256": "442840a88f3e5b99e001ad39c3e0f090c45ba4921bdc09444a46d844541d4f34"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:ami-manager_first.log",
+       "sha256": "488b2e0defd6f25093140eef10df2dbb1d61342200194aa11f2465c7db490e84"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:ami-node_0_first.log",
+       "sha256": "6f3a9fa902afabc51d430b9e108b43cfb9d03066201d97105b621c6d1d9b06d8"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:ami-prefetch_0_first.log",
+       "sha256": "095c40ce82d4c02997fa45f1d70b8b4247695dd7b7f8103a360ff006218cab05"
+      },
+      {
+       "name": "15_14:37:58_drp-srcf-mon006:meb0_first.log",
+       "sha256": "cdd2b8bd094166c32d06c975a13fda17e0895838f354865a1575abb355da2344"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:ami-client_first.log",
+       "sha256": "c5a691a75d80559d5774a011051b3ed5740a06092392be54de11d00b9346c0eb"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:control_gui.log",
+       "sha256": "e9d72341a337f4aff2663517bb1c761e90a65f0ca6f169c4d25284758c082f9a"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:daqstat.log",
+       "sha256": "e44ff11ef6f61eff41a9bc738b95bca0b53298cc447d0ba75c343526645e1c6e"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:det_protec_mon.log",
+       "sha256": "13f90405f9f808a5703a1baaccb1e2ea9b32cc0f896c6fd21b50ea2edea34a08"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:groupca.log",
+       "sha256": "2c5e1061ec324504de713bb4201f83d77009eb6542c21673f6c215b611f8897b"
+      },
+      {
+       "name": "15_14:37:58_mfx-daq:xpmpva.log",
+       "sha256": "e7e9d937a110adab234d06195529536de96751371eba7565963c7757c9ec554e"
+      },
+      {
+       "name": "15_14:38:05_drp-srcf-cmp038:jungfrau_3.log",
+       "sha256": "5dbe42fdcfdabdb7e786a2e614723eee1a5008e1144c39b8096c4b944d986409"
+      },
+      {
+       "name": "15_14:38:05_drp-srcf-cmp039:jungfrau_4.log",
+       "sha256": "307c217b53e3039429121f49a5378344aa0461bd38887a56006e98f531ae722e"
+      }
+     ],
+     "id": "previous/2026/09/15_14:37:58",
+     "key": {
+      "component": "healthy",
+      "inventory": {
+       "classes": {
+        "crash": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ],
+        "traceback": [
+         "epix100_0_0",
+         "epix100_1_0"
+        ]
+       },
+       "failed": false,
+       "n_running": 5,
+       "reached_running": true
+      }
+     },
+     "start": "2026-09-15T14:37:58"
+    }
+   ],
+   "operator": {
+    "detectors": "The usual MFX set.",
+    "symptom": "Nothing obvious; we took a few runs in the afternoon.",
+    "what next": "We stopped after a few runs.",
+    "when": "Around half past two."
+   },
+   "phrase": "Tuesday afternoon",
+   "target": "previous/2026/09/15_14:37:58",
+   "today": "2026-09-18",
+   "why": "before the cutover: only in /sdf/home/m/mfxopr/2026/09, while daq/logs/2026/09 already exists from 17_09:29; target healthy with several runs; the other launch in the window is idle"
+  }
+ ],
+ "cause_rule": "Fault cases are scored on cause_scope 'component+stage': Cause passes iff the report names the target launch (Located) and its main cause names the keyed component and stage (keys.component of the target launch); the mechanism label is not scored. Healthy cases get the 3-way healthy outcome.",
+ "now_rule": "A case is asked at its today's now_time (US Pacific) unless it has its own 'now'. run.py --mode m1 mounts a view of the prepared root that holds only what existed then (real_mfx.py view) and gives the m1 context of cases_v3.json with that time.",
+ "now_time": "10:00",
+ "operator_default": "I don't know, sorry. I only see the control GUI and the run table.",
+ "operator_rules": [
+  {
+   "id": "when",
+   "match": [
+    "\\bwhen\\b",
+    "what time",
+    "\\btimes?\\b",
+    "which (day|date|night|evening|morning|afternoon)",
+    "what (day|date)",
+    "\\bdate\\b",
+    "\\bhours?\\b",
+    "o.clock",
+    "\\bwindow\\b",
+    "\\bshift\\b",
+    "\\bexactly\\b",
+    "\\bapprox"
+   ]
+  },
+  {
+   "id": "what next",
+   "match": [
+    "\\bnext\\b",
+    "\\bafter(wards)?\\b",
+    "\\brestart",
+    "\\bretr(y|ied|ies)\\b",
+    "\\btried\\b",
+    "what did you do",
+    "\\bfix"
+   ]
+  },
+  {
+   "id": "detectors",
+   "match": [
+    "\\bdetectors?\\b",
+    "\\bcameras?\\b",
+    "\\bdevices?\\b",
+    "\\bpartition\\b",
+    "which (daq )?(config|setup)"
+   ]
+  },
+  {
+   "id": "symptom",
+   "match": [
+    "what happened",
+    "\\bsymptoms?\\b",
+    "\\berrors?\\b",
+    "\\bmessages?\\b",
+    "what did you see",
+    "what went wrong",
+    "\\bdescribe\\b",
+    "\\bnotice"
+   ]
+  }
+ ],
+ "operator_specificity": "Operator answers are at most as specific as family B's (cases_v3.json): a stage-level symptom (\"would not configure\", \"something went wrong in the middle of a run\"), never the keyed component, a word of its name, or a list of detectors (\"the usual MFX set\").",
+ "phrase_windows": "widest readings, in local time: morning 00-13 h, afternoon 11-19 h, evening 16-24 h, night 18 h to 08 h next day, a whole day 00-24 h, a weekend Fri 18 h to Mon 08 h; a weekday name is the most recent such day before today",
+ "question": "Today is {today_long}. The MFX operators asked us to look at their DAQ {phrase}. Use the DAQ logs to say whether anything went wrong then. If something did, say which component failed first, in which transition, and why, with the log lines that show it. Name the DAQ launch you looked at (its start time or its log file names).",
+ "selection_rule": "From the scripted inventory of every launch 2026-09-01..2026-11-18 (549 launches, both trees; `real_mfx.py inventory` then `candidates`): a target is a launch with a component key (control's first failure names exactly one component and that component's own log has an error line of its own) or a healthy one (reached running, no failure line). A (today, phrase) is a candidate when today is 1-3 days after the target and every other launch whose span overlaps the phrase's widest window is healthy, idle (no failure line, never ran), or failed the same way (same component and stage). Wanted: about 3 fault targets, 1-2 healthy, 1 before the 2026-09-17 09:29 cutover, 1 across a month boundary. Result: only 3 fault targets have any candidate window (2 in the current tree, 1 before the cutover), so all 3 are used; the month-boundary case is the healthy last launch of October said on a November date; 2 healthy current-tree targets alone in their windows (one October weekend, the most recent in November); and a healthy pre-cutover target said on a day when the current tree already existed. Among a target's windows: fewest launches, then the phrase most unlike the other cases.",
+ "timezone": "America/Los_Angeles: file-name stamps and log lines are local Pacific time without a zone marker (checked 2026-11-19 on 18_16:45:16_drp-srcf-cmp014:control.log: stamp 16:45:16, first line 16:45:23, mtime 16:49 -0800)."
+}
