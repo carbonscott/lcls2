@@ -11,7 +11,8 @@ Inputs.  Nothing on the page is typed by hand: every number is read from these f
   --pilot OUT     a pilot.py results folder (one batch; its id is the folder name): rows.json (verdict.py's schema),
                   scored.json (score.py), usage.json and the run folders OUT/<arm>/<run>/ (meta.json, final.md,
                   evidence.json).  Repeatable.
-  --m0 DIR        the M0 Haiku control folder: scored.json (the keys as run) and scored-keyfix.json (the fixed key),
+  --m0 DIR        the M0 Haiku control folder: its scorings (--m0-scoring LABEL=FILE, in order, the last current; default
+                  scored.json, the keys as run, then scored-keyfix.json, the fixed key),
                   run folders DIR/<arm>/<run>/ (arms m0-none, m0-crib, m0-starved).
   --verdict F     verdict.py's output on the pilot rows.  verdict.py is also run here on the pilot rows (and is the
                   source when --verdict is not given); any difference is listed at the top of the page.
@@ -239,18 +240,26 @@ def m0_runs(doc, root, batch):
     return runs
 
 
-def load_m0(path, orig='scored.json', fixed='scored-keyfix.json'):
+M0_SCORINGS = [('keys as run', 'scored.json'), ('fixed key', 'scored-keyfix.json')]
+
+
+def load_m0(path, scorings=None):
+    """The M0 folder with its scorings, in order [(label, file)]; the last one is the current scoring (the per-arm table,
+    every case and P2's verdict use it).  Default: the keys as run, then the fixed key when its file exists."""
     path = os.path.abspath(path)
     bid = os.path.basename(path.rstrip('/'))
-    d0 = read_json(os.path.join(path, orig))
-    d1 = read_opt(os.path.join(path, fixed))
-    b = {'id': bid, 'path': path, 'kind': 'm0', 'warnings': [], 'orig': m0_runs(d0, path, bid),
-         'orig_meta': d0.get('meta', {}), 'fixed_name': fixed if d1 else None}
-    b['fixed'] = m0_runs(d1, path, bid) if d1 else None
-    b['fixed_meta'] = (d1 or {}).get('meta', {})
-    b['runs'] = b['fixed'] if d1 else b['orig']
-    if not d1:
-        b['warnings'].append('%s: no %s; P2 shows the original scoring only' % (bid, fixed))
+    b = {'id': bid, 'path': path, 'kind': 'm0', 'warnings': [], 'scorings': []}
+    for label, name in scorings or M0_SCORINGS:
+        doc = read_opt(os.path.join(path, name)) if scorings is None else read_json(os.path.join(path, name))
+        if doc is None:
+            b['warnings'].append('%s: no %s; P2 leaves out the %s scoring' % (bid, name, label))
+            continue
+        b['scorings'].append({'label': label, 'file': name, 'runs': m0_runs(doc, path, bid), 'meta': doc.get('meta', {})})
+    if not b['scorings']:
+        raise SystemExit('%s: no scored file' % path)
+    b['orig'], b['orig_meta'] = b['scorings'][0]['runs'], b['scorings'][0]['meta']
+    b['runs'] = b['scorings'][-1]['runs']
+    b['current'] = b['scorings'][-1]['label']
     return b
 
 
@@ -533,8 +542,9 @@ def batch_line(b):
     for r in b['runs']:
         f = r['run_id'].split('/', 1)[0]
         folders[f] = folders.get(f, 0) + 1
-    return '<code>%s</code> (%d runs, %s) at commit <code>%s</code>; run folders: %s' % (
-        E(b['id']), len(b['runs']), 'pilot' if b['kind'] == 'pilot' else 'M0 controls', E(b.get('commit') or 'not given'),
+    sc = (', scored at <code>%s</code>' % E(b['scoring_commit'])) if b.get('scoring_commit') else ''
+    return '<code>%s</code> (%d runs, %s) run at commit <code>%s</code>%s; run folders: %s' % (
+        E(b['id']), len(b['runs']), 'pilot' if b['kind'] == 'pilot' else 'M0 controls', E(b.get('commit') or 'not given'), sc,
         ', '.join('<code>%s</code> (%d)' % (E(f), n) for f, n in sorted(folders.items())))
 
 
@@ -591,7 +601,7 @@ def controls_beside(d):
         if c:
             out.append('%s: positive %s, negative %s' % (name, 'PASS' if c.get('positive_pass') else 'FAIL',
                                                         'PASS' if c.get('negative_pass') else 'FAIL'))
-    for tag, c in d['p2']:
+    for tag, c in d['p2'][-1:]:
         out.append('P2, M0 Haiku (%s): positive %s, negative %s' % (tag, 'PASS' if c['positive_pass'] else 'FAIL',
                                                                    'PASS' if c['negative_pass'] else 'FAIL'))
     return out
@@ -648,7 +658,7 @@ def findings(d):
                        'passes' if p3m.get('positive_pass') else 'fails', num(p3m.get('positive_margin_needed'), '%g'),
                        kn(p3m.get('starved')), kn(p3m.get('none_on_starved_pools')),
                        'passes' if p3m.get('negative_pass') else 'fails', num(p3m.get('negative_margin_needed'), '%g')))
-    for tag, c in d['p2']:
+    for tag, c in (d['p2'][:1] + d['p2'][-1:] if len(d['p2']) > 1 else d['p2']):
         out.append('P2 controls (M0 Haiku, %s): crib %s against none %s, positive control %s; starved %s against none %s on '
                    'the same pools, negative control %s.' % (
                        tag, kn(c['crib']), kn(c['none']), 'passes' if c['positive_pass'] else 'fails', kn(c['starved']),
@@ -819,7 +829,7 @@ def control_flip_items(d):
     v, out = d['verdict'], []
     specs = [('P3, family B', v.get('P3_controls_M1_default'), 'pointer', 'none'),
              ('P3m, B and C pooled', v.get('P3m_controls_M1_pooled'), 'pointer_pooled', 'none_pooled')]
-    specs += [('P2, M0 Haiku (%s)' % tag, c, 'crib', 'none') for tag, c in d['p2']]
+    specs += [('P2, M0 Haiku (%s)' % tag, c, 'crib', 'none') for tag, c in d['p2'][-1:]]
     for name, c, pos, none in specs:
         if not c or not (c.get(pos) or [0, 0])[1] or not (c.get(none) or [0, 0])[1]:
             continue
@@ -934,7 +944,7 @@ def arms_section(d):
     body = [table(head, arm_rows(d['pilot_runs'], d), cols)]
     m0 = d['m0']
     if m0:
-        body.append('<h3>Family A at M0 (the P2 control runs, %s)</h3>' % E('fixed key' if m0.get('fixed') else 'keys as run'))
+        body.append('<h3>Family A at M0 (the P2 control runs, %s)</h3>' % E(m0['current']))
         body.append(table(head, arm_rows(m0['runs'], d), cols))
     defs = (d['preds'].get('definitions') or {})
     arms = defs.get('arms') or {}
@@ -955,8 +965,8 @@ def arms_section(d):
 
 # --- controls
 
-def id_lists(runs, nb, fixed_from=None):
-    """Run ids grouped by outcome; fixed_from: {run_id: original run} to flag a change by the key fix."""
+def id_lists(runs, nb, fixed_from=None, first_label='keys as run'):
+    """Run ids grouped by outcome; fixed_from: {run_id: run as first scored} to flag a run whose score changed since."""
     groups = [('pass', 'Passed'), ('fail', 'Failed'), ('na', 'Error or not scored')]
     out = []
     for cls, lab in groups:
@@ -972,7 +982,7 @@ def id_lists(runs, nb, fixed_from=None):
             if fixed_from is not None:
                 o = fixed_from.get(r['run_id'])
                 if o is not None and score_of(o) != score_of(r):
-                    flag = ' (changed by the key fix)'
+                    flag = ' (changed since the %s scoring)' % first_label
             items.append('<span class="%s">%s</span>%s' % (cls, E(rid(r, nb)), E(flag)))
         out.append('<div><b>%s (%d):</b> %s</div>' % (lab, len(rs), ', '.join(items)))
     return '<div class="ids">%s</div>' % ''.join(out) if out else '<span class="muted">no runs</span>'
@@ -1002,25 +1012,26 @@ def p2_block(d):
     if not m0:
         return '<h3>P2: M0 Haiku controls</h3><p class="muted">No M0 control folder given.</p>'
     nb = 1
-    orig, fixed = m0['orig'], m0.get('fixed')
-    c0 = dict(d['p2'])
     body = ['<h3>P2: M0 Haiku controls, family A (batch <code>%s</code>)</h3>' % E(m0['id']), rule_block(d['preds'], 'P2-controls-M0-haiku', 'P2')]
-    starved_cases = set(r['case'] for r in orig if r['arm'] == 'starved')
+    sc = m0['scorings']
+    first, cur = sc[0], sc[-1]
+    c0 = dict(d['p2'])
+    starved_cases = set(r['case'] for r in first['runs'] if r['arm'] == 'starved')
     rows = []
-    origmap = dict((r['run_id'], r) for r in orig)
+    firstmap = dict((r['run_id'], r) for r in first['runs'])
     for arm, label, pick in (('none', 'none', lambda r: r['arm'] == 'none'), ('crib', 'crib', lambda r: r['arm'] == 'crib'),
                              ('starved', 'starved', lambda r: r['arm'] == 'starved'),
                              ('none_on_starved_pools', 'none, on the starved pools', lambda r: r['arm'] == 'none' and r['case'] in starved_cases)):
-        rs = [r for r in (fixed or orig) if pick(r)]
-        rows.append(['<b>%s</b>' % E(label), kn(c0['keys as run'].get(arm)), kn(c0['fixed key'].get(arm)) if fixed else 'n/a',
-                     id_lists(rs, nb, origmap if fixed else None) if arm != 'none_on_starved_pools' else '<span class="muted">the none runs of those cases, above</span>'])
-    body.append(table(['Arm', 'Score, keys as run', 'Score, fixed key', 'Runs (marked by the fixed key)'], rows, (1, 2)))
-    body.append('<p class="muted">Keys as run: <code>%s</code> (keys sha256 <code>%s</code>). Fixed key: <code>%s</code> (keys sha256 '
-                '<code>%s</code>).</p>' % (E('scored.json'), E(m0['orig_meta'].get('keys_sha256', '')[:12]), E(m0.get('fixed_name') or 'none'),
-                                           E((m0.get('fixed_meta') or {}).get('keys_sha256', '')[:12])))
-    body.append('<div class="grid2"><div><p class="meta"><b>Keys as run</b></p>%s</div>%s</div>' % (
-        margin_lines(c0['keys as run'], 'crib'),
-        ('<div><p class="meta"><b>Fixed key</b></p>%s</div>' % margin_lines(c0['fixed key'], 'crib')) if fixed else ''))
+        rs = [r for r in cur['runs'] if pick(r)]
+        rows.append(['<b>%s</b>' % E(label)] + [kn(c0[x['label']].get(arm)) for x in sc] +
+                    [id_lists(rs, nb, firstmap if len(sc) > 1 else None, first['label']) if arm != 'none_on_starved_pools'
+                     else '<span class="muted">the none runs of those cases, above</span>'])
+    body.append(table(['Arm'] + ['Score, %s' % x['label'] for x in sc] + ['Runs (marked by the %s scoring)' % cur['label']],
+                      rows, tuple(range(1, len(sc) + 1))))
+    body.append('<p class="muted">%s.</p>' % '; '.join('%s: <code>%s</code> (keys sha256 <code>%s</code>)' % (
+        E(x['label'][:1].upper() + x['label'][1:]), E(x['file']), E((x['meta'].get('keys_sha256') or '')[:12])) for x in sc))
+    body.append('<div class="grid2">%s</div>' % ''.join('<div><p class="meta"><b>%s</b></p>%s</div>' % (
+        E(x['label'][:1].upper() + x['label'][1:]), margin_lines(c0[x['label']], 'crib')) for x in sc))
     vp2 = (d['verdict'].get('P2_controls_M0_haiku') or {})
     if (vp2.get('none') or [0, 0])[1]:
         body.append('<p class="meta">The pilot rows also hold M0 Haiku runs: %s</p>' % margin_lines(vp2, 'crib'))
@@ -1148,7 +1159,7 @@ def cases_section(d):
         body.append(cases_table(d, fam, d['pilot_runs'], 'Family %s: %s' % (fam, label_family(d['preds'], fam))))
     if d['m0']:
         body.append(cases_table(d, 'A', d['m0']['runs'], 'Family A at M0, the P2 control runs (%s)' % (
-            'fixed key' if d['m0'].get('fixed') else 'keys as run')))
+            d['m0']['current'])))
     return section('cases', 'Every case', ''.join(body))
 
 
@@ -1237,16 +1248,19 @@ def usage_section(d):
             sc = u.get('scorer_usd')
             if sc is None:
                 sc = sum(r.get('scorer_usd') or 0 for r in b['runs'])
-            rows.append(['<code>%s</code>' % E(b['id']), 'pilot', str(len(b['runs'])), usd(ag), usd(sc),
-                         usd(u.get('scorer_fresh_usd_this_call')), usd(ag + sc)])
+            fresh = u.get('scorer_fresh_usd_this_call')
+            if fresh is None:
+                fresh = (b.get('scored_meta') or {}).get('fresh_cost_usd_this_run')
+            rows.append(['<code>%s</code>' % E(b['id']), 'pilot', str(len(b['runs'])), usd(ag), usd(sc), usd(fresh), usd(ag + sc)])
         else:
             ag = sum(r.get('cost_usd') or 0 for r in b['orig'])
             sc = b['orig_meta'].get('scorer_cost_usd') or 0.0
-            fr = (b.get('fixed_meta') or {}).get('fresh_cost_usd_this_run')
+            later = [(x['label'], x['meta'].get('fresh_cost_usd_this_run')) for x in b['scorings'][1:]]
+            fr = sum(v or 0 for _, v in later)
             rows.append(['<code>%s</code>' % E(b['id']), 'M0 controls', str(len(b['orig'])), usd(ag),
-                         usd(sc) + (' + %s re-score (fixed key)' % usd(fr) if fr is not None else ''),
-                         usd(b['orig_meta'].get('fresh_cost_usd_this_run')), usd(ag + sc + (fr or 0))])
-            sc += fr or 0
+                         usd(sc) + ''.join(' + %s re-score (%s)' % (usd(v), E(l)) for l, v in later if v is not None),
+                         usd(b['scorings'][-1]['meta'].get('fresh_cost_usd_this_run')), usd(ag + sc + fr)])
+            sc += fr
         ag_t += ag
         sc_t += sc
     rows.append(['<b>Total</b>', '', str(sum(len(b['runs']) for b in d['batches'])), '<b>%s</b>' % usd(ag_t), '<b>%s</b>' % usd(sc_t), '',
@@ -1277,7 +1291,7 @@ def gather(a):
     v3, real = read_json(a.cases_v3), read_json(a.cases_real)
     book = score.KeyBook(score.load_keys(a.keys), v3, real)
     pilots = [load_pilot(p) for p in a.pilot]
-    m0 = load_m0(a.m0) if a.m0 else None
+    m0 = load_m0(a.m0, [tuple(x.split('=', 1)) for x in a.m0_scoring] or None) if a.m0 else None
     pilot_runs = [r for b in pilots for r in b['runs']]
     warnings = [w for b in pilots + ([m0] if m0 else []) for w in b['warnings']]
     seen = {}
@@ -1298,9 +1312,8 @@ def gather(a):
     p2 = []
     if m0:
         vp2 = verdict.get('P2_controls_M0_haiku') or computed.get('P2_controls_M0_haiku')
-        for tag, runs in (('keys as run', m0['orig']), ('fixed key', m0.get('fixed'))):
-            if runs is None:
-                continue
+        for x in m0['scorings']:
+            tag, runs = x['label'], x['runs']
             model = sorted(set(r['model'] for r in runs))
             p2.append((tag, verdict_mod.controls(runs, 'A', 'm0', model[0] if len(model) == 1 else 'haiku', 'crib',
                                           vp2['positive_margin_needed'], vp2['negative_margin_needed'])))
@@ -1328,6 +1341,8 @@ def gather(a):
             vrows.append(r2)
         variants.append((label, run_verdict(vrows, a.model), sum(1 for r in pilot_runs if r['run_id'] not in alt)))
     scorer_meta = (pilots[0]['scored_meta'] if pilots and pilots[0]['scored_meta'] else (m0 or {}).get('orig_meta', {}))
+    for b in pilots + ([m0] if m0 else []):
+        b['scoring_commit'] = a.scoring_commit
     for b in pilots:
         b['commit'] = a.commit
     if m0:
@@ -1349,6 +1364,10 @@ def main(argv=None):
     ap.add_argument('--predictions', required=True, help='the pre-registered predictions JSON')
     ap.add_argument('--commit', required=True, help='the commit SHA the pilot runs used')
     ap.add_argument('--m0-commit', help='the commit SHA the M0 control runs used')
+    ap.add_argument('--scoring-commit', help='the commit of score.py that made the current scoring (header)')
+    ap.add_argument('--m0-scoring', action='append', default=[],
+                    help="LABEL=FILE in the M0 folder, in order, the last the current scoring (default: 'keys as run=scored.json', "
+                         "'fixed key=scored-keyfix.json')")
     ap.add_argument('--model', default='default', help='model flag of the verdict runs (default %(default)s)')
     ap.add_argument('--cases-v3', default=os.path.join(HERE, 'cases_v3.json'))
     ap.add_argument('--cases-real', default=os.path.join(HERE, 'cases_real.json'))
