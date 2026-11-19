@@ -59,12 +59,38 @@ check fails at Configure and names it.  <setting> is one of exptime, period, del
 highvoltage, settings, gainmode, readoutspeed, or a DAC (vb_ds, vb_comp, vb_pixbuf, vref_ds,
 vref_comp, vref_prech, vin_com, vdd_prot).
 
-    python -m psdaq.sim.simsls --port 31054 --seed 0x1234 [--rcvbuf B]
+The hutch's beam (--beam FILE, or PSDAQ_SIM_SLS_BEAM=FILE): the frames follow the X-ray beam that
+reaches the module, so a hutch simulator can make the recorded data depend on its devices.  FILE is
+a JSON object {"transmission": T, "open": true|false, ...} (other keys are ignored) that another
+process keeps up to date by writing a new file and renaming it over FILE.  Before each frame simsls
+compares FILE's inode, mtime and size with the last ones it read and reads FILE again when they
+changed, so a frame is made with the state FILE held when the trigger came.  Frame n (the header's
+frameNumber, psana2's frame_cnt) is then, for pixel i >= 16 of the flattened 512 x 1024 image:
+
+    pixel_i = min(0x3fff, 1000 + (pattern(seed, n, i, 16) & 0x3f) + floor(S_i * g_n + 0.5))
+    g_n     = T * E_n when the state is known and open, else 0
+    E_n     = (900 + mix((n * 0x9e37 + seed) mod 2**32) mod 201) / 1000      (0.9 .. 1.1)
+    S_i     = rint(12000 * max(0, 1 - ((r_i - 180) / 40)**2))
+
+that is a dark level of 1000 ADU plus 0-63 ADU of noise; E_n the energy of pulse n relative to the
+mean; S_i the full-beam signal, a ring of scattered X-rays 12000 ADU at its crest, of radius 180
+and half-width 40 pixels around row 256, column 512 (r_i = sqrt(dr**2 + dc**2), the pixel's
+distance from there).  Every step is a float64 operation with IEEE rounding (S_i * g_n, then
++ 0.5, then floor), so each pixel is exactly recomputable from seed, n and the state; all gain
+bits are 0.  Pixels 0-15 (row 0, columns 0-15) carry the state the frame was made with, one byte
+per pixel (STAMP): b'HS', version 1, flags (1: open, 2: state known), T as a little-endian
+float64, the seed as a little-endian uint32 (stamp(), read_stamp()).  Until FILE has held a valid
+state the state is unknown and frames are dark; a FILE that cannot be read or parsed later keeps
+the last good state (logged as a warning).  Without --beam, frames are pattern() as above.
+
+    python -m psdaq.sim.simsls --port 31054 --seed 0x1234 [--rcvbuf B] [--beam FILE]
 """
 
 import argparse
 import ipaddress
+import json
 import logging
+import math
 import os
 import queue
 import signal
@@ -107,6 +133,124 @@ RCVBUF_ASK = 16 << 20               # the receive buffer MemPoolSim's UdpFront a
 PACKET_COST = 16640                 # what one 8240-byte loopback datagram costs a receive buffer
 ROOM_WAIT_S = 0.1                   # the longest wait for room before a burst
 UDP_TABLE = '/proc/net/udp'
+
+# The hutch's beam (--beam FILE): the frame model of the module doc
+ENV_BEAM = 'PSDAQ_SIM_SLS_BEAM'
+PEDESTAL = 1000                     # ADU: the dark level of every pixel
+NOISE_MASK = 0x3f                   # the dark noise, pattern(seed, n, i, 16) & 0x3f: 0-63 ADU
+DATA_MAX = 0x3fff                   # the 14 data bits
+RING_ROW, RING_COL = 256, 512       # the full-beam signal: a ring around this pixel
+RING_RADIUS, RING_WIDTH, RING_PEAK = 180., 40., 12000.
+STAMP = struct.Struct('<2sBBdI')    # pixels 0-15, one byte each: magic, version, flags, T, seed
+STAMP_PIXELS = STAMP.size
+STAMP_MAGIC, STAMP_VERSION = b'HS', 1
+FLAG_OPEN, FLAG_KNOWN = 1, 2
+assert STAMP_PIXELS == 16
+
+
+def beam_profile():
+    """S_i, the full-beam signal of every pixel of the flattened image (float64, whole ADU): the
+    ring of the module doc, 0 on the stamp pixels (row 0, far outside the ring anyway)."""
+    r = np.arange(ROWS, dtype=np.float64)[:, None] - RING_ROW
+    c = np.arange(COLS, dtype=np.float64)[None, :] - RING_COL
+    x = (np.sqrt(r * r + c * c) - RING_RADIUS) / RING_WIDTH
+    s = np.rint(RING_PEAK * np.maximum(0., 1. - x * x)).ravel()
+    s[:STAMP_PIXELS] = 0.
+    return s
+
+
+def pulse_energy(seed, n):
+    """E_n: the energy of pulse n relative to the mean, 0.900 .. 1.100 in steps of 0.001."""
+    return (900 + int(mix((n * SEQ_K + seed) & 0xffffffff)) % 201) / 1000.
+
+
+def stamp(transmission, is_open, known, seed):
+    """The 16 stamp pixels (uint16, one byte each) of a frame made with this state."""
+    flags = (FLAG_OPEN if is_open else 0) | (FLAG_KNOWN if known else 0)
+    raw = STAMP.pack(STAMP_MAGIC, STAMP_VERSION, flags, float(transmission), seed & 0xffffffff)
+    return np.frombuffer(raw, np.uint8).astype(np.uint16)
+
+
+def read_stamp(pixels):
+    """(transmission, open, known, seed) from a frame (raw, any shape; its first 16 pixels in C
+    order), or None when they hold no stamp (a frame made without --beam)."""
+    px = np.asarray(pixels).ravel()[:STAMP_PIXELS]
+    if px.size < STAMP_PIXELS or int(px.max()) > 0xff:
+        return None
+    magic, version, flags, t, seed = STAMP.unpack(px.astype(np.uint8).tobytes())
+    if magic != STAMP_MAGIC or version != STAMP_VERSION:
+        return None
+    return t, bool(flags & FLAG_OPEN), bool(flags & FLAG_KNOWN), seed
+
+
+class BeamModel:
+    """The frames of the module doc's beam model; the profile's support is computed once."""
+
+    def __init__(self, base=None):
+        self.base = base if base is not None else \
+            (mix(np.arange(ROWS * COLS, dtype=np.uint64)) & np.uint32(0xffff)).astype(np.uint16)
+        s = beam_profile()
+        self.idx = np.flatnonzero(s)
+        self.vals = s[self.idx]
+
+    def frame(self, seed, n, transmission, is_open, known):
+        """Frame n (flattened, uint16) made with state (transmission, open, known)."""
+        add = np.uint16((n * SEQ_K + seed) & 0xffff)
+        with np.errstate(over='ignore'):
+            img = ((self.base + add) & np.uint16(NOISE_MASK)) + np.uint16(PEDESTAL)
+        g = transmission * pulse_energy(seed, n) if (known and is_open) else 0.
+        if g > 0:
+            sig = np.floor(self.vals * g + 0.5)
+            img[self.idx] = np.minimum(img[self.idx] + sig, DATA_MAX).astype(np.uint16)
+        img[:STAMP_PIXELS] = stamp(transmission, is_open, known, seed)
+        return img
+
+
+def coupled_image(seed, n, transmission, is_open, known=True):
+    """Frame n of the beam model (flattened uint16), for a state; see BeamModel."""
+    return BeamModel().frame(seed, n, transmission, is_open, known)
+
+
+class BeamFile:
+    """The beam state a --beam FILE holds, (transmission, open, known), read again whenever FILE
+    changed (its inode, mtime or size)."""
+
+    def __init__(self, path):
+        self.path = path
+        self.sig = None
+        self.state = (0., False, False)
+        self.reads = self.errors = 0
+        self.missing_logged = False
+
+    def current(self):
+        """(state, changed): the state now, and whether it differs from the one before."""
+        try:
+            st = os.stat(self.path)
+        except OSError as e:
+            if not self.missing_logged:
+                log.warning('beam file %s: %s; keeping %s', self.path, e, self.state)
+                self.missing_logged = True
+            return self.state, False
+        sig = (st.st_ino, st.st_mtime_ns, st.st_size)
+        if sig == self.sig:
+            return self.state, False
+        self.sig = sig
+        try:
+            with open(self.path) as f:
+                d = json.load(f)
+            t, is_open = float(d['transmission']), d['open']
+            if not isinstance(is_open, bool) or not math.isfinite(t) or t < 0:
+                raise ValueError('transmission %r, open %r: want a finite T >= 0 and true or false'
+                                 % (d['transmission'], is_open))
+        except (OSError, ValueError, KeyError, TypeError) as e:
+            self.errors += 1
+            log.warning('beam file %s: %s; keeping %s', self.path, e, self.state)
+            return self.state, False
+        new = (t, is_open, True)
+        changed, self.state = new != self.state, new
+        self.reads += 1
+        self.missing_logged = False
+        return self.state, changed
 
 
 def receive_buffer(ask=RCVBUF_ASK):
@@ -216,7 +360,7 @@ class Module:
     """The state of one Jungfrau module and its data generator."""
 
     def __init__(self, seed=0x1234, module_id=0x2a0, serial=0x1e3, firmware=0x230920, fault=None,
-                 rcvbuf=None):
+                 rcvbuf=None, beam=None):
         self.lock = threading.RLock()
         self.seed = seed
         self.module_id = module_id
@@ -248,6 +392,10 @@ class Module:
                        'room_waits': 0, 'room_timeouts': 0, 'receiver_drops': None}
         self.rcvbuf = receive_buffer() if rcvbuf is None else rcvbuf    # the receiver's buffer
         self.base = (mix(np.arange(ROWS * COLS, dtype=np.uint64)) & np.uint32(0xffff)).astype(np.uint16)
+        self.beam = BeamFile(beam) if beam else None        # --beam: frames follow the hutch's beam
+        self.model = BeamModel(self.base) if beam else None
+        if beam:
+            self.counts['beam_changes'] = 0
         self.t0 = time.monotonic()
         self.data = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.data.bind(('127.0.0.1', 0))
@@ -274,13 +422,24 @@ class Module:
         with np.errstate(over='ignore'):
             return self.base + add
 
+    def frame_image(self, frame):
+        """Frame `frame`: pattern() (image()), or with --beam the beam model with FILE's state now."""
+        if self.beam is None:
+            return self.image(frame)
+        (t, is_open, known), changed = self.beam.current()
+        if changed:
+            with self.lock:
+                self.counts['beam_changes'] += 1
+            log.info('beam: transmission %.6g, %s, from frame %d', t, 'open' if is_open else 'closed', frame)
+        return self.model.frame(self.seed, frame, t, is_open, known)
+
     def send_frame(self):
         with self.lock:
             frame = self.next_frame
             self.next_frame += 1
             dest = (ip_str(self.dst_ip), self.dst_port)
             exp = self.exptime
-        img = self.image(frame)
+        img = self.frame_image(frame)
         ts = int((time.monotonic() - self.t0) * 1e7)
         raw = img.tobytes()
         step = PIXELS_PER_PACKET * 2
@@ -683,17 +842,21 @@ def main(argv=None):
     parser.add_argument('--rcvbuf', type=int, default=None,
                         help='the receiver\'s buffer in bytes (default: what a %d B SO_RCVBUF request '
                         'gets on this host, as MemPoolSim asks); a frame is sent in bursts that fit' % RCVBUF_ASK)
+    parser.add_argument('--beam', default=os.environ.get(ENV_BEAM) or None,
+                        help='a JSON file {"transmission": T, "open": bool} kept up to date by another process: '
+                        'frames follow that beam (the module doc\'s model; default $%s)' % ENV_BEAM)
     parser.add_argument('-v', action='store_true', help='log every call')
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.v else logging.INFO,
                         format='%(asctime)s simsls %(levelname)s %(message)s')
     fault = parse_fault(args.fault)
     sim = SimSls(args.port, seed=args.seed, module_id=args.module_id, serial=args.serial,
-                 fault=fault, rcvbuf=args.rcvbuf).start()
+                 fault=fault, rcvbuf=args.rcvbuf, beam=args.beam).start()
     m = sim.module
     log.info('Jungfrau module stand-in (sls %s): control 127.0.0.1:%d, stop :%d, trigger udp :%d, '
-             'seed %#x, module id %#x%s; receiver buffer %d B: %s', VERSION.decode(), args.port,
+             'seed %#x, module id %#x%s%s; receiver buffer %d B: %s', VERSION.decode(), args.port,
              args.port + 1, args.port, args.seed, args.module_id, ', FAULT %s' % (fault,) if fault else '',
+             ', frames follow the beam in %s' % args.beam if args.beam else '',
              m.rcvbuf, 'a frame fits, sent back to back' if m.limit is None else
              'a frame (%d B of it) is sent in bursts that keep the queue under %d B'
              % (PACKETS * PACKET_COST, m.limit))
@@ -704,8 +867,8 @@ def main(argv=None):
         if m.dst_port:
             m.receiver_queue((ip_str(m.dst_ip), m.dst_port))     # its drops, for the log
         with sim.module.lock:
-            log.info('status %d, next frame %d, %s', sim.module.status, sim.module.next_frame,
-                     sim.module.counts)
+            log.info('status %d, next frame %d, %s%s', sim.module.status, sim.module.next_frame,
+                     sim.module.counts, ', beam %s' % (m.beam.state,) if m.beam else '')
     with sim.module.lock:
         log.info('exiting: status %d, next frame %d, %s, fault reads %d', sim.module.status,
                  sim.module.next_frame, sim.module.counts, sim.module.fault_hits)
