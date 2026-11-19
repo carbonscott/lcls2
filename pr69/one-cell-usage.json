@@ -1,0 +1,13 @@
+{
+ "runs": 1,
+ "agent_usd": 0.8523,
+ "scorer_usd": 0.0632,
+ "scorer_fresh_usd_this_call": 0.0632,
+ "scorer_usd_all_rows_in_out": 0.0632,
+ "projected_usd": 2.06,
+ "estimate_per_run": {
+  "default": 2.0
+ },
+ "scorer_estimate_per_run": 0.06,
+ "total_usd": 0.9155
+}

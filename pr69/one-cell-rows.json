@@ -1,0 +1,22 @@
+[
+ {
+  "run_id": "B.none.default/r0f9c64ee",
+  "family": "B",
+  "case": "pv-missing-pvcam",
+  "arm": "none",
+  "mode": "m1",
+  "model": "default",
+  "repeat": 1,
+  "healthy": false,
+  "cause_pass": true,
+  "healthy_outcome": null,
+  "located": true,
+  "calls": 5,
+  "calls_no_guidance": 5,
+  "cost_usd": 0.8523002,
+  "seconds": 73.6,
+  "exit": 0,
+  "error": null,
+  "scorer_usd": 0.063156
+ }
+]

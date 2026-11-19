@@ -1,0 +1,13 @@
+[
+ {"send": "git ls-remote https://github.com/carbonscott/lcls2 refs/heads/evals/v3-followup; date -u; python3 --version; claude --version"},
+ {"send": "git clone -q --branch evals/v3-followup https://github.com/carbonscott/lcls2 lcls2 && git -C lcls2 log -1 --format='HEAD %H  %cI' && cd lcls2/evals/daq_skills", "timeout": 900},
+ {"send": "python3 -m unittest discover -s tests; echo UNIT_EXIT=$?", "expect": "^UNIT_EXIT=[0-9]+", "timeout": 300},
+ {"send": "WORK=$E/work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK && python3 tree.py --work $WORK | tail -1; echo TREE_EXIT=${PIPESTATUS[0]}", "expect": "^TREE_EXIT=[0-9]+", "timeout": 400},
+ {"send": "OUT=$E/one-cell; claude auth status | python3 -c 'import json,sys; print(\"loggedIn:\", json.load(sys.stdin)[\"loggedIn\"])'"},
+ {"send": "B=$(ls -d ~/.claude/projects/-tmp-score-* | wc -l); echo \"scorer session folders before: $B\""},
+ {"send": "python3 pilot.py --out $OUT --work $WORK --cell B/none/default/pv-missing-pvcam/1 --jobs 1 --budget-left 3 2>&1 | sed \"s#$HOME#~#g\"; echo PILOT_EXIT=${PIPESTATUS[0]}", "expect": "^PILOT_EXIT=[0-9]+", "timeout": 1500},
+ {"send": "A=$(ls -d ~/.claude/projects/-tmp-score-* | wc -l); echo \"scorer session folders after: $A (before: $B)\""},
+ {"send": "python3 -c 'import json,sys; [print(json.dumps(r)) for r in json.load(open(sys.argv[1]))]' $OUT/rows.json"},
+ {"send": "ls $OUT/B.none.default/r0f9c64ee/; head -1 $OUT/scored.txt"},
+ {"send": "python3 -c 'import json,sys; e=json.load(open(sys.argv[1])); print(\"calls to evidence:\", e[\"calls\"], \"| first:\", e[\"first\"][\"why\"])' $OUT/B.none.default/r0f9c64ee/evidence.json"}
+]

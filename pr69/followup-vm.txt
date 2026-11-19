@@ -1,0 +1,45 @@
+19:20:00 UTC vm:wn-followup-take$ git ls-remote https://github.com/carbonscott/lcls2 refs/heads/evals/v3-followup; date -u; python3 --version; claude --version
+2e6e26720667fd82d655536524f848678812cdc2	refs/heads/evals/v3-followup
+Thu Nov 19 19:20:01 UTC 2026
+Python 3.12.3
+2.1.328 (Claude Code)
+19:20:01 UTC vm:wn-followup-take$ git clone -q --branch evals/v3-followup https://github.com/carbonscott/lcls2 lcls2 && git -C lcls2 log -1 --format='HEAD %H  %cI' && cd lcls2/evals/daq_skills
+HEAD 2e6e26720667fd82d655536524f848678812cdc2  2026-11-19T19:19:17+00:00
+19:20:50 UTC vm:daq_skills$ python3 -m unittest discover -s tests; echo UNIT_EXIT=$?
+..................................................................................................................................s..s.........................................
+----------------------------------------------------------------------
+Ran 175 tests in 17.258s
+
+OK (skipped=2)
+UNIT_EXIT=0
+19:21:08 UTC vm:daq_skills$ WORK=$E/work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK && python3 tree.py --work $WORK | tail -1; echo TREE_EXIT=${PIPESTATUS[0]}
+8 cases, window check passed for all
+TREE_EXIT=0
+19:22:19 UTC vm:daq_skills$ OUT=$E/one-cell; claude auth status | python3 -c 'import json,sys; print("loggedIn:", json.load(sys.stdin)["loggedIn"])'
+loggedIn: True
+19:22:20 UTC vm:daq_skills$ B=$(ls -d ~/.claude/projects/-tmp-score-* | wc -l); echo "scorer session folders before: $B"
+scorer session folders before: 3032
+19:22:21 UTC vm:daq_skills$ python3 pilot.py --out $OUT --work $WORK --cell B/none/default/pv-missing-pvcam/1 --jobs 1 --budget-left 3 2>&1 | sed "s#$HOME#~#g"; echo PILOT_EXIT=${PIPESTATUS[0]}
+cells:
+  B.none.default           mode m1 control -        cases 1 x 1 repeats
+per-run estimate: model default  agent $2.000 (table) + scorer $0.060
+runs: 1 in the batch, 1 to do; projected usage $2.06; budget left $3.00
+[   74s] B.none.default pv-missing-pvcam           r1 exit=0   73.6s
+agents done: 1 runs, 0 run.py failures
+score.py exit 0 (log: ~/wn-followup-take/one-cell/score.log)
+evidence.py exit 0
+run                                case                 exit    secs   usd    located  calls  cause / healthy
+B.none.default/r0f9c64ee           pv-missing-pvcam     0       73.6   0.852  True     5      PASS
+usage: {"runs": 1, "agent_usd": 0.8523, "scorer_usd": 0.0632, "scorer_fresh_usd_this_call": 0.0632, "scorer_usd_all_rows_in_out": 0.0632, "projected_usd": 2.06, "estimate_per_run": {"default": 2.0}, "scorer_estimate_per_run": 0.06, "total_usd": 0.9155}
+rows: ~/wn-followup-take/one-cell/rows.json  (python3 verdict.py ~/wn-followup-take/one-cell/rows.json)
+PILOT_EXIT=0
+19:24:03 UTC vm:daq_skills$ A=$(ls -d ~/.claude/projects/-tmp-score-* | wc -l); echo "scorer session folders after: $A (before: $B)"
+scorer session folders after: 3032 (before: 3032)
+19:24:04 UTC vm:daq_skills$ python3 -c 'import json,sys; [print(json.dumps(r)) for r in json.load(open(sys.argv[1]))]' $OUT/rows.json
+{"run_id": "B.none.default/r0f9c64ee", "family": "B", "case": "pv-missing-pvcam", "arm": "none", "mode": "m1", "model": "default", "repeat": 1, "healthy": false, "cause_pass": true, "healthy_outcome": null, "located": true, "calls": 5, "calls_no_guidance": 5, "cost_usd": 0.8523002, "seconds": 73.6, "exit": 0, "error": null, "scorer_usd": 0.063156}
+19:24:05 UTC vm:daq_skills$ ls $OUT/B.none.default/r0f9c64ee/; head -1 $OUT/scored.txt
+evidence.json  final.md  meta.json  operator.jsonl  prompt.txt	stderr.txt  transcript.jsonl  ws
+arm                fault    Cause-pass        strict       lenient | hlth clean benign false | scorer calls   usage$   err
+19:24:06 UTC vm:daq_skills$ python3 -c 'import json,sys; e=json.load(open(sys.argv[1])); print("calls to evidence:", e["calls"], "| first:", e["first"]["why"])' $OUT/B.none.default/r0f9c64ee/evidence.json
+calls to evidence: 5 | first: output shows a keyed-launch line
+19:24:08 UTC vm:daq_skills$

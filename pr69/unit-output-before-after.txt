@@ -1,0 +1,18 @@
+python3 -m unittest discover -s tests, Python 3.12.3, on the VM, 2026-11-19
+
+== before: at fc21f7d7a (sim-main after #68), from git archive
+output lines: 6787; lines with ResourceWarning: 4454; lines '1 runs, 0 with errors': 18; argparse 'usage:' lines: 4; DeprecationWarning: 1
+last 4 lines:
+Ran 169 tests in 19.768s
+
+OK (skipped=2)
+1 runs, 0 with errors
+
+== after: at 2e6e26720 (this PR's head), the fresh clone of evals/v3-followup
+output lines: 5; lines with ResourceWarning: 0
+the whole output:
+..................................................................................................................................s..s.........................................
+----------------------------------------------------------------------
+Ran 175 tests in 17.219s
+
+OK (skipped=2)
