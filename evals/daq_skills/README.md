@@ -19,7 +19,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # TESTCOUNT tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 102 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -142,7 +142,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # TESTCOUNT tests, no model calls
+python3 -m unittest discover -s tests -v                       # 102 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
@@ -234,6 +234,67 @@ never sees `pool.json`: only `logs/` is mounted in its sandbox. The logs are fro
 simulator, carry no experiment data, and were scanned for credentials, e-mail addresses
 and home-directory names before being committed. To add cases, harvest into a work
 folder and re-pack: `tar --sort=name --owner=0 --group=0 --numeric-owner -cf - pools | gzip -n -9`.
+
+## Real MFX cases (family C)
+
+`cases_real.json` holds cold-start cases on **real** MFX DAQ logs. The logs are not in the
+repository and never will be: the file holds only window specs (today's date, a vague phrase
+such as "yesterday evening", the keyed launch's stamp, its file names and their sha256) and
+the keys `real_mfx.py` computes from the logs. You get the logs from S3DF with your own login;
+the MFX trees under `/sdf/home/m/mfxopr` are world-readable there.
+
+```bash
+python3 real_mfx.py fetch --dest $HOME/mfx-root            # rsync over ssh from sdfiana025; checks every case file's sha256
+python3 real_mfx.py keys  --root $HOME/mfx-root            # recompute the keys; exit 1 if a file or key drifted
+python3 real_mfx.py check --root $HOME/mfx-root            # each vague window holds only keyed launches
+```
+
+`fetch` builds a prepared root laid out as the real paths (`<ROOT>/home/m/mfxopr/...`), which
+the cold-start mode mounts read-only at `/sdf`: the months the cases touch from both trees
+(`daq/logs/<YYYY>/<MM>/` from 2026-09-17 09:29, `<YYYY>/<MM>/` before that), plus
+`daq/scripts/` and `.psdaq/`. Past `--max-bytes` (default 2 GB) it drops the largest files that
+no case needs and lists them in `<ROOT>.manifest.json`. Add `--rsh "ssh -F <config>"` if your
+S3DF host needs an ssh config, `--dry-run` to see the plan.
+
+The seven cases (keys from `keys`, uniqueness from `check`, both run on S3DF and on a fetched copy):
+
+| id | today | phrase | target launch | key | why chosen |
+|---|---|---|---|---|---|
+| real-pv-cfg | 2026-10-23 | Wednesday morning | `daq/logs/2026/10/21_08:21:25` | t_zero_alvium_0, configure, pv-get-parameters | fault, current tree; 3 idle launches beside it |
+| real-qadc-run | 2026-11-05 | yesterday evening | `daq/logs/2026/11/04_16:52:14` | qadc_0, running, abort | fault during running; healthy launches on both sides |
+| real-pre-cutover | 2026-09-17 | yesterday afternoon | `2026/09/16_15:05:23` (old root) | timing_1, alloc, xpm-remote-link-id | fault only in the previous tree |
+| real-month-edge | 2026-11-02 | Friday morning | `daq/logs/2026/10/30_06:20:41` | healthy | today in November, launch in the October folder |
+| real-healthy-sun | 2026-10-27 | Sunday afternoon | `daq/logs/2026/10/25_17:47:57` | healthy | alone in its window |
+| real-healthy-nov | 2026-11-08 | Thursday afternoon | `daq/logs/2026/11/05_11:30:53` | healthy | alone in its window |
+| real-pre-cutover-ok | 2026-09-18 | Tuesday afternoon | `2026/09/15_14:37:58` (old root) | healthy | daq/logs/2026/09 exists but starts on the 17th |
+
+Every case has an `operator` table (symptom, when, what next, detectors) for the ask-operator
+command, and `operator_default` for any other question.
+
+How the keys are made (all by script, no reading by hand):
+
+- A **launch** is a file-name stamp with a `control.log`; files of a stamp without one (a
+  process restarted by hand) belong to the launch before it. Stamps and log lines are local
+  Pacific time.
+- **Inventory key**: per component (the file's process name), which error classes occur:
+  `pv_connect`, `no_response` (did not respond to a transition), `state_failed`, `crash`
+  (abort, core dump, signal, non-zero exit), `traceback`; whether control reached `running`.
+- **Component key**: control.log's first failure (`<X> did not respond to <transition>`, a
+  `Phase N error`, `<transition> failed to change state`, or the event builder not hearing
+  from X), grouped over 60 s on the same transition. Keyed only if exactly one component is
+  named there and that component's own log has an error line of its own; the mechanism label
+  comes from that log (`detector-socket-connect`, `pv-get-parameters`, ...). Otherwise
+  "not keyed", or "healthy" when control reached `running` with no failure line.
+- A **window** is the widest reading of the phrase (morning 00-13 h, afternoon 11-19 h,
+  evening 16-24 h, night 18-08 h, a whole day 00-24 h, a weekend Fri 18 h to Mon 08 h). `check`
+  fails a case if any launch whose span (stamp to last control line) overlaps the window is
+  not keyed.
+- sha256 is taken over the decompressed bytes: a rotation job on S3DF compresses the current
+  tree's files to `.zst` after about a week, which changes the stored bytes but not the log.
+
+Caveats: the rotation job also has a deletion step (it had deleted nothing by 2026-11-17); if
+it starts deleting, `fetch` will report the missing case files. The prepared root holds months
+after a case's "today", so an agent can see later launches.
 
 ## Known limits
 
