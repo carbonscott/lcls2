@@ -411,6 +411,14 @@ class ColdKeys(unittest.TestCase, World):
         self.assertEqual((r['outcome']['outcome'], r['facts']['located'], r['facts']['keyed_named_anywhere']), ('clean', False, True))
         alarm = {'verdict_kind': 'fault', 'launches': [], 'problems': [{'role': 'cause', 'component': 'x', 'stage': '', 'mechanism': 'y'}]}
         self.assertEqual(score.score_report(k, c1_keys(), self.rep(alarm), self.caller())['outcome']['outcome'], 'false-alarm')
+        # a failure placed in another launch, the keyed one called fine: not a false alarm (README, Scores)
+        neighbour = dict(alarm, problems=[dict(alarm['problems'][0], launch_time='12:39:26', tz='local')])
+        self.assertEqual(score.score_report(k, c1_keys(), self.rep(neighbour), self.caller())['outcome']['outcome'],
+                         'benign-defect-noted')
+        inside = dict(alarm, problems=[dict(alarm['problems'][0], launch_time='14:37:58', tz='local')])
+        self.assertEqual(score.score_report(k, c1_keys(), self.rep(inside), self.caller())['outcome']['outcome'], 'false-alarm')
+        both = dict(alarm, problems=neighbour['problems'] + inside['problems'])
+        self.assertEqual(score.score_report(k, c1_keys(), self.rep(both), self.caller())['outcome']['outcome'], 'false-alarm')
 
 
 class Pilot(unittest.TestCase, World):

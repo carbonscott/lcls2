@@ -304,7 +304,9 @@ python3 score.py --results $OUT --out $OUT/scored.json --summary $OUT/scored.txt
    record: the verdict (fault, no-fault, unsure), the launches named, each problem with its role
    (cause, side issue, consequence, possible), component, stage and a verbatim quote of the
    mechanism, and the report's asks to the operator. Cached by the report's sha256. Cold-start runs
-   get a second report-only call: the launch the report concludes about (for Located).
+   get a second call that sees the report and the moment the operator asked (the run's `now`, as the
+   agent was told): the launch the report concludes about (for Located), with relative days such as
+   "yesterday" counted from that moment. Cached by the whole prompt.
 2. **Facts by script.** Launch (only in a pool of many launches), component and stage by aliases;
    `located`: the report names the keyed launch (stamp, file prefix, or a time inside it or within
    2 minutes of its start); for cold-start runs, the launch from the second call must be the keyed one.
@@ -312,6 +314,9 @@ python3 score.py --results $OUT --out $OUT/scored.json --summary $OUT/scored.txt
    statements and near-misses, three times; the majority of accepted, near-miss or other wins.
 4. **Outcome.** A fault case passes Cause when every fact passes (also given strict: all votes
    accepted, and lenient: any vote). A healthy case is clean, benign-defect-noted or false-alarm.
+   A false alarm is a failure claimed for the session asked about: a report whose every cause is
+   placed, by its time, in another launch (a real failure next door, the keyed launch called fine)
+   is not one; a cause with no usable time counts as placed in the keyed launch.
 
 `make_keys_v3.py` writes `keys_v3.json` from `catalog.json`, the bundled pools and mechanism
 statements written by hand from the logs (`--check` tells whether the file is current). The

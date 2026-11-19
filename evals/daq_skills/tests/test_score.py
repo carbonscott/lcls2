@@ -111,10 +111,24 @@ class Keys(unittest.TestCase):
 
     def test_the_extractor_never_sees_the_key_or_the_arm(self):
         k = KEYS['cases']['reg-cfg-tt']
-        for prompt in (score.EXTRACT_PROMPT.format(report='REPORT TEXT'), score.CONCLUDE_PROMPT.format(report='REPORT TEXT')):
+        for prompt in (score.EXTRACT_PROMPT.format(report='REPORT TEXT'), score.CONCLUDE_PROMPT.format(report='REPORT TEXT', now='2026-11-18 09:40')):
             for leak in [k['mechanism']['accepted'][0], k['mechanism']['near_miss'][0], 'TriggerDelay', 'skills', 'reg-cfg-tt',
                          k['question'], 'map', 'pointer', 'keyed']:
                 self.assertNotIn(leak, prompt)
+
+    def test_the_conclusion_call_is_told_when_the_operator_asked(self):
+        class Cap:
+            prompts = []
+
+            def call(self, prompt, kind, tag='', name=None):
+                self.prompts.append((kind, prompt, name))
+                return {'text': '{"concluded_launch": null, "basis": "none", "quote": ""}', 'cost_usd': 0.0,
+                        'model': 'x', 'cached': False, 'error': None}
+        cap = Cap()
+        score.conclude(cap, 'A report about yesterday.', '2026-11-18 09:40')
+        kind, prompt, name = cap.prompts[0]
+        self.assertEqual((kind, name), ('conclude', None))          # cached by the whole prompt, so a new 'now' re-asks
+        self.assertIn('The operator asked on 2026-11-18 09:40', prompt)
 
     def test_m0_runs_make_no_conclusion_call(self):
         kinds = []

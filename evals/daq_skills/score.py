@@ -104,12 +104,15 @@ CONCLUDE_PROMPT = """You read one DAQ incident report and say which launch its a
 
 The report answers an operator's question about LCLS-II DAQ logs. A "launch" is one start of the DAQ processes; its log files are named DD_HH:MM:SS_<host>:<process>.log, and DD_HH:MM:SS is the launch's start stamp.
 
+The operator asked on {now} (US Pacific time). The report may refer to days relative to that moment.
+
 REPORT:
 <<<
 {report}
 >>>
 
 Return one JSON object: {{"concluded_launch": {{"time": "HH:MM:SS or HH:MM as written", "date": "YYYY-MM-DD or null", "tz": "local" | "UTC" | "unstated"}} or null, "basis": "cause" | "reviewed" | "none", "quote": "the report's words that name that launch, at most 30 words"}}.
+- date: the day of that launch as the report gives it (a date, a weekday, "yesterday", or a DD_ prefix of a log-file name), turned into YYYY-MM-DD counting from the moment the operator asked; null if the report gives no day for it. Never guess a day the report does not give.
 - If the report concludes that something failed, concluded_launch is the launch in which its main conclusion happened: the launch of the root cause or failure it puts first. basis "cause".
 - If it concludes that the session worked (no failure, or only harmless problems), concluded_launch is the launch it says it reviewed and found working, the one its answer is about. basis "reviewed".
 - Never a launch the report only lists among those it looked at, compares with, sets aside, or mentions as context (an earlier or later launch, a retry, another day), unless its conclusion is about that launch.
@@ -295,10 +298,12 @@ def extract(caller, report):
     return rec, calls
 
 
-def conclude(caller, report):
+def conclude(caller, report, now=None):
     """(conclusion or None, [call records]): the launch the report's answer is about, from a second model call that,
-    like the extraction, sees only the report.  Cold-start runs only (Located); cached by the report's sha256."""
-    d, calls = call_json(caller, CONCLUDE_PROMPT.format(report=report[:40000]), 'conclude', name=sha(report))
+    like the extraction, sees only the report and the moment the operator asked (the case's now, as the agent was told;
+    without it a 'yesterday' became an invented date).  Cold-start runs only (Located); cached by the whole prompt."""
+    when = now or 'a date the report states'
+    d, calls = call_json(caller, CONCLUDE_PROMPT.format(report=report[:40000], now=when), 'conclude')
     if d is None:
         return None, calls
     l = d.get('concluded_launch')
@@ -619,11 +624,25 @@ def score_multi(key, keys, rec, text, caller, votes):
     return f, m, out, calls
 
 
+def cause_outside(key, keys, c):
+    """True when a cause the report gives is placed, by a usable time, outside every keyed launch of a healthy case.
+    A false alarm is a failure claimed for the session asked about (README, Scores): a real failure the report places in
+    another launch, while it calls the keyed one fine, is not one.  A cause with no usable time counts as inside."""
+    keyed = set(l['prefix'] for l in key.get('launches', []))
+    if not keyed:
+        return False
+    dt = to_local(c.get('launch_time') or '', None, c.get('tz'), default_date(key), tz_offset(keys, key))
+    if dt is None:
+        return False
+    return resolve(dt, pool_launches(keys, key)) not in keyed
+
+
 def score_healthy(key, keys, rec, text):
     named = named_launches(key, keys, rec, text)
     cs = causes(rec)
     vk = rec['verdict_kind']
-    if vk == 'fault' or (vk == 'unsure' and cs):
+    elsewhere = bool(cs) and all(cause_outside(key, keys, c) for c in cs)
+    if (vk == 'fault' or (vk == 'unsure' and cs)) and not elsewhere:
         outcome = 'false-alarm'
     elif rec['problems']:
         outcome = 'benign-defect-noted'
@@ -646,7 +665,7 @@ def score_report(key, keys, text, caller, votes=3):
     rec, xcalls = extract(caller, text)
     row = {'report_sha256': sha(text), 'record': rec, 'calls': {'extract': xcalls, 'judge': []}}
     if rec is not None and key.get('cold'):            # cold start: which launch the report concludes about (Located)
-        conc, ccalls = conclude(caller, text)
+        conc, ccalls = conclude(caller, text, key.get('now'))
         row['calls']['conclude'] = ccalls
         if conc is None:
             row['error'] = 'conclusion extraction failed'
@@ -803,6 +822,8 @@ def collect_runs(results, book, only=None):
                 continue
             if only and rid not in only:
                 continue
+            if m.get('now'):                               # the moment the agent was told it is (cold start)
+                key = dict(key, now=m['now'])
             runs.append({'id': rid, 'arm': arm, 'case': m['case'], 'repeat': m.get('repeat'), 'run_dir': d,
                          'agent_cost_usd': m.get('cost_usd'), 'seconds': m.get('seconds'), 'agent_model': m.get('model'),
                          'mode': mode, 'control': m.get('control'), 'family': book.family(m['case'], mode),
