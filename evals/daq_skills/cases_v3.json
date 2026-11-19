@@ -1,0 +1,678 @@
+{
+ "version": 3,
+ "about": "Cases of the v3 DAQ skill eval (.goal/daq-skill-eval-v3.predictions.json). Family A = these pools at mode m0 (catalog prompt, tst logs); family B = the same pools re-housed by tree.py in an MFX-shaped tree at mode m1. run.py reads this file for --mode m1 and for the controls; tree.py fills the m1 fields keyed_stamp, keyed_dir, keyed_files, starve_files and pointer (--write-cases).",
+ "anchor_selection": {
+  "rule": "the 6 core fault cases with the most non-'correct' v2 verdicts summed over the four v2 arms (none, skills-181, none.haiku, skills-181.haiku; 6 runs per case), ties by fewer log files in the pool, then case id; plus the 2 core healthy cases with the fewest v2 false alarms, ties by case id",
+  "source": "old-v2/results.json rows (arm, case, cause.verdict), 204 rows",
+  "fault_ranked": [
+   [
+    "gpu-hang-cfg",
+    3,
+    3,
+    6
+   ],
+   [
+    "cfg-value-wave8",
+    2,
+    3,
+    6
+   ],
+   [
+    "pv-missing-pvcam",
+    2,
+    4,
+    6
+   ],
+   [
+    "ctl-blames-meb",
+    2,
+    5,
+    6
+   ],
+   [
+    "big-pvcam",
+    2,
+    31,
+    6
+   ],
+   [
+    "day-big-window",
+    2,
+    1429,
+    6
+   ],
+   [
+    "cfg-badname-tt",
+    1,
+    3,
+    6
+   ],
+   [
+    "hang-cfg-tt",
+    1,
+    3,
+    6
+   ],
+   [
+    "kill-drp",
+    1,
+    3,
+    6
+   ],
+   [
+    "reg-alloc-fakecam",
+    1,
+    3,
+    6
+   ],
+   [
+    "drp-gone-cfg",
+    1,
+    5,
+    6
+   ],
+   [
+    "big-tebctrb-connect",
+    1,
+    31,
+    6
+   ],
+   [
+    "day-count",
+    1,
+    1429,
+    6
+   ],
+   [
+    "day-last-good",
+    1,
+    1429,
+    6
+   ],
+   [
+    "day-other-error",
+    1,
+    1429,
+    6
+   ],
+   [
+    "day-startup",
+    1,
+    1429,
+    6
+   ],
+   [
+    "ctl-blames-teb",
+    0,
+    3,
+    6
+   ],
+   [
+    "gpu-cuda",
+    0,
+    3,
+    6
+   ],
+   [
+    "jf-readback",
+    0,
+    3,
+    6
+   ],
+   [
+    "reg-cfg-epixhr2x2-q",
+    0,
+    3,
+    6
+   ],
+   [
+    "reg-cfg-hsd",
+    0,
+    3,
+    6
+   ],
+   [
+    "reg-cfg-opal",
+    0,
+    3,
+    6
+   ],
+   [
+    "reg-cfg-tt",
+    0,
+    3,
+    6
+   ],
+   [
+    "reg-connect-fakecam",
+    0,
+    3,
+    6
+   ],
+   [
+    "startup-crash-tt-q",
+    0,
+    3,
+    6
+   ],
+   [
+    "teb-overflow",
+    0,
+    3,
+    6
+   ],
+   [
+    "big-meb-killed",
+    0,
+    23,
+    6
+   ],
+   [
+    "day-window",
+    0,
+    1429,
+    6
+   ],
+   [
+    "day-window-utc",
+    0,
+    1429,
+    6
+   ]
+  ],
+  "healthy_ranked": [
+   [
+    "healthy-fakecam",
+    0,
+    6
+   ],
+   [
+    "healthy-jungfrau",
+    1,
+    6
+   ],
+   [
+    "day-healthy-late",
+    2,
+    6
+   ],
+   [
+    "day-healthy-window",
+    3,
+    6
+   ],
+   [
+    "healthy-tt",
+    3,
+    6
+   ]
+  ],
+  "chosen": [
+   "gpu-hang-cfg",
+   "cfg-value-wave8",
+   "pv-missing-pvcam",
+   "ctl-blames-meb",
+   "big-pvcam",
+   "day-big-window",
+   "healthy-fakecam",
+   "healthy-jungfrau"
+  ]
+ },
+ "starve_rule": "root-cause files of the keyed launch: the keyed component's own log, plus every file of the launch whose text holds a phrase of 6 or more characters from the key's mechanism list (case-insensitive). The starved control runs with them removed (fault cases only).",
+ "crib_rule": "fault cases: the first sentence of the key's summary, verbatim; healthy cases: the key's 'no fault' and, where the key lists one, its known issue",
+ "crib_preface": "A DAQ expert who has already read these logs says: {crib} Check this against the logs and give your own assessment.",
+ "m1_context": "You are helping with the LCLS-II DAQ of the MFX hutch at LCLS. It is now {now_text} (US Pacific time; the clock of this machine is not set to it). This is an offline review of past DAQ sessions: Grafana, ConfigDB and the live DAQ cannot be reached from here, and /cds and /reg are not mounted. Do not file or draft GitHub issues and do not write files. Times are US Pacific unless stated otherwise. The operator who asked is not in this session, but you can put a question to them with the command: ask-operator \"<your question>\"",
+ "operator_default": "I don't know more than what I told you.",
+ "operator_rules": [
+  {
+   "id": "when",
+   "match": [
+    "\\bwhen\\b",
+    "what time",
+    "\\btimes?\\b",
+    "which (day|date|night|evening|morning|afternoon)",
+    "what (day|date)",
+    "\\bdate\\b",
+    "\\bhours?\\b",
+    "o.clock",
+    "\\bwindow\\b",
+    "\\bshift\\b",
+    "\\bexactly\\b",
+    "\\bapprox"
+   ]
+  },
+  {
+   "id": "hutch",
+   "match": [
+    "\\bhutch\\b",
+    "\\binstrument\\b",
+    "\\bbeamline\\b",
+    "\\bendstation\\b",
+    "which (daq|experiment)"
+   ]
+  },
+  {
+   "id": "what",
+   "match": [
+    "what happened",
+    "\\bsymptoms?\\b",
+    "\\berrors?\\b",
+    "\\bmessages?\\b",
+    "what did you see",
+    "what went wrong",
+    "\\bdescribe\\b",
+    "\\bnotice"
+   ]
+  }
+ ],
+ "widest_rule": "morning 05:00-12:30; afternoon 11:30-19:00; evening 16:00-02:00 next day; last night 17:00 the day before - 07:00 today",
+ "cases": [
+  {
+   "id": "gpu-hang-cfg",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "gpu-hang-cfg",
+   "healthy": false,
+   "keyed_launches": [
+    "09_21:12:48"
+   ],
+   "crib": "The GPU DRP jungfrau_0 received configure at 21:13:20, got as far as starting its Collector and TrgInpGen receiver threads, then went silent and never replied; control timed out after 60 s ('jungfrau_0 did not respond to configure').",
+   "starve_component": "jungfrau_0",
+   "starve_files": [
+    "09_21:12:48_sdfada013:control.log",
+    "09_21:12:48_sdfada013:jungfrau_0.log"
+   ],
+   "m1": {
+    "date": "2026-11-17",
+    "now": "2026-11-18 09:40",
+    "vague": "last night",
+    "widest": [
+     "2026-11-17 17:00",
+     "2026-11-18 07:00"
+    ],
+    "question": "Last night the DAQ would not configure. Why?",
+    "answers": {
+     "when": "Last night, Tuesday the 17th, in the evening; I think around 9 pm.",
+     "what": "We tried to start a run and the DAQ would not configure, so we gave up on it.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "17_21:12:48",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
+    "keyed_files": [
+     "17_21:12:48_sdfada013:control.log",
+     "17_21:12:48_sdfada013:jungfrau_0.log",
+     "17_21:12:48_sdfada013:teb0.log"
+    ],
+    "starve_files": [
+     "17_21:12:48_sdfada013:control.log",
+     "17_21:12:48_sdfada013:jungfrau_0.log"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-17 between 21:12 and 21:15."
+   }
+  },
+  {
+   "id": "cfg-value-wave8",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "cfg-value-wave8",
+   "healthy": false,
+   "keyed_launches": [
+    "08_18:18:57"
+   ],
+   "crib": "wave8_0 failed in configure: wave8_config -> configure_trigger_delay raised ValueError('TriggerDelay(ns) too small') (IOC-managed trigger delay reads as 0 / not above the partition delay), the DRP logged '<C> **** python error' and aborted (signal 6).",
+   "starve_component": "wave8_0",
+   "starve_files": [
+    "08_18:18:57_sdfmilan048:wave8_0.log"
+   ],
+   "m1": {
+    "date": "2026-10-31",
+    "now": "2026-11-01 11:00",
+    "vague": "last night",
+    "widest": [
+     "2026-10-31 17:00",
+     "2026-11-01 07:00"
+    ],
+    "question": "The DAQ was used last night. An operator asks: did anything go wrong? Give a full assessment.",
+    "answers": {
+     "when": "Last night, Saturday the 31st, early in the evening, around 6 pm.",
+     "what": "I wasn't on shift then; I only know the DAQ was used.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "31_18:18:57",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
+    "keyed_files": [
+     "31_18:18:57_sdfmilan048:control.log",
+     "31_18:18:57_sdfmilan048:teb0.log",
+     "31_18:18:57_sdfmilan048:wave8_0.log"
+    ],
+    "starve_files": [
+     "31_18:18:57_sdfmilan048:wave8_0.log"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-31 between 18:18 and 18:21."
+   }
+  },
+  {
+   "id": "pv-missing-pvcam",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "pv-missing-pvcam",
+   "healthy": false,
+   "keyed_launches": [
+    "09_18:22:24"
+   ],
+   "crib": "pvcam_0 (drp_pva) failed configure phase 1 because its EPICS PV DAQ:SIM:CAM:IMAGE never connected: control got the warning \"pvcam_0: PV DAQ:SIM:CAM:IMAGE hasn't connected\" ~3 s after configure, and pvcam_0 logged 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE' then 'Phase 1 error in Detector::configure()'.",
+   "starve_component": "pvcam_0",
+   "starve_files": [
+    "09_18:22:24_sdfada011:control.log",
+    "09_18:22:24_sdfada011:pvcam_0.log"
+   ],
+   "m1": {
+    "date": "2026-09-16",
+    "now": "2026-09-17 14:00",
+    "vague": "yesterday evening",
+    "widest": [
+     "2026-09-16 16:00",
+     "2026-09-17 02:00"
+    ],
+    "question": "The DAQ was used yesterday evening. An operator asks: did anything go wrong? Give a full assessment.",
+    "answers": {
+     "when": "Yesterday, Wednesday the 16th, in the evening, around 6:30 pm.",
+     "what": "I wasn't on shift then; I only know the DAQ was used.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "16_18:22:24",
+    "keyed_dir": "/sdf/home/m/mfxopr/2026/09",
+    "keyed_files": [
+     "16_18:22:24_sdfada011:control.log",
+     "16_18:22:24_sdfada011:fakecam_0.log",
+     "16_18:22:24_sdfada011:pvcam_0.log",
+     "16_18:22:24_sdfada011:teb0.log"
+    ],
+    "starve_files": [
+     "16_18:22:24_sdfada011:control.log",
+     "16_18:22:24_sdfada011:pvcam_0.log"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/2026/09, and the launch in question ran on 2026-09-16 between 18:22 and 18:24."
+   }
+  },
+  {
+   "id": "ctl-blames-meb",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "ctl-blames-meb",
+   "healthy": false,
+   "keyed_launches": [
+    "09_09:10:21"
+   ],
+   "crib": "On the second configure of the session (09:10:47) the DRP fakecam_0 went silent: it never logged receipt of configure, and was killed by signal 9 at 09:11:07.",
+   "starve_component": "fakecam_0",
+   "starve_files": [
+    "09_09:10:21_sdfmilan048:fakecam_0.log",
+    "09_09:10:21_sdfmilan048:meb0.log",
+    "09_09:10:21_sdfmilan048:teb0.log"
+   ],
+   "m1": {
+    "date": "2026-11-17",
+    "now": "2026-11-19 15:00",
+    "vague": "Tuesday morning",
+    "widest": [
+     "2026-11-17 05:00",
+     "2026-11-17 12:30"
+    ],
+    "question": "On Tuesday morning the DAQ would not configure. Why?",
+    "answers": {
+     "when": "Tuesday the 17th, in the morning, around 9.",
+     "what": "We tried to start a run and the DAQ would not configure, so we gave up on it.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "17_09:10:21",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
+    "keyed_files": [
+     "17_09:10:21_sdfmilan048:control.log",
+     "17_09:10:21_sdfmilan048:fakecam_0.log",
+     "17_09:10:21_sdfmilan048:meb0.log",
+     "17_09:10:21_sdfmilan048:shmc0.log",
+     "17_09:10:21_sdfmilan048:teb0.log"
+    ],
+    "starve_files": [
+     "17_09:10:21_sdfmilan048:fakecam_0.log",
+     "17_09:10:21_sdfmilan048:meb0.log",
+     "17_09:10:21_sdfmilan048:teb0.log"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-17 between 09:10 and 09:12."
+   }
+  },
+  {
+   "id": "big-pvcam",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "big-pvcam",
+   "healthy": false,
+   "keyed_launches": [
+    "09_15:05:16"
+   ],
+   "crib": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'.",
+   "starve_component": "pvcam_0",
+   "starve_files": [
+    "09_15:05:16_sdfmilan023:control.log",
+    "09_15:05:16_sdfmilan023:control_gui.log",
+    "09_15:05:16_sdfmilan023:pvcam_0.log"
+   ],
+   "m1": {
+    "date": "2026-11-13",
+    "now": "2026-11-16 10:00",
+    "vague": "Friday afternoon",
+    "widest": [
+     "2026-11-13 11:30",
+     "2026-11-13 19:00"
+    ],
+    "question": "The DAQ was used on Friday afternoon. An operator asks: did anything go wrong? Give a full assessment.",
+    "answers": {
+     "when": "Friday the 13th, in the afternoon, around 3 pm.",
+     "what": "I wasn't on shift then; I only know the DAQ was used.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "13_15:05:16",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
+    "keyed_files": [
+     "13_15:05:16_sdfmilan023:ami-client.log",
+     "13_15:05:16_sdfmilan023:ami-global.log",
+     "13_15:05:16_sdfmilan023:ami-manager.log",
+     "13_15:05:16_sdfmilan023:ami-node_0.log",
+     "13_15:05:16_sdfmilan023:ami-worker_0.log",
+     "13_15:05:16_sdfmilan023:bldcas.log",
+     "13_15:05:16_sdfmilan023:control.log",
+     "13_15:05:16_sdfmilan023:control_gui.log",
+     "13_15:05:16_sdfmilan023:daqstat.log",
+     "13_15:05:16_sdfmilan023:deadca.log",
+     "13_15:05:16_sdfmilan023:dtica.log",
+     "13_15:05:16_sdfmilan023:enc_trig.log",
+     "13_15:05:16_sdfmilan023:encoder_0.log",
+     "13_15:05:16_sdfmilan023:epics_0.log",
+     "13_15:05:16_sdfmilan023:fakecam_0.log",
+     "13_15:05:16_sdfmilan023:groupca.log",
+     "13_15:05:16_sdfmilan023:hpsdbuscas.log",
+     "13_15:05:16_sdfmilan023:hsdpva.log",
+     "13_15:05:16_sdfmilan023:meb0.log",
+     "13_15:05:16_sdfmilan023:partca.log",
+     "13_15:05:16_sdfmilan023:procstat.log",
+     "13_15:05:16_sdfmilan023:pvant.log",
+     "13_15:05:16_sdfmilan023:pvatable.log",
+     "13_15:05:16_sdfmilan023:pvcam_0.log",
+     "13_15:05:16_sdfmilan023:pvrtmon_0.log",
+     "13_15:05:16_sdfmilan023:shmc0.log",
+     "13_15:05:16_sdfmilan023:simenc.log",
+     "13_15:05:16_sdfmilan023:teb0.log",
+     "13_15:05:16_sdfmilan023:tprca.log",
+     "13_15:05:16_sdfmilan023:tprtrig.log",
+     "13_15:05:16_sdfmilan023:xpmpva.log"
+    ],
+    "starve_files": [
+     "13_15:05:16_sdfmilan023:control.log",
+     "13_15:05:16_sdfmilan023:control_gui.log",
+     "13_15:05:16_sdfmilan023:pvcam_0.log"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-13 between 15:05 and 15:07."
+   }
+  },
+  {
+   "id": "day-big-window",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "day",
+   "healthy": false,
+   "keyed_launches": [
+    "09_15:14:29"
+   ],
+   "crib": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'.",
+   "starve_component": "pvcam_0",
+   "starve_files": [
+    "09_15:14:29_sdfmilan082:control.log.zst",
+    "09_15:14:29_sdfmilan082:control_gui.log.zst",
+    "09_15:14:29_sdfmilan082:pvcam_0.log.zst"
+   ],
+   "m1": {
+    "date": "2026-11-09",
+    "now": "2026-11-10 09:00",
+    "vague": "yesterday afternoon",
+    "widest": [
+     "2026-11-09 11:30",
+     "2026-11-09 19:00"
+    ],
+    "question": "Yesterday afternoon the DAQ would not configure. Why?",
+    "answers": {
+     "when": "Yesterday, Monday the 9th, in the afternoon, a bit after 3 pm.",
+     "what": "We tried to start a run and the DAQ would not configure, so we gave up on it.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "09_15:14:29",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
+    "keyed_files": [
+     "09_15:14:29_sdfmilan082:ami-client.log.zst",
+     "09_15:14:29_sdfmilan082:ami-global.log.zst",
+     "09_15:14:29_sdfmilan082:ami-manager.log.zst",
+     "09_15:14:29_sdfmilan082:ami-node_0.log.zst",
+     "09_15:14:29_sdfmilan082:ami-worker_0.log.zst",
+     "09_15:14:29_sdfmilan082:bldcas.log.zst",
+     "09_15:14:29_sdfmilan082:control.log.zst",
+     "09_15:14:29_sdfmilan082:control_gui.log.zst",
+     "09_15:14:29_sdfmilan082:daqstat.log.zst",
+     "09_15:14:29_sdfmilan082:deadca.log.zst",
+     "09_15:14:29_sdfmilan082:dtica.log.zst",
+     "09_15:14:29_sdfmilan082:enc_trig.log.zst",
+     "09_15:14:29_sdfmilan082:encoder_0.log.zst",
+     "09_15:14:29_sdfmilan082:epics_0.log.zst",
+     "09_15:14:29_sdfmilan082:fakecam_0.log.zst",
+     "09_15:14:29_sdfmilan082:groupca.log.zst",
+     "09_15:14:29_sdfmilan082:hpsdbuscas.log.zst",
+     "09_15:14:29_sdfmilan082:hsdpva.log.zst",
+     "09_15:14:29_sdfmilan082:meb0.log.zst",
+     "09_15:14:29_sdfmilan082:partca.log.zst",
+     "09_15:14:29_sdfmilan082:procstat.log.zst",
+     "09_15:14:29_sdfmilan082:pvant.log.zst",
+     "09_15:14:29_sdfmilan082:pvatable.log.zst",
+     "09_15:14:29_sdfmilan082:pvcam_0.log.zst",
+     "09_15:14:29_sdfmilan082:pvrtmon_0.log.zst",
+     "09_15:14:29_sdfmilan082:shmc0.log.zst",
+     "09_15:14:29_sdfmilan082:simenc.log.zst",
+     "09_15:14:29_sdfmilan082:teb0.log.zst",
+     "09_15:14:29_sdfmilan082:tprca.log.zst",
+     "09_15:14:29_sdfmilan082:tprtrig.log.zst",
+     "09_15:14:29_sdfmilan082:xpmpva.log.zst"
+    ],
+    "starve_files": [
+     "09_15:14:29_sdfmilan082:control.log.zst",
+     "09_15:14:29_sdfmilan082:control_gui.log.zst",
+     "09_15:14:29_sdfmilan082:pvcam_0.log.zst"
+    ],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-09 between 15:14 and 15:16."
+   }
+  },
+  {
+   "id": "healthy-fakecam",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "healthy-fakecam",
+   "healthy": true,
+   "keyed_launches": [
+    "08_14:18:17"
+   ],
+   "crib": "Nothing went wrong in this launch: it ran and shut down without a fault.",
+   "m1": {
+    "date": "2026-10-04",
+    "now": "2026-10-06 10:00",
+    "vague": "Sunday afternoon",
+    "widest": [
+     "2026-10-04 11:30",
+     "2026-10-04 19:00"
+    ],
+    "question": "The DAQ was used on Sunday afternoon. An operator asks: did anything go wrong? Give a full assessment.",
+    "answers": {
+     "when": "Sunday the 4th, early in the afternoon, around 2 pm.",
+     "what": "I wasn't on shift then; I only know the DAQ was used.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "04_14:18:17",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
+    "keyed_files": [
+     "04_14:18:17_sdfmilan048:control.log",
+     "04_14:18:17_sdfmilan048:fakecam_0.log",
+     "04_14:18:17_sdfmilan048:teb0.log"
+    ],
+    "starve_files": [],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-04 between 14:18 and 14:19."
+   }
+  },
+  {
+   "id": "healthy-jungfrau",
+   "families": [
+    "A",
+    "B"
+   ],
+   "pool": "healthy-jungfrau",
+   "healthy": true,
+   "keyed_launches": [
+    "09_19:47:22"
+   ],
+   "crib": "Nothing went wrong in this launch: it ran without a fault; the double free at exit is the known upstream issue #134, not a fault of this launch.",
+   "m1": {
+    "date": "2026-10-22",
+    "now": "2026-10-23 10:00",
+    "vague": "yesterday evening",
+    "widest": [
+     "2026-10-22 16:00",
+     "2026-10-23 02:00"
+    ],
+    "question": "The DAQ was used yesterday evening. An operator asks: did anything go wrong? Give a full assessment.",
+    "answers": {
+     "when": "Yesterday, Thursday the 22nd, in the evening, around 7:45 pm.",
+     "what": "I wasn't on shift then; I only know the DAQ was used.",
+     "hutch": "MFX."
+    },
+    "keyed_stamp": "22_19:47:22",
+    "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
+    "keyed_files": [
+     "22_19:47:22_sdfmilan023:control.log",
+     "22_19:47:22_sdfmilan023:jungfrau_0.log",
+     "22_19:47:22_sdfmilan023:teb0.log"
+    ],
+    "starve_files": [],
+    "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-22 between 19:47 and 19:49."
+   }
+  }
+ ]
+}

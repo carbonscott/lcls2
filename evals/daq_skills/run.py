@@ -3,6 +3,22 @@
     python3 run.py --work WORK_DIR --arm NAME --skills SKILLS_DIR|none --out RESULTS_DIR
                    [--set core|full] [--case ID ...] [--repeats N] [--jobs N] [--model M]
                    [--preface TEXT] [--expose DIR] [--resume] [--dry-run] [--no-sandbox] [--agent-cmd CMD]
+                   [--mode m0|m1] [--control pointer|crib|starved] [--cases-v3 FILE] [--roots DIR]
+
+Modes (v3; cases_v3.json lists the cases, tree.py builds the roots under WORK/roots):
+  m0  handed (the default, as before): the catalog's context and question, the pool's logs at the
+      catalog's logs_path.
+  m1  cold start: the prompt gives the hutch (MFX), a vague time and the current date, no path and no
+      window; WORK/roots/m1/<case> is mounted read-only at /sdf (the real MFX paths); an
+      'ask-operator "<question>"' command answers from the case's fixed table and every question is
+      appended to <run dir>/operator.jsonl.
+Controls (one per arm; the arm name is still --arm):
+  pointer   m1 only: the prompt also gives the log directory and the exact window of the keyed launch
+  crib      m0 only: the case's crib (the key's mechanism) is put before the prompt
+  starved   m0 or m1: the keyed launch's root-cause files are absent (WORK/roots/m0-starved, m1-starved);
+            fault cases only
+With --mode m1 or a control and no --case, the cases are those of cases_v3.json.  --skills may be
+given twice (e.g. the skills and the hutch map) to install both sets in one skills folder.
 
 An "arm" is one configuration under test, e.g. the skills at some commit, or no skills.
 For each case and repeat this makes RESULTS_DIR/<arm>/<run id>/ (the id is opaque) with
@@ -49,10 +65,14 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import shlex
 import shutil
+import socketserver
 import subprocess
 import sys
+import tempfile
+import threading
 import time
 
 from harvest import pool_id
@@ -63,11 +83,75 @@ HIDE = ['projects', 'skills', 'plugins', 'todos', 'shell-snapshots', 'file-histo
         'feedback', 'cache', 'session-env']
 
 
-def run_id(case, rep):
-    return 'r' + hashlib.sha1(('%s|%d' % (case, rep)).encode()).hexdigest()[:8]
+def run_id(case, rep, salt=''):
+    """Opaque folder name of one run; salt (mode and control) only when not the plain m0 run."""
+    return 'r' + hashlib.sha1(('%s|%d' % (case, rep) + ('|' + salt if salt else '')).encode()).hexdigest()[:8]
 
 
-def sandbox(ws, logs, logs_path, expose=(), bind=()):
+ASK_OPERATOR = r'''#!/usr/bin/env python3
+"""ask-operator "<question>": put one question to the operator who asked; prints the answer."""
+import os, socket, sys
+q = " ".join(sys.argv[1:]).strip()
+if not q:
+    print('usage: ask-operator "<question>"')
+    sys.exit(2)
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect(os.environ.get("ASK_OPERATOR_SOCK", "/run/operator/s/sock"))
+s.sendall(q.encode("utf-8", "replace")[:4000] + b"\n")
+s.shutdown(socket.SHUT_WR)
+print(s.makefile(encoding="utf-8", errors="replace").read().strip())
+'''
+
+
+def operator_answer(table, case, question):
+    """(answer, rule id) for one question: the first rule whose pattern matches and that the case answers."""
+    q = question.lower()
+    answers = case['m1'].get('answers') or {}
+    for rule in table.get('operator_rules') or []:
+        if rule['id'] in answers and any(re.search(p, q) for p in rule['match']):
+            return answers[rule['id']], rule['id']
+    return table.get('operator_default', "I don't know more than what I told you."), None
+
+
+class Operator(object):
+    """The ask-operator service of one run: a Unix socket outside the sandbox (the table never enters it)."""
+
+    def __init__(self, table, case, log_path):
+        self.table, self.case, self.log_path, self.lock = table, case, log_path, threading.Lock()
+        self.dir = tempfile.mkdtemp(prefix='askop-', dir='/tmp' if os.path.isdir('/tmp') else None)   # short: a socket path has 108 bytes
+        os.makedirs(os.path.join(self.dir, 'bin'))
+        os.makedirs(os.path.join(self.dir, 's'))
+        self.bin = os.path.join(self.dir, 'bin')
+        self.sock = os.path.join(self.dir, 's', 'sock')
+        path = os.path.join(self.bin, 'ask-operator')
+        open(path, 'w').write(ASK_OPERATOR)
+        os.chmod(path, 0o755)
+        open(log_path, 'a').close()
+        op = self
+
+        class Handler(socketserver.StreamRequestHandler):
+            def handle(self):
+                q = self.rfile.read(4096).decode('utf-8', 'replace').strip()
+                answer, rule = operator_answer(op.table, op.case, q)
+                with op.lock, open(op.log_path, 'a') as f:
+                    f.write(json.dumps({'t': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                                        'question': q, 'rule': rule, 'answer': answer}) + '\n')
+                self.wfile.write(answer.encode('utf-8') + b'\n')
+
+        self.server = socketserver.ThreadingUnixStreamServer(self.sock, Handler)
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def bwrap(self):
+        return ['--ro-bind', self.bin, '/run/operator/bin', '--bind', os.path.dirname(self.sock), '/run/operator/s']
+
+    def close(self):
+        self.server.shutdown()
+        self.server.server_close()
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+
+def sandbox(ws, logs, logs_path, expose=(), bind=(), extra=()):
     """bwrap arguments: a root made of read-only system directories, /work, and the logs."""
     home = os.path.expanduser('~')
     a = ['bwrap', '--tmpfs', '/']
@@ -95,8 +179,10 @@ def sandbox(ws, logs, logs_path, expose=(), bind=()):
         a += ['--bind', os.path.abspath(d), os.path.abspath(d)]
     for d in expose:                                 # e.g. where the claude CLI or its node runtime is installed
         a += ['--ro-bind', os.path.abspath(d), os.path.abspath(d)]
-    a += ['--dir', os.path.dirname(logs_path), '--ro-bind', logs, logs_path, '--bind', ws, '/work', '--chdir', '/work',
-          '--setenv', 'HOME', home, '--unshare-pid', '--die-with-parent']
+    if os.path.dirname(logs_path) != '/':
+        a += ['--dir', os.path.dirname(logs_path)]
+    a += ['--ro-bind', logs, logs_path] + list(extra)    # extra: the ask-operator command and its socket
+    a += ['--bind', ws, '/work', '--chdir', '/work', '--setenv', 'HOME', home, '--unshare-pid', '--die-with-parent']
     # The CLI rewrites ~/.claude.json; give it a private copy
     return a + ['/bin/sh', '-c', 'cp /run/claude.json.src "$HOME/.claude.json"; exec "$@"', 'sh']
 
@@ -128,53 +214,100 @@ def read_stream(path):
     return (result if result is not None else last), ev_result, 'stream-json'
 
 
+def now_text(now):
+    return datetime.datetime.strptime(now, '%Y-%m-%d %H:%M').strftime('%A %Y-%m-%d, %H:%M')
+
+
+def setup(cat, case, a):
+    """(logs dir on the host, where the agent sees it, prompt, case-table row or None) for this mode and control."""
+    v3 = a.table_cases.get(case['id']) if a.table_cases else None
+    roots = a.roots or os.path.join(a.work, 'roots')
+    if a.mode == 'm1':
+        logs = os.path.abspath(os.path.join(roots, 'm1-starved' if a.control == 'starved' else 'm1', case['id']))
+        mount = '/sdf'
+        prompt = a.table['m1_context'].format(now_text=now_text(v3['m1']['now'])) + '\n\n' + v3['m1']['question']
+        if a.control == 'pointer':
+            prompt += '\n\n' + v3['m1']['pointer']
+    else:
+        logs = os.path.abspath(os.path.join(a.work, 'pools', pool_id(case['pool']), 'logs'))
+        if a.control == 'starved':
+            logs = os.path.abspath(os.path.join(roots, 'm0-starved', case['id'], 'logs'))
+        mount = cat['logs_path']
+        prompt = cat['context'] + '\n\n' + case['question']
+        if a.control == 'crib':
+            prompt = a.table['crib_preface'].format(crib=v3['crib']) + '\n\n' + prompt
+    if not os.path.isdir(logs):
+        raise SystemExit('%s: %s does not exist; build it with tree.py --work %s' % (case['id'], logs, a.work))
+    if a.preface:
+        prompt = a.preface + '\n\n' + prompt
+    if a.no_sandbox:
+        prompt = prompt.replace(mount + '/' if a.mode == 'm1' else mount, logs + '/' if a.mode == 'm1' else logs)
+    return logs, mount, prompt, v3
+
+
 def run_one(cat, case, a, rep):
-    logs = os.path.abspath(os.path.join(a.work, 'pools', pool_id(case['pool']), 'logs'))
-    pool = json.load(open(os.path.join(os.path.dirname(logs), 'pool.json')))
+    pool = json.load(open(os.path.join(a.work, 'pools', pool_id(case['pool']), 'pool.json')))
     if pool.get('leaks') and not a.allow_leaks:
         raise SystemExit('%s: harvest found leaks in its pool; fix them before running' % case['id'])
-    d = os.path.abspath(os.path.join(a.out, a.arm, run_id(case['id'], rep)))
+    salt = '' if a.mode == 'm0' and not a.control else '%s|%s' % (a.mode, a.control or '')
+    d = os.path.abspath(os.path.join(a.out, a.arm, run_id(case['id'], rep, salt)))
     meta_path = os.path.join(d, 'meta.json')
     if a.resume and os.path.exists(meta_path):
         old = json.load(open(meta_path))
         if old.get('exit') == 0 and not old.get('error') and os.path.getsize(os.path.join(d, 'final.md')) > 0:
             return old, True
+    logs, mount, prompt, v3 = setup(cat, case, a)
     if os.path.exists(d):
         shutil.rmtree(d)
     ws = os.path.join(d, 'ws')
     os.makedirs(ws)
-    if a.skills != 'none':
-        for s in sorted(os.listdir(a.skills)):
-            if os.path.exists(os.path.join(a.skills, s, 'SKILL.md')):
-                shutil.copytree(os.path.join(a.skills, s), os.path.join(ws, a.skills_path, s))
-    prompt = (a.preface + '\n\n' if a.preface else '') + cat['context'] + '\n\n' + case['question']
-    if a.no_sandbox:
-        prompt = prompt.replace(cat['logs_path'], logs)
+    for sk in a.skills_dirs:
+        for s in sorted(os.listdir(sk)):
+            if os.path.exists(os.path.join(sk, s, 'SKILL.md')):
+                shutil.copytree(os.path.join(sk, s), os.path.join(ws, a.skills_path, s))
     open(os.path.join(d, 'prompt.txt'), 'w').write(prompt)
     cmd = shlex.split(a.agent_cmd) if a.agent_cmd else AGENT + (['--model', a.model] if a.model else [])
-    meta = {'case': case['id'], 'arm': a.arm, 'repeat': rep, 'skills': 'none' if a.skills == 'none' else os.path.abspath(a.skills),
-            'model_flag': a.model, 'sandbox': not a.no_sandbox, 'preface': a.preface,
+    meta = {'case': case['id'], 'arm': a.arm, 'repeat': rep,
+            'skills': ','.join(os.path.abspath(s) for s in a.skills_dirs) or 'none',
+            'model_flag': a.model, 'sandbox': not a.no_sandbox, 'preface': a.preface, 'mode': a.mode, 'control': a.control,
+            'logs_src': logs, 'logs_mount': mount,
             'started': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}
+    if v3 and a.mode == 'm1':
+        meta.update(now=v3['m1']['now'], keyed_stamp=v3['m1'].get('keyed_stamp'), keyed_dir=v3['m1'].get('keyed_dir'))
     if a.dry_run:
         meta['dry_run'] = True
     else:
         env = dict(os.environ, GH_TOKEN='', GITHUB_TOKEN='', GH_CONFIG_DIR='/nonexistent', TZ='America/Los_Angeles')
         env.pop('DAQ_DIAG_REPORT_DIR', None)
-        full = cmd if a.no_sandbox else sandbox(ws, logs, cat['logs_path'], a.expose, a.bind) + cmd
+        op = Operator(a.table, v3, os.path.join(d, 'operator.jsonl')) if a.mode == 'm1' else None
+        extra = []
+        if op and a.no_sandbox:
+            env.update(PATH=op.bin + os.pathsep + env.get('PATH', ''), ASK_OPERATOR_SOCK=op.sock, DAQ_EVAL_SDF=logs)
+        elif op:
+            env['PATH'] = '/run/operator/bin' + os.pathsep + env.get('PATH', '')
+            env.pop('ASK_OPERATOR_SOCK', None)
+            extra = op.bwrap()
+        full = cmd if a.no_sandbox else sandbox(ws, logs, mount, a.expose, a.bind, extra) + cmd
         t0 = time.time()
-        with open(os.path.join(d, 'transcript.jsonl'), 'w') as tr, open(os.path.join(d, 'stderr.txt'), 'w') as er:
-            try:
-                p = subprocess.run(full, input=prompt, stdout=tr, stderr=er, cwd=ws, env=env,
-                                   universal_newlines=True, timeout=a.timeout)
-                meta['exit'] = p.returncode
-            except subprocess.TimeoutExpired:
-                meta['exit'] = 'timeout'
+        try:
+            with open(os.path.join(d, 'transcript.jsonl'), 'w') as tr, open(os.path.join(d, 'stderr.txt'), 'w') as er:
+                try:
+                    p = subprocess.run(full, input=prompt, stdout=tr, stderr=er, cwd=ws, env=env,
+                                       universal_newlines=True, timeout=a.timeout)
+                    meta['exit'] = p.returncode
+                except subprocess.TimeoutExpired:
+                    meta['exit'] = 'timeout'
+        finally:
+            if op:
+                op.close()
         meta['seconds'] = round(time.time() - t0, 1)
         final, res, meta['transcript'] = read_stream(os.path.join(d, 'transcript.jsonl'))
         open(os.path.join(d, 'final.md'), 'w').write(final)
         usage = res.get('usage') or {}
-        meta.update(turns=res.get('num_turns'), cost_usd=res.get('total_cost_usd'), output_tokens=usage.get('output_tokens'),
-                    model=next(iter(res.get('modelUsage') or {}), None))
+        meta.update(turns=res.get('num_turns'), cost_usd=res.get('total_cost_usd'), total_cost_usd=res.get('total_cost_usd'),
+                    output_tokens=usage.get('output_tokens'), model=next(iter(res.get('modelUsage') or {}), None))
+        if op:
+            meta['operator_questions'] = sum(1 for _ in open(os.path.join(d, 'operator.jsonl')))
         if res.get('is_error') or not final.strip():
             meta['error'] = (final or open(os.path.join(d, 'stderr.txt')).read())[:300]
     json.dump(meta, open(meta_path, 'w'), indent=1)
@@ -187,7 +320,12 @@ def main(argv=None):
     ap.add_argument('--catalog', default=os.path.join(here, 'catalog.json'))
     ap.add_argument('--work', required=True, help='harvest.py --out folder')
     ap.add_argument('--arm', required=True, help='a name for this configuration, e.g. skills-181 or none')
-    ap.add_argument('--skills', required=True, help="folder of <skill>/SKILL.md, or 'none'")
+    ap.add_argument('--skills', required=True, action='append',
+                    help="folder of <skill>/SKILL.md, or 'none'; give it twice to install two sets in one skills folder")
+    ap.add_argument('--mode', choices=['m0', 'm1'], default='m0', help='m0 handed (default), m1 cold start')
+    ap.add_argument('--control', choices=['pointer', 'crib', 'starved'], help='a control arm (see above)')
+    ap.add_argument('--cases-v3', default=os.path.join(here, 'cases_v3.json'), help='the v3 case table (default %(default)s)')
+    ap.add_argument('--roots', help='where tree.py built the roots (default WORK/roots)')
     ap.add_argument('--out', required=True)
     ap.add_argument('--set', choices=['core', 'full'], default='core', help="'full' adds the extra cases")
     ap.add_argument('--case', action='append')
@@ -212,8 +350,24 @@ def main(argv=None):
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args(argv)
     cat = json.load(open(a.catalog))
-    todo = [(c, r) for c in cat['cases'] if (a.case and c['id'] in a.case) or (not a.case and c['set'] in (('core', 'full') if a.set == 'full' else ('core',)))
-            for r in range(a.first_repeat, a.first_repeat + a.repeats)]
+    a.skills_dirs = [s for s in a.skills if s != 'none']
+    if 'none' in a.skills and a.skills_dirs:
+        ap.error("--skills none cannot be combined with a skills folder")
+    if a.control == 'pointer' and a.mode != 'm1' or a.control == 'crib' and a.mode != 'm0':
+        ap.error('--control pointer needs --mode m1; --control crib needs --mode m0')
+    a.table, a.table_cases = None, None
+    if a.mode == 'm1' or a.control:
+        a.table = json.load(open(a.cases_v3))
+        a.table_cases = dict((c['id'], c) for c in a.table['cases'])
+        unknown = [c for c in a.case or [] if c not in a.table_cases]
+        if unknown:
+            ap.error('not in %s: %s' % (a.cases_v3, ', '.join(unknown)))
+        ids = [c for c in (a.case or [c['id'] for c in a.table['cases']])
+               if a.control != 'starved' or a.table_cases[c].get('starve_files')]
+        todo = [(c, r) for c in cat['cases'] if c['id'] in ids for r in range(a.first_repeat, a.first_repeat + a.repeats)]
+    else:
+        todo = [(c, r) for c in cat['cases'] if (a.case and c['id'] in a.case) or (not a.case and c['set'] in (('core', 'full') if a.set == 'full' else ('core',)))
+                for r in range(a.first_repeat, a.first_repeat + a.repeats)]
     bad = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, a.jobs)) as ex:
         futs = {ex.submit(run_one, cat, c, a, r): (c, r) for c, r in todo}
