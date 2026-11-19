@@ -20,8 +20,9 @@ The two trees are one log stream (see the hutch-resources map, logs.the_three_tr
   previous  /sdf/home/m/mfxopr/<YYYY>/<MM>/            before that (and a few later launches)
 File names are <DD>_<HH:MM:SS>_<host>:<process>.log[.zst]; the stamp is the launch time in
 local Pacific time (the log lines inside use the same clock).  A daily rotation job on S3DF
-compresses files of the current tree to .zst after about a week, so a file is matched by its
-.log name whatever its suffix, and its sha256 is taken over the DECOMPRESSED bytes.
+compresses files of the current tree to .zst once they are 7 days old (rotation_cutoff), so a file
+is matched by its .log name whatever its suffix, and its sha256 is taken over the DECOMPRESSED bytes.
+A case's view shows each current-tree file as the rotation had left it at the case's 'now'.
 
 A launch is a stamp that has a control.log.  Files of a stamp without a control.log (a single
 process restarted by hand) are attached to the launch before them, as 'restarts'.
@@ -572,8 +573,53 @@ def cmd_candidates(args):
 # ----------------------------------------------------------------------------- cold-start runs (run.py --mode m1)
 
 VIEW_RULE = ('a launch file (a <DD>_<HH:MM:SS>_ name in a month folder of either tree) is kept iff its stamp is before now; '
-             'any other file iff its modification time is before now; kept files are hard links; folders take the newest '
-             'kept modification time below them, at most now')
+             'daq/scripts/ always (an approximation: its files keep their present contents and times); any other file iff its '
+             'modification time is before now; kept files are hard links; folders take the newest kept modification time '
+             'below them, at most now; rotation as at now: a .log[.zst] file in a month folder of the current tree is .zst iff '
+             'it was modified before rotation_cutoff(now), else plain .log (converted copies, shared under DEST/.rotation)')
+
+# The daily log rotation at MFX (daq/logs/mfx_rotate_logs.log, run at 14:00 local; the log itself is not in the fetched
+# root).  It compresses a file of the current tree (daq/logs/<YYYY>/<MM>/*.log) to <name>.zst once the file is 7 days
+# old.  Checked on the fetched root (fetched 2026-11-19 01:07 PST; last run 2026-11-18 14:00, so the mark is 2026-11-11
+# 14:00): in daq/logs/2026/11 the newest .zst was modified 2026-11-11 10:35 and the oldest plain .log 2026-11-11 17:10,
+# and one launch (11_10:34:58) is split across the mark, so the rule goes by each file's modification time.
+# The previous tree (<YYYY>/<MM>/) is plain .log and is not rotated.
+ROTATE_AT = (14, 0)
+ROTATE_AGE = dt.timedelta(days=7)
+CURRENT_MONTH = re.compile(r'^home/m/mfxopr/daq/logs/\d{4}/\d\d$')
+
+
+def rotation_cutoff(now):
+    """Naive local time: a current-tree file modified before it was .zst at `now` (the last 14:00 run at or before now,
+    less 7 days); a file modified at or after it was still plain .log."""
+    run = now.replace(hour=ROTATE_AT[0], minute=ROTATE_AT[1], second=0, microsecond=0)
+    if run > now:
+        run -= dt.timedelta(days=1)
+    return run - ROTATE_AGE
+
+
+def rotated_name(name, compressed):
+    """'<x>.log' or '<x>.log.zst' as it is named when (not) compressed."""
+    base = name[:-4] if name.endswith('.zst') else name
+    return base + '.zst' if compressed else base
+
+
+def converted(src, dst_name, cache_dir):
+    """A copy of src under cache_dir/dst_name, decompressed (dst_name without .zst) or compressed (with .zst), with
+    src's modification time; reused while its modification time matches.  Returns its path."""
+    out = os.path.join(cache_dir, dst_name)
+    st = os.stat(src)
+    if os.path.exists(out) and int(os.stat(out).st_mtime) == int(st.st_mtime):
+        return out
+    os.makedirs(cache_dir, exist_ok=True)
+    tmp = '%s.tmp%d' % (out, os.getpid())
+    with open(tmp, 'wb') as f:
+        cmd = ['zstd', '-q', '-dc', src] if src.endswith('.zst') else ['zstd', '-q', '-c', '-3', src]
+        subprocess.run(cmd, stdout=f, check=True)
+    os.chmod(tmp, 0o444)
+    os.utime(tmp, (st.st_atime, st.st_mtime))
+    os.replace(tmp, out)
+    return out
 
 
 def case_now(spec, case):
@@ -651,8 +697,11 @@ def build_view(root, case, now, dest):
     vroot = os.path.join(tmp, 'root')
     cut = dt.datetime.strptime(now, '%Y-%m-%d %H:%M')
     cut_t = _pacific_epoch(cut)
+    rot_t = _pacific_epoch(rotation_cutoff(cut))
     month = re.compile(r'home/m/mfxopr/(?:daq/logs/)?(\d{4})/(\d\d)$')
+    scripts = OPR + '/daq/scripts'
     kept = dropped = late_mtime = 0
+    rotated = {'plain': 0, 'zst': 0}
     newest_stamp = None
     for d, subs, files in os.walk(root):
         subs.sort()
@@ -668,11 +717,17 @@ def build_view(root, case, now, dest):
                 if keep:
                     newest_stamp = max(newest_stamp or when, when)
             else:
-                keep = st.st_mtime < cut_t
+                keep = st.st_mtime < cut_t or rel == scripts or rel.startswith(scripts + '/')
             if not keep:
                 dropped += 1
                 continue
-            dst = os.path.join(vroot, rel, f)
+            name = f
+            if CURRENT_MONTH.match(rel) and re.search(r'\.log(?:\.zst)?$', f):      # the rotation as it stood at now
+                name = rotated_name(f, st.st_mtime < rot_t)
+                if name != f:
+                    rotated['zst' if name.endswith('.zst') else 'plain'] += 1
+                    src = converted(src, name, os.path.join(dest, '.rotation', rel))
+            dst = os.path.join(vroot, rel, name)
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             os.link(src, dst)                   # no copies: fails on another file system
             kept += 1
@@ -683,6 +738,8 @@ def build_view(root, case, now, dest):
         newest[d] = max(ts) if ts else cut_t - 1
         os.utime(d, (newest[d], newest[d]))
     rec = {'signature': sig, 'now': now, 'kept': kept, 'dropped': dropped, 'kept_with_mtime_after_now': late_mtime,
+           'rotation_cutoff': rotation_cutoff(cut).strftime('%Y-%m-%d %H:%M'), 'rotated_to_plain': rotated['plain'],
+           'rotated_to_zst': rotated['zst'],
            'newest_launch_stamp': newest_stamp.strftime('%Y-%m-%d %H:%M:%S') if newest_stamp else None}
     with open(os.path.join(tmp, 'view.json'), 'w') as f:
         json.dump(rec, f, indent=1, sort_keys=True)
@@ -702,8 +759,10 @@ def cmd_view(args):
             continue
         now = case_now(spec, case)
         vroot, rec = build_view(args.root, case, now, args.dest)
-        print('%-20s now %s  kept %5d  dropped %5d  newest launch %s  kept files modified after now %d  %s'
-              % (case['id'], now, rec['kept'], rec['dropped'], rec['newest_launch_stamp'], rec['kept_with_mtime_after_now'], vroot))
+        print('%-20s now %s  kept %5d  dropped %5d  newest launch %s  kept files modified after now %d  rotation: %d made plain, '
+              '%d compressed (cutoff %s)  %s'
+              % (case['id'], now, rec['kept'], rec['dropped'], rec['newest_launch_stamp'], rec['kept_with_mtime_after_now'],
+                 rec['rotated_to_plain'], rec['rotated_to_zst'], rec['rotation_cutoff'], vroot))
     return 0
 
 

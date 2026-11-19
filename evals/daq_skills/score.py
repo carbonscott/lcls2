@@ -719,7 +719,27 @@ def family_b_key(keys, row):
            'last': move(orig['last']), 'files': list(m1['keyed_files'])}
     k.update(launches=[new], launch_keyed=False, fault_launch=new['prefix'], required_launches=[], pool=None, cold='B',
              tz_offset_hours=_pacific_offset(parse_dt(new['start'])))
+    _mfx_names(k)
     return k
+
+
+def _mfx_names(k):
+    """Family B's tree names the AMI chain and the monitoring MEB as MFX does (meb0_first, ...; tree.first_instance): the
+    key's mechanism statements say the same, and its alias lists take both names."""
+    from tree import first_instance
+    both = lambda xs: list(xs) + [y for y in (first_instance(x) for x in xs) if y not in xs]
+    for part in ('component', 'stage'):
+        if isinstance(k.get(part), dict):
+            for f in ('aliases', 'not'):
+                if f in k[part]:
+                    k[part][f] = both(k[part][f])
+    if isinstance(k.get('mechanism'), dict):
+        for f in ('accepted', 'near_miss'):
+            k['mechanism'][f] = [first_instance(x) for x in k['mechanism'].get(f, [])]
+        if 'summary' in k['mechanism']:
+            k['mechanism']['summary'] = first_instance(k['mechanism']['summary'])
+    for b in k.get('benign', []):
+        b['aliases'] = both(b.get('aliases', []))
 
 
 def family_c_key(keys, case):

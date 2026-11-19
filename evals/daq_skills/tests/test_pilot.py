@@ -178,9 +178,38 @@ class Views(unittest.TestCase, RealWorld):
                                         'home/m/mfxopr/2026/09/16_15:05:23_drp-srcf-cmp014:control.log',
                                         'home/m/mfxopr/2026/09/16_15:05:23_drp-srcf-cmp014:timing_1.log',
                                         'home/m/mfxopr/daq/logs/2026/09/17_09:29:03_drp-srcf-cmp014:control.log',
+                                        'home/m/mfxopr/daq/scripts/mfx.py',            # daq/scripts whatever its time
                                         'home/m/mfxopr/daq/scripts/qadc_pvlist.txt'])
         self.assertFalse(os.path.exists(os.path.join(self.root, 'home/m/mfxopr/daq/logs/2026/10')))   # no empty future month
-        self.assertEqual((self.rec['kept'], self.rec['dropped'], self.rec['newest_launch_stamp']), (5, 3, '2026-09-17 09:29:03'))
+        self.assertEqual((self.rec['kept'], self.rec['dropped'], self.rec['newest_launch_stamp']), (6, 2, '2026-09-17 09:29:03'))
+        self.assertEqual((self.rec['rotation_cutoff'], self.rec['rotated_to_plain'], self.rec['rotated_to_zst']),
+                         ('2026-09-09 14:00', 0, 0))
+
+    @unittest.skipUnless(shutil.which('zstd'), 'needs zstd')
+    def test_view_shows_the_current_tree_as_the_rotation_left_it_at_now(self):
+        cur = os.path.join(self.real_root, 'home/m/mfxopr/daq/logs/2026/09')
+        young = put(self.real_root, 'home/m/mfxopr/daq/logs/2026/09/17_09:29:03_drp-srcf-cmp014:teb0.log', ['teb line one'],
+                    '2026-09-17 09:31:00')
+        subprocess.run(['zstd', '-q', '--rm', young], check=True)            # rotated since: .zst in the root today
+        t = tree.epoch(datetime.datetime(2026, 9, 17, 9, 31))
+        os.utime(young + '.zst', (t, t))
+        old = put(self.real_root, 'home/m/mfxopr/daq/logs/2026/09/01_08:00:00_drp-srcf-cmp014:control.log', ['old line'],
+                  '2026-09-01 08:05:00')                                     # plain in the root, 16 days old at now
+        prev = put(self.real_root, 'home/m/mfxopr/2026/09/01_09:00:00_drp-srcf-cmp014:control.log', ['previous tree'],
+                   '2026-09-01 09:05:00')
+        dest = os.path.join(self.tmp, 'views2')
+        root, rec = real_mfx.build_view(self.real_root, self.case, '2026-09-17 10:00', dest)
+        rel = 'home/m/mfxopr/daq/logs/2026/09/'
+        self.assertEqual(open(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log')).read(), 'teb line one\n')
+        self.assertFalse(os.path.exists(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log.zst')))
+        self.assertEqual(int(os.stat(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log')).st_mtime), int(t))
+        z = os.path.join(root, rel, '01_08:00:00_drp-srcf-cmp014:control.log.zst')
+        self.assertEqual(subprocess.run(['zstd', '-q', '-dc', z], stdout=subprocess.PIPE).stdout, b'old line\n')
+        self.assertTrue(os.path.exists(os.path.join(root, 'home/m/mfxopr/2026/09', os.path.basename(prev))))   # old root as is
+        self.assertTrue(os.path.exists(old) and os.path.exists(young + '.zst'))   # the prepared root is untouched
+        self.assertEqual((rec['rotated_to_plain'], rec['rotated_to_zst']), (1, 1))
+        self.assertTrue(real_mfx.rotation_cutoff(datetime.datetime(2026, 11, 5, 15, 0)) == datetime.datetime(2026, 10, 29, 14, 0))
+        self.assertTrue(real_mfx.rotation_cutoff(datetime.datetime(2026, 11, 5, 10, 0)) == datetime.datetime(2026, 10, 28, 14, 0))
 
     def test_view_is_hard_links_with_its_record_outside_the_mounted_root(self):
         rel = 'home/m/mfxopr/2026/09/16_15:05:23_drp-srcf-cmp014:timing_1.log'

@@ -67,11 +67,11 @@ class Fixture(object):
                                                                           "2026-11-09 12:14:04,000 tst-control[101]: <D> {'gen': 2, 'hostname': 'sdfmilan001', 'run_num': 1}"]),
                     'tt_0': ['# HOST: sdfmilan001', '# CMDLINE: drp -P tst -D tt', '2026-11-09 12:13:30,000 tst-drp[102]: rogue.GeneralError: Verify error for block Top.TriggerDelay'],
                     'teb0': ['# HOST: sdfmilan001', '# CMDLINE: teb -P tst', '2026-11-09 12:13:00,500 tst-teb[103]: <I> teb configured for the launch']})
-        for i, (name, pre) in enumerate([('d1', '09_09:00:10'), ('d2', '09_18:30:20'), ('d3', '09_13:00:30')]):
+        for i, (name, pre) in enumerate([('d1', '09_09:00:10'), ('d2', '09_18:30:20'), ('d3', '09_13:00:30'), ('d4', '09_20:00:40')]):
             write_pool(self.work, name, pre, 'sdfada%03d' % (i + 2),
                        {'control': control_lines('2026-11-09', pre[3:8], str(200 + i), ['2026-11-09 %s:30,000 tst-control[%d]: <E> decoy %s failed' % (pre[3:8], 200 + i, name)])})
         self.cat = {'version': 2, 'logs_path': '/sdf/home/t/tstopr/daq/logs', 'context': 'Logs are under /sdf/home/t/tstopr/daq/logs.',
-                    'pools': {n: {'sessions': []} for n in ('one', 'd1', 'd2', 'd3')},
+                    'pools': {n: {'sessions': []} for n in ('one', 'd1', 'd2', 'd3', 'd4')},
                     'cases': [{'id': 'c1', 'tier': 1, 'set': 'core', 'pool': 'one', 'question': 'On 2026-11-09 around 12:13 the DAQ would not configure. Why?',
                                'key_source': 'planted', 'key': {'fault': {'component': ['tt_0'], 'transition': ['configure'], 'mechanism': ['Verify error'],
                                                                           'summary': 'tt_0 failed configure: Verify error.'}, 'sessions': ['09_12:12:52']}}]}
@@ -85,7 +85,7 @@ class Fixture(object):
                                        'widest': ['2026-11-17 11:00', '2026-11-17 14:00'], 'question': 'On Tuesday around lunch the DAQ would not configure. Why?',
                                        'answers': {'when': 'Tuesday the 17th, around 12:15.', 'hutch': 'MFX.'}}}]
         self.calendar = [('2026-09-10', 1, '18:00', '23:00', 'mfx'), ('2026-11-17', 1, '00:00', '10:00', 'mfx'),
-                         ('2026-11-17', 1, '12:00', '13:30', 'tmo')]
+                         ('2026-11-17', 1, '12:00', '13:30', 'tmo'), ('2026-11-02', 1, '00:00', '23:00', 'mfx')]
         self.roots = os.path.join(self.work, 'roots')
         self.manifest, self.failed = tree.build(self.work, self.table['cases'], self.cat, self.roots, quiet=True,
                                                 calendar=self.calendar, configs=[('mfx.py', 'one')])
@@ -144,7 +144,8 @@ class Tree(unittest.TestCase, Fixture):
     def test_partition_configs_sit_in_daq_scripts(self):
         p = os.path.join(self.roots, 'm1', 'c1', tree.SCRIPTS, 'mfx.py')
         text = open(p).read()
-        self.assertIn("id: 'control'", text)
+        self.assertIn('{ host: collect_host,          id: "control", flags: "spu"', text)
+        self.assertIn('collect_host = "drp-srcf-cmp014"', text)
         self.assertIn('control -P mfx', text)
         self.assertTrue(os.path.exists(p + '~'))
 
@@ -158,8 +159,40 @@ class Tree(unittest.TestCase, Fixture):
 
     def test_case_tree_holds_nothing_after_now(self):
         for l in self.manifest['launches']:
-            exists = os.path.exists(os.path.join(self.roots, 'm1', 'c1', l['dir'], l['files'][0]))
+            f = os.path.join(self.roots, 'm1', 'c1', l['dir'], l['files'][0])
+            exists = os.path.exists(f) or os.path.exists(f + '.zst')
             self.assertEqual(exists, l['end'] < '2026-11-18 09:40', l)
+
+    def test_current_tree_is_rotated_as_at_now(self):
+        # now 2026-11-18 09:40: the last rotation ran 2026-11-17 14:00, so files modified before 2026-11-10 14:00 are .zst
+        d = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11')
+        self.assertEqual(sorted(os.listdir(d)), ['02_20:00:40_drp-srcf-cmp014:control.log.zst',
+                                                 '17_%s_drp-srcf-cmp014:control.log' % self.d_17(),
+                                                 '17_12:12:52_drp-srcf-cmp014:control.log', '17_12:12:52_drp-srcf-cmp014:teb0.log',
+                                                 '17_12:12:52_drp-srcf-cmp033:tt_0.log'])
+        z = os.path.join(d, '02_20:00:40_drp-srcf-cmp014:control.log.zst')
+        shared = os.path.join(self.roots, 'shared', 'home/m/mfxopr/daq/logs/2026/11', '02_20:00:40_drp-srcf-cmp014:control.log')
+        self.assertEqual(tree.read_log(z), tree.read_log(shared))
+        self.assertEqual(os.stat(z).st_mtime, os.stat(shared).st_mtime)
+        self.assertEqual(self.manifest['cases']['c1']['rotation'], {'cutoff': '2026-11-10 14:00', 'made_plain': 0, 'compressed': 1})
+        old = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/2026/09')       # the old root keeps the bundled names
+        self.assertEqual([f.endswith('.zst') for f in os.listdir(old)], [False])
+
+    def d_17(self):
+        (l,) = [l for l in self.manifest['launches'] if l['start'].startswith('2026-11-17') and l['tree'] == 'mfx' and not l['case']]
+        return l['prefix'][3:]
+
+    def test_mfx_names_the_monitoring_processes_with_their_instance(self):
+        self.assertEqual(tree.first_instance("rollcall: meb/meb0 selected; 'alias': 'meb0'; -u meb0 -p 5"),
+                         "rollcall: meb/meb0_first selected; 'alias': 'meb0_first'; -u meb0_first -p 5")
+        self.assertEqual(tree.first_instance('/x/bin/ami-global -p 5 > 09_x:ami-node_0.log; ami-node_0_first mebuser0'),
+                         '/x/bin/ami-global -p 5 > 09_x:ami-node_0_first.log; ami-node_0_first mebuser0')
+        self.assertEqual(tree.rename('09_12:00:00_sdfmilan1:meb0.log.zst', '09_12:00:00', '17_12:00:00'),
+                         '17_12:00:00_drp-srcf-mon006:meb0_first.log.zst')
+        self.assertEqual(tree.rename('09_12:00:00_sdfmilan1:ami-client.log', '09_12:00:00', '17_12:00:00'),
+                         '17_12:00:00_mfx-daq:ami-client_first.log')
+        self.assertEqual(tree.rename('09_12:00:00_sdfmilan1:meb0.log', '09_12:00:00', '17_12:00:00', 'tmo'),
+                         '17_12:00:00_drp-srcf-mon004:meb0.log')
 
     def test_check_fails_when_another_launch_is_inside_the_window(self):
         root = os.path.join(self.tmp, 'bad')
@@ -544,9 +577,10 @@ class BundledV3(unittest.TestCase):
             with tarfile.open(os.path.join(EVAL, 'data', 'pools.tar.gz')) as tar:
                 tar.extractall(tmp)
             _pools, placed = tree.placements(tmp, self.table['cases'], self.cat)
-            mine = {rec['case']: rec for _ln, rec in placed if rec['case']}
+            mine = {rec['case']: (ln, rec) for ln, rec in placed if rec['case']}
             for c in self.table['cases']:
-                d = tree.derived(c, mine[c['id']])
+                ln, rec = mine[c['id']]
+                d = tree.derived(c, rec, tree.names_at(ln, rec, tree.parse(c['m1']['now'])))
                 self.assertEqual(dict((k, c['m1'][k]) for k in d), d, c['id'])
             # the plan keeps every MFX decoy out of every case's widest window
             for _ln, rec in placed:

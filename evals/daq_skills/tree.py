@@ -28,11 +28,18 @@ timing, EPICS, BLD, PVA-camera and encoder DRPs there too, the GUIs and the sim'
 monitoring MEB on drp-srcf-mon006, and each detector DRP on one of MFX's drp-srcf-cmpNNN DRP nodes (jungfrau_N and
 epix100_0 where MFX has them, any other by a fixed hash of its name).  In the text a node name takes the host of the
 process it belongs to: the file's own process ('# HOST:'), the alias of the dict it sits in, the process of a log-file
-name it is part of; a DAQ file report's 'hostname' takes the launch's first detector DRP.  No line is added, removed or
-reordered.  The keyed
+name it is part of; a DAQ file report's 'hostname' takes the launch's first detector DRP.  As at MFX, the AMI chain and
+the monitoring MEB carry the instance suffix '_first' (meb0_first, ami-node_0_first, ...; first_instance), in file
+names and text.  No line is added, removed or reordered.  The keyed
 launch of each case sits on the case's day; decoy launches from the other pools fill other days, chosen by a
 fixed seed, never inside any case's widest window.  The partition configs are rebuilt from the '# HOST' and
-'# CMDLINE' headers of one launch each, so they match processes that really ran in the sim.
+'# CMDLINE' headers of one launch each, so they match processes that really ran in the sim, in the shape of MFX's
+daq/scripts/mfx.py (double-quoted literals, control on collect_host, GUIs with no host, the AMI/MEB loop at the end).
+
+Rotation.  Each case's tree shows the current MFX tree as the daily rotation had left it at the case's 'now'
+(real_mfx.rotation_cutoff): a file modified 7 days or more before the last 14:00 run is .zst, a newer one plain .log
+(a converted copy under OUT/rotation, modification time kept).  The old root and the second hutch keep the bundled
+names (harvest compressed a pool's older launches).  The case table's keyed_files are the names in the case's tree.
 
 The build fails (exit 1) unless, for every case, the MFX roots of its tree hold no launch but the keyed one
 inside the widest reading of its vague time, and no S3DF node name is left in any file name or text of the tree.  Launches of the second hutch inside that window are counted
@@ -52,6 +59,7 @@ import shutil
 import subprocess
 import sys
 
+import real_mfx
 from harvest import pool_id
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -125,11 +133,20 @@ ROLES = [
                        r'|partca|tprca|bldcas|hpsbldcas|hpsbldcpa|hpsbldsvc|lclsbldsvc|hpsdbuscas|deadca|wave8pvs)$')),
     ('monitor', re.compile(r'(?:ami-[\w-]+|meb\d*\w*|shmc\d*)$')),
 ]
+# MFX runs its AMI chain and monitoring MEB as instance 'first' (the 'for instance ... {"first": ...}' loop at the end
+# of daq/scripts/mfx.py): their ids carry '_first' everywhere (file names, '# ID:', control's rollcall, '-u meb0_first';
+# hutch-resources mfx-resources.json monitoring_path), the programs keep their names (.../bin/ami-global).
+INSTANCE = re.compile(r'(?<!bin/)(?<![\w-])(meb\d+|ami-(?:global|manager|client|export|node_\d+|worker_\d+|prefetch_\d+))(?![\w-])')
 S3DF_NODE = re.compile(r'(?<![A-Za-z0-9])sdf[a-z]{3,}\d{3}(?:\.[a-z0-9.-]*stanford\.edu)?(?![A-Za-z0-9])')   # sdfmilan082, sdfada013
 _ALIAS_BEFORE = re.compile(r"""['"]alias['"]:\s*['"]([^'"]+)['"][^{}]*$""")
 _FILE_AFTER = re.compile(r'^:([\w.+-]+?)\.log')
 _ALIAS_AFTER = re.compile(r"""^['"],\s*\d+\],\s*\[\w+,\s*['"]([^'"]+)['"]""")          # [False, 'drp/<pid>/<host>', 5], [False, '<alias>', ...]
 _HOSTNAME_BEFORE = re.compile(r"""['"]hostname['"]:\s*['"]$""")
+
+
+def first_instance(text):
+    """MFX's names for the AMI and monitoring-MEB processes: 'meb0' -> 'meb0_first', 'ami-node_0' -> 'ami-node_0_first'."""
+    return INSTANCE.sub(r'\1_first', text)
 
 
 def role_of(proc):
@@ -160,7 +177,8 @@ def rename(fname, old_prefix, new_prefix, hutch='mfx'):
     m = re.match(r'_([^:]+):(.+)$', rest)
     if not m:
         return new_prefix + rest
-    return '%s_%s:%s' % (new_prefix, host_for(proc_of(fname), hutch), m.group(2))
+    proc = m.group(2) if hutch != 'mfx' else first_instance(m.group(2))
+    return '%s_%s:%s' % (new_prefix, host_for(proc_of(fname), hutch), proc)
 
 
 def rehost(text, proc, procs=(), hutch='mfx'):
@@ -398,16 +416,48 @@ def set_dir_mtimes(root):
 
 
 def config_text(ln):
-    """A procmgr partition config rebuilt from the '# HOST' and '# CMDLINE' headers of one launch."""
-    rows = []
+    """A procmgr partition config rebuilt from the '# HOST' and '# CMDLINE' headers of one launch, in the shape of MFX's
+    daq/scripts/mfx.py: double-quoted literals ('{ host: "drp-srcf-cmp014", id: "teb0", ... }'), control on
+    'host: collect_host', the GUIs with no host key (they run on the submitting host), and the AMI chain and the
+    monitoring MEB made by a 'for instance ...' loop at the end, with ids '<name>_{instance}' (instance "first")."""
+    rows, ami, workers = [], [], []
     for f in sorted(ln.files):
         head = read_log(os.path.join(ln.src, f)).split('\n', 40)[:40]
         h = dict((m.group(1), m.group(2).strip()) for m in (re.match(r'# (HOST|CMDLINE):\s*(.*)', l) for l in head) if m)
-        if 'CMDLINE' in h:
-            pid = f.rsplit(':', 1)[-1].replace('.log.zst', '').replace('.log', '')
-            rows.append(" { host: '%s', id: '%s', flags: 'spu', cmd: '%s' }," % (host_for(pid), pid, h['CMDLINE'].replace("'", '"')))
-    return ("platform = '5'\nhost, cores, id, flags, env, cmd, rtprio = ('host', 'cores', 'id', 'flags', 'env', 'cmd', 'rtprio')\n\n"
-            "procmgr_config = [\n%s\n]\n" % '\n'.join(rows))
+        if 'CMDLINE' not in h:
+            continue
+        pid = first_instance(proc_of(f))
+        cmd = first_instance(h['CMDLINE']).replace('"', "'")
+        w = re.match(r'(meb|ami-node_|ami-worker_|ami-prefetch_)(\d+)_first$', pid)
+        if w:
+            workers.append((w.group(1), cmd))
+        elif pid.endswith('_first'):
+            ami.append((pid[:-len('_first')], cmd))
+        elif pid == 'control':
+            rows.append(' { host: collect_host,%s id: "control", flags: "spu", cmd: "%s" },' % (' ' * 9, cmd))
+        elif role_of(pid) == 'gui':
+            rows.append(' {%s id: "%s", flags: "s", cmd: "%s" },' % (' ' * 29, pid, cmd))
+        else:
+            rows.append(' { host: "%s", id: "%s", flags: "spu", cmd: "%s" },' % (host_for(pid), pid, cmd))
+    h = HOSTS['mfx']
+    text = ('platform = "5"\n'
+            'collect_host = "%s"\n'
+            'hutch, station, user = ("mfx", 0, "mfxopr")\n'
+            'ami_worker_nodes = ["%s"]\n'
+            'ami_manager_node = "%s"\n'
+            'host, cores, id, flags, env, cmd, rtprio = ("host", "cores", "id", "flags", "env", "cmd", "rtprio")\n\n'
+            'procmgr_config = [\n%s\n]\n' % (h['collect'], h['monitor'], h['monitor'], '\n'.join(rows)))
+    if ami or workers:
+        text += '\nfor instance in ("first",):\n    procmgr_ami = [\n'
+        for name, cmd in ami:
+            where = '                        ' if role_of(name) == 'gui' else 'host:ami_manager_node, '
+            text += '      { %sid:f"%s_{instance}", flags:"s", cmd:"%s" },\n' % (where, name, cmd)
+        text += '    ]\n    for N, worker_node in enumerate(ami_worker_nodes):\n'
+        for kind, cmd in workers:
+            text += ('        procmgr_ami.append({ host:worker_node, id:f"%s{N}_{instance}", flags:"%s", cmd:"%s" })\n'
+                     % (kind, 'spu' if kind == 'meb' else 's', cmd))
+        text += '    procmgr_config.extend(procmgr_ami)\n'
+    return text
 
 
 def placements(work, cases, cat, calendar=None):
@@ -428,7 +478,7 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
     pools, placed = placements(work, cases, cat, calendar)
     configs = CONFIGS if configs is None else configs
     shared = os.path.join(out, 'shared')
-    for d in ('shared', 'm1', 'm1-starved'):       # m0-starved is only redone where it differs (a run may have it mounted)
+    for d in ('shared', 'rotation', 'm1', 'm1-starved'):   # m0-starved is only redone where it differs (a run may have it mounted)
         if os.path.exists(os.path.join(out, d)):
             shutil.rmtree(os.path.join(out, d))
     launches, stale = [], 0                        # what is on disk
@@ -437,7 +487,10 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
         for f in ln.files:
             src = os.path.join(ln.src, f)
             mt = epoch(local_of_epoch(os.stat(src).st_mtime) + rec['days'] * DAY)
-            text = rehost(shift_text(read_log(src), rec['days'], rec['tree']), proc_of(f), procs, rec['tree'])
+            text = shift_text(read_log(src), rec['days'], rec['tree'])
+            if rec['tree'] == 'mfx':
+                text = first_instance(text)
+            text = rehost(text, proc_of(f), procs, rec['tree'])
             stale += len(stale_dates(text, ln, rec['days']))
             write_log(os.path.join(shared, rec['dir'], rename(f, ln.prefix, rec['prefix'], rec['tree'])), text, mt)
         launches.append(rec)
@@ -457,6 +510,8 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
         now, (w0, w1) = parse(c['m1']['now']), window(c)
         (mine,) = [l for l in launches if l['case'] == c['id']]
         starve = set(prefix_swap(f, c, mine) for f in c.get('starve_files') or [])
+        cutoff = real_mfx.rotation_cutoff(now)
+        names = {}                                  # (dir, shared name) -> name in this case's tree (the rotation at now)
         for variant in ('m1', 'm1-starved'):
             if variant == 'm1-starved' and not starve:
                 continue
@@ -467,14 +522,22 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
                 for f in l['files']:
                     if variant == 'm1-starved' and l is mine and f in starve:
                         continue
-                    link_or_copy(os.path.join(shared, l['dir'], f), os.path.join(root, l['dir'], f))
+                    src = os.path.join(shared, l['dir'], f)
+                    name = rotated(l, f, local_of_epoch(os.stat(src).st_mtime), cutoff)
+                    names[(l['dir'], f)] = name
+                    if name != f:
+                        src = real_mfx.converted(src, name, os.path.join(out, 'rotation', l['dir']))
+                    link_or_copy(src, os.path.join(root, l['dir'], name))
             for s in statics:
                 link_or_copy(os.path.join(shared, s), os.path.join(root, s))
             set_dir_mtimes(root)
         chk = check_root(os.path.join(out, 'm1', c['id']), mine, w0, w1)
         if not chk['pass']:
             failed.append(c['id'])
-        m = derived(c, mine)
+        m = derived(c, mine, dict((f, names.get((mine['dir'], f), f)) for f in mine['files']))
+        moved = [(k, v) for k, v in names.items() if k[1] != v]
+        m['rotation'] = {'cutoff': cutoff.strftime(FMT), 'made_plain': sum(1 for _k, v in moved if not v.endswith('.zst')),
+                         'compressed': sum(1 for _k, v in moved if v.endswith('.zst'))}
         m.update(check=chk, now=c['m1']['now'], files=sum(len(fs) for _d, _s, fs in os.walk(os.path.join(out, 'm1', c['id']))),
                  bytes=du(os.path.join(out, 'm1', c['id'])), leftovers=leftovers(os.path.join(out, 'm1', c['id'])),
                  node_leftovers=node_leftovers(os.path.join(out, 'm1', c['id']), 'home'))
@@ -516,19 +579,39 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
     return manifest, failed
 
 
+def rotated(rec, f, mtime_local, cutoff):
+    """The name of a launch file in a case's tree: a file of MFX's current tree is .zst iff it was modified before the
+    rotation cutoff of the case's now (real_mfx.rotation_cutoff: the daily 14:00 run compresses files 7 days old), else
+    plain .log; the old root and the second hutch keep the bundled names."""
+    if rec['tree'] != 'mfx' or not rec['dir'].startswith(MFX_CUR + os.sep):
+        return f
+    return real_mfx.rotated_name(f, mtime_local < cutoff)
+
+
+def names_at(ln, rec, now):
+    """{name in the shared calendar: name in the tree of a case asked at `now`} for the files of a placed launch,
+    from the bundled pool's modification times (no tree needs to be built)."""
+    cutoff = real_mfx.rotation_cutoff(now)
+    return dict((rename(f, ln.prefix, rec['prefix'], rec['tree']),
+                 rotated(rec, rename(f, ln.prefix, rec['prefix'], rec['tree']),
+                         local_of_epoch(os.stat(os.path.join(ln.src, f)).st_mtime) + rec['days'] * DAY, cutoff)) for f in ln.files)
+
+
 def prefix_swap(f, case, mine):
     """A catalog file name of the keyed launch under its new day and real host."""
     return rename(f, mine['source'], mine['prefix'], mine['tree'])
 
 
-def derived(case, mine):
-    """The case-table fields that follow from the calendar: where the keyed launch sits in the m1 tree."""
+def derived(case, mine, names=None):
+    """The case-table fields that follow from the calendar: where the keyed launch sits in the m1 tree.  names: the
+    keyed launch's shared file names -> their names in the case's tree (rotation); default unchanged."""
+    names = names or {}
     start = datetime.datetime.strptime(mine['start'], '%Y-%m-%d %H:%M:%S')
     end = datetime.datetime.strptime(mine['end'], '%Y-%m-%d %H:%M:%S')
     d = '/sdf/' + mine['dir']
     hi = (end + datetime.timedelta(minutes=1)).replace(second=0)
-    return {'keyed_stamp': mine['prefix'], 'keyed_dir': d, 'keyed_files': mine['files'],
-            'starve_files': [prefix_swap(f, case, mine) for f in case.get('starve_files') or []],
+    return {'keyed_stamp': mine['prefix'], 'keyed_dir': d, 'keyed_files': [names.get(f, f) for f in mine['files']],
+            'starve_files': [names.get(f, f) for f in (prefix_swap(f, case, mine) for f in case.get('starve_files') or [])],
             'pointer': 'The DAQ logs are in %s, and the launch in question ran on %s between %s and %s.'
                        % (d, start.strftime('%Y-%m-%d'), start.strftime('%H:%M'), hi.strftime('%H:%M'))}
 
