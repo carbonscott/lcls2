@@ -48,7 +48,9 @@ Sandbox.  Each agent runs under bubblewrap (bwrap) and sees:
   system directories           read-only
   the CLI's own state          ~/.claude with its history, projects, sessions and user skills
                                hidden, so one run cannot read another or the answer keys
-and nothing else of the host: no home directory, no ssh keys, no other /tmp.  If the claude
+and, of the home folder, only ~/.claude (the login; bound read-write, with the parts above hidden when
+they exist) and ~/.local (read-only): no ~/.ssh, no other home files, no other /tmp.  A part of ~/.claude
+that does not exist yet (e.g. projects/ on a fresh machine) is not hidden, so a session can be saved there.  If the claude
 CLI lives outside ~/.local and the system directories, add its folder with --expose DIR.  The network
 stays up, because the agent has to reach its model.  GH_TOKEN and GITHUB_TOKEN are empty,
 so a GitHub write cannot succeed (grade.py still counts the attempt).  TZ is
