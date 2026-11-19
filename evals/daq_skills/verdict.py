@@ -125,15 +125,14 @@ def family_verdict(rows, family, model, loc_threshold=0.375):
     if res['G_calls_real']:
         metric = 'calls'
         g = calls['none'] - calls['pointer']
-        val = lambda a: calls[a]
-        diff = lambda a: calls['none'] - calls[a]
+        diff = lambda a: None if calls[a] is None or calls['none'] is None else calls['none'] - calls[a]   # an arm not run: no share
         r1 = mean([r.get('calls') for r in cell(m1, arm='none', repeat=1)])
         r2 = mean([r.get('calls') for r in cell(m1, arm='none', repeat=2)])
     elif res['G_loc_real']:
         metric = 'located'
         lr = lambda a, **kw: (lambda k, n: k / n if n else None)(*rate(cell(m1, arm=a, **kw), f=lambda r: r.get('located')))
         g = lr('pointer') - lr('none')
-        diff = lambda a: lr(a) - lr('none')
+        diff = lambda a: None if lr(a) is None or lr('none') is None else lr(a) - lr('none')
         r1, r2 = lr('none', repeat=1), lr('none', repeat=2)
     else:
         res.update(primary=None, verdict='NO ANSWER', why='G not real on calls or Located')
