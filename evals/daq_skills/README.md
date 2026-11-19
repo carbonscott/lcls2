@@ -19,7 +19,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 32 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 49 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -96,12 +96,13 @@ Where the answer keys come from (`key_source` in the catalog):
 | 3. Judge each report against its key | `judge.py` | yes, one small call per report |
 | 4. Grade and tabulate | `grade.py` | no |
 | 5. One HTML page of the results | `report.py` | no |
+| 3b. v3: score each report fact by fact against `keys_v3.json` (written by `make_keys_v3.py`) | `score.py` | yes, one extraction and three one-sentence judgements per report |
 
 An **arm** is one configuration under test: the skills at some commit, or `none`.
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 32 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 49 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
@@ -141,6 +142,31 @@ python3 judge.py --calibrate tests/judge_set.json    # sonnet: 30 of 32 on 2026-
 Its two misses are lenient ones: a report with the right register but the wrong stage,
 and the wrong-launch trap (which the launch check then catches). Re-run the calibration
 when the rubric or the judge model changes, and quote it with any score.
+
+### The v3 scorer: facts, not one verdict
+
+`score.py` scores each report fact by fact against `keys_v3.json`, and only one fact is judged:
+
+```bash
+python3 score.py --results $OUT --out $OUT/scored.json --summary $OUT/scored.txt   # 2 model calls at a time
+```
+
+1. **Extract.** One model call sees only the report (no key, no arm, no question) and returns a
+   record: the verdict (fault, no-fault, unsure), the launches named, each problem with its role
+   (cause, side issue, consequence, possible), component, stage and a verbatim quote of the
+   mechanism, and the report's asks to the operator. Cached by the report's sha256.
+2. **Facts by script.** Launch (only in a pool of many launches), component and stage by aliases;
+   `located`: the report names the keyed launch (stamp, file prefix, or a time inside it or within
+   2 minutes of its start).
+3. **Mechanism by judge.** A model sees the extracted quote and the key's closed lists of accepted
+   statements and near-misses, three times; the majority of accepted, near-miss or other wins.
+4. **Outcome.** A fault case passes Cause when every fact passes (also given strict: all votes
+   accepted, and lenient: any vote). A healthy case is clean, benign-defect-noted or false-alarm.
+
+`make_keys_v3.py` writes `keys_v3.json` from `catalog.json`, the bundled pools and mechanism
+statements written by hand from the logs (`--check` tells whether the file is current). The
+replaceable commands are `--extract-cmd` and `--judge-cmd`, with the same contract as
+`judge.py --judge-cmd`. `--traps tests/judge_set.json` runs the scorer on the hand-labelled reports.
 
 ## How a run is kept honest
 

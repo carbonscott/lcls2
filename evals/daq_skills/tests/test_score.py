@@ -122,7 +122,7 @@ class ScriptedFacts(unittest.TestCase):
         kc = KEYS['cases']['ctl-blames-meb']['component']
         for said in ('fakecam_0', '`fakecam_0` (DRP)', 'the DRP fakecam_0', 'drp/fakecam_0'):
             self.assertTrue(score.component_ok(kc, said), said)
-        for said in ('meb0', 'meb0 (because fakecam_0 died)', 'teb0', 'fakecam_01', ''):
+        for said in ('meb0', 'meb0 (because fakecam_0 died)', 'teb0', 'fakecam_01', '', 'fakecam_0 + meb0 + teb0'):
             self.assertFalse(score.component_ok(kc, said), said)
 
     def test_stage_aliases_are_whole_words(self):

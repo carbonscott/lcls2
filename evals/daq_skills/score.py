@@ -70,9 +70,9 @@ Return one JSON object with these keys.
   role "side-issue": a problem it reports but says did not cause the failure or did not affect data taking (benign, cosmetic, at shutdown, a separate bug, unrelated).
   role "consequence": something it says happened because of a cause.
   role "possible": a cause it offers only as a possibility ranked below its main conclusion, or raises and rejects.
-  "component": the process or device that failed, as the report names it (for example tt_0, teb0, meb0, control, pvcam_0); the name only.
+  "component": the process or device that failed, as the report names it (for example tt_0, teb0, meb0, control, pvcam_0); the name only. If the report blames several components together without saying which one failed first, give every one it blames, joined by " + ".
   "stage": the DAQ transition or state in which that component failed, as the report says (for example startup, rollcall, alloc, connect, configure, beginrun, enable, running, disable, unconfigure, disconnect, shutdown); "" if it does not say.
-  "mechanism": a verbatim quote from the report, at most 3 sentences, that states the specific error or reason. Copy it exactly. "" if the report gives none.
+  "mechanism": verbatim quotes from the report, at most 3 sentences: first the report's own statement of what failed and why (its headline or conclusion for this problem), then, if the report gives the specific error message or the reason it blames in another sentence, that sentence too. Copy exactly. "" if the report gives none.
   Leave out what the report calls normal operation.
 
 "asks_operator": questions the report asks the operator, or checks it says a person must make (short phrases); [] if none.
@@ -91,7 +91,7 @@ Give each item one verdict:
 - "accepted": the statement asserts the specific error or reason of at least one ACCEPTED entry. Other words, more detail, extra correct context and caveats about what the logs cannot show are fine; it need not repeat everything in the entry.
 - "near-miss": the statement matches a NEAR-MISS entry, or gives only the symptom or a consequence and stops short of every ACCEPTED entry.
 - "other": the statement gives a different mechanism, or none.
-A statement that mentions an accepted mechanism only to doubt or reject it is not "accepted".
+A statement that mentions an accepted mechanism only to doubt or reject it is not "accepted". A statement that gives an accepted entry's error only as a symptom, and blames the failure on what a NEAR-MISS entry names, is "near-miss". A statement that blames an accepted mechanism and adds its own further explanation of why it happened is still "accepted", unless that explanation is a NEAR-MISS entry.
 
 Reply with only a JSON object: {{"items": [{{"item": 1, "verdict": "accepted" | "near-miss" | "other", "matched": "A1 | N2 | none", "reason": "<at most 20 words>"}}]}}"""
 
@@ -367,13 +367,19 @@ def alias_hits(aliases, text):
 
 
 def component_ok(kc, said):
-    """The report blames the keyed component: an alias matches and no 'not' alias comes before it."""
-    said = norm(said)
-    pos = alias_hits(kc['aliases'], said)
-    if not pos:
+    """The report blames the keyed component: an alias matches and no 'not' alias comes before it.
+    Several components blamed together ('a + b') pass only if every one is the keyed component."""
+    parts = [p for p in norm(said).split(' + ') if p.strip()]
+    if not parts:
         return False
-    neg = alias_hits(kc.get('not', []), said)
-    return not neg or pos[0][0] < neg[0][0]
+    for part in parts:
+        pos = alias_hits(kc['aliases'], part)
+        if not pos:
+            return False
+        neg = alias_hits(kc.get('not', []), part)
+        if neg and neg[0][0] < pos[0][0]:
+            return False
+    return True
 
 
 def stage_ok(ks, said):
@@ -634,17 +640,22 @@ def summarize(rows):
 
 def fact_table(rows):
     """Per arm, how often each fact passes on fault cases (single-fault keys only)."""
-    lines = ['%-18s %5s %7s %9s %6s %9s %9s %6s %6s' % ('arm', 'fault', 'launch*', 'component', 'stage', 'mech-acc',
-                                                        'near-miss', 'other', 'split')]
+    lines = ['%-18s %5s %7s %9s %6s %9s %9s %6s %6s %9s %6s' % ('arm', 'fault', 'launch*', 'component', 'stage', 'mech-acc',
+                                                                'near-miss', 'other', 'split', 'located**', 'asks')]
     for arm in sorted({r['arm'] for r in rows}) + ['ALL']:
-        fr = [r for r in rows if (arm == 'ALL' or r['arm'] == arm) and r['outcome'].get('kind') == 'fault' and r.get('facts')]
+        ar = [r for r in rows if (arm == 'ALL' or r['arm'] == arm) and r.get('facts')]
+        fr = [r for r in ar if r['outcome'].get('kind') == 'fault']
         lk = [r for r in fr if r['facts'].get('launch') is not None]
+        lo = [r for r in ar if r['facts'].get('located') is not None]
         mv = [r['mechanism'].get('verdict') for r in fr]
-        lines.append('%-18s %5d %7s %9d %6d %9d %9d %6d %6d' % (
+        lines.append('%-18s %5d %7s %9d %6d %9d %9d %6d %6d %9s %6d' % (
             arm, len(fr), '%d/%d' % (sum(bool(r['facts']['launch']) for r in lk), len(lk)),
             sum(bool(r['facts'].get('component')) for r in fr), sum(bool(r['facts'].get('stage')) for r in fr),
-            mv.count('accepted'), mv.count('near-miss'), mv.count('other') + mv.count('none'), mv.count('split')))
-    lines.append('* launch is scored only on tier-3 cases (a pool of many launches); shown as passed/scored.')
+            mv.count('accepted'), mv.count('near-miss'), mv.count('other') + mv.count('none'), mv.count('split'),
+            '%d/%d' % (sum(bool(r['facts']['located']) for r in lo), len(lo)), sum(bool(r.get('asks_operator')) for r in ar)))
+    lines.append('Single-fault cases only (day-count is in the table above).  * launch is scored only on tier-3 cases (a pool')
+    lines.append('of many launches): passed/scored.  ** located: the report names every keyed launch, all cases that have one.')
+    lines.append('asks: reports with at least one question or check for the operator.')
     return '\n'.join(lines)
 
 
