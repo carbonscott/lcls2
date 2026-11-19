@@ -79,7 +79,20 @@ python3 evidence.py --results $OUT --work $WORK       # calls to evidence per ru
   (`jungfrau_N` and `epix100_0` where MFX has them, others by a fixed hash of the name). In the text a node
   name takes the host of its own process (the `# HOST:` header, the `alias` of the dict it is in, the
   process of a log-file name). The build fails if any S3DF node name is left; the second hutch gets TMO's
-  hosts. `cases_v3.json` holds the renamed `keyed_files` (`tree.py --write-cases`). The build fails unless each case's widest reading of its vague time holds only its
+  hosts. As at MFX, the AMI chain and the monitoring MEB carry the instance suffix `_first`
+  (`meb0_first`, `ami-node_0_first`, `ami-client_first`; program names such as `bin/ami-global` keep
+  theirs), and the partition configs in `daq/scripts` have the shape of MFX's `mfx.py` (double-quoted
+  literals, `host: collect_host` for control, GUIs with no host key, the AMI/MEB processes made by a
+  `for instance ...` loop at the end), so the map's `mfx.py` recipes read them as at MFX.
+- **Rotation as at "now"** (families B and C). MFX's daily rotation (`daq/logs/mfx_rotate_logs.log`, 14:00)
+  compresses a current-tree file to `.zst` once it is 7 days old. The rotation log is not in the fetched
+  root; the rule was read off the fetched November folder (last run 2026-11-18 14:00: newest `.zst` modified
+  2026-11-11 10:35, oldest plain `.log` 17:10, one launch split across the mark, so it goes by each file's
+  modification time; `real_mfx.rotation_cutoff`). Each case's tree shows `daq/logs/<YYYY>/<MM>/` as the
+  rotation had left it at the case's "now": files modified after the last run's 7-day mark are plain
+  `.log` (a decompressed copy, modification time kept), older ones `.zst`. The old root and the second
+  hutch keep their names. `cases_v3.json` holds the keyed files' names as the case's tree shows them
+  (`tree.py --write-cases`). The build fails unless each case's widest reading of its vague time holds only its
   keyed launch in the MFX roots. The second hutch has launches inside some windows on purpose (a
   wrong-tree trap; `manifest.json` counts them).
 - **ask-operator** (mode m1): a command on the agent's PATH. It answers from the case's fixed table
@@ -89,7 +102,13 @@ python3 evidence.py --results $OUT --work $WORK       # calls to evidence per ru
   key's mechanism, verbatim from the key, before the prompt; `starved` removes the keyed launch's
   root-cause files (its component's log and every file stating the key's mechanism).
 - **Calls to evidence** (`evidence.py`): tool calls before the first call that reads a file of the
-  keyed launch (a Read of it, or any output that shows one of its lines); never read = total + 1.
+  keyed launch; never read = total + 1. A call reads one when its output shows one of its lines (a
+  40-character line start unique to the keyed launch, anywhere in an output line: after a line number or
+  file name, in the skills helper's `daq-logs.py list` row, inside its JSON `"line"`/`"first_error"`
+  strings), or when it is a Read of a plain keyed `.log` that did not fail. A Read of a `.zst` counts only
+  if its output shows such a line. Each row also gets `calls_no_guidance` (the same count with Skill calls
+  and reads under `.claude/skills/` left out; a helper run on `/sdf` is not a guidance read), which
+  `verdict.py` prints as a descriptive sensitivity check only.
 
 ### Family C, scoring cold-start runs, `pilot.py` and `verdict.py`
 
@@ -104,9 +123,12 @@ python3 evidence.py --results $OUT --work $WORK --write
 
 - **Root view** (family C): each case mounts at `/sdf`, read-only as in family B, a view of the prepared root
   that holds only what existed at the case's "now" (its `today` at `now_time`, 10:00 Pacific, in
-  `cases_real.json`): launch files whose name stamp is before it and other files (`daq/scripts`, `.psdaq`)
-  modified before it, as hard links (no copies) under `$WORK/roots/real/<case>/root`, with `view.json`
-  beside it (outside the mount). The prompt is `cases_v3.json`'s m1 context at that time plus
+  `cases_real.json`): launch files whose name stamp is before it, other files (`.psdaq`) modified before it,
+  and all of `daq/scripts/` whatever its time (an approximation: MFX's `mfx.py` was edited on 2026-11-16, so
+  every view shows today's version and time; without it no view had a partition config, which MFX always
+  has). Files are hard links under `$WORK/roots/real/<case>/root`, except current-tree files whose rotation
+  state at "now" differs from today's (see "Rotation as at now"): those are converted copies shared under
+  `$WORK/roots/real/.rotation`. `view.json` sits beside the root (outside the mount) and counts them. The prompt is `cases_v3.json`'s m1 context at that time plus
   `cases_real.json`'s question; `ask-operator` answers from the case's `operator` table (`operator_rules`);
   `pointer` adds the target launch's folder (`/sdf/home/m/mfxopr/<YYYY>/<MM>` before the 2026-09-17 cutover)
   and window. `TZ` is America/Los_Angeles in every sandbox, and stamps, `now` and the windows are Pacific.
@@ -114,8 +136,12 @@ python3 evidence.py --results $OUT --work $WORK --write
   the pool's `keys_v3.json` key with its launch moved to the case's `keyed_stamp`; Cause = Located +
   component + stage + mechanism. Family C fault cases (`cause_scope: component+stage`): Cause = Located +
   the target launch's scripted component and stage, the mechanism is not judged. Healthy cases of both
-  families: clean, benign-defect-noted or false-alarm. Located: the report names the keyed launch (stamp,
+  families: clean, benign-defect-noted or false-alarm. Located (cold start): the launch the report
+  concludes about (the launch of its main cause; for a report that finds no fault, the session it says it
+  reviewed), from a second report-only extraction call, resolves to the keyed launch (stamp,
   file name, or a time in it or within 2 minutes of its start; UTC times use that day's PDT/PST offset).
+  Naming the keyed launch elsewhere (a list of the sessions examined) does not count by itself;
+  `facts.keyed_named_anywhere` keeps that looser reading for comparison.
 - **`pilot.py`** runs a batch of cells (family/arm/model/cases/repeats) with at most `--jobs` agents at once
   (default 2), then `score.py` and `evidence.py`, and writes `OUT/rows.json` (one row per run, the schema
   `verdict.py` reads) and `OUT/usage.json` (agent and scorer usage). It prints a per-run estimate and
@@ -126,7 +152,7 @@ P="python3 pilot.py --out $OUT --work $WORK --real-root $REAL --skills $SK --map
 $P --budget-left 100 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
 $P --budget-left 100 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
 $P --budget-left 5 --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3
-python3 verdict.py $OUT/rows.json                         # P2-P6, the rules of .goal/daq-skill-eval-v3.predictions.json
+python3 verdict.py $OUT/rows.json                         # P2-P6 and P3m, the rules of .goal/daq-skill-eval-v3.predictions.json
 ```
 
 ## Using another agent
@@ -242,10 +268,11 @@ python3 score.py --results $OUT --out $OUT/scored.json --summary $OUT/scored.txt
 1. **Extract.** One model call sees only the report (no key, no arm, no question) and returns a
    record: the verdict (fault, no-fault, unsure), the launches named, each problem with its role
    (cause, side issue, consequence, possible), component, stage and a verbatim quote of the
-   mechanism, and the report's asks to the operator. Cached by the report's sha256.
+   mechanism, and the report's asks to the operator. Cached by the report's sha256. Cold-start runs
+   get a second report-only call: the launch the report concludes about (for Located).
 2. **Facts by script.** Launch (only in a pool of many launches), component and stage by aliases;
    `located`: the report names the keyed launch (stamp, file prefix, or a time inside it or within
-   2 minutes of its start).
+   2 minutes of its start); for cold-start runs, the launch from the second call must be the keyed one.
 3. **Mechanism by judge.** A model sees the extracted quote and the key's closed lists of accepted
    statements and near-misses, three times; the majority of accepted, near-miss or other wins.
 4. **Outcome.** A fault case passes Cause when every fact passes (also given strict: all votes
@@ -317,7 +344,10 @@ The seven cases (keys from `keys`, uniqueness from `check`, both run on S3DF and
 | real-pre-cutover-ok | 2026-09-18 | Tuesday afternoon | `2026/09/15_14:37:58` (old root) | healthy | daq/logs/2026/09 exists but starts on the 17th |
 
 Every case has an `operator` table (symptom, when, what next, detectors) for the ask-operator
-command, and `operator_default` for any other question.
+command, and `operator_default` for any other question. The answers are no more specific than family
+B's (`operator_specificity`): the failing stage at most ("would not configure", "something went wrong in
+the middle of a run"), never the keyed component, a word of its name, or a detector list ("the usual MFX
+set"); a test checks both families.
 
 How the keys are made (all by script, no reading by hand):
 
@@ -343,9 +373,11 @@ How the keys are made (all by script, no reading by hand):
 Caveats: the rotation job also has a deletion step (it had deleted nothing by 2026-11-17); if
 it starts deleting, `fetch` will report the missing case files. The prepared root holds months
 after a case's "today"; a run sees only the case's root view (above), which drops them. The view
-keeps files as they are now: a launch still running at the case's "now" (the last one before it)
-keeps its later lines and modification time, a file rotated to `.zst` keeps that name, and
-`daq/scripts/mfx.py`, last modified 2026-11-16, is absent from every view.
+keeps files as they are now, except the rotation (above): a launch still running at the case's "now"
+(the last one before it) keeps its later lines and modification time, and `daq/scripts/` holds today's
+files (`mfx.py` last modified 2026-11-16, after every case's "now"). A view decompresses the current-tree
+files of the week before its "now": about 19 GB over the seven views (11 GB for real-pre-cutover-ok,
+whose week holds the large detector logs of 2026-09-17 evening); copies are shared between views.
 
 ## Known limits
 

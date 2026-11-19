@@ -857,7 +857,8 @@ def fact_table(rows):
             mv.count('accepted'), mv.count('near-miss'), mv.count('other') + mv.count('none'), mv.count('split'),
             '%d/%d' % (sum(bool(r['facts']['located']) for r in lo), len(lo)), sum(bool(r.get('asks_operator')) for r in ar)))
     lines.append('Single-fault cases only (day-count is in the table above).  * launch is scored only on tier-3 cases (a pool')
-    lines.append('of many launches): passed/scored.  ** located: the report names every keyed launch, all cases that have one.')
+    lines.append('of many launches): passed/scored.  ** located: the report names every keyed launch, all cases that have one')
+    lines.append('(cold start: the launch the report concludes about is the keyed one).')
     lines.append('asks: reports with at least one question or check for the operator.')
     return '\n'.join(lines)
 
