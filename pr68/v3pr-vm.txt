@@ -1,24 +1,23 @@
-17:29:18 UTC vm:run$ git -C $REPO log -1 --format='HEAD %H  %cI' evals/v3-pr; git -C $REPO rev-parse evals/v3-pr^{tree}; git -C $REPO ls-remote origin refs/heads/evals/v3-pr; date -u; python3 --version
-HEAD 76b81c9cc461ed113f63d43f9431129583729fcb  2026-11-19T17:28:04+00:00
-9b0c8ad6ef576d6ca0cb7c7720864fad1371de8f
-76b81c9cc461ed113f63d43f9431129583729fcb	refs/heads/evals/v3-pr
-Thu Nov 19 17:29:20 UTC 2026
+18:04:42 UTC vm:run2$ git -C $REPO log -1 --format='HEAD %H  %cI' evals/v3-pr; git -C $REPO rev-parse evals/v3-pr^{tree}; git -C $REPO ls-remote origin refs/heads/evals/v3-pr; date -u; python3 --version
+HEAD 7024a5badf2fc3683aa0c6d01436d8bc76cdb2f0  2026-11-19T18:03:58+00:00
+5c8d4d8aae2451b067a19625a528d7a7e2088c22
+7024a5badf2fc3683aa0c6d01436d8bc76cdb2f0	refs/heads/evals/v3-pr
+Thu Nov 19 18:04:44 UTC 2026
 Python 3.12.3
-17:29:20 UTC vm:run$ mkdir take && git -C $REPO archive --prefix=at-head/ evals/v3-pr evals/daq_skills | tar x -C take && cd take/at-head/evals/daq_skills && ls
+18:04:44 UTC vm:run2$ mkdir take && git -C $REPO archive --prefix=at-head/ evals/v3-pr evals/daq_skills | tar x -C take && cd take/at-head/evals/daq_skills && ls
 README.md	 cases_v3.json	data	     grade.py	 judge.py      make_keys_v3.py	real_mfx.py  report_v3.py  score.py  tree.py
 cases_real.json  catalog.json	evidence.py  harvest.py  keys_v3.json  pilot.py		report.py    run.py	   tests     verdict.py
-17:29:21 UTC vm:daq_skills$ python3 -m unittest discover -s tests 2>&1 | tail -4; echo UNIT_EXIT=${PIPESTATUS[0]}
-Ran 163 tests in 17.769s
-
+18:04:45 UTC vm:daq_skills$ python3 -m unittest discover -s tests 2>&1 | tail -4; echo UNIT_EXIT=${PIPESTATUS[0]}
+Ran 169 tests in 16.689s
 OK (skipped=2)
 1 runs, 0 with errors
 UNIT_EXIT=0
-17:29:40 UTC vm:daq_skills$ W=$PWD/../../../work && mkdir -p $W && tar xzf data/pools.tar.gz -C $W && python3 tree.py --work $W | tail -1; echo TREE_EXIT=${PIPESTATUS[0]}
+18:05:03 UTC vm:daq_skills$ W=$PWD/../../../work && mkdir -p $W && tar xzf data/pools.tar.gz -C $W && python3 tree.py --work $W | tail -1; echo TREE_EXIT=${PIPESTATUS[0]}
 8 cases, window check passed for all
 TREE_EXIT=0
-17:30:51 UTC vm:daq_skills$ SK=$REPO/../arms/skills-181/psana/psana/skills MAP=~/.claude/skills REAL=~/mfx-root    # REAL is not fetched on this VM; --dry-run only plans
-17:30:52 UTC vm:daq_skills$ P="python3 pilot.py --out $PWD/../../../pilot --work $W --real-root $REAL --skills $SK --map $MAP --dry-run"
-17:30:54 UTC vm:daq_skills$ $P --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2; echo PILOT_B_EXIT=$?
+18:06:15 UTC vm:daq_skills$ SK=$REPO/../arms/skills-181/psana/psana/skills MAP=~/.claude/skills REAL=~/mfx-root    # REAL is not fetched on this VM; --dry-run only plans
+18:06:16 UTC vm:daq_skills$ P="python3 pilot.py --out $PWD/../../../pilot --work $W --real-root $REAL --skills $SK --map $MAP --dry-run"
+18:06:17 UTC vm:daq_skills$ $P --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2; echo PILOT_B_EXIT=$?
 cells:
   B.none.default           mode m1 control -        cases 8 x 2 repeats
   B.skills.default         mode m1 control -        cases 8 x 2 repeats
@@ -29,7 +28,7 @@ cells:
 per-run estimate: model default  agent $2.000 (table) + scorer $0.060
 runs: 92 in the batch, 92 to do; projected usage $189.52; budget left not given
 PILOT_B_EXIT=0
-17:30:55 UTC vm:daq_skills$ $P --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2; echo PILOT_C_EXIT=$?
+18:06:19 UTC vm:daq_skills$ $P --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2; echo PILOT_C_EXIT=$?
 cells:
   C.none.default           mode m1 control -        cases 7 x 2 repeats
   C.skills.default         mode m1 control -        cases 7 x 2 repeats
@@ -39,16 +38,18 @@ cells:
 per-run estimate: model default  agent $2.000 (table) + scorer $0.060
 runs: 70 in the batch, 70 to do; projected usage $144.20; budget left not given
 PILOT_C_EXIT=0
-17:30:56 UTC vm:daq_skills$ test -e ../../../pilot || echo 'no pilot folder: the dry runs started no agent and wrote nothing'
+18:06:20 UTC vm:daq_skills$ test -e ../../../pilot || echo 'no pilot folder: the dry runs started no agent and wrote nothing'
 no pilot folder: the dry runs started no agent and wrote nothing
-17:30:58 UTC vm:daq_skills$ # the pilot of record (162 runs, from evals/v3-eval 4e630ea90): this head's verdict.py on its rows.json
-17:30:59 UTC vm:daq_skills$ python3 verdict.py $ROWS/rows.json > verdict-head.json && cmp verdict-head.json $ROWS/verdict.json && echo "SAME as the pilot's verdict.json"
-SAME as the pilot's verdict.json
-17:31:01 UTC vm:daq_skills$ python3 -c "import json; d=json.load(open('verdict-head.json')); print('P3m controls (B+C pooled) detect a difference:', d['P3m_controls_M1_pooled']['detects_difference']); print('P4 B:', d['P4_B']['verdict'], '-', d['P4_B']['why']); print('P5 C:', d['P5_C']['verdict'], '-', d['P5_C']['why']); print('P6 overall:', ', '.join(d['P6_overall']))"
-P3m controls (B+C pooled) detect a difference: True
+18:06:21 UTC vm:daq_skills$ # the pilot: 162 runs at evals/v3-eval 4e630ea90; v3-m1-sc = the corrected scoring (of record), v3-m1 = the first scoring
+18:06:22 UTC vm:daq_skills$ for s in v3-m1-sc v3-m1; do python3 verdict.py $RUNS/$s/rows.json > verdict-$s.json && cmp verdict-$s.json $RUNS/$s/verdict.json && echo "$s: this head's verdict.py output is the SAME as its verdict.json"; done
+v3-m1-sc: this head's verdict.py output is the SAME as its verdict.json
+v3-m1: this head's verdict.py output is the SAME as its verdict.json
+18:06:25 UTC vm:daq_skills$ python3 -c "import json; d=json.load(open('verdict-v3-m1-sc.json')); p=d['P3_controls_M1_default']; q=d['P3m_controls_M1_pooled']; print('P3 B alone: pointer', p['pointer'][:2], 'none', p['none'][:2], 'positive', p['positive_pass'], '/ starved', p['starved'][:2], 'none', p['none_on_starved_pools'][:2], 'negative', p['negative_pass']); print('P3m B+C: pointer', q['pointer_pooled'][:2], 'none', q['none_pooled'][:2], 'detects a difference', q['detects_difference']); print('P4 B:', d['P4_B']['verdict'], '-', d['P4_B']['why']); print('P5 C:', d['P5_C']['verdict'], '-', d['P5_C']['why']); print('P6 overall:', ', '.join(d['P6_overall']))"
+P3 B alone: pointer [15, 16] none [13, 16] positive True / starved [3, 12] none [9, 12] negative True
+P3m B+C: pointer [29, 30] none [25, 30] detects a difference True
 P4 B: REFUTED - skills share >= map share
 P5 C: REFUTED - skills share >= map share
 P6 overall: REFUTED, both families agree
-17:31:03 UTC vm:daq_skills$ python3 -c "import json; u=json.load(open('$ROWS/usage.json')); print('pilot runs', u['runs'], ' agent $%.2f  scorer $%.2f  total $%.2f' % (u['agent_usd'], u['scorer_usd'], u['total_usd']))"
-pilot runs 162  agent $147.95  scorer $7.73  total $155.68
-17:31:05 UTC vm:daq_skills$ 
+18:06:29 UTC vm:daq_skills$ python3 -c "import json; u=json.load(open('$RUNS/v3-m1-sc/usage.json')); print('pilot runs', u['runs'], ' agent $%.2f  scorer $%.2f  total $%.2f' % (u['agent_usd'], u['scorer_usd'], u['total_usd']))"
+pilot runs 162  agent $147.95  scorer $7.86  total $155.81
+18:06:31 UTC vm:daq_skills$

@@ -33,15 +33,15 @@
   "send": "test -e ../../../pilot || echo 'no pilot folder: the dry runs started no agent and wrote nothing'"
  },
  {
-  "send": "# the pilot of record (162 runs, from evals/v3-eval 4e630ea90): this head's verdict.py on its rows.json"
+  "send": "# the pilot: 162 runs at evals/v3-eval 4e630ea90; v3-m1-sc = the corrected scoring (of record), v3-m1 = the first scoring"
  },
  {
-  "send": "python3 verdict.py $ROWS/rows.json > verdict-head.json && cmp verdict-head.json $ROWS/verdict.json && echo \"SAME as the pilot's verdict.json\""
+  "send": "for s in v3-m1-sc v3-m1; do python3 verdict.py $RUNS/$s/rows.json > verdict-$s.json && cmp verdict-$s.json $RUNS/$s/verdict.json && echo \"$s: this head's verdict.py output is the SAME as its verdict.json\"; done"
  },
  {
-  "send": "python3 -c \"import json; d=json.load(open('verdict-head.json')); print('P3m controls (B+C pooled) detect a difference:', d['P3m_controls_M1_pooled']['detects_difference']); print('P4 B:', d['P4_B']['verdict'], '-', d['P4_B']['why']); print('P5 C:', d['P5_C']['verdict'], '-', d['P5_C']['why']); print('P6 overall:', ', '.join(d['P6_overall']))\""
+  "send": "python3 -c \"import json; d=json.load(open('verdict-v3-m1-sc.json')); p=d['P3_controls_M1_default']; q=d['P3m_controls_M1_pooled']; print('P3 B alone: pointer', p['pointer'][:2], 'none', p['none'][:2], 'positive', p['positive_pass'], '/ starved', p['starved'][:2], 'none', p['none_on_starved_pools'][:2], 'negative', p['negative_pass']); print('P3m B+C: pointer', q['pointer_pooled'][:2], 'none', q['none_pooled'][:2], 'detects a difference', q['detects_difference']); print('P4 B:', d['P4_B']['verdict'], '-', d['P4_B']['why']); print('P5 C:', d['P5_C']['verdict'], '-', d['P5_C']['why']); print('P6 overall:', ', '.join(d['P6_overall']))\""
  },
  {
-  "send": "python3 -c \"import json; u=json.load(open('$ROWS/usage.json')); print('pilot runs', u['runs'], ' agent $%.2f  scorer $%.2f  total $%.2f' % (u['agent_usd'], u['scorer_usd'], u['total_usd']))\""
+  "send": "python3 -c \"import json; u=json.load(open('$RUNS/v3-m1-sc/usage.json')); print('pilot runs', u['runs'], ' agent $%.2f  scorer $%.2f  total $%.2f' % (u['agent_usd'], u['scorer_usd'], u['total_usd']))\""
  }
 ]
