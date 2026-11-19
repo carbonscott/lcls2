@@ -19,7 +19,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 102 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 138 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -49,7 +49,7 @@ family B runs the same launches re-housed in an MFX-shaped tree (mode `m1`): the
 a vague time ("last night", "Friday afternoon") and the current date, and gives no path and no window.
 
 ```bash
-python3 tree.py --work $WORK          # builds $WORK/roots (about a minute); exit 1 if a window check fails
+python3 tree.py --work $WORK          # builds $WORK/roots (about a minute); exit 1 if a window check fails or a node name is left
 # family B, one arm per guidance set (--skills twice installs both sets in one folder)
 python3 run.py --work $WORK --mode m1 --arm m1-none   --skills none --out $OUT
 python3 run.py --work $WORK --mode m1 --arm m1-skills --skills $SK  --out $OUT
@@ -69,7 +69,17 @@ python3 evidence.py --results $OUT --work $WORK       # calls to evidence per ru
   log headers each), a month boundary, and a second hutch at `/sdf/home/t/tmoopr/daq/logs`. Each case
   sees the calendar up to its own "now". Every launch is a bundled pool's launch moved by whole days
   (names, directory, dates in the text, modification times; `tst` becomes `mfx`); no line is added
-  or removed. The build fails unless each case's widest reading of its vague time holds only its
+  or removed.
+- **Real host names.** The sim ran every process on one S3DF node (`sdfmilan082`, `sdfada013`, ...).
+  `tree.py` gives each process the host MFX runs it on (`HOSTS`, from the hutch-resources map), in the
+  file names and in the text: `control` and `teb0` on `drp-srcf-cmp014` (so the map's
+  `<restart-stamp>_drp-srcf-cmp014:control.log` works as on the real tree), the timing, EPICS, BLD,
+  PVA-camera and encoder DRPs there too, the GUIs and the sim's helper servers on `mfx-daq`, AMI and the
+  monitoring MEB on `drp-srcf-mon006`, and each detector DRP on one of MFX's `drp-srcf-cmpNNN` DRP nodes
+  (`jungfrau_N` and `epix100_0` where MFX has them, others by a fixed hash of the name). In the text a node
+  name takes the host of its own process (the `# HOST:` header, the `alias` of the dict it is in, the
+  process of a log-file name). The build fails if any S3DF node name is left; the second hutch gets TMO's
+  hosts. `cases_v3.json` holds the renamed `keyed_files` (`tree.py --write-cases`). The build fails unless each case's widest reading of its vague time holds only its
   keyed launch in the MFX roots. The second hutch has launches inside some windows on purpose (a
   wrong-tree trap; `manifest.json` counts them).
 - **ask-operator** (mode m1): a command on the agent's PATH. It answers from the case's fixed table
@@ -80,6 +90,44 @@ python3 evidence.py --results $OUT --work $WORK       # calls to evidence per ru
   root-cause files (its component's log and every file stating the key's mechanism).
 - **Calls to evidence** (`evidence.py`): tool calls before the first call that reads a file of the
   keyed launch (a Read of it, or any output that shows one of its lines); never read = total + 1.
+
+### Family C, scoring cold-start runs, `pilot.py` and `verdict.py`
+
+```bash
+REAL=$HOME/mfx-root                                   # python3 real_mfx.py fetch --dest $REAL (see "Real MFX cases")
+python3 real_mfx.py view --root $REAL --dest $WORK/roots/real     # optional: run.py builds the views itself
+python3 run.py --work $WORK --mode m1 --family C --real-root $REAL --arm C-none --skills none --out $OUT
+python3 run.py --work $WORK --mode m1 --family C --real-root $REAL --arm C-pointer --skills none --control pointer --out $OUT
+python3 score.py --results $OUT --out $OUT/scored.json    # m0 and m1 runs of every family
+python3 evidence.py --results $OUT --work $WORK --write
+```
+
+- **Root view** (family C): each case mounts at `/sdf`, read-only as in family B, a view of the prepared root
+  that holds only what existed at the case's "now" (its `today` at `now_time`, 10:00 Pacific, in
+  `cases_real.json`): launch files whose name stamp is before it and other files (`daq/scripts`, `.psdaq`)
+  modified before it, as hard links (no copies) under `$WORK/roots/real/<case>/root`, with `view.json`
+  beside it (outside the mount). The prompt is `cases_v3.json`'s m1 context at that time plus
+  `cases_real.json`'s question; `ask-operator` answers from the case's `operator` table (`operator_rules`);
+  `pointer` adds the target launch's folder (`/sdf/home/m/mfxopr/<YYYY>/<MM>` before the 2026-09-17 cutover)
+  and window. `TZ` is America/Los_Angeles in every sandbox, and stamps, `now` and the windows are Pacific.
+- **Scoring cold-start runs** (`score.py`): keys come from the case tables, never from a report. Family B:
+  the pool's `keys_v3.json` key with its launch moved to the case's `keyed_stamp`; Cause = Located +
+  component + stage + mechanism. Family C fault cases (`cause_scope: component+stage`): Cause = Located +
+  the target launch's scripted component and stage, the mechanism is not judged. Healthy cases of both
+  families: clean, benign-defect-noted or false-alarm. Located: the report names the keyed launch (stamp,
+  file name, or a time in it or within 2 minutes of its start; UTC times use that day's PDT/PST offset).
+- **`pilot.py`** runs a batch of cells (family/arm/model/cases/repeats) with at most `--jobs` agents at once
+  (default 2), then `score.py` and `evidence.py`, and writes `OUT/rows.json` (one row per run, the schema
+  `verdict.py` reads) and `OUT/usage.json` (agent and scorer usage). It prints a per-run estimate and
+  refuses to start when the projection exceeds `--budget-left`:
+
+```bash
+P="python3 pilot.py --out $OUT --work $WORK --real-root $REAL --skills $SK --map $MAP --jobs 2 --resume"
+$P --budget-left 100 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
+$P --budget-left 100 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
+$P --budget-left 5 --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3
+python3 verdict.py $OUT/rows.json                         # P2-P6, the rules of .goal/daq-skill-eval-v3.predictions.json
+```
 
 ## Using another agent
 
@@ -142,7 +190,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 102 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 138 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
@@ -294,7 +342,10 @@ How the keys are made (all by script, no reading by hand):
 
 Caveats: the rotation job also has a deletion step (it had deleted nothing by 2026-11-17); if
 it starts deleting, `fetch` will report the missing case files. The prepared root holds months
-after a case's "today", so an agent can see later launches.
+after a case's "today"; a run sees only the case's root view (above), which drops them. The view
+keeps files as they are now: a launch still running at the case's "now" (the last one before it)
+keeps its later lines and modification time, a file rotated to `.zst` keeps that name, and
+`daq/scripts/mfx.py`, last modified 2026-11-16, is absent from every view.
 
 ## Known limits
 
