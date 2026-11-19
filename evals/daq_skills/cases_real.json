@@ -605,8 +605,8 @@
     }
    ],
    "operator": {
-    "detectors": "The usual MFX set: jungfraus, epix100s, the timing and BLD, the cameras.",
-    "symptom": "The DAQ would not configure. A red error popped up about one of the cameras, I think one of the alviums.",
+    "detectors": "The usual MFX set.",
+    "symptom": "The DAQ would not configure.",
     "what next": "We restarted the DAQ a few times during the morning.",
     "when": "Around half past eight in the morning."
    },
@@ -1108,8 +1108,8 @@
     }
    ],
    "operator": {
-    "detectors": "Jungfraus, the epix100s, the qadc digitizer, timing, BLD, EPICS.",
-    "symptom": "In the middle of a run the event rate dropped to zero and the DAQ would not end the run cleanly.",
+    "detectors": "The usual MFX set.",
+    "symptom": "Something went wrong in the middle of a run, so we stopped the DAQ.",
     "what next": "We shut the DAQ down and started it again, and the next runs were fine.",
     "when": "A little after five in the evening."
    },
@@ -2157,7 +2157,7 @@
    ],
    "operator": {
     "detectors": "The usual MFX set.",
-    "symptom": "After a restart the DAQ would not allocate; an error said a timing process did not respond.",
+    "symptom": "The DAQ would not allocate.",
     "what next": "We restarted again a few minutes later and it worked.",
     "when": "Around three in the afternoon."
    },
@@ -2666,7 +2666,7 @@
     }
    ],
    "operator": {
-    "detectors": "The jungfraus, the epix100s and the rest of the usual set.",
+    "detectors": "The usual MFX set.",
     "symptom": "I'm not sure anything was wrong; someone said the DAQ looked odd, so we want it checked.",
     "what next": "We took a run and then stopped for the day.",
     "when": "Late morning into lunchtime."
@@ -3054,6 +3054,7 @@
    ]
   }
  ],
+ "operator_specificity": "Operator answers are at most as specific as family B's (cases_v3.json): a stage-level symptom (\"would not configure\", \"something went wrong in the middle of a run\"), never the keyed component, a word of its name, or a list of detectors (\"the usual MFX set\").",
  "phrase_windows": "widest readings, in local time: morning 00-13 h, afternoon 11-19 h, evening 16-24 h, night 18 h to 08 h next day, a whole day 00-24 h, a weekend Fri 18 h to Mon 08 h; a weekday name is the most recent such day before today",
  "question": "Today is {today_long}. The MFX operators asked us to look at their DAQ {phrase}. Use the DAQ logs to say whether anything went wrong then. If something did, say which component failed first, in which transition, and why, with the log lines that show it. Name the DAQ launch you looked at (its start time or its log file names).",
  "selection_rule": "From the scripted inventory of every launch 2026-09-01..2026-11-18 (549 launches, both trees; `real_mfx.py inventory` then `candidates`): a target is a launch with a component key (control's first failure names exactly one component and that component's own log has an error line of its own) or a healthy one (reached running, no failure line). A (today, phrase) is a candidate when today is 1-3 days after the target and every other launch whose span overlaps the phrase's widest window is healthy, idle (no failure line, never ran), or failed the same way (same component and stage). Wanted: about 3 fault targets, 1-2 healthy, 1 before the 2026-09-17 09:29 cutover, 1 across a month boundary. Result: only 3 fault targets have any candidate window (2 in the current tree, 1 before the cutover), so all 3 are used; the month-boundary case is the healthy last launch of October said on a November date; 2 healthy current-tree targets alone in their windows (one October weekend, the most recent in November); and a healthy pre-cutover target said on a day when the current tree already existed. Among a target's windows: fewest launches, then the phrase most unlike the other cases.",

@@ -7,6 +7,7 @@ import datetime
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -206,6 +207,26 @@ class Views(unittest.TestCase, RealWorld):
             self.assertTrue(set(c['operator']) <= set(r['id'] for r in REAL['operator_rules']), c['id'])
             w0, w1 = real_mfx.widest_window(c['today'], c['phrase'])
             self.assertLessEqual(w1, datetime.datetime.strptime(real_mfx.case_now(REAL, c), '%Y-%m-%d %H:%M'), c['id'])
+
+
+class OperatorAnswers(unittest.TestCase):
+    """Families B and C: the operator never names the keyed component (or a word of its name) or lists detectors."""
+
+    def words(self, comp):
+        return set(w for w in re.split(r'[_\d]+', comp.lower()) if len(w) > 2) | {comp.lower()}
+
+    def test_answers_are_stage_level_at_most(self):
+        keys = score.load_keys(os.path.join(EVAL, 'keys_v3.json'))
+        v3 = json.load(open(os.path.join(EVAL, 'cases_v3.json')))
+        answers = [(c['id'], c['m1']['answers'], keys['cases'][c['id']].get('component', {}).get('aliases', [])) for c in v3['cases']]
+        for c in REAL['cases']:
+            comp = real_mfx.target_launch(c)['key']['component']
+            answers.append((c['id'], c['operator'], sorted(self.words(comp['component'])) if isinstance(comp, dict) else []))
+        detectors = ('jungfrau', 'epix', 'alvium', 'camera', 'qadc', 'timing', 'bld', 'epics', 'wave8', 'pvcam', 'fakecam', 'drp')
+        for cid, table, banned in answers:
+            text = ' '.join(table.values()).lower()
+            for w in list(banned) + list(detectors):
+                self.assertIsNone(re.search(r'(?<![a-z])%s' % re.escape(w.lower()), text), (cid, w, text))
 
 
 class RunC(unittest.TestCase, World):
