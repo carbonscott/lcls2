@@ -72,7 +72,7 @@ Return one JSON object with these keys.
   role "possible": a cause it offers only as a possibility ranked below its main conclusion, or raises and rejects.
   "component": the process or device that failed, as the report names it (for example tt_0, teb0, meb0, control, pvcam_0); the name only. If the report blames several components together without saying which one failed first, give every one it blames, joined by " + ".
   "stage": the DAQ transition or state in which that component failed, as the report says (for example startup, rollcall, alloc, connect, configure, beginrun, enable, running, disable, unconfigure, disconnect, shutdown); "" if it does not say.
-  "mechanism": verbatim quotes from the report, at most 3 sentences: first the report's own statement of what failed and why (its headline or conclusion for this problem), then, if the report gives the specific error message or the reason it blames in another sentence, that sentence too. Copy exactly. "" if the report gives none.
+  "mechanism": verbatim quotes from the report, at most 4 sentences or table cells: first the report's own statement of what failed and why (its headline or conclusion for this problem); then, if it is elsewhere, the sentence that gives the specific error for it: the error message or log line the report quotes, or the exact item that failed (a register, PV, variable name, link or signal). Copy exactly. "" if the report gives none.
   Leave out what the report calls normal operation.
 
 "asks_operator": questions the report asks the operator, or checks it says a person must make (short phrases); [] if none.
