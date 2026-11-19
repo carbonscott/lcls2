@@ -22,11 +22,18 @@ Inputs.  Nothing on the page is typed by hand: every number is read from these f
                   each batch with its commit and its run folders).
   --verdict-note  a line printed beside the verdict (headline findings and the verdict section), e.g. a review
                   still pending.
+  --first-verdict, --first-m0, --correction-note
+                  after a re-score: verdict.py's output and the M0 scored JSON as first scored; 'Scorer corrections
+                  after review' lists them beside the corrected numbers for the controls and the verdict.
+  --calls-variant LABEL=PATH:FIELD, --p3m-written, --trust-note
+                  'How far to trust it': verdict.py on another calls count, P3m's writing time against the first
+                  counted run, and notes.  Its other lines are computed: the map arm's guidance calls, the bound a
+                  SUPPORTED reading needed, and how many runs would flip each control.
 
 Percentages and one-decimal numbers are rounded half up (81.25 -> 81.3), as the predictions file writes them.
 
-Sections, in order: header; headline findings; the verdict; per arm and family; the controls (P2, P3, P3m); every
-case; cases an arm missed; usage.
+Sections, in order: header; headline findings; the verdict; scorer corrections after review; how far to trust it;
+per arm and family; the controls (P2, P3, P3m); every case; cases an arm missed; usage.
 
 Privacy.  Family C reports are about real MFX logs.  Text taken from a family C report passes safe_text(): a line is
 dropped if it holds a home-directory path of anyone but mfxopr (/home/<x>/, /sdf|/cds/home/<x>/<user>/, /cds/home/opr/
@@ -40,6 +47,7 @@ Standard library only, Python 3.6+.
 
 import argparse
 import decimal
+import fractions
 import html
 import json
 import math
@@ -484,7 +492,8 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&'
          'family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">\n')
 
-SECTIONS = [('findings', 'Headline findings'), ('verdict', 'The verdict'), ('arms', 'Per arm and family'),
+SECTIONS = [('findings', 'Headline findings'), ('verdict', 'The verdict'), ('corrections', 'Scorer corrections after review'),
+            ('trust', 'How far to trust it'), ('arms', 'Per arm and family'),
             ('controls', 'The controls'), ('cases', 'Every case'), ('missed', 'Cases an arm missed'), ('usage', 'Usage')]
 
 
@@ -716,6 +725,175 @@ def verdict_section(d):
     if p7.get('expected'):
         body.append('<p class="muted">Expected before any run (P7, descriptive): %s</p>' % E(p7['expected']))
     return section('verdict', 'The verdict', ''.join(body))
+
+
+
+# --- scorer corrections after review
+
+def control_lines(c, pos_key, none_key):
+    """(label, value) pairs of one control rule's dict (verdict.py's controls() or controls_pooled())."""
+    if not c:
+        return []
+    return [('positive: %s' % pos_key.replace('_', ' '), kn(c.get(pos_key))), ('positive: %s' % none_key.replace('_', ' '), kn(c.get(none_key))),
+            ('positive control', 'PASS' if c.get('positive_pass') else 'FAIL'),
+            ('negative: starved', kn(c.get('starved'))), ('negative: none on the starved pools', kn(c.get('none_on_starved_pools'))),
+            ('negative control', 'PASS' if c.get('negative_pass') else 'FAIL')]
+
+
+def family_lines(fv):
+    if not fv:
+        return []
+    sh = fv.get('shares') or {}
+    return [('G on calls', '%s (p = %s)' % (num(fv.get('G_calls'), '%.2f'), pval(fv.get('G_calls_p')))),
+            ('G on Located', num(100 * fv['G_loc'] if fv.get('G_loc') is not None else None) + ' points'),
+            ('primary metric', str(fv.get('primary'))),
+            ('noise floor', num(fv.get('noise_floor'), '%.3g')),
+            ('shares: skills, map, both', ', '.join(num(sh.get(a), '%.2f') for a in ('skills', 'map', 'both'))),
+            ('verdict', str(fv.get('verdict')))]
+
+
+def verdict_lines(v, p2=None):
+    """[(group, label, value)] for the corrections table, from a verdict.py output (and P2 dicts from the M0 folder)."""
+    out = []
+    for tag, c in (p2 or []):
+        out += [('P2, M0 Haiku (%s)' % tag, l, x) for l, x in control_lines(c, 'crib', 'none')]
+    out += [('P3, M1, family B', l, x) for l, x in control_lines(v.get('P3_controls_M1_default'), 'pointer', 'none')]
+    out += [('P3m, M1, B and C pooled', l, x) for l, x in control_lines(v.get('P3m_controls_M1_pooled'), 'pointer_pooled', 'none_pooled')]
+    out += [('P4, family B', l, x) for l, x in family_lines(v.get('P4_B'))]
+    out += [('P5, family C', l, x) for l, x in family_lines(v.get('P5_C'))]
+    ov = v.get('P6_overall') or ['n/a', '']
+    out.append(('P6, overall', 'verdict', '%s (%s)' % (ov[0], ov[1])))
+    for f, sv in sorted((v.get('sensitivity_calls_no_guidance') or {}).items()):
+        out.append(('Sensitivity, family %s (descriptive)' % f, 'shares on calls without guidance: skills, map, both',
+                    ', '.join(num((sv.get('shares_on_calls') or {}).get(a), '%.2f') for a in ('skills', 'map', 'both'))))
+    return out
+
+
+def corrections_section(d):
+    if not d.get('first_verdict'):
+        body = ('<p class="muted">None recorded. This page shows the scores as first computed. When the runs are scored '
+                'again after review, report_v3.py --first-verdict (and --first-m0) puts the scores as first computed beside '
+                'the corrected ones here, for the controls and the verdict.</p>')
+        return section('corrections', 'Scorer corrections after review', body)
+    fp2 = [('as scored', c) for _, c in d.get('first_p2') or []]
+    first = verdict_lines(d['first_verdict'], fp2)
+    now = dict(((g, l), x) for g, l, x in verdict_lines(d['verdict'], [('as scored', d['p2'][-1][1])] if fp2 and d['p2'] else None))
+    rows, last = [], None
+    for g, l, x in first:
+        y = now.get((g, l), 'n/a')
+        if g != last:
+            rows.append('<tr class="grp"><td colspan="4">%s</td></tr>' % E(g))
+            last = g
+        rows.append([E(l), E(x), E(y), '<span class="m part">changed</span>' if x != y else ''])
+    notes = ''.join('<p class="meta">%s</p>' % E(n) for n in d.get('correction_notes') or [])
+    body = (notes + '<p class="muted">As first scored: %s. Corrected: the verdict file and scores this page is built from.</p>'
+            % E(', '.join(d.get('first_sources') or [])) + table(['Quantity', 'As first scored', 'Corrected', ''], rows, (1, 2)))
+    return section('corrections', 'Scorer corrections after review', body)
+
+
+# --- how far to trust it
+
+def flips(k_a, n_a, k_b, n_b, passes):
+    """Fewest single-run outcome changes (in either cell) that flip passes(k_a, n_a, k_b, n_b)."""
+    now = passes(k_a, n_a, k_b, n_b)
+    best = None
+    for da in range(-k_a, n_a - k_a + 1):
+        for db in range(-k_b, n_b - k_b + 1):
+            if passes(k_a + da, n_a, k_b + db, n_b) != now:
+                c = abs(da) + abs(db)
+                best = c if best is None or c < best else best
+    return best
+
+
+def pos_rule(margin):
+    m = fractions.Fraction(str(margin))
+    return lambda ka, na, kb, nb: fractions.Fraction(100 * ka, na) >= fractions.Fraction(100 * kb, nb) + m
+
+
+def neg_rule(margin):
+    m = fractions.Fraction(str(margin))
+    return lambda ks, ns, kn_, nn: fractions.Fraction(100 * ks, ns) <= fractions.Fraction(100 * kn_, nn) - m
+
+
+def control_flip_items(d):
+    v, out = d['verdict'], []
+    specs = [('P3, family B', v.get('P3_controls_M1_default'), 'pointer', 'none'),
+             ('P3m, B and C pooled', v.get('P3m_controls_M1_pooled'), 'pointer_pooled', 'none_pooled')]
+    specs += [('P2, M0 Haiku (%s)' % tag, c, 'crib', 'none') for tag, c in d['p2']]
+    for name, c, pos, none in specs:
+        if not c or not (c.get(pos) or [0, 0])[1] or not (c.get(none) or [0, 0])[1]:
+            continue
+        a, b = c[pos], c[none]
+        fp = flips(a[0], a[1], b[0], b[1], pos_rule(c['positive_margin_needed']))
+        s_, n_ = c.get('starved') or [0, 0], c.get('none_on_starved_pools') or [0, 0]
+        fn = flips(s_[0], s_[1], n_[0], n_[1], neg_rule(c['negative_margin_needed'])) if s_[1] and n_[1] else None
+        out.append('%s: positive control %s, %s from flipping; negative control %s, %s from flipping.' % (
+            name, 'PASS' if c.get('positive_pass') else 'FAIL', '%d run(s)' % fp if fp is not None else 'never',
+            'PASS' if c.get('negative_pass') else 'FAIL', '%d run(s)' % fn if fn is not None else 'never'))
+    return out
+
+
+def guidance_items(d):
+    out = []
+    v = d['verdict']
+    for fam, key in (('B', 'P4_B'), ('C', 'P5_C')):
+        runs = [r for r in m1_runs(d, fam) if r['arm'] == 'map' and r.get('calls') is not None and r.get('calls_no_guidance') is not None]
+        if not runs:
+            continue
+        g = [r['calls'] - r['calls_no_guidance'] for r in runs]
+        fv = v.get(key) or {}
+        line = ('Family %s: the map arm spent %s calls on average (%d to %d per run) on Skill calls and reads of the map '
+                'before it reached the evidence, and every one counts in calls to evidence.' % (fam, num(mean(g)), min(g), max(g)))
+        calls = fv.get('calls') or {}
+        if fv.get('primary') == 'calls' and calls.get('none') is not None and fv.get('G_calls'):
+            need = calls['none'] - fv['G_calls'] / 2.0
+            line += (' A SUPPORTED reading needed the map arm at %s calls or fewer (none %s minus half of G = %s); with its '
+                     'own reads that left %s calls for everything else, against %s for the pointer arm, which reads no '
+                     'guidance.' % (num(need, '%.2f'), num(calls['none'], '%.2f'), num(fv['G_calls'], '%.2f'),
+                                   num(need - mean(g), '%.2f'), num(calls.get('pointer'), '%.2f')))
+        out.append(line)
+    return out
+
+
+def variant_items(d):
+    out = []
+    for label, vv, missing in d.get('variants') or []:
+        fams = []
+        for fam, key in (('B', 'P4_B'), ('C', 'P5_C')):
+            fv = vv.get(key) or {}
+            sh = fv.get('shares') or {}
+            fams.append('family %s %s (G = %s calls, p = %s; shares skills %s, map %s)' % (
+                fam, fv.get('verdict'), num(fv.get('G_calls'), '%.2f'), pval(fv.get('G_calls_p')),
+                num(sh.get('skills'), '%.2f'), num(sh.get('map'), '%.2f')))
+        ov = vv.get('P6_overall') or ['n/a', '']
+        out.append('%s: with calls to evidence from that count, verdict.py reads %s; overall %s (%s).%s' % (
+            label, '; '.join(fams), ov[0], ov[1], (' %d run(s) not in the file kept their calls.' % missing) if missing else ''))
+    return out
+
+
+def timing_items(d):
+    if not d.get('p3m_written'):
+        return []
+    starts = sorted(r['meta']['started'] for r in d['pilot_runs'] if r['meta'].get('started') and r.get('model') == d['model'])
+    m0s = sorted(r['meta']['started'] for r in (d['m0']['runs'] if d['m0'] else []) if r['meta'].get('started'))
+    if not starts:
+        return []
+    import datetime
+    f = lambda t: datetime.datetime.strptime(t.rstrip('Z'), '%Y-%m-%dT%H:%M:%S')
+    gap = (f(starts[0]) - f(d['p3m_written'])).total_seconds() / 60.0
+    line = 'P3m was written at %s, %s minutes before the first counted run started (%s)' % (
+        d['p3m_written'], num(gap, '%.0f'), starts[0])
+    if m0s:
+        line += ', and after the M0 control runs (the last started at %s)' % m0s[-1]
+    return [line + '.']
+
+
+def trust_section(d):
+    items = guidance_items(d) + variant_items(d) + control_flip_items(d) + timing_items(d) + list(d.get('trust_notes') or [])
+    body = ('<p class="muted">Limits that bear on the verdict and the controls. Numbers are computed from the input files; '
+            'the lines without numbers are notes given to the generator.</p><ul class="findings">%s</ul>'
+            % ''.join('<li>%s</li>' % E(x) for x in items))
+    return section('trust', 'How far to trust it', body)
 
 
 # --- per arm
@@ -1089,7 +1267,8 @@ def usage_section(d):
 def build(d):
     return ''.join(['<title>%s</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n' % E(d['title']), FONTS,
                     '<style>%s</style>\n<div class="page">' % CSS, header(d),
-                    section('findings', 'Headline findings', findings(d)), verdict_section(d), arms_section(d),
+                    section('findings', 'Headline findings', findings(d)), verdict_section(d), corrections_section(d),
+                    trust_section(d), arms_section(d),
                     controls_section(d), cases_section(d), missed_section(d), usage_section(d), '</div>\n'])
 
 
@@ -1125,6 +1304,29 @@ def gather(a):
             model = sorted(set(r['model'] for r in runs))
             p2.append((tag, verdict_mod.controls(runs, 'A', 'm0', model[0] if len(model) == 1 else 'haiku', 'crib',
                                           vp2['positive_margin_needed'], vp2['negative_margin_needed'])))
+    first_verdict, first_p2, first_sources = None, None, []
+    if a.first_verdict:
+        first_verdict = read_json(a.first_verdict)
+        first_sources.append(os.path.join(*os.path.abspath(a.first_verdict).split(os.sep)[-2:]))
+    if a.first_m0 and m0:
+        fr = m0_runs(read_json(a.first_m0), m0['path'], m0['id'])
+        vp2f = verdict.get('P2_controls_M0_haiku') or computed.get('P2_controls_M0_haiku')
+        model = sorted(set(r['model'] for r in fr))
+        first_p2 = [('as first scored', verdict_mod.controls(fr, 'A', 'm0', model[0] if len(model) == 1 else 'haiku', 'crib',
+                                                           vp2f['positive_margin_needed'], vp2f['negative_margin_needed']))]
+        first_sources.append(os.path.join(*os.path.abspath(a.first_m0).split(os.sep)[-2:]))
+    variants = []
+    for spec in a.calls_variant:
+        label, _, rest = spec.partition('=')
+        path, _, field = rest.rpartition(':')
+        alt = dict((x['run_id'], x[field]) for x in read_json(path))
+        vrows = []
+        for r in pilot_runs:
+            r2 = dict(r)
+            if r['run_id'] in alt:
+                r2['calls'] = alt[r['run_id']]
+            vrows.append(r2)
+        variants.append((label, run_verdict(vrows, a.model), sum(1 for r in pilot_runs if r['run_id'] not in alt)))
     scorer_meta = (pilots[0]['scored_meta'] if pilots and pilots[0]['scored_meta'] else (m0 or {}).get('orig_meta', {}))
     for b in pilots:
         b['commit'] = a.commit
@@ -1134,7 +1336,8 @@ def gather(a):
     return {'preds': preds, 'v3': v3, 'real': real, 'book': book, 'batches': batches, 'pilot_runs': pilot_runs, 'm0': m0,
             'all_runs': pilot_runs + (m0['runs'] if m0 else []), 'verdict': verdict, 'verdict_given': bool(a.verdict),
             'warnings': warnings, 'p2': p2, 'model': a.model, 'commit': a.commit, 'title': a.title, 'notes': a.note,
-            'verdict_notes': a.verdict_note,
+            'verdict_notes': a.verdict_note, 'first_verdict': first_verdict, 'first_p2': first_p2, 'first_sources': first_sources,
+            'correction_notes': a.correction_note, 'variants': variants, 'trust_notes': a.trust_note, 'p3m_written': a.p3m_written,
             'scorer_meta': scorer_meta, 'nb': len(pilots)}
 
 
@@ -1153,6 +1356,14 @@ def main(argv=None):
     ap.add_argument('--title', default='DAQ Eval v3 Results')
     ap.add_argument('--note', action='append', default=[], help='a line of text under the header (repeatable)')
     ap.add_argument('--verdict-note', action='append', default=[], help='a line printed beside the verdict (repeatable)')
+    ap.add_argument('--first-verdict', help="verdict.py's output as first scored, before a re-score (fills 'Scorer corrections')")
+    ap.add_argument('--first-m0', help="the M0 folder's scored JSON as first scored (P2 in 'Scorer corrections')")
+    ap.add_argument('--correction-note', action='append', default=[], help="a line at the top of 'Scorer corrections' (repeatable)")
+    ap.add_argument('--calls-variant', action='append', default=[],
+                    help="LABEL=PATH:FIELD: another calls-to-evidence count (a JSON list of {run_id, FIELD}); verdict.py is run "
+                         "on the rows with it and the result goes under 'How far to trust it' (repeatable)")
+    ap.add_argument('--p3m-written', help="when P3m was written (UTC, YYYY-MM-DDTHH:MM:SSZ), set against the first counted run")
+    ap.add_argument('--trust-note', action='append', default=[], help="a line under 'How far to trust it' (repeatable)")
     ap.add_argument('--out', required=True, help='the HTML file to write')
     a = ap.parse_args(argv)
     d = gather(a)

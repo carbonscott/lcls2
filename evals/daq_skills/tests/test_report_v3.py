@@ -220,6 +220,32 @@ class Page(unittest.TestCase):
         self.assertIn('<b>Amendment (2026-11-19T15:45Z)</b>: Located is read on the launch the report concludes about.', html)
         self.assertIn('Descriptive only, not a verdict', html)
 
+    def test_corrections_and_trust(self):
+        html, _ = self.build()
+        self.assertIn('None recorded. This page shows the scores as first computed.', html)
+        self.assertIn('id="trust"', html)
+        self.assertIn('P3, family B: positive control PASS, ', html)
+        first = report_v3.run_verdict(self.rows, 'default')
+        first['P3_controls_M1_default']['positive_pass'] = False
+        path = os.path.join(self.tmp, 'first.json')
+        write(path, first)
+        alt = os.path.join(self.tmp, 'alt.json')
+        write(alt, [{'run_id': r['run_id'], 'alt': (r['calls'] or 0) + 1} for r in self.rows])
+        html, _ = self.build('--first-verdict', path, '--first-m0', os.path.join(self.m0, 'scored.json'),
+                             '--calls-variant', 'one more call=%s:alt' % alt, '--p3m-written', '2026-11-20T00:30:00Z',
+                             '--trust-note', 'A note.')
+        self.assertIn('<td>positive control</td><td class="n">FAIL</td><td class="n">PASS</td><td><span class="m part">changed</span>', html)
+        self.assertIn('<td>positive: none</td><td class="n">1/2 (50.0%)</td><td class="n">2/2 (100.0%)</td>', html)   # P2: the key fix
+        self.assertIn('one more call: with calls to evidence from that count, verdict.py reads family B', html)
+        self.assertIn('P3m was written at 2026-11-20T00:30:00Z, 31 minutes before the first counted run started (2026-11-20T01:01:00Z)', html)
+        self.assertIn('<li>A note.</li>', html)
+
+    def test_flips(self):
+        rule = report_v3.pos_rule(12.5)
+        self.assertEqual(report_v3.flips(14, 16, 13, 16, rule), 1)       # 87.5 vs 81.25: one more pointer pass reaches +12.5
+        self.assertEqual(report_v3.flips(28, 30, 23, 30, rule), 2)
+        self.assertEqual(report_v3.flips(3, 12, 9, 12, report_v3.neg_rule(25)), 4)
+
     def test_rounding_is_half_up(self):
         self.assertEqual(report_v3.frac(13, 16), '13/16 (81.3%)')
         self.assertEqual(report_v3.num(6.25), '6.3')
