@@ -5,14 +5,18 @@
 Definition (.goal/daq-skill-eval-v3.predictions.json, 'Calls to evidence'): the number of tool calls before
 the first read of a file belonging to the keyed launch.  Every tool call counts, reads of skill or map files
 included, and so do ask-operator calls.  A run that never reads one is censored at its total calls + 1.
+Also written, for a descriptive sensitivity check only (verdict.py): calls_no_guidance, the same count with the
+guidance calls left out (Skill tool calls, reads under the installed .claude/skills/ folder; see is_guidance).
 
 A call reads a keyed-launch file when
-  1. it is a Read of a file whose base name is one of the keyed launch's files (.zst or not), or
-  2. its output shows content of a keyed-launch file: an output line holds a fingerprint of one.  A
+  1. its output shows content of a keyed-launch file: the output holds a fingerprint of one anywhere in a
+     line (after a line number or a file name, inside the skills helper's 'daq-logs.py list' row, inside a
+     JSON string such as its '"line": "..."' or '"first_error": "..."', with JSON's \" and \\ undone).  A
      fingerprint is the first 40 characters of a line of a keyed-launch file (trimmed, 40 characters or
-     longer) that starts no line of any other file in the root the run saw.  Output lines are compared after
-     removing a line-number prefix (Read's '  12->' or '  12<TAB>', grep -n's '12:') and a file-name
-     prefix ('<path>.log:', '<path>.log-', '<path>.log:12:').
+     longer) that starts no line of any other file in the root the run saw; or
+  2. it is a Read of a keyed-launch file by its base name (.zst or not) that returned its text: a Read of a
+     plain .log counts unless the tool reported an error (too large, not found); a Read of a .zst counts
+     only through rule 1 (its output must show a fingerprint: compressed bytes do not).
 So a Bash 'grep -h configure .../*control.log' or 'zstd -dc *.zst | head' over a glob counts when what it
 printed includes a line of a keyed-launch file; a listing (ls, find, Glob, grep -l) that only shows the
 file's name does not, nor does a grep of a keyed file that printed nothing.  A line that is the same in
@@ -40,8 +44,6 @@ from harvest import pool_id
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WIDTH = 40
-PREFIX = re.compile(r'^\s*\d+(?:\t|→|:|-)'                          # cat -n / Read / grep -n
-                    r'|^\S*?\.log(?:\.zst)?(?::\d+:|-\d+-|:|-)')       # grep with file names
 _cache = {}
 
 
@@ -107,9 +109,10 @@ def fingerprints(root, keyed, cache=None):
     return mine
 
 
-def tool_calls(path):
-    """[(name, input, output text)] of a stream-json transcript, in the order the calls were made."""
-    calls, results = [], {}
+def tool_calls(path, errors=None):
+    """[(name, input, output text)] of a stream-json transcript, in the order the calls were made.  If `errors` is a
+    set, the indexes of the calls whose result the tool marked as an error are added to it."""
+    calls, results, failed = [], {}, set()
     for line in open(path, errors='replace'):
         try:
             ev = json.loads(line)
@@ -128,35 +131,64 @@ def tool_calls(path):
                 if isinstance(c, list):
                     c = '\n'.join(x.get('text', '') for x in c if isinstance(x, dict))
                 results[b.get('tool_use_id')] = c if isinstance(c, str) else ''
+                if b.get('is_error'):
+                    failed.add(b.get('tool_use_id'))
+    if errors is not None:
+        errors.update(k for k, (i, _n, _inp) in enumerate(calls) if i in failed)
     return [(name, inp, results.get(i, '')) for i, name, inp in calls]
 
 
+def _unescaped(output):
+    """The output with JSON string escapes undone, so a log line printed inside a JSON string reads as itself."""
+    if '\\' not in output:
+        return output
+    return re.sub(r'\\(["\\/tnr])', lambda m: {'t': '\t', 'n': '\n', 'r': '\r'}.get(m.group(1), m.group(1)), output)
+
+
 def shows(output, prints):
-    for line in output.splitlines():
-        s = line.strip()
-        for _ in range(3):                                   # e.g. 'file.log:12:' then the line
-            if s[:WIDTH] in prints:
-                return True
-            m = PREFIX.match(s)
-            if not m or not m.group(0):
-                break
-            s = s[m.end():].strip()
-    return False
+    """True if a fingerprint occurs anywhere in the output (any position of any line, JSON escapes undone)."""
+    if not output or not prints:
+        return False
+    texts = set([output, _unescaped(output)])
+    return any(p in t for t in texts for p in prints)
 
 
-def calls_to_evidence(transcript, keyed, prints):
-    """{'calls': value, 'censored': bool, 'total': n, 'first': {index, name, why} or None}."""
+def calls_to_evidence(transcript, keyed, prints, skip=None):
+    """{'calls': value, 'censored': bool, 'total': n, 'first': {index, name, why} or None}.
+    skip(name, input) -> True leaves a call out of the count entirely (the guidance-free sensitivity count)."""
     names = set(keyed) | set(k[:-4] for k in keyed if k.endswith('.zst'))
-    calls = tool_calls(transcript)
-    for i, (name, inp, out) in enumerate(calls):
+    errors = set()
+    calls = [(c, k in errors) for k, c in enumerate(tool_calls(transcript, errors))]
+    if skip:                                                 # never drop a call whose output shows a keyed line
+        calls = [(c, e) for c, e in calls if not skip(c[0], c[1]) or shows(c[2], prints)]
+    for i, ((name, inp, out), err) in enumerate(calls):
         why = None
-        if name == 'Read' and os.path.basename(str(inp.get('file_path', ''))) in names | set(n + '.zst' for n in names):
-            why = 'Read of ' + os.path.basename(inp['file_path'])
-        elif shows(out, prints):
-            why = 'output shows a keyed-launch line'
+        base = os.path.basename(str(inp.get('file_path', ''))) if name == 'Read' else ''
+        if shows(out, prints):
+            why = ('Read of %s, output shows a keyed-launch line' % base) if base in names | set(n + '.zst' for n in names) \
+                else 'output shows a keyed-launch line'
+        elif base in names and not base.endswith('.zst') and not err:
+            why = 'Read of ' + base
         if why:
             return {'calls': i, 'censored': False, 'total': len(calls), 'first': {'index': i + 1, 'name': name, 'why': why}}
     return {'calls': len(calls) + 1, 'censored': True, 'total': len(calls), 'first': None}
+
+
+GUIDANCE = re.compile(r'(?:^|[\s/\'"=:])\.claude/skills(?:/|\b)')
+
+
+def is_guidance(name, inp):
+    """A call that reads guidance: a Skill tool call, a Read / Grep / Glob of a path under the installed skills folder
+    (.claude/skills/ in the run's workspace), or a Bash command that names that folder and no log path (/sdf): running
+    a skill's helper on the logs is not a guidance read."""
+    if name == 'Skill':
+        return True
+    if not isinstance(inp, dict):
+        return False
+    if name == 'Bash':
+        c = str(inp.get('command') or '')
+        return bool(GUIDANCE.search(c)) and '/sdf' not in c
+    return any(isinstance(inp.get(k), str) and GUIDANCE.search(inp[k]) for k in ('file_path', 'path', 'pattern'))
 
 
 def is_real(meta, real_cases):
@@ -178,7 +210,10 @@ def evaluate(run_dir, cat_cases, table_cases, work, real_cases=None, cache=None)
     meta = json.load(open(os.path.join(run_dir, 'meta.json')))
     keyed = keyed_files(meta, cat_cases, table_cases, work, real_cases)
     root = meta.get('logs_src') or os.path.join(work, 'pools', pool_id(cat_cases[meta['case']]['pool']), 'logs')
-    r = calls_to_evidence(os.path.join(run_dir, 'transcript.jsonl'), keyed, fingerprints(root, keyed, cache))
+    prints = fingerprints(root, keyed, cache)
+    r = calls_to_evidence(os.path.join(run_dir, 'transcript.jsonl'), keyed, prints)
+    ng = calls_to_evidence(os.path.join(run_dir, 'transcript.jsonl'), keyed, prints, skip=is_guidance)
+    r.update(calls_no_guidance=ng['calls'], censored_no_guidance=ng['censored'], guidance_calls=r['total'] - ng['total'])
     r.update(case=meta['case'], arm=meta['arm'], repeat=meta['repeat'], mode=meta.get('mode', 'm0'), control=meta.get('control'),
              family='C' if is_real(meta, real_cases) else ('B' if meta.get('mode') == 'm1' else 'A'))
     return r

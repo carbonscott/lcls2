@@ -418,9 +418,81 @@ class Evidence(unittest.TestCase):
         self.assertEqual(self.calls(('Read', {'file_path': '/tmp/copy.txt'}, '     2→' + self.LINE))['calls'], 0)
 
     @unittest.skipUnless(shutil.which('zstd'), 'needs zstd')
-    def test_compressed_keyed_file_counts_by_content_and_by_name(self):
-        self.assertEqual(self.calls(('Bash', {'command': 'zstd -dc *drp_0.log.zst'}, '2026-11-17 21:13:21,000 mfx-drp[7]: <I> Collector thread started now'))['calls'], 0)
-        self.assertEqual(self.calls(('Read', {'file_path': '/sdf/' + self.KEYED[1]}, 'binary'))['calls'], 0)
+    def test_compressed_keyed_file_counts_by_content_not_by_name(self):
+        zline = '2026-11-17 21:13:21,000 mfx-drp[7]: <I> Collector thread started now'
+        self.assertEqual(self.calls(('Bash', {'command': 'zstd -dc *drp_0.log.zst'}, zline))['calls'], 0)
+        r = self.calls(('Read', {'file_path': '/sdf/' + self.KEYED[1]}, '(\xb5/\xfd binary bytes)'), ('Bash', {'command': 'ls'}, 'x'))
+        self.assertEqual((r['calls'], r['censored']), (3, True))            # a Read of compressed bytes shows nothing
+        r = self.calls(('Read', {'file_path': '/sdf/' + self.KEYED[1]}, '     1\t' + zline))
+        self.assertEqual((r['calls'], r['first']['why']), (0, 'Read of %s, output shows a keyed-launch line' % self.KEYED[1]))
+
+    def test_read_of_a_plain_keyed_file_counts_by_name_unless_the_tool_failed(self):
+        p = os.path.join(self.tmp, 't.jsonl')
+        ev = stream(('Read', {'file_path': '/sdf/' + self.KEYED[0]}, 'File content (40000 tokens) exceeds maximum allowed tokens'),
+                    ('Read', {'file_path': '/sdf/' + self.KEYED[0], 'limit': 50}, '     1\t' + self.BANNER))
+        ev = ev.replace('"tool_use_id": "u0", ', '"tool_use_id": "u0", "is_error": true, ')
+        open(p, 'w').write(ev)
+        r = evidence.calls_to_evidence(p, self.KEYED, self.prints)
+        self.assertEqual((r['calls'], r['first']['why']), (1, 'Read of ' + self.KEYED[0]))
+
+    # The skills' helper (psana-daq-logs/scripts/daq-logs.py at PR #181 73a8e125) prints a keyed line after a prefix:
+    # 'list' as '  <n>. <prefix>   <minutes>m   <n> errors  <first error line>', 'grep' as '<file>: <line>', and with
+    # --json the line inside a JSON string ('"line": "..."', '"first_error": "..."').
+    def test_fingerprint_anywhere_in_a_line_counts_as_the_helper_prints_it(self):
+        listed = ('Sessions overlapping 2026-11-17T17:00 .. 2026-11-18T07:00 (latest first):\n'
+                  '  1. 17_21:12:48   2.1m   11 errors  %s' % self.LINE)
+        self.assertEqual(self.calls(('Bash', {'command': 'python3 daq-logs.py list /sdf/x --start a --end b'}, listed))['calls'], 0)
+        self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py grep . 17_21:12:48 --first'}, '%s: %s' % (self.KEYED[0], self.LINE)))['calls'], 0)
+        js = json.dumps({'mode': 'full', 'results': [{'file': self.KEYED[0], 'line': self.LINE}]}, indent=2)
+        self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py grep . 17_21:12:48 --json'}, js))['calls'], 0)
+        rows = json.dumps([{'prefix': '17_21:12:48', 'error_count': 11, 'first_error': self.LINE}], indent=2)
+        self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py list . --json'}, rows))['calls'], 0)
+        other = json.dumps({'mode': 'full', 'results': [{'file': '16_08:00:00_node1:control.log', 'line': self.OTHER}]}, indent=2)
+        self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py grep . 16_08:00:00 --json'}, other))['calls'], 2)
+
+    def test_json_escapes_are_undone_before_matching(self):
+        quoted = 'mfx-drp[7]: <E> "drp_0" C:\\x 2026-11-17 21:13:22 stopped here'
+        open(os.path.join(self.root, self.KEYED[0]), 'a').write(quoted + '\n')
+        evidence._cache.clear()
+        self.prints = evidence.fingerprints(os.path.join(self.tmp, 'root'), self.KEYED)
+        self.assertIn(quoted[:40], self.prints)
+        js = json.dumps({'results': [{'line': quoted}]})
+        self.assertNotIn(quoted[:40], js)                                   # JSON shows \" and \\
+        self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py grep --json'}, js))['calls'], 0)
+
+    HELPER = os.environ.get('DAQ_SKILLS_HELPER', '/home/exedev/projects/daq-eval-v3/arms/skills-181/psana/psana/skills/'
+                            'psana-daq-logs/scripts/daq-logs.py')
+
+    @unittest.skipUnless(os.path.exists(HELPER) and shutil.which('zstd'), 'needs the skills checkout (DAQ_SKILLS_HELPER) and zstd')
+    def test_real_helper_output_counts(self):
+        t = tree.epoch(datetime.datetime(2026, 11, 17, 21, 15))
+        for f in self.KEYED:
+            os.utime(os.path.join(self.root, f), (t, t))
+        out = {}
+        for mode, args in (('list', ['list', self.root, '--start', '2026-11-17T17:00', '--end', '2026-11-18T07:00']),
+                           ('list-json', ['list', self.root, '--start', '2026-11-17T17:00', '--end', '2026-11-18T07:00', '--json']),
+                           ('grep-json', ['grep', self.root, '17_21:12:48', '--json'])):
+            out[mode] = subprocess.run([sys.executable, self.HELPER] + args, stdout=subprocess.PIPE, universal_newlines=True,
+                                       env=dict(os.environ, TZ='America/Los_Angeles')).stdout
+            self.assertIn('drp_0 did not respond', out[mode], mode)
+            self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py ' + mode}, out[mode]))['calls'], 0, out[mode])
+
+    def test_guidance_free_count_leaves_out_skill_reads_but_not_helper_runs_on_the_logs(self):
+        self.assertTrue(evidence.is_guidance('Skill', {'skill': 'psana-daq'}))
+        self.assertTrue(evidence.is_guidance('Read', {'file_path': '/work/.claude/skills/hutch-resources/SKILL.md'}))
+        self.assertTrue(evidence.is_guidance('Grep', {'pattern': 'mfx', 'path': '.claude/skills/hutch-resources'}))
+        self.assertTrue(evidence.is_guidance('Bash', {'command': 'cat .claude/skills/hutch-resources/resources/mfx-resources.json'}))
+        self.assertFalse(evidence.is_guidance('Bash', {'command': 'python3 /work/.claude/skills/psana-daq-logs/scripts/daq-logs.py '
+                                                                 'list /sdf/home/m/mfxopr/daq/logs/2026/11 --start a --end b'}))
+        self.assertFalse(evidence.is_guidance('Read', {'file_path': '/sdf/home/m/mfxopr/daq/logs/2026/11/' + self.KEYED[0]}))
+        p = os.path.join(self.tmp, 't.jsonl')
+        open(p, 'w').write(stream(('Skill', {'skill': 'psana-daq'}, 'loaded'),
+                                  ('Read', {'file_path': '/work/.claude/skills/psana-daq-logs/SKILL.md'}, 'x'),
+                                  ('Bash', {'command': 'ask-operator when'}, 'Tuesday'),
+                                  ('Bash', {'command': 'grep -h E *control.log'}, self.LINE)))
+        r = evidence.calls_to_evidence(p, self.KEYED, self.prints)
+        ng = evidence.calls_to_evidence(p, self.KEYED, self.prints, skip=evidence.is_guidance)
+        self.assertEqual((r['calls'], ng['calls'], ng['total']), (3, 1, 2))
 
     def test_never_read_is_censored_at_total_plus_one(self):
         r = self.calls(('Bash', {'command': 'ls'}, 'a'), ('Bash', {'command': 'cat other'}, self.OTHER), ('Bash', {'command': 'ask-operator when'}, 'Tuesday'))
