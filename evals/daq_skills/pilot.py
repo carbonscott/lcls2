@@ -20,7 +20,7 @@ Each run is one 'run.py --case C --first-repeat R --repeats 1' process; at most 
 (default 2), each one agent.  Results go to OUT/<family>.<arm>.<model>/<run id>/ (run.py's layout).  With
 --resume, runs that already finished are kept.  Then 'score.py --results OUT' and 'evidence.py --results OUT'
 (scorer calls also at most --jobs at once), and OUT/rows.json: one row per run of the batch in verdict.py's
-schema (run_id, family, case, arm, mode, model, repeat, healthy, cause_pass, healthy_outcome, located, calls,
+schema (run_id, family, case, arm, mode, model, repeat, healthy, cause_pass, healthy_outcome, located, calls, calls_no_guidance,
 cost_usd, seconds; plus exit and error).  OUT/usage.json has the batch's usage: agent and scorer separately.
 
 Budget.  Before anything starts, pilot.py prints a per-run estimate (agent and scorer) and the projection for
@@ -215,7 +215,8 @@ def rows_for(a, todo, tables, scored, evid):
                      'cause_pass': None if h or not s else bool(o.get('cause')),
                      'healthy_outcome': o.get('outcome') if h else None,
                      'located': (s.get('facts') or {}).get('located') if s else None,
-                     'calls': e.get('calls'), 'cost_usd': meta.get('cost_usd'), 'seconds': meta.get('seconds'),
+                     'calls': e.get('calls'), 'calls_no_guidance': e.get('calls_no_guidance'),
+                     'cost_usd': meta.get('cost_usd'), 'seconds': meta.get('seconds'),
                      'exit': meta.get('exit'), 'error': meta.get('error') or (s.get('error') if s else 'not scored'),
                      'scorer_usd': (s.get('usage') or {}).get('cost_usd')})
     return rows

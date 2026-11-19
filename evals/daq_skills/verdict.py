@@ -10,12 +10,18 @@ Input: a JSON list of rows, one per scored run:
 
 Rules are copied from .goal/daq-skill-eval-v3.predictions.json (written before any run):
   P2/P3 controls: positive >= none + margin (points), negative <= none - 25 points on the same fault pools.
+  P3m (iteration 2, before any default-model M1 run): families B and C pooled, mode m1, default model: positive
+        control passes iff pooled pointer >= pooled none + 12.5 points (score over every B and C case x repeat);
+        negative control passes iff B starved <= B none on the same fault pools - 25 points (P3's negative).
   P4/P5 G real: one-sided paired Wilcoxon signed-rank p < 0.05 on calls (none > pointer), pairs = (case, repeat);
         or Located gap >= 37.5% of runs.
   P6: shares on the primary metric (calls if G_calls real, else Located if G_loc real), noise floor from the bare
       cell's repeat 1 vs repeat 2; SUPPORTED if share(map) >= 0.5 and share(skills) <= 0.2; REFUTED if
       share(skills) >= share(map) or share(map) <= 0.2; else NO ANSWER. Overall: agree -> that; one NO ANSWER ->
       the other ('from one family'); SUPPORTED vs REFUTED -> NO ANSWER (families conflict).
+Also printed, descriptive only (not a pre-registered verdict): 'sensitivity_calls_no_guidance', per family the calls
+gap and arm shares on calls to evidence with the guidance calls left out (rows' calls_no_guidance, from evidence.py:
+Skill tool calls and reads under the installed skills folder dropped from the count).
 Standard library only.
 """
 import itertools
@@ -98,6 +104,46 @@ def controls(rows, family, mode, model, pos, margin_pos, margin_neg=25.0):
     return out
 
 
+def controls_pooled(rows, families, mode, model, pos, margin_pos, neg_family, margin_neg=25.0):
+    """P3m: the positive control over the pooled families, the negative control on neg_family alone (same fault pools)."""
+    pooled = [r for r in rows if r.get('family') in families and r.get('mode') == mode and r.get('model') == model]
+    bk, bn = rate(cell(pooled, arm='none'))
+    pk, pn = rate(cell(pooled, arm=pos))
+    pct = lambda k, n: 100.0 * k / n if n else float('nan')
+    neg = controls(rows, neg_family, mode, model, pos, margin_pos, margin_neg)
+    out = {'families': list(families), 'none_pooled': [bk, bn, pct(bk, bn)], pos + '_pooled': [pk, pn, pct(pk, pn)],
+           'per_family': {f: {'none': list(rate(cell(pooled, family=f, arm='none'))), pos: list(rate(cell(pooled, family=f, arm=pos)))}
+                          for f in families},
+           'negative_family': neg_family, 'none_on_starved_pools': neg['none_on_starved_pools'], 'starved': neg['starved'],
+           'positive_margin_needed': margin_pos, 'negative_margin_needed': margin_neg}
+    out['positive_pass'] = bool(pn and bn and pct(pk, pn) >= pct(bk, bn) + margin_pos)
+    out['negative_pass'] = neg['negative_pass']
+    out['detects_difference'] = out['positive_pass'] and out['negative_pass']
+    return out
+
+
+def calls_sensitivity(rows, family, model, key='calls_no_guidance'):
+    """Descriptive: P4/P5's calls gap and the arms' shares of it, on another calls column (default: guidance left out)."""
+    m1 = cell(rows, family=family, mode='m1', model=model)
+    by = defaultdict(dict)
+    for r in m1:
+        by[(r['case'], r['repeat'])][r['arm']] = r
+    d = [v['none'][key] - v['pointer'][key] for _, v in sorted(by.items()) if 'none' in v and 'pointer' in v
+         and v['none'].get(key) is not None and v['pointer'].get(key) is not None]
+    p, nz = wilcoxon_greater(d)
+    calls = {a: mean([r.get(key) for r in cell(m1, arm=a)]) for a in ('none', 'skills', 'map', 'both', 'pointer')}
+    g = None if calls['none'] is None or calls['pointer'] is None else calls['none'] - calls['pointer']
+    floor = abs((mean([r.get(key) for r in cell(m1, arm='none', repeat=1)]) or 0) -
+                (mean([r.get(key) for r in cell(m1, arm='none', repeat=2)]) or 0))
+    shares = {}
+    for a in ('skills', 'map', 'both'):
+        dv = None if calls[a] is None or calls['none'] is None else calls['none'] - calls[a]
+        shares[a] = (dv / g) if (dv is not None and g and abs(dv) > floor) else 0.0
+    return {'family': family, 'column': key, 'pairs': len(d), 'G_calls': mean(d), 'G_calls_p': p, 'G_calls_nonzero_pairs': nz,
+            'G_calls_real_by_P4_rule': p < 0.05, 'calls': calls, 'noise_floor': floor, 'shares_on_calls': shares,
+            'note': 'descriptive only; the pre-registered verdicts are P4/P5/P6'}
+
+
 def family_verdict(rows, family, model, loc_threshold=0.375):
     m1 = cell(rows, family=family, mode='m1', model=model)
     by = defaultdict(dict)
@@ -170,10 +216,12 @@ def main(path, model_default='default', model_m0='haiku'):
     out = {
         'P2_controls_M0_haiku': controls(rows, 'A', 'm0', model_m0, 'crib', 20.0),
         'P3_controls_M1_default': controls(rows, 'B', 'm1', model_default, 'pointer', 12.5),
+        'P3m_controls_M1_pooled': controls_pooled(rows, ('B', 'C'), 'm1', model_default, 'pointer', 12.5, 'B'),
         'P4_B': family_verdict(rows, 'B', model_default, 0.375),
         'P5_C': family_verdict(rows, 'C', model_default, 0.375),
     }
     out['P6_overall'] = overall(out['P4_B'], out['P5_C'])
+    out['sensitivity_calls_no_guidance'] = {f: calls_sensitivity(rows, f, model_default) for f in ('B', 'C')}
     print(json.dumps(out, indent=1, default=str))
 
 
