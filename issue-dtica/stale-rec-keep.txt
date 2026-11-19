@@ -1,0 +1,50 @@
+2026-11-18T16:39:57-08:00
+sdfada018
+9420f86
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+SC:REC_KEEP:3:QpllLock
+SC:REC_KEEP:3:MonClkRate
+SC:REC_KEEP:3:TimLinkUp
+SC:REC_KEEP:3:TimRefClk
+SC:REC_KEEP:3:TimFrRate
+SC:REC_KEEP:4:QpllLock
+SC:REC_KEEP:4:MonClkRate
+SC:REC_KEEP:4:TimLinkUp
+SC:REC_KEEP:4:TimRefClk
+SC:REC_KEEP:4:TimFrRate
+SC:REC_KEEP:5:QpllLock
+SC:REC_KEEP:5:MonClkRate
+SC:REC_KEEP:5:TimLinkUp
+SC:REC_KEEP:5:TimRefClk
+SC:REC_KEEP:5:TimFrRate
+SC:REC_KEEP:6:QpllLock
+SC:REC_KEEP:6:MonClkRate
+SC:REC_KEEP:6:TimLinkUp
+SC:REC_KEEP:6:TimRefClk
+SC:REC_KEEP:6:TimFrRate
+SC:REC_KEEP:7:QpllLock
+SC:REC_KEEP:7:MonClkRate
+SC:REC_KEEP:7:TimLinkUp
+SC:REC_KEEP:7:TimRefClk
+SC:REC_KEEP:7:TimFrRate
+SC:REC_KEEP  20 s  keep=True  platform=offscreen  window saved to runs/stale-rec-keep.png
+monitor owner       created  alive at end  updates 0-5 s  updates, last 5 s
+(no callback)             5             5              0                  0
+DtiAllocMon              35            35             35                  0
+PvEditCheckList          35            35             35                  0
+PvIntRow                 55            55            330                275
+PvLabel                  25            25            150                125
+PvMask                   15            15             90                 75
+total                   170           170
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'
+Exception ignored in: 'p4p._p4p.ClientProvider.__dealloc__'
+Traceback (most recent call last):
+  File "src/p4p/_p4p.pyx", line 634, in p4p._p4p.ClientProvider.close
+AttributeError: '_ClientProvider' object has no attribute 'close'

@@ -1,0 +1,19 @@
+Written 2026-11-18 before any run. Question: does dtica's abort ("malloc(): unaligned tcache chunk detected",
+exit 134) need the fork's sim, or does upstream alone reproduce it?
+Setup: upstream slac-lcls/lcls2 master 9420f862 only (dtica, pvedit, dticas, PVAServer), conda env daq_20250402_r9
+(upstream setup_env_daq.sh), Qt offscreen, sdfiana025 (not milano: the campaign holds this account's 2 milano nodes).
+P1 threadcheck: upstream dtica calls QLabel.setText / QAbstractButton.setChecked from non-GUI threads, > 0 calls,
+   with dticas alone (initial monitor updates) and more with the 1 Hz putter. Deterministic.
+P2 live arm (dticas + putter at 1 Hz, like the hardware server): if the bug is upstream's, aborts at roughly the
+   fork loop's rate, 0.5 % (95 % CI 0.06-1.8 %): about 4 in 800; P(0 | 0.5 %) ~ 2 %.
+P3 static arm (dticas only, no updates after connect): fewer aborts than live, 0-2 in 800.
+Decision: any malloc/corruption abort in either arm = reproduced with upstream alone. 0 in both arms = not
+reproduced here; then the remaining differences from the fork loop are the node type (milano) and the stand-in's
+exact values, and the answer stays open.
+
+Added 2026-11-18 16:15 PST, after one exploratory stalecheck run (plain: PvIntRow 3/55 alive, PvMask 0/15; keep:
+all 170 alive), before the repeat matrix and the recording:
+P4 stalecheck, upstream dtica unchanged, dticas + putter 1 Hz, 20 s: PvIntRow alive <= 10 of 55 and PvMask alive
+   <= 3 of 15 in every run; PvIntRow updates in the last 5 s <= 50 (a live row gives ~5); PvLabel 25/25 alive.
+P5 same with --keep (owners held in a list): 170/170 alive in every run; PvIntRow last-5 s updates 250-300
+   (55 rows x ~5) and PvMask 60-90 (15 x ~5).

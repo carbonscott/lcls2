@@ -1,0 +1,10 @@
+m1-plain  PvIntRow 2/55 alive, 22 upd PvMask 1/15 alive, 5 upd PvEditCheckList 1/35   PvLabel 25/25  total 69/170
+m1-keep   PvIntRow 55/55 alive, 275 upd PvMask 15/15 alive, 75 upd PvEditCheckList 35/35  PvLabel 25/25  total 170/170
+m2-plain  PvIntRow 2/55 alive, 17 upd PvMask 1/15 alive, 5 upd PvEditCheckList 2/35   PvLabel 25/25  total 70/170
+m2-keep   PvIntRow 55/55 alive, 275 upd PvMask 15/15 alive, 75 upd PvEditCheckList 35/35  PvLabel 25/25  total 170/170
+m3-plain  PvIntRow 2/55 alive, 30 upd PvMask 1/15 alive, 5 upd PvEditCheckList 2/35   PvLabel 25/25  total 70/170
+m3-keep   PvIntRow 55/55 alive, 275 upd PvMask 15/15 alive, 75 upd PvEditCheckList 35/35  PvLabel 25/25  total 170/170
+m4-plain  PvIntRow 2/55 alive, 24 upd PvMask 1/15 alive, 5 upd PvEditCheckList 2/35   PvLabel 25/25  total 70/170
+m4-keep   PvIntRow 55/55 alive, 275 upd PvMask 15/15 alive, 75 upd PvEditCheckList 35/35  PvLabel 25/25  total 170/170
+m5-plain  PvIntRow 3/55 alive, 15 upd PvMask 0/15 alive, 0 upd PvEditCheckList 2/35   PvLabel 25/25  total 70/170
+m5-keep   PvIntRow 55/55 alive, 275 upd PvMask 15/15 alive, 75 upd PvEditCheckList 35/35  PvLabel 25/25  total 170/170

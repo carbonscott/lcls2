@@ -1,0 +1,44 @@
+2026-11-18T16:39:27-08:00
+sdfada018
+9420f86
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+SC:REC_PLAIN:3:QpllLock
+SC:REC_PLAIN:3:MonClkRate
+SC:REC_PLAIN:3:TimLinkUp
+SC:REC_PLAIN:3:TimRefClk
+SC:REC_PLAIN:3:TimFrRate
+SC:REC_PLAIN:4:QpllLock
+SC:REC_PLAIN:4:MonClkRate
+SC:REC_PLAIN:4:TimLinkUp
+SC:REC_PLAIN:4:TimRefClk
+SC:REC_PLAIN:4:TimFrRate
+SC:REC_PLAIN:5:QpllLock
+SC:REC_PLAIN:5:MonClkRate
+SC:REC_PLAIN:5:TimLinkUp
+SC:REC_PLAIN:5:TimRefClk
+SC:REC_PLAIN:5:TimFrRate
+SC:REC_PLAIN:6:QpllLock
+SC:REC_PLAIN:6:MonClkRate
+SC:REC_PLAIN:6:TimLinkUp
+SC:REC_PLAIN:6:TimRefClk
+SC:REC_PLAIN:6:TimFrRate
+SC:REC_PLAIN:7:QpllLock
+SC:REC_PLAIN:7:MonClkRate
+SC:REC_PLAIN:7:TimLinkUp
+SC:REC_PLAIN:7:TimRefClk
+SC:REC_PLAIN:7:TimFrRate
+SC:REC_PLAIN  20 s  keep=False  platform=offscreen  window saved to runs/stale-rec-plain.png
+monitor owner       created  alive at end  updates 0-5 s  updates, last 5 s
+(no callback)             5             5              0                  0
+DtiAllocMon              35            35             35                  0
+PvEditCheckList          35             2              2                  0
+PvIntRow                 55             3             18                 15
+PvLabel                  25            25            150                125
+PvMask                   15             0              0                  0
+total                   170            70

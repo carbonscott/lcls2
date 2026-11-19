@@ -1,0 +1,38 @@
+2026-11-18T16:40:28-08:00
+sdfada018
+9420f86
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+This plugin does not support propagateSizeHints()
+TC:LIVE:3:QpllLock
+TC:LIVE:3:MonClkRate
+TC:LIVE:3:TimLinkUp
+TC:LIVE:3:TimRefClk
+TC:LIVE:3:TimFrRate
+TC:LIVE:4:QpllLock
+TC:LIVE:4:MonClkRate
+TC:LIVE:4:TimLinkUp
+TC:LIVE:4:TimRefClk
+TC:LIVE:4:TimFrRate
+TC:LIVE:5:QpllLock
+TC:LIVE:5:MonClkRate
+TC:LIVE:5:TimLinkUp
+TC:LIVE:5:TimRefClk
+TC:LIVE:5:TimFrRate
+TC:LIVE:6:QpllLock
+TC:LIVE:6:MonClkRate
+TC:LIVE:6:TimLinkUp
+TC:LIVE:6:TimRefClk
+TC:LIVE:6:TimFrRate
+TC:LIVE:7:QpllLock
+TC:LIVE:7:MonClkRate
+TC:LIVE:7:TimLinkUp
+TC:LIVE:7:TimRefClk
+TC:LIVE:7:TimFrRate
+platform offscreen  pvedit /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/dtica-upstream/lcls2/psdaq/psdaq/cas/pvedit.py
+pvedit.Pv objects: 170 created, 82 still alive at exit; gc collections [136, 12, 1]
+widget method                    thread (Python)  thread (Qt)   calls
+QAbstractButton.setChecked       other thread     other thread    176
+QLabel.setText                   GUI thread       GUI thread      275
+QLabel.setText                   other thread     other thread   1001
+widget calls off the GUI thread in 10 s: 1177 (Python), 1177 (Qt)

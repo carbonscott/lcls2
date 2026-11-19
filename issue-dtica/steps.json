@@ -1,0 +1,43 @@
+[
+ {
+  "send": "command ssh -t sdfiana025 bash --rcfile /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/dtica-upstream/rec_rc.sh -i",
+  "expect": "cwang31@sdfiana025",
+  "timeout": 120
+ },
+ {
+  "send": "hostname; date -Is; git -C lcls2 remote get-url origin; git -C lcls2 log -1 --format='%H %cd' --date=iso"
+ },
+ {
+  "send": "grep -n -E 'conda activate|PYTHONPATH=' env.sh; source env.sh; echo \"env $CONDA_DEFAULT_ENV, dtica from $(python -c 'import psdaq.cas.dtica as d; print(d.__file__)')\"",
+  "timeout": 300
+ },
+ {
+  "send": "grep -n -E '^ +PvIntRow\\(|^ +PvMask\\(|^ +PvEditCheckList\\(|mon.pv = Pv\\(|self.subscription = pvactx' lcls2/psdaq/psdaq/cas/pvedit.py lcls2/psdaq/psdaq/cas/dtica.py     # owners created, never kept"
+ },
+ {
+  "send": "cat min_gc.py; J=45757640; S=\"srun --jobid=$J --overlap --ntasks=1 --cpus-per-task=2 --mem=4G\"; $S bash min_gc.sh     # on the ada node, no PV server",
+  "expect": "after  gc.collect",
+  "timeout": 180
+ },
+ {
+  "send": "sed -n '/^Added/,$p' predictions.txt     # written before the runs below"
+ },
+ {
+  "send": "$S bash stalerun.sh 47480 20 rec-plain     # upstream dtica as is; dticas + PVs posted once a second",
+  "expect": "^total",
+  "timeout": 180
+ },
+ {
+  "send": "$S bash stalerun.sh 47484 20 rec-keep --keep     # same, owners kept in a list",
+  "expect": "^total",
+  "timeout": 180
+ },
+ {
+  "send": "cat runs/stale-matrix.txt     # 5 runs of each, taken before this recording"
+ },
+ {
+  "send": "$S bash threadrun.sh live 47490 10     # which thread calls the widgets: Python's and Qt's view",
+  "expect": "widget calls off the GUI thread",
+  "timeout": 180
+ }
+]
