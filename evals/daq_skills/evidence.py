@@ -47,10 +47,16 @@ WIDTH = 40
 _cache = {}
 
 
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
 def text_of(path):
     if path.endswith('.zst'):
         return subprocess.run(['zstd', '-q', '-dc', path], stdout=subprocess.PIPE).stdout.decode('utf-8', 'replace')
-    return open(path, 'rb').read().decode('utf-8', 'replace')
+    with open(path, 'rb') as f:
+        return f.read().decode('utf-8', 'replace')
 
 
 def _lines_holding(paths, patterns, compressed):
@@ -87,7 +93,7 @@ def fingerprints(root, keyed, cache=None):
         h = hashlib.sha1(('%s|%s|%s' % (os.path.abspath(root), '|'.join(sorted(keyed)), sig.hexdigest())).encode()).hexdigest()
         path = os.path.join(cache, 'fp-%s.json' % h)
         if os.path.exists(path):
-            _cache[ck] = set(json.load(open(path)))
+            _cache[ck] = set(read_json(path))
             return _cache[ck]
     mine = set()
     for p in mine_paths:
@@ -104,7 +110,8 @@ def fingerprints(root, keyed, cache=None):
     if path:
         os.makedirs(cache, exist_ok=True)
         tmp = '%s.tmp%d' % (path, os.getpid())
-        json.dump(sorted(mine), open(tmp, 'w'))
+        with open(tmp, 'w') as f:
+            json.dump(sorted(mine), f)
         os.replace(tmp, path)
     return mine
 
@@ -113,7 +120,9 @@ def tool_calls(path, errors=None):
     """[(name, input, output text)] of a stream-json transcript, in the order the calls were made.  If `errors` is a
     set, the indexes of the calls whose result the tool marked as an error are added to it."""
     calls, results, failed = [], {}, set()
-    for line in open(path, errors='replace'):
+    with open(path, errors='replace') as f:
+        lines = list(f)
+    for line in lines:
         try:
             ev = json.loads(line)
         except ValueError:
@@ -202,12 +211,12 @@ def keyed_files(meta, cat_cases, table_cases, work, real_cases=None):
     case = cat_cases[meta['case']]
     if meta.get('mode') == 'm1':
         return table_cases[meta['case']]['m1']['keyed_files']
-    pool = json.load(open(os.path.join(work, 'pools', pool_id(case['pool']), 'pool.json')))
+    pool = read_json(os.path.join(work, 'pools', pool_id(case['pool']), 'pool.json'))
     return [f for s in pool['sessions'] if s['prefix'] in case['key']['sessions'] for f in s['files']]
 
 
 def evaluate(run_dir, cat_cases, table_cases, work, real_cases=None, cache=None):
-    meta = json.load(open(os.path.join(run_dir, 'meta.json')))
+    meta = read_json(os.path.join(run_dir, 'meta.json'))
     keyed = keyed_files(meta, cat_cases, table_cases, work, real_cases)
     root = meta.get('logs_src') or os.path.join(work, 'pools', pool_id(cat_cases[meta['case']]['pool']), 'logs')
     prints = fingerprints(root, keyed, cache)
@@ -230,9 +239,9 @@ def main(argv=None):
     ap.add_argument('--write', action='store_true', help='also write evidence.json into each run folder')
     ap.add_argument('--json', action='store_true')
     a = ap.parse_args(argv)
-    cat_cases = dict((c['id'], c) for c in json.load(open(a.catalog))['cases'])
-    table_cases = dict((c['id'], c) for c in json.load(open(a.cases_v3))['cases']) if os.path.exists(a.cases_v3) else {}
-    real_cases = dict((c['id'], c) for c in json.load(open(a.cases_real))['cases']) if os.path.exists(a.cases_real) else {}
+    cat_cases = dict((c['id'], c) for c in read_json(a.catalog)['cases'])
+    table_cases = dict((c['id'], c) for c in read_json(a.cases_v3)['cases']) if os.path.exists(a.cases_v3) else {}
+    real_cases = dict((c['id'], c) for c in read_json(a.cases_real)['cases']) if os.path.exists(a.cases_real) else {}
     cache = a.cache or os.path.join(a.results, '.evidence-cache')
     rows = []
     for arm in sorted(x for x in os.listdir(a.results) if not x.startswith('.')):
@@ -240,13 +249,14 @@ def main(argv=None):
             d = os.path.join(a.results, arm, name)
             if not os.path.exists(os.path.join(d, 'transcript.jsonl')) or not os.path.exists(os.path.join(d, 'meta.json')):
                 continue
-            if json.load(open(os.path.join(d, 'meta.json'))).get('dry_run'):
+            if read_json(os.path.join(d, 'meta.json')).get('dry_run'):
                 continue
             r = evaluate(d, cat_cases, table_cases, a.work, real_cases, cache)
             r['run'] = '%s/%s' % (arm, name)
             rows.append(r)
             if a.write:
-                json.dump(r, open(os.path.join(d, 'evidence.json'), 'w'), indent=1)
+                with open(os.path.join(d, 'evidence.json'), 'w') as f:
+                    json.dump(r, f, indent=1)
     if a.json:
         print(json.dumps(rows, indent=1))
     else:

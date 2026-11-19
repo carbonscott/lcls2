@@ -291,10 +291,16 @@ def stale_dates(text, ln, days):
     return out
 
 
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
 def read_log(path):
     if path.endswith('.zst'):
         return subprocess.run(['zstd', '-q', '-dc', path], stdout=subprocess.PIPE, check=True).stdout.decode('latin-1')
-    return open(path, 'rb').read().decode('latin-1')
+    with open(path, 'rb') as f:
+        return f.read().decode('latin-1')
 
 
 def write_log(path, text, mtime):
@@ -302,7 +308,8 @@ def write_log(path, text, mtime):
     if path.endswith('.zst'):
         data = subprocess.run(['zstd', '-q', '-c', '-3'], input=data, stdout=subprocess.PIPE, check=True).stdout
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    open(path, 'wb').write(data)
+    with open(path, 'wb') as f:
+        f.write(data)
     os.chmod(path, 0o644)
     os.utime(path, (mtime, mtime))
 
@@ -332,7 +339,7 @@ def load_pools(work, cat):
         pdir = os.path.join(work, 'pools', pool_id(name))
         if not os.path.exists(os.path.join(pdir, 'pool.json')):
             raise SystemExit('%s: no pool %s under %s; unpack data/pools.tar.gz there first' % (name, pool_id(name), work))
-        info = json.load(open(os.path.join(pdir, 'pool.json')))
+        info = read_json(os.path.join(pdir, 'pool.json'))
         out[name] = [Launch(name, s, os.path.join(pdir, 'logs', s['ym'])) for s in info['sessions']]
     return out
 
@@ -500,7 +507,8 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
         for i, fn in enumerate((name, name + '~')):
             p = os.path.join(shared, SCRIPTS, fn)
             os.makedirs(os.path.dirname(p), exist_ok=True)
-            open(p, 'w').write(text)
+            with open(p, 'w') as f:
+                f.write(text)
             t = epoch(CONFIG_TIME - datetime.timedelta(days=configs.index((name, pool)) * 9 + (0 if i == 0 else 3)))
             os.utime(p, (t, t))
     statics = [os.path.relpath(os.path.join(d, f), shared) for d, _s, fs in os.walk(os.path.join(shared, SCRIPTS)) for f in fs]
@@ -570,7 +578,8 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
     manifest['stale_local_dates'] = stale
     if stale:
         failed.append('%d local time stamps still carry a launch\'s old day' % stale)
-    json.dump(manifest, open(os.path.join(out, 'manifest.json'), 'w'), indent=1, sort_keys=True)
+    with open(os.path.join(out, 'manifest.json'), 'w') as f:
+        json.dump(manifest, f, indent=1, sort_keys=True)
     if not quiet:
         for cid, m in manifest['cases'].items():
             print('%-18s now %s  keyed %s/%s  in window: %s  other hutch in window: %d  %s files %.1f MB  leftover tst %d  node names %d  %s'
@@ -685,13 +694,14 @@ def main(argv=None):
     ap.add_argument('--out', help='default WORK/roots')
     ap.add_argument('--write-cases', action='store_true', help='write the derived m1 fields (keyed files, pointer) into --cases')
     a = ap.parse_args(argv)
-    cat, table = json.load(open(a.catalog)), json.load(open(a.cases))
+    cat, table = read_json(a.catalog), read_json(a.cases)
     manifest, failed = build(a.work, table['cases'], cat, a.out or os.path.join(a.work, 'roots'))
     if a.write_cases:
         for c in table['cases']:
             m = manifest['cases'][c['id']]
             c['m1'].update((k, m[k]) for k in ('keyed_stamp', 'keyed_dir', 'keyed_files', 'starve_files', 'pointer'))
-        open(a.cases, 'w').write(json.dumps(table, indent=1) + '\n')
+        with open(a.cases, 'w') as f:
+            f.write(json.dumps(table, indent=1) + '\n')
     if failed:
         print('FAILED window check: %s' % ', '.join(failed))
         return 1

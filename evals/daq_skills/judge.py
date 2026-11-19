@@ -17,7 +17,8 @@ score that relies on the judge.
 
 Each report is judged --votes times (default 3) and the majority verdict is kept, because a
 single judgement of a long report varies from call to call.  Each judgement is one headless
-'claude -p' call (no tools needed).  Standard library only.
+'claude -p' call (no tools needed; --no-session-persistence, so no session is saved under
+~/.claude/projects).  Standard library only.
 """
 
 import argparse
@@ -126,10 +127,15 @@ def judge(question, key, report, model, cmd=None, votes=1):
     return out
 
 
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
 def judge_once(question, key, report, model, cmd=None):
     prompt = RUBRIC.format(question=question, key=key_text(key), report=report[:24000])
     argv = cmd or ['claude', '-p', '--output-format', 'json', '--model', model, '--setting-sources', 'project',
-                   '--strict-mcp-config']
+                   '--strict-mcp-config', '--no-session-persistence']
     with tempfile.TemporaryDirectory(prefix='judge-') as cwd:
         for attempt in range(2):
             p = subprocess.run(argv, input=prompt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd,
@@ -160,7 +166,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     cmd = a.judge_cmd.split() if a.judge_cmd else None
     if a.calibrate:
-        items = json.load(open(a.calibrate))
+        items = read_json(a.calibrate)
         with concurrent.futures.ThreadPoolExecutor(max_workers=a.jobs) as ex:
             got = list(ex.map(lambda it: judge(it['question'], it['key'], it['report'], a.model, cmd, a.votes), items))
         ok = 0
@@ -171,9 +177,10 @@ def main(argv=None):
                                                              (g.get('reason') or g.get('error') or '')[:90]))
         print('\njudge %s agrees with the hand labels on %d of %d' % (a.model, ok, len(items)))
         if a.out:
-            json.dump([dict(id=it['id'], expect=it['expect'], **g) for it, g in zip(items, got)], open(a.out, 'w'), indent=1)
+            with open(a.out, 'w') as f:
+                json.dump([dict(id=it['id'], expect=it['expect'], **g) for it, g in zip(items, got)], f, indent=1)
         return 0 if ok == len(items) else 1
-    cat = json.load(open(a.catalog))
+    cat = read_json(a.catalog)
     cases = {c['id']: c for c in cat['cases']}
     todo = []
     for arm in sorted(os.listdir(a.results)):
@@ -182,7 +189,7 @@ def main(argv=None):
             mp = os.path.join(d, 'meta.json')
             if not os.path.exists(mp):
                 continue
-            m = json.load(open(mp))
+            m = read_json(mp)
             if m.get('dry_run') or m.get('error') or m['case'] not in cases or cases[m['case']]['set'] == 'disputed':
                 continue
             if os.path.exists(os.path.join(d, 'judge.json')) and not a.redo:
@@ -191,9 +198,12 @@ def main(argv=None):
 
     def one(job):
         d, c = job
-        g = judge(c['question'], c['key'], open(os.path.join(d, 'final.md')).read(), a.model, cmd, a.votes)
+        with open(os.path.join(d, 'final.md')) as f:
+            report = f.read()
+        g = judge(c['question'], c['key'], report, a.model, cmd, a.votes)
         if g.get('verdict'):
-            json.dump(g, open(os.path.join(d, 'judge.json'), 'w'), indent=1)
+            with open(os.path.join(d, 'judge.json'), 'w') as f:
+                json.dump(g, f, indent=1)
         return d, c['id'], g
 
     bad = 0

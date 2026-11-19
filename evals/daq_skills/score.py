@@ -44,8 +44,9 @@ tables, never from a report:
   Healthy cases of both families get the 3-way outcome.  Times stated in UTC are moved to Pacific with the
   offset of the keyed launch's day (PDT -7 or PST -8).
 
-Both model steps are headless 'claude -p' calls with no tools and a one-line system prompt;
---extract-cmd and --judge-cmd replace the command (tests): the prompt arrives on stdin and the
+Both model steps are headless 'claude -p' calls with no tools and a one-line system prompt; they run
+outside the sandbox with --no-session-persistence, so no session is saved under ~/.claude/projects.  The cache key
+is the model, the call's tag and the prompt, not the command.  --extract-cmd and --judge-cmd replace the command (tests): the prompt arrives on stdin and the
 program prints {"result": "<text>", "total_cost_usd": x}.  At most --jobs calls run at once.
 Standard library only.
 """
@@ -192,7 +193,7 @@ class Caller:
 
     def argv(self):
         return self.cmd or ['claude', '-p', '--output-format', 'json', '--model', self.model, '--setting-sources', 'project',
-                            '--strict-mcp-config', '--tools', '', '--system-prompt', SYSTEM]
+                            '--strict-mcp-config', '--no-session-persistence', '--tools', '', '--system-prompt', SYSTEM]
 
     def call(self, prompt, kind, tag='', name=None):
         """{'text', 'cost_usd', 'model', 'cached', 'error'} for one call.  Cached in CACHE/<kind>/<name>.json
@@ -834,8 +835,8 @@ def collect_runs(results, book, only=None):
 def summarize(rows):
     lines = []
     arms = sorted({r['arm'] for r in rows})
-    hdr = ('%-18s %5s %13s %13s %13s | %4s %5s %6s %5s | %6s %8s %5s' %
-           ('arm', 'fault', 'Cause-pass', 'strict', 'lenient', 'hlth', 'clean', 'benign', 'false', 'calls', 'usage$', 'err'))
+    hdr = ('%-18s %5s %13s %13s %13s | %4s %5s %6s %5s | %12s %8s %5s' %
+           ('arm', 'fault', 'Cause-pass', 'strict', 'lenient', 'hlth', 'clean', 'benign', 'false', 'scorer calls', 'usage$', 'err'))
     lines += [hdr, '-' * len(hdr)]
     tot = {'calls': 0, 'cost': 0.0}
     for arm in arms + ['ALL']:
@@ -850,7 +851,7 @@ def summarize(rows):
         cost = sum(r['usage']['cost_usd'] for r in rs)
         err = sum(bool(r.get('error')) for r in rs)
         pct = lambda a, b: '%3d/%-3d %3.0f%%' % (a, b, 100.0 * a / b) if b else '-'
-        lines.append('%-18s %5d %13s %13s %13s | %4d %5d %6d %5d | %6d %8.2f %5d' % (
+        lines.append('%-18s %5d %13s %13s %13s | %4d %5d %6d %5d | %12d %8.2f %5d' % (
             arm, len(fr), pct(c, len(fr)), pct(cs, len(fr)), pct(cl, len(fr)), len(hr), h['clean'], h['benign-defect-noted'],
             h['false-alarm'], calls, cost, err))
         if arm == 'ALL':
@@ -858,7 +859,8 @@ def summarize(rows):
     lines.append('')
     lines.append('Cause-pass: launch (tier 3 only), component, stage and mechanism (majority of votes "accepted") all pass;')
     lines.append('strict: every vote accepted; lenient: any vote accepted.  hlth: healthy-case runs, by 3-way outcome.')
-    lines.append('calls / usage$: scorer model calls and their total_cost_usd (cached calls counted at their first cost).')
+    lines.append('scorer calls / usage$: model calls the scorer made (not calls to evidence) and their total_cost_usd (cached calls '
+                 'counted at their first cost).')
     return '\n'.join(lines), tot
 
 

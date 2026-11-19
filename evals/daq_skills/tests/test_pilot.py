@@ -13,7 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
@@ -24,10 +24,10 @@ import real_mfx   # noqa: E402
 import run        # noqa: E402
 import score      # noqa: E402
 import tree       # noqa: E402
-from test_v3 import Fixture   # noqa: E402
+from test_v3 import Fixture, read_file, read_json, write_file, write_json   # noqa: E402
 
 EVAL = os.path.dirname(HERE)
-REAL = json.load(open(os.path.join(EVAL, 'cases_real.json')))
+REAL = read_json(os.path.join(EVAL, 'cases_real.json'))
 
 
 def put(root, rel, lines, mtime_local):
@@ -147,9 +147,9 @@ class World(Fixture, RealWorld):
         Fixture.make(self)
         self.make_real(self.tmp)
         self.keys = os.path.join(self.tmp, 'keys.json')
-        json.dump(c1_keys(), open(self.keys, 'w'))
+        write_json(c1_keys(), self.keys)
         for name, body in (('agent.py', FAKE_AGENT), ('x.py', FAKE_EXTRACT), ('j.py', FAKE_JUDGE)):
-            open(os.path.join(self.tmp, name), 'w').write(body)
+            write_file(os.path.join(self.tmp, name), body)
         self.agent = '%s %s' % (sys.executable, os.path.join(self.tmp, 'agent.py'))
         self.judged = os.path.join(self.tmp, 'judged')
         self.xcmd = '%s %s' % (sys.executable, os.path.join(self.tmp, 'x.py'))
@@ -200,7 +200,7 @@ class Views(unittest.TestCase, RealWorld):
         dest = os.path.join(self.tmp, 'views2')
         root, rec = real_mfx.build_view(self.real_root, self.case, '2026-09-17 10:00', dest)
         rel = 'home/m/mfxopr/daq/logs/2026/09/'
-        self.assertEqual(open(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log')).read(), 'teb line one\n')
+        self.assertEqual(read_file(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log')), 'teb line one\n')
         self.assertFalse(os.path.exists(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log.zst')))
         self.assertEqual(int(os.stat(os.path.join(root, rel, '17_09:29:03_drp-srcf-cmp014:teb0.log')).st_mtime), int(t))
         z = os.path.join(root, rel, '01_08:00:00_drp-srcf-cmp014:control.log.zst')
@@ -246,7 +246,7 @@ class OperatorAnswers(unittest.TestCase):
 
     def test_answers_are_stage_level_at_most(self):
         keys = score.load_keys(os.path.join(EVAL, 'keys_v3.json'))
-        v3 = json.load(open(os.path.join(EVAL, 'cases_v3.json')))
+        v3 = read_json(os.path.join(EVAL, 'cases_v3.json'))
         answers = [(c['id'], c['m1']['answers'], keys['cases'][c['id']].get('component', {}).get('aliases', [])) for c in v3['cases']]
         for c in REAL['cases']:
             comp = real_mfx.target_launch(c)['key']['component']
@@ -271,7 +271,8 @@ class RunC(unittest.TestCase, World):
                 '--real-root', self.real_root, '--views', self.views, '--case', case] + list(extra)
         if control:
             args += ['--control', control]
-        return run.main(args)
+        with redirect_stdout(io.StringIO()):
+            return run.main(args)
 
     def one(self, arm):
         (name,) = os.listdir(os.path.join(self.out, arm))
@@ -280,14 +281,14 @@ class RunC(unittest.TestCase, World):
     def test_family_c_prompt_operator_and_meta(self):
         self.assertEqual(self.run_('C.none', 'real-t-fault'), 0)
         d = self.one('C.none')
-        prompt = open(os.path.join(d, 'prompt.txt')).read()
+        prompt = read_file(os.path.join(d, 'prompt.txt'))
         self.assertIn('It is now Thursday 2026-09-17, 10:00 (US Pacific time', prompt)
         self.assertIn('Today is Thursday, September 17, 2026. The MFX operators asked us to look at their DAQ yesterday afternoon.', prompt)
         for leak in ('/sdf', 'mfxopr', '15:05', '2026-09-16', 'timing'):
             self.assertNotIn(leak, prompt)
-        (q,) = [json.loads(l) for l in open(os.path.join(d, 'operator.jsonl'))]
+        (q,) = [json.loads(l) for l in read_file(os.path.join(d, 'operator.jsonl')).splitlines()]
         self.assertEqual((q['rule'], q['answer']), ('when', 'Around three in the afternoon.'))
-        meta = json.load(open(os.path.join(d, 'meta.json')))
+        meta = read_json(os.path.join(d, 'meta.json'))
         self.assertEqual((meta['family'], meta['mode'], meta['now'], meta['keyed_stamp'], meta['keyed_dir']),
                          ('C', 'm1', '2026-09-17 10:00', '16_15:05:23', '/sdf/home/m/mfxopr/2026/09'))
         self.assertEqual(meta['logs_src'], os.path.join(self.views, 'real-t-fault', 'root'))
@@ -301,14 +302,14 @@ class RunC(unittest.TestCase, World):
 
     def test_family_c_pointer_names_the_old_root_and_the_window(self):
         self.run_('C.pointer', 'real-t-fault', 'pointer')
-        prompt = open(os.path.join(self.one('C.pointer'), 'prompt.txt')).read()
+        prompt = read_file(os.path.join(self.one('C.pointer'), 'prompt.txt'))
         self.assertTrue(prompt.endswith('The DAQ logs are in %s/home/m/mfxopr/2026/09, and the launch in question ran on 2026-09-16 '
                                         'between 15:05 and 15:07.' % os.path.join(self.views, 'real-t-fault', 'root')), prompt[-200:])
 
     def test_family_c_refuses_starved_and_m0(self):
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
             self.run_('x', 'real-t-fault', 'starved')
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit), redirect_stderr(io.StringIO()):
             run.main(['--catalog', self.catalog, '--work', self.work, '--arm', 'x', '--out', self.out, '--skills', 'none',
                       '--case', 'real-t-fault', '--dry-run'])
 
@@ -451,7 +452,7 @@ class Pilot(unittest.TestCase, World):
     def test_batch_runs_scores_and_writes_rows_verdict_reads(self):
         rc, out = self.pilot('--budget-left', '5', '--jobs', '2')
         self.assertEqual(rc, 0, out)
-        rows = json.load(open(os.path.join(self.out, 'rows.json')))
+        rows = read_json(os.path.join(self.out, 'rows.json'))
         self.assertEqual(len(rows), 6)
         by = dict(((r['family'], r['arm'], r['case'], r['repeat']), r) for r in rows)
         b = by[('B', 'none', 'c1', 2)]
@@ -463,7 +464,7 @@ class Pilot(unittest.TestCase, World):
         self.assertEqual((h['healthy'], h['healthy_outcome'], h['cause_pass'], h['located']), (True, 'clean', None, True))
         self.assertEqual(sorted(set(r['run_id'].split('/')[0] for r in rows)), ['B.none.haiku', 'B.pointer.haiku', 'C.none.haiku',
                                                                               'C.pointer.haiku'])
-        usage = json.load(open(os.path.join(self.out, 'usage.json')))
+        usage = read_json(os.path.join(self.out, 'usage.json'))
         self.assertEqual((usage['agent_usd'], usage['runs']), (0.12, 6))
         self.assertAlmostEqual(usage['scorer_usd'], 6 * 0.01 * 2 + 3 * 0.002 * 3)  # extraction and conclusion each; 3 judge votes on 3 B runs
         v = subprocess.run([sys.executable, os.path.join(EVAL, 'verdict.py'), os.path.join(self.out, 'rows.json')],
@@ -477,7 +478,7 @@ class Pilot(unittest.TestCase, World):
 
     def test_cells_file_and_unknown_case(self):
         cells = os.path.join(self.tmp, 'cells.json')
-        json.dump([{'family': 'C', 'arm': 'map', 'model': 'default', 'cases': ['real-t-ok'], 'repeats': 1}], open(cells, 'w'))
+        write_json([{'family': 'C', 'arm': 'map', 'model': 'default', 'cases': ['real-t-ok'], 'repeats': 1}], cells)
         buf = io.StringIO()
         with redirect_stdout(buf):
             rc = pilot.main(['--out', self.out, '--work', self.work, '--real-root', self.real_root, '--cases-real', self.cases_real,

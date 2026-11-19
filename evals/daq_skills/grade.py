@@ -65,9 +65,17 @@ def load_transcript(path):
     return calls
 
 
+def read_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
 def final_text(run_dir):
     p = os.path.join(run_dir, 'final.md')
-    return open(p).read() if os.path.exists(p) else ''
+    if not os.path.exists(p):
+        return ''
+    with open(p) as f:
+        return f.read()
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +265,7 @@ def grade_run(key, run_dir, meta=None, tier=None):
     if meta and meta.get('skills') == 'none':
         out['routing'] = {'pass': None, 'loaded': out['routing']['loaded'], 'missing': [], 'forbidden': []}
     jp = os.path.join(run_dir, 'judge.json')
-    judge = json.load(open(jp)) if os.path.exists(jp) else None
+    judge = read_json(jp) if os.path.exists(jp) else None
     out['judge'] = judge
     kw = out['cause_kw']
     if judge and judge.get('verdict'):
@@ -272,7 +280,7 @@ def grade_run(key, run_dir, meta=None, tier=None):
 
 
 def load_catalog(path):
-    cat = json.load(open(path))
+    cat = read_json(path)
     return {c['id']: c for c in cat['cases']}
 
 
@@ -289,7 +297,7 @@ def collect(results, cases):
             mp = os.path.join(run_dir, 'meta.json')
             if not os.path.exists(mp):
                 continue
-            m = json.load(open(mp))
+            m = read_json(mp)
             if m.get('dry_run') or m['case'] not in cases or cases[m['case']].get('set') == 'disputed':
                 continue
             c = cases[m['case']]
@@ -339,7 +347,8 @@ def main(argv=None):
     rows = collect(a.results, load_catalog(a.catalog))
     summary = summarize(rows)
     if a.out:
-        json.dump({'rows': rows, 'summary': summary}, open(a.out, 'w'), indent=1)
+        with open(a.out, 'w') as f:
+            json.dump({'rows': rows, 'summary': summary}, f, indent=1)
     if a.json:
         json.dump(rows, sys.stdout, indent=1)
         print()

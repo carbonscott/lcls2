@@ -29,12 +29,26 @@ Inputs.  Nothing on the page is typed by hand: every number is read from these f
   --calls-variant LABEL=PATH:FIELD, --p3m-written, --trust-note
                   'How far to trust it': verdict.py on another calls count, P3m's writing time against the first
                   counted run, and notes.  Its other lines are computed: the map arm's guidance calls, the bound a
-                  SUPPORTED reading needed, and how many runs would flip each control.
+                  SUPPORTED reading needed, how many runs would flip each control, where the healthy runs whose
+                  failure is placed elsewhere put it, and the false alarms that stand only because score.py places a
+                  cause by its time on the case's day (what they would be with the day the report gives).
+  --first-pilot   the pilot folder as first scored: the header names it, usage adds its scoring spend to the
+                  re-score's fresh calls, and the healthy runs the re-score moved are counted per control arm.
+  --scoring-commit, --scoring-note, --m0-scoring-note LABEL=TEXT, --amendment-written
+                  the commit of the scoring and a note beside it (header); a note printed with an M0 scoring's P2
+                  lines; when the predictions file's amendment was written, set against its label and the first
+                  counted run (under the definitions).
+
+Healthy outcomes as shown: clean, benign (a defect noted as harmless), failure placed elsewhere (the report concludes a
+failure but places every cause in another launch than the keyed one; score.py scores it benign-defect-noted, and it is
+not a false alarm), false alarm.  Consecutive M0 scorings that give every run the same score share one column, labelled
+'A (and B, identical)'.  Beside each positive control: 'exactly at the margin' when it is, its result as first scored when
+that differs, and how many runs would flip it.
 
 Percentages and one-decimal numbers are rounded half up (81.25 -> 81.3), as the predictions file writes them.
 
 Sections, in order: header; headline findings; the verdict; scorer corrections after review; how far to trust it;
-per arm and family; the controls (P2, P3, P3m); every case; cases an arm missed; usage.
+per arm and family; the controls (P2, P3, P3m); every case; runs that failed or were not located; usage.
 
 Privacy.  Family C reports are about real MFX logs.  Text taken from a family C report passes safe_text(): a line is
 dropped if it holds a home-directory path of anyone but mfxopr (/home/<x>/, /sdf|/cds/home/<x>/<user>/, /cds/home/opr/
@@ -47,6 +61,7 @@ Standard library only, Python 3.6+.
 """
 
 import argparse
+import datetime
 import decimal
 import fractions
 import html
@@ -257,10 +272,34 @@ def load_m0(path, scorings=None):
         b['scorings'].append({'label': label, 'file': name, 'runs': m0_runs(doc, path, bid), 'meta': doc.get('meta', {})})
     if not b['scorings']:
         raise SystemExit('%s: no scored file' % path)
-    b['orig'], b['orig_meta'] = b['scorings'][0]['runs'], b['scorings'][0]['meta']
+    b['files'] = list(b['scorings'])           # every scoring file, in order (usage, the keys line)
+    b['scorings'] = merge_same(b['scorings'])
+    b['orig'], b['orig_meta'] = b['files'][0]['runs'], b['files'][0]['meta']
     b['runs'] = b['scorings'][-1]['runs']
     b['current'] = b['scorings'][-1]['label']
     return b
+
+
+def same_scores(a, b):
+    """Two scorings of the same runs give every run the same score, healthy outcome and Located."""
+    key = lambda r: (score_of(r), r.get('healthy_outcome'), r.get('located'))
+    ma = dict((r['run_id'], key(r)) for r in a)
+    return ma == dict((r['run_id'], key(r)) for r in b)
+
+
+def merge_same(scorings):
+    """Consecutive scorings that give every run the same score shown as one column, labelled 'A (and B, identical)'; the
+    runs and meta are the last one's (the current scoring)."""
+    out = []
+    for x in scorings:
+        if out and same_scores(out[-1]['runs'], x['runs']):
+            g = out[-1]
+            g['members'].append(x)
+            g.update(runs=x['runs'], meta=x['meta'])
+            g['label'] = '%s (and %s, identical)' % (g['members'][0]['label'], ', '.join(m['label'] for m in g['members'][1:]))
+            continue
+        out.append(dict(x, members=[x]))
+    return out
 
 
 VERDICT_ROW_KEYS = ('run_id', 'family', 'case', 'arm', 'mode', 'model', 'repeat', 'healthy', 'cause_pass',
@@ -314,14 +353,35 @@ def score_of(r):
     return r.get('cause_pass')
 
 
+HEALTHY_KINDS = ('clean', 'benign-defect-noted', 'placed-elsewhere', 'false-alarm')
+HEALTHY_LABEL = {'clean': 'clean', 'benign-defect-noted': 'benign', 'placed-elsewhere': 'failure placed elsewhere',
+                 'false-alarm': 'false alarm'}
+
+
+def failure_verdict(r):
+    """The run's report concludes a failure: verdict 'fault', or 'unsure' with a cause (as score.py's score_healthy reads it)."""
+    f = (r.get('s') or {}).get('facts') or {}
+    vk = f.get('verdict_kind')
+    return vk == 'fault' or (vk == 'unsure' and bool(f.get('causes_given')))
+
+
+def healthy_kind(r):
+    """A healthy run's outcome as shown: the scorer's, except that a report concluding a failure that is not a false alarm
+    (every cause placed in another launch than the keyed one) is 'placed-elsewhere', not 'benign'."""
+    ho = r.get('healthy_outcome')
+    if ho and ho != 'false-alarm' and failure_verdict(r):
+        return 'placed-elsewhere'
+    return ho
+
+
 def mark(r):
     """(css class, label) of one run: pass / part / fail / na."""
     if r.get('error') or score_of(r) is None:
         return 'na', 'error' if r.get('error') else 'not scored'
     if r.get('healthy'):
-        ho = r['healthy_outcome']
-        lab = {'clean': 'clean', 'benign-defect-noted': 'benign', 'false-alarm': 'false alarm'}.get(ho, ho)
-        if ho == 'false-alarm':
+        hk = healthy_kind(r)
+        lab = HEALTHY_LABEL.get(hk, hk)
+        if hk == 'false-alarm':
             return 'fail', lab
         return ('pass', lab) if r.get('located') else ('part', lab + ', not located')
     if r.get('cause_pass'):
@@ -331,6 +391,25 @@ def mark(r):
 
 def pct(k, n):
     return 100.0 * k / n if n else float('nan')
+
+
+def gap(a, b):
+    """Points between two verdict.py [k, n, ...] rates, a minus b (None if either is empty)."""
+    return pct(a[0], a[1]) - pct(b[0], b[1]) if a and b and a[1] and b[1] else None
+
+
+def count_by(rs, f):
+    out = {}
+    for r in rs:
+        out[f(r)] = out.get(f(r), 0) + 1
+    return out
+
+
+def m0_notes(d, tag):
+    """The notes given for the M0 scorings in a (merged) column (--m0-scoring-note LABEL=TEXT)."""
+    m0 = d.get('m0') or {}
+    labels = [m['label'] for x in m0.get('scorings', []) if x['label'] == tag for m in x.get('members', [x])] or [tag]
+    return [t for l, t in d.get('m0_scoring_notes') or [] if l in labels]
 
 
 ONE_PLACE = re.compile(r'^%([+]?)\.([0-9])f$')
@@ -501,9 +580,10 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&'
          'family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">\n')
 
+MISSED_TITLE = 'Runs that failed or were not located'
 SECTIONS = [('findings', 'Headline findings'), ('verdict', 'The verdict'), ('corrections', 'Scorer corrections after review'),
             ('trust', 'How far to trust it'), ('arms', 'Per arm and family'),
-            ('controls', 'The controls'), ('cases', 'Every case'), ('missed', 'Cases an arm missed'), ('usage', 'Usage')]
+            ('controls', 'The controls'), ('cases', 'Every case'), ('missed', MISSED_TITLE), ('usage', 'Usage')]
 
 
 def section(sid, title, body):
@@ -548,6 +628,29 @@ def batch_line(b):
         ', '.join('<code>%s</code> (%d)' % (E(f), n) for f, n in sorted(folders.items())))
 
 
+def short_path(p):
+    """The last two parts of a folder's path ('runs/v3-m1-sc'), as the page names the run folders."""
+    return '/'.join(os.path.abspath(p).rstrip(os.sep).split(os.sep)[-2:])
+
+
+def sources_line(d):
+    """'Run of record: ...; first scoring: .... Commits: ...' from the folders and commits given (empty if no re-score)."""
+    if not d.get('first_pilot'):
+        return ''
+    pil = [b for b in d['batches'] if b['kind'] == 'pilot']
+    rec = ', '.join('<code>%s</code> (pilot)' % E(short_path(b['path'])) for b in pil)
+    if d['m0']:
+        rec += ' and <code>%s</code> (M0, <code>%s</code>)' % (E(short_path(d['m0']['path'])), E(d['m0']['files'][-1]['file']))
+    commits = ['agent runs <code>%s</code>' % E(d['commit'])]
+    if d['m0'] and d['m0'].get('commit'):
+        commits.append('M0 runs <code>%s</code>' % E(d['m0']['commit']))
+    if d.get('scoring_commit'):
+        commits.append('scoring <code>%s</code>%s' % (E(d['scoring_commit']),
+                                                      (' (%s)' % E(d['scoring_note'])) if d.get('scoring_note') else ''))
+    return 'Run of record: the corrected scoring, %s; first scoring: <code>%s</code>. Commits: %s.' % (
+        rec, E(short_path(d['first_pilot']['path'])), ', '.join(commits))
+
+
 def header(d):
     runs, batches = d['all_runs'], d['batches']
     models = {}
@@ -565,6 +668,9 @@ def header(d):
     parts = ['<header><p class="eyebrow">DAQ skill eval v3 &middot; results</p><h1>%s</h1>' % E(d['title'])]
     parts.append('<p class="meta">%d runs &middot; %s &middot; agent models: %s</p>' % (len(runs), E(when), E(mtxt)))
     parts.append('<p class="meta">Batches: %s</p>' % blist)
+    src = sources_line(d)
+    if src:
+        parts.append('<p class="meta">%s</p>' % src)
     parts.append('<p class="meta">Scorer: %s (flag <code>%s</code>), %s judge votes, keys sha256 <code>%s</code>. '
                  'Validation: P1 %s P1b %s</p>' % (
                      E(', '.join(sm.get('models') or ['not recorded'])), E(str(sm.get('model_flag'))), E(str(sm.get('votes'))),
@@ -593,17 +699,66 @@ def verdict_notes(d):
     return ''.join('<p class="vnote">%s</p>' % E(n) for n in d.get('verdict_notes') or [])
 
 
+CTRL_KEYS = {'P3': ('P3_controls_M1_default', 'pointer', 'none'), 'P3m': ('P3m_controls_M1_pooled', 'pointer_pooled', 'none_pooled')}
+
+
+def ctl_dict(d, which):
+    """(control dict, positive key, none key, the same rule as first scored or None) of P3, P3m or P2 (current M0 scoring)."""
+    if which == 'P2':
+        return (d['p2'][-1][1] if d['p2'] else None), 'crib', 'none', (d['first_p2'][0][1] if d.get('first_p2') else None)
+    key, pos, none = CTRL_KEYS[which]
+    return d['verdict'].get(key), pos, none, (d.get('first_verdict') or {}).get(key)
+
+
+def runs_word(n):
+    return 'one run' if n == 1 else '%d runs' % n
+
+
+def pos_notes(d, which):
+    """(notes, runs to flip) of a positive control: 'exactly at the +M margin' when the gap equals the margin, its result as
+    first scored when that differs, and the fewest single-run changes that flip it."""
+    c, pos, none, f = ctl_dict(d, which)
+    if not c or not (c.get(pos) or [0, 0])[1] or not (c.get(none) or [0, 0])[1]:
+        return [], None
+    a, b, m = c[pos], c[none], c['positive_margin_needed']
+    notes = []
+    if fractions.Fraction(100 * a[0], a[1]) - fractions.Fraction(100 * b[0], b[1]) == fractions.Fraction(str(m)):
+        notes.append('exactly at the +%s margin' % num(m, '%g'))
+    if f and (f.get(pos) or [0, 0])[1] and bool(f.get('positive_pass')) != bool(c.get('positive_pass')):
+        notes.append('%s (%d/%d vs %d/%d) as first scored' % ('PASS' if f['positive_pass'] else 'FAIL', f[pos][0], f[pos][1],
+                                                             f[none][0], f[none][1]))
+    return notes, flips(a[0], a[1], b[0], b[1], pos_rule(m))
+
+
+def pos_beside(d, which):
+    """The positive control's qualifiers in one parenthesis: ' (exactly at ...; FAIL (...) as first scored; one run from flipping)'."""
+    notes, n = pos_notes(d, which)
+    if n is not None:
+        notes = notes + ['%s from flipping' % runs_word(n)]
+    return (' (%s)' % '; '.join(notes)) if notes else ''
+
+
+def pos_inline(d, which):
+    """The same qualifiers, to follow 'needs +M points' inside its parenthesis: '; exactly at ...; one run from flipping'."""
+    t = pos_beside(d, which)
+    return ('; ' + t[2:-1]) if t else ''
+
+
+def p2_name(tag):
+    return 'P2, M0 Haiku, %s' % tag
+
+
 def controls_beside(d):
     """One line per control rule (P3 asks for a failed control to be printed beside the verdict)."""
     v, out = d['verdict'], []
-    for key, name in (('P3_controls_M1_default', 'P3, M1, family B'), ('P3m_controls_M1_pooled', 'P3m, M1, B and C pooled')):
+    for key, which, name in (('P3_controls_M1_default', 'P3', 'P3, M1, family B'), ('P3m_controls_M1_pooled', 'P3m', 'P3m, M1, B and C pooled')):
         c = v.get(key)
         if c:
-            out.append('%s: positive %s, negative %s' % (name, 'PASS' if c.get('positive_pass') else 'FAIL',
-                                                        'PASS' if c.get('negative_pass') else 'FAIL'))
+            out.append('%s: positive %s%s, negative %s' % (name, 'PASS' if c.get('positive_pass') else 'FAIL', pos_beside(d, which),
+                                                          'PASS' if c.get('negative_pass') else 'FAIL'))
     for tag, c in d['p2'][-1:]:
-        out.append('P2, M0 Haiku (%s): positive %s, negative %s' % (tag, 'PASS' if c['positive_pass'] else 'FAIL',
-                                                                   'PASS' if c['negative_pass'] else 'FAIL'))
+        out.append('%s: positive %s%s, negative %s' % (p2_name(tag), 'PASS' if c['positive_pass'] else 'FAIL', pos_beside(d, 'P2'),
+                                                      'PASS' if c['negative_pass'] else 'FAIL'))
     return out
 
 
@@ -638,39 +793,50 @@ def findings(d):
                 '; '.join('%s %s' % (a, num(calls.get(a))) for a in arms)))
     sens = v.get('sensitivity_calls_no_guidance') or {}
     if sens:
+        ng = d.get('noguid') or {}
+        rd = ''
+        if ng.get('P4_B') and ng.get('P5_C'):
+            ov = ng.get('P6_overall') or ['n/a', '']
+            rd = (', and the P6 rules on that count read %s in family B (%s) and %s in family C (%s), overall %s (%s)' % (
+                ng['P4_B'].get('verdict'), ng['P4_B'].get('why'), ng['P5_C'].get('verdict'), ng['P5_C'].get('why'), ov[0], ov[1]))
         out.append('Descriptive only, not a verdict: with Skill calls and reads of the installed guidance left out of calls to '
-                   'evidence, the shares of G are %s. The pre-registered count includes those reads; the verdict above uses it.' % (
+                   'evidence, the shares of G are %s%s. The pre-registered count includes those reads; the verdict above uses it.' % (
                        '; '.join('family %s: %s' % (f, ', '.join('%s %s' % (a, num((sens[f].get('shares_on_calls') or {}).get(a), '%.2f'))
                                                                for a in ('skills', 'map', 'both')))
-                                 for f in sorted(sens))))
+                                 for f in sorted(sens)), E(rd)))
     p3 = v.get('P3_controls_M1_default')
     if p3 and (p3.get('none') or [0, 0])[1]:
-        out.append('P3 controls (family B alone): pointer %s against none %s, positive control %s (needs +%s points); starved '
+        out.append('P3 controls (family B alone): pointer %s against none %s, positive control %s (needs +%s points%s); starved '
                    '%s against none %s on the same pools, negative control %s (needs -%s).' % (
                        kn(p3.get('pointer')), kn(p3.get('none')), 'passes' if p3.get('positive_pass') else 'fails',
-                       num(p3.get('positive_margin_needed'), '%g'), kn(p3.get('starved')), kn(p3.get('none_on_starved_pools')),
+                       num(p3.get('positive_margin_needed'), '%g'), E(pos_inline(d, 'P3')), kn(p3.get('starved')),
+                       kn(p3.get('none_on_starved_pools')),
                        'passes' if p3.get('negative_pass') else 'fails', num(p3.get('negative_margin_needed'), '%g')))
     p3m = v.get('P3m_controls_M1_pooled')
     if p3m and (p3m.get('none_pooled') or [0, 0])[1]:
-        out.append('P3m controls (families %s pooled): pointer %s against none %s, positive control %s (needs +%s points); B starved '
+        out.append('P3m controls (families %s pooled): pointer %s against none %s, positive control %s (needs +%s points%s); B starved '
                    '%s against none %s on the same pools, negative control %s (needs -%s).' % (
                        '+'.join(p3m.get('families', [])), kn(p3m.get('pointer_pooled')), kn(p3m.get('none_pooled')),
                        'passes' if p3m.get('positive_pass') else 'fails', num(p3m.get('positive_margin_needed'), '%g'),
-                       kn(p3m.get('starved')), kn(p3m.get('none_on_starved_pools')),
+                       E(pos_inline(d, 'P3m')), kn(p3m.get('starved')), kn(p3m.get('none_on_starved_pools')),
                        'passes' if p3m.get('negative_pass') else 'fails', num(p3m.get('negative_margin_needed'), '%g')))
     for tag, c in (d['p2'][:1] + d['p2'][-1:] if len(d['p2']) > 1 else d['p2']):
-        out.append('P2 controls (M0 Haiku, %s): crib %s against none %s, positive control %s; starved %s against none %s on '
-                   'the same pools, negative control %s.' % (
-                       tag, kn(c['crib']), kn(c['none']), 'passes' if c['positive_pass'] else 'fails', kn(c['starved']),
-                       kn(c['none_on_starved_pools']), 'passes' if c['negative_pass'] else 'fails'))
+        out.append('P2 controls, M0 Haiku, %s: crib %s against none %s, %s points (needs +%s), positive control %s; starved %s '
+                   'against none %s on the same pools, negative control %s.%s' % (
+                       E(tag), kn(c['crib']), kn(c['none']), num(gap(c['crib'], c['none']), '%+.1f'),
+                       num(c.get('positive_margin_needed'), '%g'), 'passes' if c['positive_pass'] else 'fails', kn(c['starved']),
+                       kn(c['none_on_starved_pools']), 'passes' if c['negative_pass'] else 'fails',
+                       ''.join(' %s' % E(n) for n in m0_notes(d, tag))))
     hl = [r for r in d['pilot_runs'] if r.get('healthy') and r.get('healthy_outcome')]
     if hl:
         fa = [r for r in hl if r['healthy_outcome'] == 'false-alarm']
-        by = {}
-        for r in fa:
-            by[(r['family'], r['arm'])] = by.get((r['family'], r['arm']), 0) + 1
-        out.append('Healthy cases: %d of %d runs raised a false alarm%s.' % (
-            len(fa), len(hl), (' (' + ', '.join('%s %s: %d' % (f, a, n) for (f, a), n in sorted(by.items())) + ')') if by else ''))
+        fv = [r for r in hl if failure_verdict(r)]
+        pe = [r for r in hl if healthy_kind(r) == 'placed-elsewhere']
+        by_arm = lambda rs: ', '.join('%s %s: %d' % (f, a, n) for (f, a), n in sorted(count_by(rs, lambda r: (r['family'], r['arm'])).items()))
+        out.append('Healthy cases: %d of %d runs gave a fault verdict. %d of them place every cause in another launch than the '
+                   'keyed one, so they are not false alarms (failure placed elsewhere%s); %d are false alarms%s, each a failure '
+                   'claimed for the session asked about, with a cause placed in the keyed launch or not placed.' % (
+                       len(fv), len(hl), len(pe), (': ' + by_arm(pe)) if pe else '', len(fa), (' (' + by_arm(fa) + ')') if fa else ''))
     m1 = [r for r in d['pilot_runs'] if r.get('mode') == 'm1']
     q = [r['meta'].get('operator_questions') for r in m1 if r['meta'].get('operator_questions') is not None]
     if q:
@@ -708,9 +874,11 @@ def family_block(d, fam, fv, sens):
           ('Noise floor (none, repeat 1 vs 2)', num(fv.get('noise_floor'), '%.3g')),
           ('Verdict', '<b>%s</b> (%s)' % (E(str(fv.get('verdict'))), E(str(fv.get('why', '')))))]
     if sens:
-        kv.append(('Sensitivity, guidance calls left out (descriptive)', 'G = %s calls, p = %s; shares on calls: %s' % (
+        nv = (d.get('noguid') or {}).get('P4_B' if fam == 'B' else 'P5_C') or {}
+        kv.append(('Sensitivity, guidance calls left out (descriptive)', 'G = %s calls, p = %s; shares on calls: %s%s' % (
             num(sens.get('G_calls'), '%.2f'), pval(sens.get('G_calls_p')),
-            ', '.join('%s %s' % (k, num(x, '%.2f')) for k, x in sorted((sens.get('shares_on_calls') or {}).items())))))
+            ', '.join('%s %s' % (k, num(x, '%.2f')) for k, x in sorted((sens.get('shares_on_calls') or {}).items())),
+            E('; the P6 rules on that count read %s (%s)' % (nv['verdict'], nv.get('why', ''))) if nv.get('verdict') else '')))
     dl = '<dl class="kv">%s</dl>' % ''.join('<dt>%s</dt><dd>%s</dd>' % (E(k), v) for k, v in kv)
     t = table(['Arm', 'Located', 'Calls to evidence (mean)', 'Calls, no guidance (mean)', 'Share of G'], rows, (1, 2, 3, 4))
     return '<div><h3>Family %s: %s</h3>%s%s</div>' % (E(fam), E(label_family(d['preds'], fam)), dl, t)
@@ -827,20 +995,161 @@ def neg_rule(margin):
 
 def control_flip_items(d):
     v, out = d['verdict'], []
-    specs = [('P3, family B', v.get('P3_controls_M1_default'), 'pointer', 'none'),
-             ('P3m, B and C pooled', v.get('P3m_controls_M1_pooled'), 'pointer_pooled', 'none_pooled')]
-    specs += [('P2, M0 Haiku (%s)' % tag, c, 'crib', 'none') for tag, c in d['p2'][-1:]]
-    for name, c, pos, none in specs:
+    specs = [('P3, family B', 'P3'), ('P3m, B and C pooled', 'P3m')]
+    specs += [(p2_name(tag), 'P2') for tag, c in d['p2'][-1:]]
+    for name, which in specs:
+        c, pos, none, _ = ctl_dict(d, which)
         if not c or not (c.get(pos) or [0, 0])[1] or not (c.get(none) or [0, 0])[1]:
             continue
-        a, b = c[pos], c[none]
-        fp = flips(a[0], a[1], b[0], b[1], pos_rule(c['positive_margin_needed']))
+        notes, fp = pos_notes(d, which)
         s_, n_ = c.get('starved') or [0, 0], c.get('none_on_starved_pools') or [0, 0]
         fn = flips(s_[0], s_[1], n_[0], n_[1], neg_rule(c['negative_margin_needed'])) if s_[1] and n_[1] else None
-        out.append('%s: positive control %s, %s from flipping; negative control %s, %s from flipping.' % (
-            name, 'PASS' if c.get('positive_pass') else 'FAIL', '%d run(s)' % fp if fp is not None else 'never',
-            'PASS' if c.get('negative_pass') else 'FAIL', '%d run(s)' % fn if fn is not None else 'never'))
+        out.append('%s: positive control %s%s, %s from flipping; negative control %s, %s from flipping.' % (
+            name, 'PASS' if c.get('positive_pass') else 'FAIL', (' (%s)' % '; '.join(notes)) if notes else '',
+            runs_word(fp) if fp is not None else 'never', 'PASS' if c.get('negative_pass') else 'FAIL',
+            runs_word(fn) if fn is not None else 'never'))
     return out
+
+
+# --- where a healthy report's causes are placed (score.py's own functions)
+
+def cause_dt(key, keys, c, day=None):
+    """A cause's time as score.py places it: on the case's day (the extraction records a time, not a day) unless a day is given."""
+    return score.to_local(c.get('launch_time') or '', day, c.get('tz'), score.default_date(key), score.tz_offset(keys, key))
+
+
+def record_day(rec, c):
+    """The day the report gives for the launch a cause names: the date of the launch it lists with the same time."""
+    for l in rec.get('launches') or []:
+        if l.get('time') and l.get('time') == c.get('launch_time') and l.get('date'):
+            return str(l['date'])[:10]
+    return None
+
+
+def window_launches(d, case, key):
+    """[(stamp, start, end, label)] of the launches in a case's window: the case table's for family C (label: its key's
+    component, e.g. 'idle'), else the key's pool."""
+    c = d['book'].real.get(case)
+    if c:
+        p = lambda t: datetime.datetime.strptime(t, '%Y-%m-%dT%H:%M:%S')
+        return [(l['id'].rsplit('/', 1)[-1], p(l['start']), p(l['end']), (l.get('key') or {}).get('component'))
+                for l in c.get('launches', [])]
+    return [(s, a, b, None) for s, a, b in score.pool_launches(d['book'].keys, key)]
+
+
+def healthy_placement(r, d, use_day=False):
+    """Whether a healthy run is a false alarm by score.py's rule (a failure verdict with a cause placed in a keyed launch or
+    not placed), each cause placed on the case's day or, with use_day, on the day the report gives for its launch.
+    Returns (false alarm, [(cause, day used, keyed launch it lands in or None)])."""
+    rec = (r.get('s') or {}).get('record') or {}
+    if rec.get('problems') is None:                    # no extracted record: the scorer's outcome stands
+        return r.get('healthy_outcome') == 'false-alarm', []
+    key = d['book'].key(r['case'], r.get('mode') or 'm0') or {}
+    keys = d['book'].keys
+    keyed = set(l['prefix'] for l in key.get('launches', []))
+    pool = score.pool_launches(keys, key) if keyed else []
+    placed = []
+    for c in score.causes(rec):
+        day = record_day(rec, c) if use_day else None
+        dt = cause_dt(key, keys, c, day)
+        p = score.resolve(dt, pool) if dt is not None else None
+        placed.append((c, day, p if (p in keyed or dt is None) else None, dt is None))
+    if not failure_verdict(r):
+        return False, placed
+    inside = [x for x in placed if x[2] is not None or x[3] or not keyed]
+    return (not placed) or bool(inside), placed
+
+
+def sc1_items(d):
+    """The corrected false-alarm rule trusts the report's placement: how many healthy runs it moved, where their causes land
+    in the case's window, and how the change falls on the control arms."""
+    hl = [r for r in d['pilot_runs'] if r.get('healthy') and r.get('healthy_outcome')]
+    fv = [r for r in hl if failure_verdict(r)]
+    pe = [r for r in fv if healthy_kind(r) == 'placed-elsewhere']
+    if not pe:
+        return []
+    groups = {}
+    for r in pe:
+        key = d['book'].key(r['case'], r.get('mode') or 'm0') or {}
+        wl = window_launches(d, r['case'], key)
+        rec = (r.get('s') or {}).get('record') or {}
+        cs = score.causes(rec) if rec.get('problems') else []
+        places = sorted(set(score.resolve(cause_dt(key, d['book'].keys, c), [w[:3] for w in wl]) or '' for c in cs))
+        groups.setdefault((r['case'], tuple(places)), []).append(r)
+    parts = []
+    for (case, places), rs in sorted(groups.items(), key=lambda kv: (-len(kv[1]), kv[0])):
+        named = [p for p in places if p]
+        if named:
+            lab = dict((w[0], w[3]) for w in window_launches(d, case, d['book'].key(case, rs[0].get('mode') or 'm0') or {}))
+            where = 'launch %s of %s, which the case table lists in the case\'s window%s' % (
+                ' and '.join(named), case, ''.join(' and labels %s' % lab[p] for p in named if lab.get(p)))
+            if '' in places:
+                where += ' (and a time outside the window)'
+        elif places:
+            where = 'a time outside the case\'s window (%s)' % case
+        else:
+            where = 'no cause the record holds (%s)' % case
+        parts.append('%d blame %s' % (len(rs), where))
+    line = ('The corrected false-alarm rule (SC1) trusts the report\'s placement: it does not check that the failure in the other '
+            'launch is real. Of the %d healthy runs that gave a fault verdict, %d place every cause in another launch than the '
+            'keyed one and are not false alarms; %s.' % (len(fv), len(pe), '; '.join(
+                ('%s of them' % p.split(' ', 1)[0]) + ' ' + p.split(' ', 1)[1] if i == 0 else p for i, p in enumerate(parts))))
+    first = dict((x['run_id'], x) for x in (d.get('first_pilot') or {}).get('rows', []))
+    if first:
+        ch = {}
+        for r in hl:
+            o = first.get(r['run_id'])
+            if o is not None and score_of(o) is not None and score_of(r) is not None and score_of(o) != score_of(r):
+                k = (r['family'], r['arm'])
+                ch[k] = ch.get(k, 0) + (1 if score_of(r) else -1)
+        fams = sorted(set(f for f, a in ch if a in ('none', 'pointer')))
+        if fams:
+            nn, np_ = sum(ch.get((f, 'none'), 0) for f in fams), sum(ch.get((f, 'pointer'), 0) for f in fams)
+            line += ' On the control arms the change moved healthy runs by %s, which works %s the positive controls.' % (
+                '; '.join('none %s and pointer %s in family %s' % (num(ch.get((f, 'none'), 0), '%+d'), num(ch.get((f, 'pointer'), 0), '%+d'), f)
+                          for f in fams), 'against' if nn > np_ else ('for' if np_ > nn else 'neither for nor against'))
+    return [line]
+
+
+def day_items(d):
+    """The false alarms that stand only because a cause is placed by its time on the case's day, and how many healthy runs
+    would be false alarms with the day the report gives for that launch (descriptive; score.py is unchanged)."""
+    hl = [r for r in d['pilot_runs'] if r.get('healthy') and r.get('healthy_outcome')]
+    fa = [r for r in hl if r['healthy_outcome'] == 'false-alarm']
+    if not fa:
+        return []
+    by_day = dict((r['run_id'], healthy_placement(r, d, use_day=True)) for r in hl)
+    flipped = [r for r in fa if not by_day[r['run_id']][0]]
+    if not flipped:
+        return []
+    groups = {}
+    for r in flipped:
+        now = healthy_placement(r, d)[1]
+        days = tuple(sorted(set((day, c.get('launch_time')) for c, day, _, _ in by_day[r['run_id']][1] if day)))
+        lands = tuple(sorted(set(p for _, _, p, _ in now if p)))
+        groups.setdefault((r['case'], days, lands), []).append(r)
+    out = []
+    for (case, days, lands), rs in sorted(groups.items()):
+        key = d['book'].key(case, rs[0].get('mode') or 'm0') or {}
+        span = dict((p, (s, e)) for p, s, e in score.pool_launches(d['book'].keys, key))
+        dtxt = ', '.join('%s %s, launch %s_%s' % (datetime.datetime.strptime(dy, '%Y-%m-%d').strftime('%a'), dy, dy[8:10], t)
+                         for dy, t in days)
+        ltxt = ', '.join('%s (%s to %s)' % (p, span[p][0].strftime('%H:%M:%S'), span[p][1].strftime('%H:%M:%S')) if p in span else p
+                         for p in lands)
+        out.append('%d of the %d false alarms (%s; case %s) give the day of the failure they blame (%s), but the scorer places a '
+                   'cause by its time alone on the case\'s day (the extraction records a time, not a day), so it lands inside the '
+                   'keyed launch %s and they stay false alarms.' % (
+                       len(rs), len(fa), ', '.join(rid(r, d['nb']) for r in sorted(rs, key=lambda r: r['run_id'])), case,
+                       dtxt or 'no day', ltxt or 'n/a'))
+    left = [r for r in hl if by_day[r['run_id']][0]]
+    why = []
+    for r in left:
+        ins = [c for c, _, p, unplaced in by_day[r['run_id']][1] if p or unplaced]
+        why.append('%s, which %s' % (rid(r, d['nb']), ('also blames the keyed launch: %s' % ', '.join(
+            run_text(r, c.get('component') or '?', 80) for c in ins if c.get('component'))) if ins else 'gives no cause'))
+    out.append('With the day used, %d of the %d healthy runs would be a false alarm%s.' % (
+        len(left), len(hl), (' (%s)' % '; '.join(why)) if why else ''))
+    return [' '.join(out)]
 
 
 def guidance_items(d):
@@ -888,20 +1197,38 @@ def timing_items(d):
     m0s = sorted(r['meta']['started'] for r in (d['m0']['runs'] if d['m0'] else []) if r['meta'].get('started'))
     if not starts:
         return []
-    import datetime
     f = lambda t: datetime.datetime.strptime(t.rstrip('Z'), '%Y-%m-%dT%H:%M:%S')
-    gap = (f(starts[0]) - f(d['p3m_written'])).total_seconds() / 60.0
+    mins = (f(starts[0]) - f(d['p3m_written'])).total_seconds() / 60.0
     line = 'P3m was written at %s, %s minutes before the first counted run started (%s)' % (
-        d['p3m_written'], num(gap, '%.0f'), starts[0])
+        d['p3m_written'], num(mins, '%.0f'), starts[0])
     if m0s:
         line += ', and after the M0 control runs (the last started at %s)' % m0s[-1]
     return [line + '.']
 
 
+def first_counted_start(d):
+    starts = sorted(r['meta']['started'] for r in d['pilot_runs'] if r['meta'].get('started') and r.get('model') == d['model'])
+    return starts[0] if starts else None
+
+
+def amendment_note(d):
+    """'The predictions file labels the amendment T1; it was written at about T2, before the first counted run started (T3).'"""
+    am = (d['preds'].get('amendments') or [{}])[0]
+    if not d.get('amendment_written') or not am.get('when'):
+        return ''
+    first = first_counted_start(d)
+    f = lambda t: datetime.datetime.strptime(t.rstrip('Z'), '%Y-%m-%dT%H:%M' + (':%S' if t.count(':') == 2 else ''))
+    rel = ('before' if f(d['amendment_written']) < f(first) else 'after') if first else ''
+    return ('The predictions file labels the amendment %s; it was written at about %s, %s the first counted run started (%s).'
+            % (str(am['when']).split(',')[0].strip(), d['amendment_written'], rel, first) if first else
+            'The predictions file labels the amendment %s; it was written at about %s.' % (str(am['when']).split(',')[0].strip(), d['amendment_written']))
+
+
 def trust_section(d):
-    items = guidance_items(d) + variant_items(d) + control_flip_items(d) + timing_items(d) + list(d.get('trust_notes') or [])
+    items = (guidance_items(d) + variant_items(d) + control_flip_items(d) + sc1_items(d) + day_items(d) + timing_items(d)
+             + list(d.get('trust_notes') or []))
     body = ('<p class="muted">Limits that bear on the verdict and the controls. Numbers are computed from the input files; '
-            'the lines without numbers are notes given to the generator.</p><ul class="findings">%s</ul>'
+            'the last lines are notes given to the generator.</p><ul class="findings">%s</ul>'
             % ''.join('<li>%s</li>' % E(x) for x in items))
     return section('trust', 'How far to trust it', body)
 
@@ -921,7 +1248,7 @@ def arm_rows(runs, d):
         cens = sum(1 for r in rs if r['ev'].get('censored'))
         has_ev = any(r['ev'] for r in rs)
         fault = [r for r in rs if not r.get('healthy') and r.get('cause_pass') is not None]
-        hl = [r.get('healthy_outcome') for r in rs if r.get('healthy') and r.get('healthy_outcome')]
+        hl = [healthy_kind(r) for r in rs if r.get('healthy') and r.get('healthy_outcome')]
         oq = [r['meta'].get('operator_questions') for r in rs if r['meta'].get('operator_questions') is not None]
         out.append(['<b>%s</b>' % E(fam), '<b>%s</b>' % E(arm), E(model or ''), str(len(rs)),
                     frac(sum(1 for x in loc if x), len(loc)),
@@ -929,7 +1256,7 @@ def arm_rows(runs, d):
                     '%s / %s' % (num(mean(cng)), num(median(cng), '%g')),
                     str(cens) if has_ev else 'n/a',
                     frac(sum(1 for r in fault if r['cause_pass']), len(fault)) if fault else '',
-                    ('%d / %d / %d' % (hl.count('clean'), hl.count('benign-defect-noted'), hl.count('false-alarm'))) if hl else '',
+                    ' / '.join(str(hl.count(k)) for k in HEALTHY_KINDS) if hl else '',
                     ('%d / %d' % (sum(1 for x in oq if x), sum(oq))) if oq else 'n/a',
                     usd(mean([r.get('cost_usd') for r in rs]), '$%.3f'), num(mean([r.get('seconds') for r in rs])),
                     str(sum(1 for r in rs if r.get('error')))])
@@ -939,7 +1266,8 @@ def arm_rows(runs, d):
 def arms_section(d):
     head = ['Family', 'Arm', 'Model', 'Runs', 'Located', 'Calls to evidence: mean / median',
             'Calls, no guidance: mean / median', 'Never reached evidence', 'Cause pass (fault cases)',
-            'Healthy: clean / benign / false alarm', 'Asked operator: runs / questions', 'Mean usage', 'Mean seconds', 'Errors']
+            'Healthy: clean / benign / failure placed elsewhere / false alarm', 'Asked operator: runs / questions', 'Mean usage',
+            'Mean seconds', 'Errors']
     cols = tuple(range(3, 14))
     body = [table(head, arm_rows(d['pilot_runs'], d), cols)]
     m0 = d['m0']
@@ -956,6 +1284,9 @@ def arms_section(d):
         for w in (what if isinstance(what, list) else [what]):
             if w:
                 items.append('<li><b>Amendment (%s)</b>: %s</li>' % (E(str(am.get('when', ''))), E(w)))
+    an = amendment_note(d)
+    if an:
+        items.append('<li><b>Amendment time</b>: %s</li>' % E(an))
     body.append('<p class="muted">Calls to evidence: the censored value (total + 1) counts for a run that never read the '
                 'keyed launch; "never reached evidence" counts those runs. Asked the operator: runs with at least one '
                 'ask-operator question, and all questions they asked. Calls, no guidance: Skill calls and reads of the installed guidance left out (descriptive). Definitions from the predictions file, with its amendments (an amendment replaces the definition above it):</p><ul class="muted">%s</ul>'
@@ -992,18 +1323,18 @@ def pc(x):
     return 'n/a' if x is None or (isinstance(x, float) and math.isnan(x)) else '%s%%' % fixed(x, 1)
 
 
-def margin_lines(c, pos):
+def margin_lines(c, pos, pos_note=''):
     a = c.get(pos) or [0, 0, float('nan')]
     b = c.get('none') or c.get('none_pooled') or [0, 0, float('nan')]
     s = c.get('starved') or [0, 0, float('nan')]
     nb = c.get('none_on_starved_pools') or [0, 0, float('nan')]
     d1 = (a[2] - b[2]) if a[1] and b[1] else None
     d2 = (s[2] - nb[2]) if s[1] and nb[1] else None
-    return ('<dl class="kv"><dt>Positive control</dt><dd>%s %s minus none %s = %s points (needs +%s) %s</dd>'
+    return ('<dl class="kv"><dt>Positive control</dt><dd>%s %s minus none %s = %s points (needs +%s) %s%s</dd>'
             '<dt>Negative control</dt><dd>starved %s minus none on the same pools %s = %s points (needs -%s) %s</dd>'
             '<dt>Shown able to detect a difference</dt><dd>%s</dd></dl>' % (
                 E(pos), pc(a[2]), pc(b[2]), num(d1, '%+.1f'), num(c.get('positive_margin_needed'), '%g'),
-                pf(c.get('positive_pass')), pc(s[2]), pc(nb[2]), num(d2, '%+.1f'),
+                pf(c.get('positive_pass')), E(pos_note), pc(s[2]), pc(nb[2]), num(d2, '%+.1f'),
                 num(c.get('negative_margin_needed'), '%g'), pf(c.get('negative_pass')), yes(c.get('detects_difference'))))
 
 
@@ -1026,12 +1357,14 @@ def p2_block(d):
         rows.append(['<b>%s</b>' % E(label)] + [kn(c0[x['label']].get(arm)) for x in sc] +
                     [id_lists(rs, nb, firstmap if len(sc) > 1 else None, first['label']) if arm != 'none_on_starved_pools'
                      else '<span class="muted">the none runs of those cases, above</span>'])
-    body.append(table(['Arm'] + ['Score, %s' % x['label'] for x in sc] + ['Runs (marked by the %s scoring)' % cur['label']],
+    body.append(table(['Arm'] + ['Score, %s' % x['label'] for x in sc] + ['Runs, marked by the current scoring'],
                       rows, tuple(range(1, len(sc) + 1))))
     body.append('<p class="muted">%s.</p>' % '; '.join('%s: <code>%s</code> (keys sha256 <code>%s</code>)' % (
-        E(x['label'][:1].upper() + x['label'][1:]), E(x['file']), E((x['meta'].get('keys_sha256') or '')[:12])) for x in sc))
-    body.append('<div class="grid2">%s</div>' % ''.join('<div><p class="meta"><b>%s</b></p>%s</div>' % (
-        E(x['label'][:1].upper() + x['label'][1:]), margin_lines(c0[x['label']], 'crib')) for x in sc))
+        E(x['label'][:1].upper() + x['label'][1:]), E(x['file']), E((x['meta'].get('keys_sha256') or '')[:12]))
+        for x in m0.get('files') or sc))
+    body.append('<div class="grid2">%s</div>' % ''.join('<div><p class="meta"><b>%s</b></p>%s%s</div>' % (
+        E(x['label'][:1].upper() + x['label'][1:]), ''.join('<p class="muted">%s</p>' % E(n) for n in m0_notes(d, x['label'])),
+        margin_lines(c0[x['label']], 'crib')) for x in sc))
     vp2 = (d['verdict'].get('P2_controls_M0_haiku') or {})
     if (vp2.get('none') or [0, 0])[1]:
         body.append('<p class="meta">The pilot rows also hold M0 Haiku runs: %s</p>' % margin_lines(vp2, 'crib'))
@@ -1054,7 +1387,7 @@ def p3_block(d):
                            ('none_on_starved_pools', 'none, on the starved pools', [r for r in b if r['arm'] == 'none' and r['case'] in sc])):
         rows.append(['<b>%s</b>' % E(label), kn(c.get(arm)), id_lists(rs, d['nb'])])
     body.append(table(['Arm', 'Score', 'Runs'], rows, (1,)))
-    body.append(margin_lines(c, 'pointer'))
+    body.append(margin_lines(c, 'pointer', pos_beside(d, 'P3')))
     return ''.join(body)
 
 
@@ -1081,7 +1414,7 @@ def p3m_block(d):
     body.append(table(['Arm', 'Score', 'Per family', 'Runs'], rows, (1,)))
     cc = dict(c)
     cc['pointer'], cc['none'] = c.get('pointer_pooled'), c.get('none_pooled')
-    body.append(margin_lines(cc, 'pointer'))
+    body.append(margin_lines(cc, 'pointer', pos_beside(d, 'P3m')))
     return ''.join(body)
 
 
@@ -1152,8 +1485,12 @@ def cases_section(d):
     body = ['<p class="muted">One mark per run, in repeat order (hover or long-press for the run id). Fault cases: '
             '<span class="m pass">cause</span> Cause passed (Located included), <span class="m part">located</span> the '
             'keyed launch but not the cause, <span class="m fail">missed</span> not located. Healthy cases: '
-            '<span class="m pass">clean</span> or <span class="m pass">benign</span> (a defect noted as harmless) on the '
-            'keyed launch, <span class="m part">clean, not located</span> on another launch, <span class="m fail">false alarm</span>. '
+            '<span class="m pass">clean</span> (no problem noted), <span class="m pass">benign</span> (a defect noted as harmless), '
+            '<span class="m pass">failure placed elsewhere</span> (the report concludes a failure but places every cause in '
+            'another launch than the keyed one, so it is not a false alarm; the scorer does not check that failure), '
+            '<span class="m fail">false alarm</span> (a failure claimed for the session asked about: a cause placed in the keyed '
+            'launch or not placed). A healthy mark ends in <span class="m part">not located</span> when the report concluded '
+            'about another launch than the keyed one. '
             '<span class="m na">error</span>: the run or its scoring failed.</p>']
     for fam in ('B', 'C', 'A'):
         body.append(cases_table(d, fam, d['pilot_runs'], 'Family %s: %s' % (fam, label_family(d['preds'], fam))))
@@ -1187,10 +1524,13 @@ def fact_items(run, d):
         ltxt += '; names the keyed launch elsewhere'
     items.append(('located', run_text(run, ltxt), bool(loc)))
     if run.get('healthy'):
-        items.append(('outcome', o.get('outcome') or 'n/a', o.get('outcome') != 'false-alarm'))
+        hk = healthy_kind(run)
+        items.append(('outcome', (o.get('outcome') or 'n/a') + (' (a failure placed in another launch)' if hk == 'placed-elsewhere' else ''),
+                      o.get('outcome') != 'false-alarm'))
         cg = f.get('causes_given') or []
-        if cg and o.get('outcome') == 'false-alarm':
-            items.append(('blamed', run_text(run, '%s in %s' % (cg[0].get('component') or '?', cg[0].get('stage') or '?'), 120), False))
+        if cg and hk in ('false-alarm', 'placed-elsewhere'):
+            items.append(('blamed', run_text(run, '%s in %s' % (cg[0].get('component') or '?', cg[0].get('stage') or '?'), 120),
+                          hk != 'false-alarm'))
         return items
     items.append(('report verdict', f.get('verdict_kind') or 'n/a', f.get('verdict_kind') == 'fault'))
     kc, ks = (key.get('component') or {}).get('name'), (key.get('stage') or {}).get('name')
@@ -1210,10 +1550,18 @@ def missed_section(d):
     nb = d['nb']
     runs = [r for r in d['pilot_runs'] if r['arm'] != 'starved' and mark(r)[0] != 'pass']
     starved_ok = [r for r in d['pilot_runs'] if r['arm'] == 'starved' and score_of(r)]
-    body = ['<p class="muted">Every pilot run that did not pass, grouped by case: its arm, run id, the facts the scorer '
+    failed = [r for r in runs if score_of(r) is not True]
+    fault_failed = [r for r in failed if not r.get('healthy') and score_of(r) is False]
+    passed = [r for r in runs if score_of(r) is True]
+    body = ['<p class="muted">%d pilot runs, grouped by case: the %d that did not pass (%d fault runs that failed Cause, %d '
+            'healthy false alarms%s) and the %d healthy runs that passed (no false alarm) but concluded about another launch '
+            'than the keyed one (%d of them with a failure placed elsewhere). For each: its arm, run id, the facts the scorer '
             'checked (failed ones in red) and the opening of its report (at most %d characters; family C at most %d, with '
             'lines naming people, home folders or e-mail addresses dropped). Starved runs are left out (that control is '
             'meant to fail); starved runs that passed: %s.</p>' % (
+                len(runs), len(failed), len(fault_failed), sum(1 for r in failed if r.get('healthy') and score_of(r) is False),
+                (', %d errors or not scored' % sum(1 for r in failed if score_of(r) is None)) if any(score_of(r) is None for r in failed) else '',
+                len(passed), sum(1 for r in passed if healthy_kind(r) == 'placed-elsewhere'),
                 QUOTE_MAX, QUOTE_MAX_C, ', '.join('<code>%s</code>' % E(rid(r, nb)) for r in starved_ok) or 'none')]
     for fam in ('B', 'C', 'A'):
         for case in case_order(d, fam) + sorted(set(r['case'] for r in runs if r['family'] == fam) - set(case_order(d, fam))):
@@ -1232,13 +1580,14 @@ def missed_section(d):
                     E(rid(r, nb)), chip(r), facts, ('<div class="quote">%s</div>' % E(quote)) if quote else ''))
             part.append('</div>')
             body.append(''.join(part))
-    return section('missed', 'Cases an arm missed (%d runs)' % len(runs), ''.join(body))
+    return section('missed', '%s (%d runs)' % (MISSED_TITLE, len(runs)), ''.join(body))
 
 
 # --- usage
 
 def usage_section(d):
-    rows, ag_t, sc_t = [], 0.0, 0.0
+    rows, ag_t, sc_t, notes = [], 0.0, 0.0, []
+    fp = d.get('first_pilot')
     for b in d['batches']:
         if b['kind'] == 'pilot':
             u = b['usage']
@@ -1251,22 +1600,34 @@ def usage_section(d):
             fresh = u.get('scorer_fresh_usd_this_call')
             if fresh is None:
                 fresh = (b.get('scored_meta') or {}).get('fresh_cost_usd_this_run')
-            rows.append(['<code>%s</code>' % E(b['id']), 'pilot', str(len(b['runs'])), usd(ag), usd(sc), usd(fresh), usd(ag + sc)])
+            if fp:           # a re-score: what was spent is the first scoring plus this scoring's fresh calls
+                fu = fp['usage']
+                first_sc = fu.get('scorer_fresh_usd_this_call', fu.get('scorer_usd')) or 0.0
+                notes.append('%s: the corrected scoring\'s calls, each at its first cost (cached calls included), come to %s '
+                             '(usage.json scorer_usd); the scorer column is what was spent, the first scoring (%s) plus the fresh '
+                             'calls of the re-score.' % (b['id'], usd(sc), fp['id']))
+                sc_txt = '%s first scoring (%s) + %s re-score (%s)' % (usd(first_sc), E(fp['id']), usd(fresh), E(b['id']))
+                sc = first_sc + (fresh or 0.0)
+            else:
+                sc_txt = usd(sc)
+            rows.append(['<code>%s</code>' % E(b['id']), 'pilot', str(len(b['runs'])), usd(ag), sc_txt, usd(fresh), usd(ag + sc)])
         else:
+            files = b.get('files') or b['scorings']
             ag = sum(r.get('cost_usd') or 0 for r in b['orig'])
             sc = b['orig_meta'].get('scorer_cost_usd') or 0.0
-            later = [(x['label'], x['meta'].get('fresh_cost_usd_this_run')) for x in b['scorings'][1:]]
+            later = [(x['label'], x['meta'].get('fresh_cost_usd_this_run')) for x in files[1:]]
             fr = sum(v or 0 for _, v in later)
             rows.append(['<code>%s</code>' % E(b['id']), 'M0 controls', str(len(b['orig'])), usd(ag),
                          usd(sc) + ''.join(' + %s re-score (%s)' % (usd(v), E(l)) for l, v in later if v is not None),
-                         usd(b['scorings'][-1]['meta'].get('fresh_cost_usd_this_run')), usd(ag + sc + fr)])
+                         usd(files[-1]['meta'].get('fresh_cost_usd_this_run')), usd(ag + sc + fr)])
             sc += fr
         ag_t += ag
         sc_t += sc
     rows.append(['<b>Total</b>', '', str(sum(len(b['runs']) for b in d['batches'])), '<b>%s</b>' % usd(ag_t), '<b>%s</b>' % usd(sc_t), '',
                  '<b>%s</b>' % usd(ag_t + sc_t)])
-    body = [table(['Batch', 'Kind', 'Runs', 'Agent', 'Scorer (cached calls at first cost)', 'Scorer, fresh in the last call', 'Total'],
+    body = [table(['Batch', 'Kind', 'Runs', 'Agent', 'Scorer: first scoring + re-scores', 'Scorer, fresh in the last call', 'Total'],
                   rows, (2, 3, 4, 5, 6))]
+    body += ['<p class="muted">%s</p>' % E(n) for n in notes]
     u = (d['preds'].get('definitions') or {}).get('scores', {}).get('Usage')
     if u:
         body.append('<p class="muted">Usage: %s</p>' % E(u))
@@ -1340,6 +1701,13 @@ def gather(a):
                 r2['calls'] = alt[r['run_id']]
             vrows.append(r2)
         variants.append((label, run_verdict(vrows, a.model), sum(1 for r in pilot_runs if r['run_id'] not in alt)))
+    noguid = run_verdict([dict(r, calls=r.get('calls_no_guidance')) for r in pilot_runs], a.model)
+    first_pilot = None
+    if a.first_pilot:
+        fpath = os.path.abspath(a.first_pilot)
+        first_pilot = {'id': os.path.basename(fpath.rstrip('/')), 'path': fpath, 'rows': read_json(os.path.join(fpath, 'rows.json')),
+                       'usage': read_opt(os.path.join(fpath, 'usage.json'), {}) or {}}
+    m0_notes_ = [tuple(x.split('=', 1)) for x in a.m0_scoring_note]
     scorer_meta = (pilots[0]['scored_meta'] if pilots and pilots[0]['scored_meta'] else (m0 or {}).get('orig_meta', {}))
     for b in pilots + ([m0] if m0 else []):
         b['scoring_commit'] = a.scoring_commit
@@ -1353,7 +1721,21 @@ def gather(a):
             'warnings': warnings, 'p2': p2, 'model': a.model, 'commit': a.commit, 'title': a.title, 'notes': a.note,
             'verdict_notes': a.verdict_note, 'first_verdict': first_verdict, 'first_p2': first_p2, 'first_sources': first_sources,
             'correction_notes': a.correction_note, 'variants': variants, 'trust_notes': a.trust_note, 'p3m_written': a.p3m_written,
-            'scorer_meta': scorer_meta, 'nb': len(pilots)}
+            'scorer_meta': scorer_meta, 'nb': len(pilots), 'noguid': noguid, 'first_pilot': first_pilot,
+            'scoring_commit': a.scoring_commit, 'scoring_note': a.scoring_note, 'm0_scoring_notes': m0_notes_,
+            'amendment_written': a.amendment_written}
+
+
+def placement_warnings(d):
+    """report_v3 recomputes each healthy run's false alarm from its record with score.py's functions (for the
+    day-used line); a run where that differs from scored.json is listed, so the line is not trusted blindly."""
+    bad = []
+    for r in d['pilot_runs']:
+        if r.get('healthy') and r.get('healthy_outcome') and ((r.get('s') or {}).get('record') or {}).get('problems') is not None:
+            if healthy_placement(r, d)[0] != (r['healthy_outcome'] == 'false-alarm'):
+                bad.append(r['run_id'])
+    return ['%d healthy run(s) where the false alarm recomputed from the record differs from scored.json: %s'
+            % (len(bad), ', '.join(bad))] if bad else []
 
 
 def main(argv=None):
@@ -1383,9 +1765,18 @@ def main(argv=None):
                          "on the rows with it and the result goes under 'How far to trust it' (repeatable)")
     ap.add_argument('--p3m-written', help="when P3m was written (UTC, YYYY-MM-DDTHH:MM:SSZ), set against the first counted run")
     ap.add_argument('--trust-note', action='append', default=[], help="a line under 'How far to trust it' (repeatable)")
+    ap.add_argument('--first-pilot', help="the pilot folder as first scored (rows.json, usage.json): the header names it, usage "
+                                          "adds its scoring spend to the re-score's, and 'How far to trust it' counts the healthy "
+                                          "runs the re-score moved")
+    ap.add_argument('--scoring-note', help='a note beside the scoring commit in the header')
+    ap.add_argument('--m0-scoring-note', action='append', default=[],
+                    help="LABEL=TEXT: a note printed with that M0 scoring's P2 lines (repeatable)")
+    ap.add_argument('--amendment-written', help="when the predictions file's amendment was written (UTC), set against its "
+                                                "label and the first counted run under the definitions")
     ap.add_argument('--out', required=True, help='the HTML file to write')
     a = ap.parse_args(argv)
     d = gather(a)
+    d['warnings'] += placement_warnings(d)
     page = build(d)
     with open(a.out, 'w') as f:
         f.write(page)

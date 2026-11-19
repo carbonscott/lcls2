@@ -552,12 +552,18 @@ def main(argv=None):
     ap.add_argument('--out', default=os.path.join(HERE, 'keys_v3.json'))
     ap.add_argument('--check', action='store_true')
     a = ap.parse_args(argv)
-    text = json.dumps(build(json.load(open(a.catalog)), read_pools(a.pools)), indent=1) + '\n'
+    with open(a.catalog) as f:
+        cat = json.load(f)
+    text = json.dumps(build(cat, read_pools(a.pools)), indent=1) + '\n'
     if a.check:
-        same = os.path.exists(a.out) and open(a.out).read() == text
+        same = False
+        if os.path.exists(a.out):
+            with open(a.out) as f:
+                same = f.read() == text
         print('%s is %s' % (a.out, 'up to date' if same else 'OUT OF DATE: run make_keys_v3.py'))
         return 0 if same else 1
-    open(a.out, 'w').write(text)
+    with open(a.out, 'w') as f:
+        f.write(text)
     print('wrote %s' % a.out)
     return 0
 

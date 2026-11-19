@@ -124,7 +124,8 @@ def build(rows, cases, title, notes):
                  '<div class="duo">' % (E(c['id']), E(c['question']), E(f['summary'] if f else 'No fault.')))
         for arm in arms:
             for r in sorted([r for r in rows if r['arm'] == arm and r['case'] == c['id']], key=lambda r: r['repeat']):
-                text = open(os.path.join(r['run_dir'], 'final.md'), errors='replace').read().strip()
+                with open(os.path.join(r['run_dir'], 'final.md'), errors='replace') as fh:
+                    text = fh.read().strip()
                 p.append('<div><b>%s</b> r%d %s<br><span class="muted">%s</span><div class="q">%s</div></div>' % (
                     E(arm), r['repeat'], cell([r]), E(r['cause'].get('reason') or ''), E(text[:420]) + ('...' if len(text) > 420 else '')))
         p.append('</div></div>')
@@ -142,7 +143,8 @@ def main(argv=None):
     a = ap.parse_args(argv)
     cases = grade.load_catalog(a.catalog)
     rows = grade.collect(a.results, cases)
-    open(a.out, 'w').write(build(rows, cases, a.title, a.note))
+    with open(a.out, 'w') as f:
+        f.write(build(rows, cases, a.title, a.note))
     print('%s: %d runs, %d arms' % (a.out, len(rows), len({r['arm'] for r in rows})))
     return 0
 
