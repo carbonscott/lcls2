@@ -417,7 +417,9 @@ class Evidence(unittest.TestCase):
         os.makedirs(self.root)
         open(os.path.join(self.root, self.KEYED[0]), 'w').write('%s\n%s\nshort\n' % (self.BANNER, self.LINE))
         if shutil.which('zstd'):
-            subprocess.run(['zstd', '-q', '-o', os.path.join(self.root, self.KEYED[1]), '-'], input=b'2026-11-17 21:13:21,000 mfx-drp[7]: <I> Collector thread started now\n')
+            z = subprocess.run(['zstd', '-q', '-c'], input=b'2026-11-17 21:13:21,000 mfx-drp[7]: <I> Collector thread started now\n',
+                               stdout=subprocess.PIPE, check=True).stdout     # -c, not '-o FILE -': zstd 1.4.4 (RHEL 8) misreads that
+            open(os.path.join(self.root, self.KEYED[1]), 'wb').write(z)
         open(os.path.join(self.root, '16_08:00:00_node1:control.log'), 'w').write('%s\n%s\n' % (self.BANNER, self.OTHER))
         self.prints = evidence.fingerprints(os.path.join(self.tmp, 'root'), self.KEYED)
 
