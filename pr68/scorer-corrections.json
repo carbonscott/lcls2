@@ -1,0 +1,17 @@
+{
+ "written": "2026-11-19 (UTC, see file mtime and sha256 in the ledger), BEFORE any re-scoring with corrected code",
+ "trigger": "SKEPTIC-5 review of the 162-run pilot (runs/v3-m1, scored at 4e630ea90)",
+ "principle": "Fix only places where score.py departs from definitions written before the runs (predictions.json 'definitions' and the 15:38Z amendment). No answer-key changes. No change to calls to evidence (evidence.py). Report as-first-scored and corrected numbers side by side; the corrected numbers are the run of record.",
+ "corrections": [
+  {"id": "SC1-false-alarm-launch",
+   "definition": "Healthy outcome false-alarm = 'a benign defect presented as the cause of a failure' of the session asked about.",
+   "bug": "score_healthy labels every report whose verdict is 'fault' a false alarm, even when every cause it gives is placed in a different launch than the keyed (healthy) one (SKEPTIC-5: all 15 family-C false alarms point at a neighbouring launch).",
+   "fix": "A healthy-case report is a false alarm iff it gives a failure verdict (fault, or unsure with causes) AND at least one cause is placed in a keyed launch or cannot be placed (no usable time). A report whose every cause resolves outside the keyed launches is not a false alarm (benign-defect-noted if it notes problems, else clean). A fault verdict with no causes stays a false alarm. Applies to all keys (M0 and M1)."},
+  {"id": "SC2-conclude-today",
+   "definition": "Located (cold start) = the launch the report concludes about is the keyed one.",
+   "bug": "The CONCLUDE call is not told the case's 'now', so a report's 'yesterday' or weekday is turned into an invented date (SKEPTIC-5: 2026-11-18 for B.pointer r2d213e32, 2 of 3 reruns).",
+   "fix": "CONCLUDE_PROMPT states the moment the operator asked (the case's now, as given to the agent) and asks for dates resolved against it, null when the report gives no day. Its cache is keyed by the full prompt so every cold-start report is re-concluded."}
+ ],
+ "not_changed": ["day-big-window key (race mechanism not accepted; SKEPTIC-2/5): a key change after results; listed as a known gap", "evidence.py summary-row counting (by the 15:38Z amendment a keyed line anywhere in an output line counts); reported as sensitivity", "healthy non-answers pass as not-false-alarm (by definition)", "noise-floor and verdict rules"],
+ "rescore_plan": ["v2 204 reports -> P1 agreement on the 40 hand labels (+10 miss-enriched) and P1b traps", "m0-haiku-controls (66 runs) -> P2", "runs/v3-m1 (162) -> P3, P3m, P4, P5, P6"]
+}

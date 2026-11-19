@@ -1,6 +1,6 @@
 17:29:18 UTC vm:run$ git -C $REPO log -1 --format='HEAD %H  %cI' evals/v3-pr; git -C $REPO rev-parse evals/v3-pr^{tree}; git -C $REPO ls-remote origin refs/heads/evals/v3-pr; date -u; python3 --version
-=HEAD 76b81c9cc461ed113f63d43f9431129583729fcb  2026-11-19T17:28:04+00:00
->9b0c8ad6ef576d6ca0cb7c7720864fad1371de8f
+HEAD 76b81c9cc461ed113f63d43f9431129583729fcb  2026-11-19T17:28:04+00:00
+9b0c8ad6ef576d6ca0cb7c7720864fad1371de8f
 76b81c9cc461ed113f63d43f9431129583729fcb	refs/heads/evals/v3-pr
 Thu Nov 19 17:29:20 UTC 2026
 Python 3.12.3

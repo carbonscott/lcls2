@@ -33,9 +33,9 @@
    81.25
   ],
   "pointer": [
-   14,
+   15,
    16,
-   87.5
+   93.75
   ],
   "none_on_starved_pools": [
    9,
@@ -49,9 +49,9 @@
   ],
   "positive_margin_needed": 12.5,
   "negative_margin_needed": 25.0,
-  "positive_pass": false,
+  "positive_pass": true,
   "negative_pass": true,
-  "detects_difference": false
+  "detects_difference": true
  },
  "P3m_controls_M1_pooled": {
   "families": [
@@ -59,14 +59,14 @@
    "C"
   ],
   "none_pooled": [
-   23,
+   25,
    30,
-   76.66666666666667
+   83.33333333333333
   ],
   "pointer_pooled": [
-   28,
+   29,
    30,
-   93.33333333333333
+   96.66666666666667
   ],
   "per_family": {
    "B": {
@@ -75,13 +75,13 @@
      16
     ],
     "pointer": [
-     14,
+     15,
      16
     ]
    },
    "C": {
     "none": [
-     10,
+     12,
      14
     ],
     "pointer": [
@@ -132,11 +132,11 @@
     16
    ],
    "pointer": [
-    15,
+    16,
     16
    ]
   },
-  "G_loc": 0.0625,
+  "G_loc": 0.125,
   "G_loc_real": false,
   "calls": {
    "none": 6.5,

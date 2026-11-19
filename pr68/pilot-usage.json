@@ -1,13 +1,11 @@
 {
  "runs": 162,
  "agent_usd": 147.947,
- "scorer_usd": 7.7349,
- "scorer_fresh_usd_this_call": 7.7349,
- "scorer_usd_all_rows_in_out": 7.7349,
- "projected_usd": 333.72,
- "estimate_per_run": {
-  "default": 2.0
- },
+ "scorer_usd": 7.8589,
+ "scorer_fresh_usd_this_call": 2.1373,
+ "scorer_usd_all_rows_in_out": 7.8589,
+ "projected_usd": 0,
+ "estimate_per_run": {},
  "scorer_estimate_per_run": 0.06,
- "total_usd": 155.6819
+ "total_usd": 155.8059
 }

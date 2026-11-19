@@ -1,0 +1,260 @@
+{
+ "P2_controls_M0_haiku": {
+  "none": [
+   0,
+   0,
+   NaN
+  ],
+  "crib": [
+   0,
+   0,
+   NaN
+  ],
+  "none_on_starved_pools": [
+   0,
+   0,
+   NaN
+  ],
+  "starved": [
+   0,
+   0,
+   NaN
+  ],
+  "positive_margin_needed": 20.0,
+  "negative_margin_needed": 25.0,
+  "positive_pass": false,
+  "negative_pass": false,
+  "detects_difference": false
+ },
+ "P3_controls_M1_default": {
+  "none": [
+   13,
+   16,
+   81.25
+  ],
+  "pointer": [
+   14,
+   16,
+   87.5
+  ],
+  "none_on_starved_pools": [
+   9,
+   12,
+   75.0
+  ],
+  "starved": [
+   3,
+   12,
+   25.0
+  ],
+  "positive_margin_needed": 12.5,
+  "negative_margin_needed": 25.0,
+  "positive_pass": false,
+  "negative_pass": true,
+  "detects_difference": false
+ },
+ "P3m_controls_M1_pooled": {
+  "families": [
+   "B",
+   "C"
+  ],
+  "none_pooled": [
+   23,
+   30,
+   76.66666666666667
+  ],
+  "pointer_pooled": [
+   28,
+   30,
+   93.33333333333333
+  ],
+  "per_family": {
+   "B": {
+    "none": [
+     13,
+     16
+    ],
+    "pointer": [
+     14,
+     16
+    ]
+   },
+   "C": {
+    "none": [
+     10,
+     14
+    ],
+    "pointer": [
+     14,
+     14
+    ]
+   }
+  },
+  "negative_family": "B",
+  "none_on_starved_pools": [
+   9,
+   12,
+   75.0
+  ],
+  "starved": [
+   3,
+   12,
+   25.0
+  ],
+  "positive_margin_needed": 12.5,
+  "negative_margin_needed": 25.0,
+  "positive_pass": true,
+  "negative_pass": true,
+  "detects_difference": true
+ },
+ "P4_B": {
+  "family": "B",
+  "pairs": 16,
+  "G_calls": 4.5625,
+  "G_calls_p": 1.52587890625e-05,
+  "G_calls_nonzero_pairs": 16,
+  "G_calls_real": true,
+  "located": {
+   "none": [
+    14,
+    16
+   ],
+   "skills": [
+    14,
+    16
+   ],
+   "map": [
+    16,
+    16
+   ],
+   "both": [
+    16,
+    16
+   ],
+   "pointer": [
+    15,
+    16
+   ]
+  },
+  "G_loc": 0.0625,
+  "G_loc_real": false,
+  "calls": {
+   "none": 6.5,
+   "skills": 6.875,
+   "map": 6.1875,
+   "both": 7.6875,
+   "pointer": 1.9375
+  },
+  "primary": "calls",
+  "G": 4.5625,
+  "noise_floor": 1.0,
+  "shares": {
+   "skills": 0.0,
+   "map": 0.0,
+   "both": -0.2602739726027397
+  },
+  "verdict": "REFUTED",
+  "why": "skills share >= map share"
+ },
+ "P5_C": {
+  "family": "C",
+  "pairs": 14,
+  "G_calls": 5.071428571428571,
+  "G_calls_p": 6.103515625e-05,
+  "G_calls_nonzero_pairs": 14,
+  "G_calls_real": true,
+  "located": {
+   "none": [
+    11,
+    14
+   ],
+   "skills": [
+    8,
+    14
+   ],
+   "map": [
+    9,
+    14
+   ],
+   "both": [
+    9,
+    14
+   ],
+   "pointer": [
+    13,
+    14
+   ]
+  },
+  "G_loc": 0.1428571428571429,
+  "G_loc_real": false,
+  "calls": {
+   "none": 7.428571428571429,
+   "skills": 4.214285714285714,
+   "map": 5.857142857142857,
+   "both": 5.071428571428571,
+   "pointer": 2.357142857142857
+  },
+  "primary": "calls",
+  "G": 5.071428571428571,
+  "noise_floor": 0.8571428571428568,
+  "shares": {
+   "skills": 0.6338028169014085,
+   "map": 0.3098591549295776,
+   "both": 0.4647887323943663
+  },
+  "verdict": "REFUTED",
+  "why": "skills share >= map share"
+ },
+ "P6_overall": [
+  "REFUTED",
+  "both families agree"
+ ],
+ "sensitivity_calls_no_guidance": {
+  "B": {
+   "family": "B",
+   "column": "calls_no_guidance",
+   "pairs": 16,
+   "G_calls": 4.5,
+   "G_calls_p": 1.52587890625e-05,
+   "G_calls_nonzero_pairs": 16,
+   "G_calls_real_by_P4_rule": true,
+   "calls": {
+    "none": 6.4375,
+    "skills": 4.75,
+    "map": 2.6875,
+    "both": 3.0,
+    "pointer": 1.9375
+   },
+   "noise_floor": 0.875,
+   "shares_on_calls": {
+    "skills": 0.375,
+    "map": 0.8333333333333334,
+    "both": 0.7638888888888888
+   },
+   "note": "descriptive only; the pre-registered verdicts are P4/P5/P6"
+  },
+  "C": {
+   "family": "C",
+   "column": "calls_no_guidance",
+   "pairs": 14,
+   "G_calls": 5.071428571428571,
+   "G_calls_p": 6.103515625e-05,
+   "G_calls_nonzero_pairs": 14,
+   "G_calls_real_by_P4_rule": true,
+   "calls": {
+    "none": 7.428571428571429,
+    "skills": 3.2142857142857144,
+    "map": 2.4285714285714284,
+    "both": 3.0714285714285716,
+    "pointer": 2.357142857142857
+   },
+   "noise_floor": 0.8571428571428568,
+   "shares_on_calls": {
+    "skills": 0.8309859154929579,
+    "map": 0.9859154929577465,
+    "both": 0.859154929577465
+   },
+   "note": "descriptive only; the pre-registered verdicts are P4/P5/P6"
+  }
+ }
+}
