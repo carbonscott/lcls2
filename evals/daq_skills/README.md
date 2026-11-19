@@ -26,10 +26,16 @@ S3DF interactive nodes).
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests          # 173 tests, OK, no model calls (a few skip without zstd or a skills checkout)
+python3 -m unittest discover -s tests          # 175 tests, ends "OK (skipped=2)", no model calls (a few skip without zstd or a skills checkout)
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 python3 tree.py --work $WORK                   # family B's tree in $WORK/roots, about a minute; ends "8 cases, window check passed for all"
 OUT=$HOME/daq-eval-results                     # your results go here
+
+# One cell first: family B, no guidance, one case, one run (about $1 of usage and a few minutes)
+claude auth status                             # check the login before spending: "loggedIn": true (claude auth --help lists login)
+python3 pilot.py --out $OUT --work $WORK --cell B/none/default/pv-missing-pvcam/1 --jobs 1 --dry-run         # the plan; nothing written
+python3 pilot.py --out $OUT --work $WORK --cell B/none/default/pv-missing-pvcam/1 --jobs 1 --budget-left 3
+
 SK=/path/to/your/lcls2/psana/psana/skills      # the skills under test
 MAP=/path/to/skills                            # the folder holding hutch-resources/ (the hutch map)
 
@@ -58,6 +64,29 @@ $P --budget-left 150 --cell C/none --cell C/skills --cell C/map --cell C/both --
 $P --budget-left 15  --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3    # the M0 controls
 python3 verdict.py $PILOT/rows.json            # the pre-registered verdicts (P2-P6, P3m)
 ```
+
+**Where a run lands.** `pilot.py` puts each run in `$OUT/<FAMILY>.<ARM>.<MODEL>/<run id>/` (the one cell
+above: `$OUT/B.none.default/r0f9c64ee/`; a run id is fixed by case and repeat): `prompt.txt` (what the agent
+was asked), `transcript.jsonl` (its tool calls and replies), `final.md` (its report), `evidence.json` (calls to
+evidence; `first` is the first call that showed the keyed launch), `operator.jsonl` (its questions to
+`ask-operator`) and `meta.json` (exit, seconds, usage). Read the outcome in `$OUT/rows.json`, one row per run:
+`located` (the report concludes about the keyed launch), `cause_pass` (fault cases), `healthy_outcome` (healthy
+cases: clean, benign-defect-noted or false-alarm), `calls` (calls to evidence: tool calls before the first read
+of the keyed launch), `calls_no_guidance` (the same without reads of the skills or the map), `cost_usd` and
+`seconds` (the agent), and `scorer_usd`; the batch's totals are in `$OUT/usage.json`. The pilot's two runs of
+the one cell above ended with exit 0, `located` true and `cause_pass` true. `$OUT/scored.txt` is the scorer's own table; its
+`scorer calls` column counts the scorer's model calls, not calls to evidence. A cell is
+`FAMILY/ARM[/MODEL[/CASES[/REPEATS]]]`: CASES is `all` or ids joined by `+`, REPEATS a number (runs 1 to N);
+see "pilot.py" below.
+
+**What the sandbox shows the agent from your home folder** (`run.py`'s `sandbox()`): `~/.claude`, the CLI's
+state and your login, where each of `projects`, `sessions`, `skills`, `plugins`, `todos`, `file-history`,
+`backups`, `cache` and the CLI's other per-session folders that exists is replaced by an empty in-memory folder
+and `history.jsonl` by an empty file, so your own skills are not loaded and the run's session is not saved into
+your real `~/.claude/projects` (if that folder does not exist yet, there is nothing to hide and the session is
+saved there); a private copy of `~/.claude.json`; and `~/.local`, read-only. Nothing else of your home folder
+is mounted: no `~/.ssh`. The scorer (`score.py`) runs outside the sandbox with `--no-session-persistence`, so
+its model calls leave no session folders.
 
 - `pilot.py` refuses to start (exit 2) when its projection exceeds `--budget-left` (USD); it
   estimates $2.00 a default-model run and $0.10 a Haiku run until finished runs say otherwise,
@@ -251,7 +280,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 173 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 175 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
@@ -333,8 +362,9 @@ replaceable commands are `--extract-cmd` and `--judge-cmd`, with the same contra
 - **Nothing is invented.** No line is added, reordered or re-timed. Files keep their
   modification times; older launches are compressed as log rotation would.
 - **The agent is sandboxed** (bubblewrap): it sees its working directory, the logs
-  read-only at `/sdf/home/t/tstopr/daq/logs`, and system directories. No home directory,
-  no ssh keys, no other runs, no answer keys. In an earlier unsandboxed pilot three of six
+  read-only at `/sdf/home/t/tstopr/daq/logs`, system directories, and from the home folder
+  only `~/.claude` (its sessions, projects and skills folders empty), a copy of `~/.claude.json`
+  and `~/.local` (see the quick start). No ssh keys, no other runs, no answer keys. In an earlier unsandboxed pilot three of six
   agents went looking in a project folder they guessed from the working directory's path.
 - **Prompts are the same for every arm** and say nothing about a fault. Healthy cases use
   the same question as faulty ones.
