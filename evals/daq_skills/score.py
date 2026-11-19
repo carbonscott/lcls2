@@ -26,6 +26,17 @@ Each report is scored in four steps; only steps 1 and 3 call a model.
               false-alarm.  The day-count case passes iff every failed launch is listed with
               all its facts and no healthy launch is called failed.
 
+Cold-start runs (run.py --mode m1; meta.json says the mode and the case) are scored with keys built from the case
+tables, never from a report:
+  family B (cases_v3.json): the catalog key of the pool (keys_v3.json: component, stage, mechanism) with its launch
+              moved to the case's m1 day and stamp (keyed_stamp, keyed_files); Cause = Located and component, stage
+              and mechanism; the 'launch' fact of a many-launch pool is replaced by Located.
+  family C (cases_real.json, ids real-*): the target launch (stamp, file names, span) and, for a fault case, the
+              scripted key of its first failing component and stage (cause_scope 'component+stage': Cause =
+              Located and component and stage; the mechanism is not judged, so no judge call is made).
+  Healthy cases of both families get the 3-way outcome.  Times stated in UTC are moved to Pacific with the
+  offset of the keyed launch's day (PDT -7 or PST -8).
+
 Both model steps are headless 'claude -p' calls with no tools and a one-line system prompt;
 --extract-cmd and --judge-cmd replace the command (tests): the prompt arrives on stdin and the
 program prints {"result": "<text>", "total_cost_usd": x}.  At most --jobs calls run at once.
@@ -34,6 +45,7 @@ Standard library only.
 
 import argparse
 import concurrent.futures
+import copy
 import datetime
 import hashlib
 import json
@@ -332,11 +344,16 @@ def default_date(key):
     return m.group(0) if m else None
 
 
+def tz_offset(keys, key):
+    """Hours from UTC to the keyed launch's local time (a cold-start key carries its own day's offset)."""
+    return key.get('tz_offset_hours', keys.get('tz_offset_hours', -8))
+
+
 def named_launches(key, keys, rec, text):
     """The pool launches the report names: by prefix or start stamp in its text, or by a time
     in the extracted record."""
     launches = pool_launches(keys, key)
-    dd, off = default_date(key), keys.get('tz_offset_hours', -8)
+    dd, off = default_date(key), tz_offset(keys, key)
     named = set()
     for p, s, e in launches:
         if p in text or re.search(r'(?<![\d:])%s(?![\d:])' % re.escape(p[3:]), text):
@@ -447,7 +464,7 @@ def judge_items(caller, items, votes):
 def score_fault(key, keys, rec, text, caller, votes):
     named = named_launches(key, keys, rec, text)
     launches = pool_launches(keys, key)
-    dd, off = default_date(key), keys.get('tz_offset_hours', -8)
+    dd, off = default_date(key), tz_offset(keys, key)
     cs = causes(rec)
     pick, how = (cs[0] if cs else None), 'main cause'
     if key.get('launch_keyed') and cs:
@@ -477,9 +494,15 @@ def score_fault(key, keys, rec, text, caller, votes):
     f['stage'] = bool(pick) and stage_ok(key['stage'], pick['stage'])
     f['mechanism_quote'] = pick['mechanism'] if pick else ''
     f['quote_in_report'] = quote_found(f['mechanism_quote'], text) if pick else None
+    base = f['launch'] is not False and f['component'] and f['stage']
+    if key.get('cold'):                               # cold start: the report must also name the keyed launch
+        base = base and bool(f['located'])
+    if key.get('cause_scope') == 'component+stage':   # family C: the mechanism is not scored, so not judged
+        out = {'kind': 'fault', 'cause': bool(base), 'cause_strict': bool(base), 'cause_lenient': bool(base),
+               'cause_scope': key['cause_scope']}
+        return f, {'verdict': 'not scored'}, out, []
     mech, calls = judge_items(caller, [{'statement': f['mechanism_quote'], 'mechanism': key['mechanism']}], votes)
     m = mech[0]
-    base = f['launch'] is not False and f['component'] and f['stage']
     out = {'kind': 'fault', 'cause': bool(base and m['verdict'] == 'accepted'),
            'cause_strict': bool(base and m['strict']), 'cause_lenient': bool(base and m['lenient'])}
     return f, m, out, calls
@@ -487,7 +510,7 @@ def score_fault(key, keys, rec, text, caller, votes):
 
 def score_multi(key, keys, rec, text, caller, votes):
     launches = pool_launches(keys, key)
-    dd, off = default_date(key), keys.get('tz_offset_hours', -8)
+    dd, off = default_date(key), tz_offset(keys, key)
     named = named_launches(key, keys, rec, text)
     failed = {x['prefix']: x for x in key['failed']}
     got, extra, unplaced = {}, [], 0
@@ -585,7 +608,86 @@ def load_keys(path):
     return read_json(path)
 
 
-def collect_runs(results, cases, only=None):
+def _pacific_offset(local):
+    """-7 (PDT) or -8 (PST) for a naive US Pacific time."""
+    def nth_sunday(y, m, n):
+        d = datetime.date(y, m, 1)
+        d += datetime.timedelta(days=(6 - d.weekday()) % 7)
+        return d + datetime.timedelta(days=7 * (n - 1))
+    a = datetime.datetime.combine(nth_sunday(local.year, 3, 2), datetime.time(2))
+    b = datetime.datetime.combine(nth_sunday(local.year, 11, 1), datetime.time(2))
+    return -7 if a <= local < b else -8
+
+
+def stage_aliases(keys, name):
+    """Every alias keys_v3.json gives a stage of this name (the name itself if it has none)."""
+    out = set()
+    for k in keys['cases'].values():
+        for st in [k.get('stage')] + [x.get('stage') for x in k.get('failed', [])]:
+            if isinstance(st, dict) and st.get('name') == name:
+                out.update(st['aliases'])
+    return sorted(out) or [name]
+
+
+GENERIC_NOT = ['control', 'control.log', 'control_gui', 'teb0', 'TEB']
+
+
+def family_b_key(keys, row):
+    """The catalog key of a family-B case with its keyed launch moved to the case's m1 day and stamp."""
+    k = copy.deepcopy(keys['cases'][row['id']])
+    m1 = row['m1']
+    (orig,) = [l for l in k['launches'] if l['prefix'] in row['keyed_launches']]
+    start0 = parse_dt(orig['start'])
+    days = (datetime.datetime.strptime(m1['date'], '%Y-%m-%d').date() - start0.date()).days
+    move = lambda t: (parse_dt(t) + datetime.timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S')
+    new = {'prefix': m1['keyed_stamp'], 'start': move(orig['start']), 'first': move(orig.get('first') or orig['start']),
+           'last': move(orig['last']), 'files': list(m1['keyed_files'])}
+    k.update(launches=[new], launch_keyed=False, fault_launch=new['prefix'], required_launches=[], pool=None, cold='B',
+             tz_offset_hours=_pacific_offset(parse_dt(new['start'])))
+    return k
+
+
+def family_c_key(keys, case):
+    """The key of a family-C case (real MFX logs) from cases_real.json: the target launch and its scripted key."""
+    (l,) = [l for l in case['launches'] if l['id'] == case['target']]
+    start = l['start'][:19].replace('T', ' ')
+    launch = {'prefix': case['target'].rsplit('/', 1)[1], 'start': start, 'first': start, 'last': l['end'][:19].replace('T', ' '),
+              'files': [f['name'] for f in l['files']]}
+    k = {'id': case['id'], 'kind': case['kind'], 'pool': None, 'launch_keyed': False, 'launches': [launch],
+         'fault_launch': launch['prefix'], 'known_issues': [], 'cold': 'C', 'tz_offset_hours': _pacific_offset(parse_dt(start))}
+    if case['kind'] == 'healthy':
+        k['benign'] = []
+        return k
+    comp = l['key']['component']
+    names = [comp['component']] + ([re.sub(r'_\d+$', '', comp['component'])] if re.search(r'_\d+$', comp['component']) else [])
+    k.update(component={'name': comp['component'], 'aliases': names, 'not': GENERIC_NOT},
+             stage={'name': comp['stage'], 'aliases': stage_aliases(keys, comp['stage'])},
+             mechanism=None, cause_scope=case.get('cause_scope', 'component+stage'), scripted_mechanism=comp.get('mechanism'))
+    return k
+
+
+class KeyBook(object):
+    """The key of any run: m0 runs the catalog key (keys_v3.json); m1 runs a cold-start key from the case tables."""
+
+    def __init__(self, keys, v3=None, real=None):
+        self.keys = keys
+        self.v3 = dict((c['id'], c) for c in (v3 or {}).get('cases', []))
+        self.real = dict((c['id'], c) for c in (real or {}).get('cases', []))
+
+    def family(self, case, mode):
+        return 'C' if case in self.real else ('B' if mode == 'm1' else 'A')
+
+    def key(self, case, mode):
+        if case in self.real:
+            return family_c_key(self.keys, self.real[case])
+        if mode == 'm1':
+            if case not in self.v3 or case not in self.keys['cases']:
+                return None
+            return family_b_key(self.keys, self.v3[case])
+        return self.keys['cases'].get(case)
+
+
+def collect_runs(results, book, only=None):
     runs = []
     for arm in sorted(os.listdir(results)):
         ad = os.path.join(results, arm)
@@ -598,12 +700,18 @@ def collect_runs(results, cases, only=None):
                 continue
             m = read_json(mp)
             rid = '%s/%s' % (arm, name)
-            if m.get('dry_run') or m.get('error') or m.get('case') not in cases:
+            if m.get('dry_run') or m.get('error'):
+                continue
+            mode = m.get('mode') or 'm0'
+            key = book.key(m.get('case'), mode)
+            if key is None:
                 continue
             if only and rid not in only:
                 continue
             runs.append({'id': rid, 'arm': arm, 'case': m['case'], 'repeat': m.get('repeat'), 'run_dir': d,
-                         'agent_cost_usd': m.get('cost_usd'), 'seconds': m.get('seconds'), 'agent_model': m.get('model')})
+                         'agent_cost_usd': m.get('cost_usd'), 'seconds': m.get('seconds'), 'agent_model': m.get('model'),
+                         'mode': mode, 'control': m.get('control'), 'family': book.family(m['case'], mode),
+                         'model_flag': m.get('model_flag'), 'key': key})
     return runs
 
 
@@ -684,6 +792,9 @@ def traps(path, keys, caller, votes):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--keys', default=os.path.join(HERE, 'keys_v3.json'))
+    ap.add_argument('--cases-v3', default=os.path.join(HERE, 'cases_v3.json'), help='family B case table (mode m1 runs)')
+    ap.add_argument('--cases-real', default=os.path.join(HERE, 'cases_real.json'), help='family C case table (real-* cases)')
+    ap.add_argument('--mode', choices=['m0', 'm1'], default='m0', help='with --report: score as a run of this mode')
     ap.add_argument('--results')
     ap.add_argument('--report', help='score one report file (with --case)')
     ap.add_argument('--case')
@@ -702,6 +813,8 @@ def main(argv=None):
     ap.add_argument('--judge-cmd', help='replace the mechanism-judge command (tests)')
     a = ap.parse_args(argv)
     keys = load_keys(a.keys)
+    book = KeyBook(keys, read_json(a.cases_v3) if os.path.exists(a.cases_v3) else None,
+                   read_json(a.cases_real) if os.path.exists(a.cases_real) else None)
     cache = a.cache or (os.path.join(a.results, '.score-cache') if a.results else None)
     xc = Caller(a.model, a.extract_cmd.split() if a.extract_cmd else None, cache, a.jobs)
     jc = Caller(a.model, a.judge_cmd.split() if a.judge_cmd else None, cache, a.jobs)
@@ -716,7 +829,7 @@ def main(argv=None):
         ok, n = traps(a.traps, keys, caller, a.votes)
         return 0 if ok == n else 1
     if a.report:
-        r = score_report(keys['cases'][a.case], keys, read_text(a.report), caller, a.votes)
+        r = score_report(book.key(a.case, a.mode), keys, read_text(a.report), caller, a.votes)
         r['usage'] = usage(r)
         json.dump(r, sys.stdout, indent=1)
         print()
@@ -725,7 +838,7 @@ def main(argv=None):
     if a.only_file:
         only |= set(read_json(a.only_file))
     quiet = set(read_json(a.quiet_ids)) if a.quiet_ids else set()
-    runs = collect_runs(a.results, keys['cases'], only or None)
+    runs = collect_runs(a.results, book, only or None)
     if a.limit:
         runs = runs[:a.limit]
     done = {}
@@ -737,9 +850,11 @@ def main(argv=None):
 
     def one(run):
         text = read_text(os.path.join(run['run_dir'], 'final.md'))
-        key = keys['cases'][run['case']]
+        key = run['key']
         r = score_report(key, keys, text, caller, a.votes)
-        r.update({k: run[k] for k in ('id', 'arm', 'case', 'repeat', 'run_dir', 'agent_cost_usd', 'seconds', 'agent_model')})
+        r.update({k: run[k] for k in ('id', 'arm', 'case', 'repeat', 'run_dir', 'agent_cost_usd', 'seconds', 'agent_model',
+                                      'mode', 'control', 'family', 'model_flag')})
+        r['located'] = (r.get('facts') or {}).get('located')
         r['kind'] = key['kind']
         r['usage'] = usage(r)
         return r

@@ -10,6 +10,7 @@ user's own login; the MFX trees are world-readable there.
     python3 real_mfx.py check --root ROOT                 # is each vague window unambiguous?
     python3 real_mfx.py inventory --root ROOT --since 2026-09-01 --until 2026-11-19 --out INV.json
     python3 real_mfx.py candidates --inventory INV.json   # (launch, today, phrase) alone in its window
+    python3 real_mfx.py view  --root ROOT --dest DIR      # per case: the root as it was at the case's 'now'
 
 ROOT is a prepared root laid out as the real paths (ROOT/home/m/mfxopr/...); the cold-start
 harness mounts it read-only at /sdf.  On S3DF itself ROOT is /sdf.
@@ -568,6 +569,144 @@ def cmd_candidates(args):
     return 0
 
 
+# ----------------------------------------------------------------------------- cold-start runs (run.py --mode m1)
+
+VIEW_RULE = ('a launch file (a <DD>_<HH:MM:SS>_ name in a month folder of either tree) is kept iff its stamp is before now; '
+             'any other file iff its modification time is before now; kept files are hard links; folders take the newest '
+             'kept modification time below them, at most now')
+
+
+def case_now(spec, case):
+    """'YYYY-MM-DD HH:MM' (US Pacific) at which the case is asked: the case's 'now', else its today at spec's now_time."""
+    return case.get('now') or '%s %s' % (case['today'], spec.get('now_time', '10:00'))
+
+
+def today_long(today):
+    t = dt.datetime.strptime(today, '%Y-%m-%d')
+    return '%s, %s %d, %d' % (t.strftime('%A'), t.strftime('%B'), t.day, t.year)
+
+
+def target_launch(case):
+    (l,) = [l for l in case['launches'] if l['id'] == case['target']]
+    return l
+
+
+def launch_dir(launch_id):
+    """'previous/2026/09/16_15:05:23' -> '/sdf/home/m/mfxopr/2026/09' (where the cold-start mode mounts it)."""
+    tree, y, m, _ = launch_id.split('/')
+    return '/sdf/%s/%s/%s' % (dict(TREES)[tree], y, m)
+
+
+def stamp_of(launch_id):
+    return launch_id.rsplit('/', 1)[1]
+
+
+def pointer(case):
+    """The pointer control's sentence: the log folder and the exact window of the target launch (as tree.derived)."""
+    l = target_launch(case)
+    start = dt.datetime.strptime(l['start'][:19], '%Y-%m-%dT%H:%M:%S')
+    end = dt.datetime.strptime(l['end'][:19], '%Y-%m-%dT%H:%M:%S')
+    hi = (end + dt.timedelta(minutes=1)).replace(second=0)
+    return ('The DAQ logs are in %s, and the launch in question ran on %s between %s and %s.'
+            % (launch_dir(case['target']), start.strftime('%Y-%m-%d'), start.strftime('%H:%M'), hi.strftime('%H:%M')))
+
+
+def _pacific_epoch(local):
+    """Seconds since the epoch of a naive US Pacific time (the US rule since 2007)."""
+    def nth_sunday(y, m, n):
+        d = dt.date(y, m, 1)
+        d += dt.timedelta(days=(6 - d.weekday()) % 7)
+        return d + dt.timedelta(days=7 * (n - 1))
+    dst = dt.datetime.combine(nth_sunday(local.year, 3, 2), dt.time(2)) <= local < dt.datetime.combine(nth_sunday(local.year, 11, 1), dt.time(2))
+    return (local + dt.timedelta(hours=7 if dst else 8) - dt.datetime(1970, 1, 1)).total_seconds()
+
+
+def _view_signature(root, case, now):
+    man = root.rstrip('/') + '.manifest.json'
+    fetched = None
+    if os.path.exists(man):
+        with open(man) as f:
+            fetched = json.load(f).get('fetched_utc')
+    return {'real_root': os.path.abspath(root), 'fetched_utc': fetched, 'case': case['id'], 'now': now, 'rule': VIEW_RULE}
+
+
+def build_view(root, case, now, dest):
+    """(view root, view record): what of the prepared root existed at `now` ('YYYY-MM-DD HH:MM', US Pacific),
+    as hard links under DEST/<case>/root (mounted at /sdf), with DEST/<case>/view.json beside it (never inside).
+    An existing view with the same signature is reused; one with another signature is an error (delete it)."""
+    out = os.path.join(dest, case['id'])
+    sig = _view_signature(root, case, now)
+    have = os.path.join(out, 'view.json')
+    if os.path.exists(have):
+        with open(have) as f:
+            rec = json.load(f)
+        if rec.get('signature') != sig:
+            raise SystemExit('%s was built for %s; delete it to rebuild for %s' % (out, rec.get('signature'), sig))
+        return os.path.join(out, 'root'), rec
+    os.makedirs(dest, exist_ok=True)
+    tmp = '%s.tmp-%d' % (out, os.getpid())
+    if os.path.exists(tmp):
+        import shutil
+        shutil.rmtree(tmp)
+    vroot = os.path.join(tmp, 'root')
+    cut = dt.datetime.strptime(now, '%Y-%m-%d %H:%M')
+    cut_t = _pacific_epoch(cut)
+    month = re.compile(r'home/m/mfxopr/(?:daq/logs/)?(\d{4})/(\d\d)$')
+    kept = dropped = late_mtime = 0
+    newest_stamp = None
+    for d, subs, files in os.walk(root):
+        subs.sort()
+        rel = os.path.relpath(d, root)
+        mm = month.match(rel)
+        for f in sorted(files):
+            src = os.path.join(d, f)
+            st = os.lstat(src)
+            p = parse_name(f) if mm else None
+            if p:
+                when = stamp_time('%s/%s' % mm.groups(), p['day'], p['hms'])
+                keep = when < cut
+                if keep:
+                    newest_stamp = max(newest_stamp or when, when)
+            else:
+                keep = st.st_mtime < cut_t
+            if not keep:
+                dropped += 1
+                continue
+            dst = os.path.join(vroot, rel, f)
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            os.link(src, dst)                   # no copies: fails on another file system
+            kept += 1
+            late_mtime += st.st_mtime >= cut_t
+    newest = {}
+    for d, subs, files in os.walk(vroot, topdown=False):
+        ts = [min(os.lstat(os.path.join(d, f)).st_mtime, cut_t - 1) for f in files] + [newest[os.path.join(d, x)] for x in subs]
+        newest[d] = max(ts) if ts else cut_t - 1
+        os.utime(d, (newest[d], newest[d]))
+    rec = {'signature': sig, 'now': now, 'kept': kept, 'dropped': dropped, 'kept_with_mtime_after_now': late_mtime,
+           'newest_launch_stamp': newest_stamp.strftime('%Y-%m-%d %H:%M:%S') if newest_stamp else None}
+    with open(os.path.join(tmp, 'view.json'), 'w') as f:
+        json.dump(rec, f, indent=1, sort_keys=True)
+    try:
+        os.rename(tmp, out)
+    except OSError:                              # another process built it first
+        import shutil
+        shutil.rmtree(tmp)
+        return build_view(root, case, now, dest)
+    return os.path.join(out, 'root'), rec
+
+
+def cmd_view(args):
+    spec = load_cases(args.cases)
+    for case in spec['cases']:
+        if args.case and case['id'] not in args.case:
+            continue
+        now = case_now(spec, case)
+        vroot, rec = build_view(args.root, case, now, args.dest)
+        print('%-20s now %s  kept %5d  dropped %5d  newest launch %s  kept files modified after now %d  %s'
+              % (case['id'], now, rec['kept'], rec['dropped'], rec['newest_launch_stamp'], rec['kept_with_mtime_after_now'], vroot))
+    return 0
+
+
 # ----------------------------------------------------------------------------- name scan
 
 NAME_PATTERNS = (
@@ -718,6 +857,10 @@ def main(argv=None):
             p.add_argument('--since', required=True)
             p.add_argument('--until', required=True)
             p.add_argument('--out', required=True)
+    p = sub.add_parser('view', help="build each case's root view: only what existed at its 'now' (hard links)")
+    p.add_argument('--root', required=True, help='prepared root (fetch --dest)')
+    p.add_argument('--dest', required=True, help='views go to DEST/<case>/root (mounted at /sdf) and DEST/<case>/view.json')
+    p.add_argument('--case', action='append', help='only this case (repeatable)')
     p = sub.add_parser('names', help='count lines that look like personal accounts (prints no values)')
     p.add_argument('--root', required=True)
     p = sub.add_parser('candidates', help='launches that are alone in the widest window of some phrase')
@@ -729,7 +872,7 @@ def main(argv=None):
         ap.print_help()
         return 2
     return {'fetch': cmd_fetch, 'keys': cmd_keys, 'check': cmd_check, 'inventory': cmd_inventory,
-            'candidates': cmd_candidates, 'names': cmd_names}[args.cmd](args)
+            'candidates': cmd_candidates, 'names': cmd_names, 'view': cmd_view}[args.cmd](args)
 
 
 if __name__ == '__main__':

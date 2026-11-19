@@ -2,6 +2,7 @@
  "about": "Family C of the DAQ-skill eval v3: cold-start (M1) cases on REAL MFX DAQ logs from /sdf/home/m/mfxopr on S3DF (world-readable). No log content is kept here: only window specs (today, a vague phrase, launch ids, file names, sha256 of the decompressed bytes) and the keys real_mfx.py computes. Get the logs with `python3 real_mfx.py fetch --dest ROOT`; verify with `keys` and `check`.",
  "cases": [
   {
+   "cause_scope": "component+stage",
    "id": "real-pv-cfg",
    "keyed_launches": [
     "current/2026/10/21_08:21:25",
@@ -615,6 +616,7 @@
    "why": "current tree; configure fails on one camera DRP whose own log says it could not get a PV's parameters; three later launches in the window are idle"
   },
   {
+   "cause_scope": "component+stage",
    "id": "real-qadc-run",
    "keyed_launches": [
     "current/2026/11/04_15:54:09",
@@ -1117,6 +1119,7 @@
    "why": "current tree; during running the event builders stop hearing from one digitizer DRP, which then fails to disable and aborts; healthy launches on both sides"
   },
   {
+   "cause_scope": "component+stage",
    "id": "real-pre-cutover",
    "keyed_launches": [
     "previous/2026/09/16_13:58:21",
@@ -2993,7 +2996,64 @@
    "why": "before the cutover: only in /sdf/home/m/mfxopr/2026/09, while daq/logs/2026/09 already exists from 17_09:29; target healthy with several runs; the other launch in the window is idle"
   }
  ],
+ "cause_rule": "Fault cases are scored on cause_scope 'component+stage': Cause passes iff the report names the target launch (Located) and its main cause names the keyed component and stage (keys.component of the target launch); the mechanism label is not scored. Healthy cases get the 3-way healthy outcome.",
+ "now_rule": "A case is asked at its today's now_time (US Pacific) unless it has its own 'now'. run.py --mode m1 mounts a view of the prepared root that holds only what existed then (real_mfx.py view) and gives the m1 context of cases_v3.json with that time.",
+ "now_time": "10:00",
  "operator_default": "I don't know, sorry. I only see the control GUI and the run table.",
+ "operator_rules": [
+  {
+   "id": "when",
+   "match": [
+    "\\bwhen\\b",
+    "what time",
+    "\\btimes?\\b",
+    "which (day|date|night|evening|morning|afternoon)",
+    "what (day|date)",
+    "\\bdate\\b",
+    "\\bhours?\\b",
+    "o.clock",
+    "\\bwindow\\b",
+    "\\bshift\\b",
+    "\\bexactly\\b",
+    "\\bapprox"
+   ]
+  },
+  {
+   "id": "what next",
+   "match": [
+    "\\bnext\\b",
+    "\\bafter(wards)?\\b",
+    "\\brestart",
+    "\\bretr(y|ied|ies)\\b",
+    "\\btried\\b",
+    "what did you do",
+    "\\bfix"
+   ]
+  },
+  {
+   "id": "detectors",
+   "match": [
+    "\\bdetectors?\\b",
+    "\\bcameras?\\b",
+    "\\bdevices?\\b",
+    "\\bpartition\\b",
+    "which (daq )?(config|setup)"
+   ]
+  },
+  {
+   "id": "symptom",
+   "match": [
+    "what happened",
+    "\\bsymptoms?\\b",
+    "\\berrors?\\b",
+    "\\bmessages?\\b",
+    "what did you see",
+    "what went wrong",
+    "\\bdescribe\\b",
+    "\\bnotice"
+   ]
+  }
+ ],
  "phrase_windows": "widest readings, in local time: morning 00-13 h, afternoon 11-19 h, evening 16-24 h, night 18 h to 08 h next day, a whole day 00-24 h, a weekend Fri 18 h to Mon 08 h; a weekday name is the most recent such day before today",
  "question": "Today is {today_long}. The MFX operators asked us to look at their DAQ {phrase}. Use the DAQ logs to say whether anything went wrong then. If something did, say which component failed first, in which transition, and why, with the log lines that show it. Name the DAQ launch you looked at (its start time or its log file names).",
  "selection_rule": "From the scripted inventory of every launch 2026-09-01..2026-11-18 (549 launches, both trees; `real_mfx.py inventory` then `candidates`): a target is a launch with a component key (control's first failure names exactly one component and that component's own log has an error line of its own) or a healthy one (reached running, no failure line). A (today, phrase) is a candidate when today is 1-3 days after the target and every other launch whose span overlaps the phrase's widest window is healthy, idle (no failure line, never ran), or failed the same way (same component and stage). Wanted: about 3 fault targets, 1-2 healthy, 1 before the 2026-09-17 09:29 cutover, 1 across a month boundary. Result: only 3 fault targets have any candidate window (2 in the current tree, 1 before the cutover), so all 3 are used; the month-boundary case is the healthy last launch of October said on a November date; 2 healthy current-tree targets alone in their windows (one October weekend, the most recent in November); and a healthy pre-cutover target said on a day when the current tree already existed. Among a target's windows: fewest launches, then the phrase most unlike the other cases.",
