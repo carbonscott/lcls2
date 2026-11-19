@@ -4,6 +4,7 @@ claude.ai artifact publisher wraps in a document skeleton.  Opens as a local fil
 
     python3 report_v3.py --pilot OUT [--pilot OUT2 ...] --m0 M0_DIR [--verdict VERDICT.json]
                          --predictions PREDICTIONS.json --commit SHA --out results.html
+                         [--m0-commit SHA] [--verdict-note TEXT ...]
                          [--model default] [--cases-v3 F] [--cases-real F] [--keys F] [--title T] [--note TEXT ...]
 
 Inputs.  Nothing on the page is typed by hand: every number is read from these files or computed from them.
@@ -17,6 +18,12 @@ Inputs.  Nothing on the page is typed by hand: every number is read from these f
   --predictions   the pre-registered predictions file: its rules are quoted, its P1 and P1b outcomes are the
                   scorer's validation, its definitions name the arms and families.
   --model         the model flag (rows' 'model') of the verdict runs: 'default' for the pilot; smoke tests use haiku.
+  --commit        the commit the pilot runs used; --m0-commit the commit the M0 control runs used (the header names
+                  each batch with its commit and its run folders).
+  --verdict-note  a line printed beside the verdict (headline findings and the verdict section), e.g. a review
+                  still pending.
+
+Percentages and one-decimal numbers are rounded half up (81.25 -> 81.3), as the predictions file writes them.
 
 Sections, in order: header; headline findings; the verdict; per arm and family; the controls (P2, P3, P3m); every
 case; cases an arm missed; usage.
@@ -32,6 +39,7 @@ Standard library only, Python 3.6+.
 """
 
 import argparse
+import decimal
 import html
 import json
 import math
@@ -308,10 +316,22 @@ def pct(k, n):
     return 100.0 * k / n if n else float('nan')
 
 
+ONE_PLACE = re.compile(r'^%([+]?)\.([0-9])f$')
+
+
+def fixed(x, places, sign=False):
+    """x to places decimals, rounded half up from its shortest repr (81.25 -> '81.3', not '81.2' as '%.1f' gives)."""
+    q = decimal.Decimal(repr(float(x))).quantize(decimal.Decimal(1).scaleb(-places), rounding=decimal.ROUND_HALF_UP)
+    t = '{0:f}'.format(q)
+    if t.startswith('-') and q == 0:
+        t = t[1:]
+    return ('+' + t) if sign and not t.startswith('-') else t
+
+
 def frac(k, n):
     if not n:
         return '0/0'
-    return '%d/%d (%.1f%%)' % (k, n, pct(k, n))
+    return '%d/%d (%s%%)' % (k, n, fixed(pct(k, n), 1))
 
 
 def kn(v):
@@ -324,11 +344,15 @@ def kn(v):
 def num(x, f='%.1f'):
     if x is None or (isinstance(x, float) and math.isnan(x)):
         return 'n/a'
+    m = ONE_PLACE.match(f)
+    if m:
+        return fixed(x, int(m.group(2)), sign=bool(m.group(1)))
     return f % x
 
 
 def usd(x, f='$%.2f'):
-    return num(x, f)
+    t = num(x, f[1:] if f.startswith('$') else f)
+    return t if t == 'n/a' or not f.startswith('$') else '$' + t
 
 
 def pval(p):
@@ -421,6 +445,7 @@ nav.toc a{color:var(--ink-2);text-decoration:none}nav.toc a:hover{color:var(--ac
 section{border-top:1px solid var(--rule-strong);padding-top:24px;margin-top:32px;min-width:0}
 ul.findings{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
 .verdict-line{font-family:"Space Grotesk","Inter",system-ui,sans-serif;font-size:1.35rem;font-weight:600;margin:0 0 6px}
+.vnote{background:var(--warn-bg);color:var(--warn-ink);border-radius:4px;padding:6px 12px;margin:6px 0 8px;font-size:14px;max-width:80ch}
 .rule{border-left:3px solid var(--rule-strong);padding:6px 0 6px 12px;margin:8px 0 14px;color:var(--ink-2);font-size:14px;max-width:80ch}
 .rule b{color:var(--ink)}
 .warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:4px;padding:10px 14px;margin:14px 0 0;font-size:14px}
@@ -493,6 +518,17 @@ def table(head, rows, num_cols=()):
 
 # --- header
 
+def batch_line(b):
+    """'<batch> (N runs) at commit X; run folders: F (n), ...' for the header."""
+    folders = {}
+    for r in b['runs']:
+        f = r['run_id'].split('/', 1)[0]
+        folders[f] = folders.get(f, 0) + 1
+    return '<code>%s</code> (%d runs, %s) at commit <code>%s</code>; run folders: %s' % (
+        E(b['id']), len(b['runs']), 'pilot' if b['kind'] == 'pilot' else 'M0 controls', E(b.get('commit') or 'not given'),
+        ', '.join('<code>%s</code> (%d)' % (E(f), n) for f, n in sorted(folders.items())))
+
+
 def header(d):
     runs, batches = d['all_runs'], d['batches']
     models = {}
@@ -504,12 +540,12 @@ def header(d):
     mtxt = '; '.join('%s = %s' % (k, ', '.join(sorted(v)) or 'model not recorded') for k, v in sorted(models.items()))
     started = sorted(r['meta']['started'] for r in runs if r['meta'].get('started'))
     when = ('runs from %s to %s (UTC)' % (started[0].replace('T', ' '), started[-1].replace('T', ' '))) if started else 'run times not recorded'
-    blist = ', '.join('<code>%s</code> (%d runs)' % (E(b['id']), len(b['runs'])) for b in batches)
+    blist = '; '.join(batch_line(b) for b in batches)
     sm = d['scorer_meta']
     p1, p1b = pred(d['preds'], 'P1-scorer-agreement'), pred(d['preds'], 'P1b-scorer-power')
     parts = ['<header><p class="eyebrow">DAQ skill eval v3 &middot; results</p><h1>%s</h1>' % E(d['title'])]
-    parts.append('<p class="meta">Commit <code>%s</code> &middot; %s &middot; agent models: %s &middot; %d runs &middot; batches: %s</p>'
-                 % (E(d['commit']), E(when), E(mtxt), len(runs), blist))
+    parts.append('<p class="meta">%d runs &middot; %s &middot; agent models: %s</p>' % (len(runs), E(when), E(mtxt)))
+    parts.append('<p class="meta">Batches: %s</p>' % blist)
     parts.append('<p class="meta">Scorer: %s (flag <code>%s</code>), %s judge votes, keys sha256 <code>%s</code>. '
                  'Validation: P1 %s P1b %s</p>' % (
                      E(', '.join(sm.get('models') or ['not recorded'])), E(str(sm.get('model_flag'))), E(str(sm.get('votes'))),
@@ -534,11 +570,32 @@ def m1_runs(d, family):
     return [r for r in d['pilot_runs'] if r['family'] == family and r.get('mode') == 'm1' and r.get('model') == d['model']]
 
 
+def verdict_notes(d):
+    return ''.join('<p class="vnote">%s</p>' % E(n) for n in d.get('verdict_notes') or [])
+
+
+def controls_beside(d):
+    """One line per control rule (P3 asks for a failed control to be printed beside the verdict)."""
+    v, out = d['verdict'], []
+    for key, name in (('P3_controls_M1_default', 'P3, M1, family B'), ('P3m_controls_M1_pooled', 'P3m, M1, B and C pooled')):
+        c = v.get(key)
+        if c:
+            out.append('%s: positive %s, negative %s' % (name, 'PASS' if c.get('positive_pass') else 'FAIL',
+                                                        'PASS' if c.get('negative_pass') else 'FAIL'))
+    for tag, c in d['p2']:
+        out.append('P2, M0 Haiku (%s): positive %s, negative %s' % (tag, 'PASS' if c['positive_pass'] else 'FAIL',
+                                                                   'PASS' if c['negative_pass'] else 'FAIL'))
+    return out
+
+
 def findings(d):
     v, out = d['verdict'], []
     ov = v.get('P6_overall') or ['n/a', '']
-    out.append('The pre-registered verdict on "knowing where things are matters more than procedure" is <b>%s</b>: %s.'
-               % (E(str(ov[0])), E(str(ov[1]))))
+    out.append('The pre-registered verdict on "knowing where things are matters more than procedure" is <b>%s</b>: %s.%s'
+               % (E(str(ov[0])), E(str(ov[1])), verdict_notes(d)))
+    cb = controls_beside(d)
+    if cb:
+        out.append('Controls printed beside the verdict: %s.' % E('; '.join(cb)))
     for fam, key in (('B', 'P4_B'), ('C', 'P5_C')):
         fv = v.get(key) or {}
         runs = m1_runs(d, fam)
@@ -560,6 +617,20 @@ def findings(d):
             out.append('Family %s, located by arm: %s. Mean calls to evidence: %s.' % (
                 fam, '; '.join('%s %s' % (a, kn(loc[a])) for a in arms),
                 '; '.join('%s %s' % (a, num(calls.get(a))) for a in arms)))
+    sens = v.get('sensitivity_calls_no_guidance') or {}
+    if sens:
+        out.append('Descriptive only, not a verdict: with Skill calls and reads of the installed guidance left out of calls to '
+                   'evidence, the shares of G are %s. The pre-registered count includes those reads; the verdict above uses it.' % (
+                       '; '.join('family %s: %s' % (f, ', '.join('%s %s' % (a, num((sens[f].get('shares_on_calls') or {}).get(a), '%.2f'))
+                                                               for a in ('skills', 'map', 'both')))
+                                 for f in sorted(sens))))
+    p3 = v.get('P3_controls_M1_default')
+    if p3 and (p3.get('none') or [0, 0])[1]:
+        out.append('P3 controls (family B alone): pointer %s against none %s, positive control %s (needs +%s points); starved '
+                   '%s against none %s on the same pools, negative control %s (needs -%s).' % (
+                       kn(p3.get('pointer')), kn(p3.get('none')), 'passes' if p3.get('positive_pass') else 'fails',
+                       num(p3.get('positive_margin_needed'), '%g'), kn(p3.get('starved')), kn(p3.get('none_on_starved_pools')),
+                       'passes' if p3.get('negative_pass') else 'fails', num(p3.get('negative_margin_needed'), '%g')))
     p3m = v.get('P3m_controls_M1_pooled')
     if p3m and (p3m.get('none_pooled') or [0, 0])[1]:
         out.append('P3m controls (families %s pooled): pointer %s against none %s, positive control %s (needs +%s points); B starved '
@@ -632,6 +703,10 @@ def verdict_section(d):
     sens = v.get('sensitivity_calls_no_guidance') or {}
     body = ['<p class="verdict-line">Overall: %s</p><p class="meta">%s. Verdicts read on model flag <code>%s</code>%s.</p>' % (
         E(str(ov[0])), E(str(ov[1])), E(d['model']), '' if d['verdict_given'] else ', computed here by verdict.py')]
+    body.append(verdict_notes(d))
+    cb = controls_beside(d)
+    if cb:
+        body.append('<p class="meta">Controls, printed beside the verdict as P3 asks: %s.</p>' % E('; '.join(cb)))
     body.append(rule_block(d['preds'], 'P6-verdict-rules', 'P6'))
     body.append('<div class="grid2">%s%s</div>' % (family_block(d, 'B', v.get('P4_B') or {}, sens.get('B')),
                                                      family_block(d, 'C', v.get('P5_C') or {}, sens.get('C'))))
@@ -688,9 +763,14 @@ def arms_section(d):
     sc = defs.get('scores') or {}
     items = ['<li><b>%s</b>: %s</li>' % (E(k), E(v)) for k, v in arms.items()]
     items += ['<li><b>%s</b>: %s</li>' % (E(k), E(sc[k])) for k in ('Located', 'Calls to evidence', 'Usage', 'Seconds') if k in sc]
+    for am in d['preds'].get('amendments') or []:
+        what = am.get('what')
+        for w in (what if isinstance(what, list) else [what]):
+            if w:
+                items.append('<li><b>Amendment (%s)</b>: %s</li>' % (E(str(am.get('when', ''))), E(w)))
     body.append('<p class="muted">Calls to evidence: the censored value (total + 1) counts for a run that never read the '
                 'keyed launch; "never reached evidence" counts those runs. Asked the operator: runs with at least one '
-                'ask-operator question, and all questions they asked. Calls, no guidance: Skill calls and reads of the installed guidance left out (descriptive). Definitions from the predictions file:</p><ul class="muted">%s</ul>'
+                'ask-operator question, and all questions they asked. Calls, no guidance: Skill calls and reads of the installed guidance left out (descriptive). Definitions from the predictions file, with its amendments (an amendment replaces the definition above it):</p><ul class="muted">%s</ul>'
                 % ''.join(items))
     return section('arms', 'Per arm and family', ''.join(body))
 
@@ -721,7 +801,7 @@ def id_lists(runs, nb, fixed_from=None):
 
 
 def pc(x):
-    return 'n/a' if x is None or (isinstance(x, float) and math.isnan(x)) else '%.1f%%' % x
+    return 'n/a' if x is None or (isinstance(x, float) and math.isnan(x)) else '%s%%' % fixed(x, 1)
 
 
 def margin_lines(c, pos):
@@ -1046,10 +1126,15 @@ def gather(a):
             p2.append((tag, verdict_mod.controls(runs, 'A', 'm0', model[0] if len(model) == 1 else 'haiku', 'crib',
                                           vp2['positive_margin_needed'], vp2['negative_margin_needed'])))
     scorer_meta = (pilots[0]['scored_meta'] if pilots and pilots[0]['scored_meta'] else (m0 or {}).get('orig_meta', {}))
+    for b in pilots:
+        b['commit'] = a.commit
+    if m0:
+        m0['commit'] = a.m0_commit
     batches = pilots + ([m0] if m0 else [])
     return {'preds': preds, 'v3': v3, 'real': real, 'book': book, 'batches': batches, 'pilot_runs': pilot_runs, 'm0': m0,
             'all_runs': pilot_runs + (m0['runs'] if m0 else []), 'verdict': verdict, 'verdict_given': bool(a.verdict),
             'warnings': warnings, 'p2': p2, 'model': a.model, 'commit': a.commit, 'title': a.title, 'notes': a.note,
+            'verdict_notes': a.verdict_note,
             'scorer_meta': scorer_meta, 'nb': len(pilots)}
 
 
@@ -1059,13 +1144,15 @@ def main(argv=None):
     ap.add_argument('--m0', help='the M0 Haiku control folder (scored.json, scored-keyfix.json)')
     ap.add_argument('--verdict', help="verdict.py's output JSON on the pilot rows")
     ap.add_argument('--predictions', required=True, help='the pre-registered predictions JSON')
-    ap.add_argument('--commit', required=True, help='the commit SHA the runs used')
+    ap.add_argument('--commit', required=True, help='the commit SHA the pilot runs used')
+    ap.add_argument('--m0-commit', help='the commit SHA the M0 control runs used')
     ap.add_argument('--model', default='default', help='model flag of the verdict runs (default %(default)s)')
     ap.add_argument('--cases-v3', default=os.path.join(HERE, 'cases_v3.json'))
     ap.add_argument('--cases-real', default=os.path.join(HERE, 'cases_real.json'))
     ap.add_argument('--keys', default=os.path.join(HERE, 'keys_v3.json'))
     ap.add_argument('--title', default='DAQ Eval v3 Results')
     ap.add_argument('--note', action='append', default=[], help='a line of text under the header (repeatable)')
+    ap.add_argument('--verdict-note', action='append', default=[], help='a line printed beside the verdict (repeatable)')
     ap.add_argument('--out', required=True, help='the HTML file to write')
     a = ap.parse_args(argv)
     d = gather(a)

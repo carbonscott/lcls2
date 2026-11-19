@@ -191,8 +191,9 @@ class Page(unittest.TestCase):
         for r in self.rows:
             self.assertIn(r['run_id'], html)
         self.assertIn('abc123def456', html)
-        self.assertIn('<code>pilot-x</code> (12 runs)', html)
-        self.assertIn('<code>m0-x</code> (6 runs)', html)
+        self.assertIn('<code>pilot-x</code> (12 runs, pilot) at commit <code>abc123def456</code>; run folders: '
+                      '<code>B.none.default</code> (2), <code>B.pointer.default</code> (2), <code>C.none.default</code> (4)', html)
+        self.assertIn('<code>m0-x</code> (6 runs, M0 controls) at commit <code>not given</code>', html)
         # family C: pointer located 4/4, none 0/4 (healthy runs too), in the verdict's table and the findings
         self.assertIn('<td><b>pointer</b></td><td class="n">4/4 (100.0%)</td>', html)
         self.assertIn('it located the launch in 4/4 (100.0%) runs with the pointer and 0/4 (0.0%) with none', html)
@@ -205,6 +206,31 @@ class Page(unittest.TestCase):
         self.assertIn(v['P6_overall'][0], html)
         self.assertIn('rlost', err)                       # the run folder missing from rows.json is reported
         self.assertIn('B.none.default/rlost', html)
+
+    def test_m0_commit_verdict_note_controls_and_amendments(self):
+        with open(self.preds) as f:
+            p = json.load(f)
+        p['amendments'] = [{'when': '2026-11-19T15:45Z', 'what': ['Located is read on the launch the report concludes about.']}]
+        write(self.preds, p)
+        html, _ = self.build('--m0-commit', '0d628f9', '--verdict-note', 'Review pending.')
+        self.assertIn('(6 runs, M0 controls) at commit <code>0d628f9</code>', html)
+        self.assertEqual(html.count('<p class="vnote">Review pending.</p>'), 2)      # findings and the verdict section
+        self.assertIn('Controls, printed beside the verdict as P3 asks: P3, M1, family B: positive PASS, negative', html)
+        self.assertIn('P3 controls (family B alone): pointer 2/2 (100.0%) against none 0/2 (0.0%)', html)
+        self.assertIn('<b>Amendment (2026-11-19T15:45Z)</b>: Located is read on the launch the report concludes about.', html)
+        self.assertIn('Descriptive only, not a verdict', html)
+
+    def test_rounding_is_half_up(self):
+        self.assertEqual(report_v3.frac(13, 16), '13/16 (81.3%)')
+        self.assertEqual(report_v3.num(6.25), '6.3')
+        self.assertEqual(report_v3.num(-50.0, '%+.1f'), '-50.0')
+        self.assertEqual(report_v3.num(6.25, '%+.1f'), '+6.3')
+        self.assertEqual(report_v3.num(0.0, '%+.1f'), '+0.0')
+        self.assertEqual(report_v3.num(4.5625, '%.2f'), '4.56')
+        self.assertEqual(report_v3.usd(147.947), '$147.95')
+        self.assertEqual(report_v3.usd(0.8325, '$%.3f'), '$0.833')
+        self.assertEqual(report_v3.pc(81.25), '81.3%')
+        self.assertEqual(report_v3.num(1.0, '%.3g'), '1')
 
     def test_no_private_text_and_short_family_c_quotes(self):
         html, _ = self.build()
