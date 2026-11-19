@@ -191,13 +191,14 @@ class Page(unittest.TestCase):
         for r in self.rows:
             self.assertIn(r['run_id'], html)
         self.assertIn('abc123def456', html)
-        self.assertIn('<code>pilot-x</code> (12 runs)', html)
-        self.assertIn('<code>m0-x</code> (6 runs)', html)
+        self.assertIn('<code>pilot-x</code> (12 runs, pilot) run at commit <code>abc123def456</code>; run folders: '
+                      '<code>B.none.default</code> (2), <code>B.pointer.default</code> (2), <code>C.none.default</code> (4)', html)
+        self.assertIn('<code>m0-x</code> (6 runs, M0 controls) run at commit <code>not given</code>', html)
         # family C: pointer located 4/4, none 0/4 (healthy runs too), in the verdict's table and the findings
         self.assertIn('<td><b>pointer</b></td><td class="n">4/4 (100.0%)</td>', html)
         self.assertIn('it located the launch in 4/4 (100.0%) runs with the pointer and 0/4 (0.0%) with none', html)
         # P2 from the M0 folder: none 1/2 as run, 2/2 with the fixed key; the flipped run is flagged
-        self.assertIn('m0-none/rm02</span> (changed by the key fix)', html)
+        self.assertIn('m0-none/rm02</span> (changed since the keys as run scoring)', html)
         self.assertIn('1/2 (50.0%)', html)
         # the same verdict as verdict.py on these rows
         v = report_v3.run_verdict(self.rows, 'default')
@@ -205,6 +206,66 @@ class Page(unittest.TestCase):
         self.assertIn(v['P6_overall'][0], html)
         self.assertIn('rlost', err)                       # the run folder missing from rows.json is reported
         self.assertIn('B.none.default/rlost', html)
+
+    def test_m0_commit_verdict_note_controls_and_amendments(self):
+        with open(self.preds) as f:
+            p = json.load(f)
+        p['amendments'] = [{'when': '2026-11-19T15:45Z', 'what': ['Located is read on the launch the report concludes about.']}]
+        write(self.preds, p)
+        html, _ = self.build('--m0-commit', '0d628f9', '--verdict-note', 'Review pending.')
+        self.assertIn('(6 runs, M0 controls) run at commit <code>0d628f9</code>', html)
+        self.assertEqual(html.count('<p class="vnote">Review pending.</p>'), 2)      # findings and the verdict section
+        self.assertIn('Controls, printed beside the verdict as P3 asks: P3, M1, family B: positive PASS, negative', html)
+        self.assertIn('P3 controls (family B alone): pointer 2/2 (100.0%) against none 0/2 (0.0%)', html)
+        self.assertIn('<b>Amendment (2026-11-19T15:45Z)</b>: Located is read on the launch the report concludes about.', html)
+        self.assertIn('Descriptive only, not a verdict', html)
+
+    def test_corrections_and_trust(self):
+        html, _ = self.build()
+        self.assertIn('None recorded. This page shows the scores as first computed.', html)
+        self.assertIn('id="trust"', html)
+        self.assertIn('P3, family B: positive control PASS, ', html)
+        first = report_v3.run_verdict(self.rows, 'default')
+        first['P3_controls_M1_default']['positive_pass'] = False
+        path = os.path.join(self.tmp, 'first.json')
+        write(path, first)
+        alt = os.path.join(self.tmp, 'alt.json')
+        write(alt, [{'run_id': r['run_id'], 'alt': (r['calls'] or 0) + 1} for r in self.rows])
+        html, _ = self.build('--first-verdict', path, '--first-m0', os.path.join(self.m0, 'scored.json'),
+                             '--calls-variant', 'one more call=%s:alt' % alt, '--p3m-written', '2026-11-20T00:30:00Z',
+                             '--trust-note', 'A note.')
+        self.assertIn('<td>positive control</td><td class="n">FAIL</td><td class="n">PASS</td><td><span class="m part">changed</span>', html)
+        self.assertIn('<td>positive: none</td><td class="n">1/2 (50.0%)</td><td class="n">2/2 (100.0%)</td>', html)   # P2: the key fix
+        self.assertIn('one more call: with calls to evidence from that count, verdict.py reads family B', html)
+        self.assertIn('P3m was written at 2026-11-20T00:30:00Z, 31 minutes before the first counted run started (2026-11-20T01:01:00Z)', html)
+        self.assertIn('<li>A note.</li>', html)
+
+    def test_three_m0_scorings_and_scoring_commit(self):
+        shutil.copy(os.path.join(self.m0, 'scored-keyfix.json'), os.path.join(self.m0, 'scored-sc.json'))
+        html, _ = self.build('--m0-scoring', 'keys as run=scored.json', '--m0-scoring', 'fixed key=scored-keyfix.json',
+                             '--m0-scoring', 'corrected scorer=scored-sc.json', '--scoring-commit', 'feed123')
+        self.assertIn('<th class="n">Score, keys as run</th><th class="n">Score, fixed key</th><th class="n">Score, corrected scorer</th>', html)
+        self.assertIn('run at commit <code>abc123def456</code>, scored at <code>feed123</code>', html)
+        self.assertIn('Family A at M0 (the P2 control runs, corrected scorer)', html)
+        self.assertIn('P2, M0 Haiku (corrected scorer): positive', html)
+
+    def test_flips(self):
+        rule = report_v3.pos_rule(12.5)
+        self.assertEqual(report_v3.flips(14, 16, 13, 16, rule), 1)       # 87.5 vs 81.25: one more pointer pass reaches +12.5
+        self.assertEqual(report_v3.flips(28, 30, 23, 30, rule), 2)
+        self.assertEqual(report_v3.flips(3, 12, 9, 12, report_v3.neg_rule(25)), 4)
+
+    def test_rounding_is_half_up(self):
+        self.assertEqual(report_v3.frac(13, 16), '13/16 (81.3%)')
+        self.assertEqual(report_v3.num(6.25), '6.3')
+        self.assertEqual(report_v3.num(-50.0, '%+.1f'), '-50.0')
+        self.assertEqual(report_v3.num(6.25, '%+.1f'), '+6.3')
+        self.assertEqual(report_v3.num(0.0, '%+.1f'), '+0.0')
+        self.assertEqual(report_v3.num(4.5625, '%.2f'), '4.56')
+        self.assertEqual(report_v3.usd(147.947), '$147.95')
+        self.assertEqual(report_v3.usd(0.8325, '$%.3f'), '$0.833')
+        self.assertEqual(report_v3.pc(81.25), '81.3%')
+        self.assertEqual(report_v3.num(1.0, '%.3g'), '1')
 
     def test_no_private_text_and_short_family_c_quotes(self):
         html, _ = self.build()
@@ -233,7 +294,7 @@ class Page(unittest.TestCase):
         self.assertNotIn('differs', err)
 
     def test_p2_uses_verdict_margins(self):
-        rows = report_v3.load_m0(self.m0)['fixed']
+        rows = report_v3.load_m0(self.m0)['runs']                # the last scoring: the fixed key
         c = verdict.controls(rows, 'A', 'm0', 'haiku', 'crib', 20.0)
         self.assertEqual(c['none'][:2], [2, 2])
         self.assertEqual(c['starved'][:2], [0, 2])
