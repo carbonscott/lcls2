@@ -2621,10 +2621,11 @@
      "fakecam_0 was killed by signal 9 (SIGKILL) during the second configure.",
      "fakecam_0 died abruptly during the second configure (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone.",
      "fakecam_0 went silent (stalled) on the second configure: it never logged receipt of configure, and was then killed (signal 9); teb0 and meb0 failed only because their link to DRP ID 0 was gone.",
+     "fakecam_0 stalled, hung or stopped responding on the (second) configure: it never logged receipt of configure, whether or not its death by signal 9 is also named.",
      "The DRP fakecam_0 stopped responding / was killed during configure, so the event builders could not synchronise with DRP ID 0 ('Link ID 0 is disconnected'); control names meb0 only because its reply came first."
     ],
     "near_miss": [
-     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "Only control's timeout message (a process 'did not respond to configure', a transition timeout), with nothing said about fakecam_0 itself stalling, stopping, never logging configure or dying.",
      "fakecam_0 crashed (segfault or abort, its own error) during the second configure.",
      "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped.",
      "meb0 (or teb0) failed to configure ('Failed synchronize Begin with DRP: rc -107', 'Link ID 0 is disconnected'), given as the cause, with nothing said about the DRP dying or stalling.",

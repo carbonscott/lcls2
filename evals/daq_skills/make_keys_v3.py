@@ -164,7 +164,9 @@ def m_hang(c, where, extra_near=()):
     }
 
 
-def m_kill(c, when, extra_acc=(), extra_near=()):
+def m_kill(c, when, extra_acc=(), extra_near=(), timeout_near=None):
+    """A process killed from outside.  timeout_near replaces the first near-miss (a bare timeout) where the key
+    accepts a stall of the process too."""
     return {
         'summary': '%s was killed by signal 9 (SIGKILL, from outside) %s, with no error of its own' % (c, when),
         'accepted': [
@@ -173,7 +175,7 @@ def m_kill(c, when, extra_acc=(), extra_near=()):
             'because it was gone.' % (c, when),
         ] + list(extra_acc),
         'near_miss': [
-            '%s and/or other processes did not respond to a transition (a timeout), with no death of %s named.' % (c, c),
+            timeout_near or '%s and/or other processes did not respond to a transition (a timeout), with no death of %s named.' % (c, c),
             '%s crashed (segfault or abort, its own error) %s.' % (c, when),
             'teb0 (or another process) lost its connection to %s and aborted, with nothing said about why the link '
             'dropped.' % c,
@@ -402,11 +404,15 @@ HAND = {
         'mechanism': m_kill('fakecam_0', 'during the second configure', extra_acc=[
             'fakecam_0 went silent (stalled) on the second configure: it never logged receipt of configure, and was then '
             'killed (signal 9); teb0 and meb0 failed only because their link to DRP ID 0 was gone.',
+            'fakecam_0 stalled, hung or stopped responding on the (second) configure: it never logged receipt of configure'
+            ', whether or not its death by signal 9 is also named.',
             'The DRP fakecam_0 stopped responding / was killed during configure, so the event builders could not '
             "synchronise with DRP ID 0 ('Link ID 0 is disconnected'); control names meb0 only because its reply came first."],
             extra_near=["meb0 (or teb0) failed to configure ('Failed synchronize Begin with DRP: rc -107', 'Link ID 0 is "
                         "disconnected'), given as the cause, with nothing said about the DRP dying or stalling.",
-                        'The DRP link (Link ID 0) was disconnected, with no cause on the DRP side named.']),
+                        'The DRP link (Link ID 0) was disconnected, with no cause on the DRP side named.'],
+            timeout_near="Only control's timeout message (a process 'did not respond to configure', a transition timeout), "
+                         'with nothing said about fakecam_0 itself stalling, stopping, never logging configure or dying.'),
         'judgment': 'Accepts either the SIGKILL or the stall before it (the key says both: silent, then killed).'},
     'drp-gone-cfg': {'component': FAKECAM_1DRP, 'stage': stage('configure'),
                      'mechanism': m_kill('fakecam_0', 'part-way through configure (second cycle)')},
