@@ -1,0 +1,47 @@
+[
+ {
+  "send": "git -C $REPO log -1 --format='HEAD %H  %cI' evals/v3-pr; git -C $REPO rev-parse evals/v3-pr^{tree}; git -C $REPO ls-remote origin refs/heads/evals/v3-pr; date -u; python3 --version"
+ },
+ {
+  "send": "mkdir take && git -C $REPO archive --prefix=at-head/ evals/v3-pr evals/daq_skills | tar x -C take && cd take/at-head/evals/daq_skills && ls"
+ },
+ {
+  "send": "python3 -m unittest discover -s tests 2>&1 | tail -4; echo UNIT_EXIT=${PIPESTATUS[0]}",
+  "expect": "^UNIT_EXIT=[0-9]+",
+  "timeout": 300
+ },
+ {
+  "send": "W=$PWD/../../../work && mkdir -p $W && tar xzf data/pools.tar.gz -C $W && python3 tree.py --work $W | tail -1; echo TREE_EXIT=${PIPESTATUS[0]}",
+  "expect": "^TREE_EXIT=[0-9]+",
+  "timeout": 400
+ },
+ {
+  "send": "SK=$REPO/../arms/skills-181/psana/psana/skills MAP=~/.claude/skills REAL=~/mfx-root    # REAL is not fetched on this VM; --dry-run only plans"
+ },
+ {
+  "send": "P=\"python3 pilot.py --out $PWD/../../../pilot --work $W --real-root $REAL --skills $SK --map $MAP --dry-run\""
+ },
+ {
+  "send": "$P --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2; echo PILOT_B_EXIT=$?",
+  "expect": "^PILOT_B_EXIT=[0-9]+"
+ },
+ {
+  "send": "$P --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2; echo PILOT_C_EXIT=$?",
+  "expect": "^PILOT_C_EXIT=[0-9]+"
+ },
+ {
+  "send": "test -e ../../../pilot || echo 'no pilot folder: the dry runs started no agent and wrote nothing'"
+ },
+ {
+  "send": "# the pilot of record (162 runs, from evals/v3-eval 4e630ea90): this head's verdict.py on its rows.json"
+ },
+ {
+  "send": "python3 verdict.py $ROWS/rows.json > verdict-head.json && cmp verdict-head.json $ROWS/verdict.json && echo \"SAME as the pilot's verdict.json\""
+ },
+ {
+  "send": "python3 -c \"import json; d=json.load(open('verdict-head.json')); print('P3m controls (B+C pooled) detect a difference:', d['P3m_controls_M1_pooled']['detects_difference']); print('P4 B:', d['P4_B']['verdict'], '-', d['P4_B']['why']); print('P5 C:', d['P5_C']['verdict'], '-', d['P5_C']['why']); print('P6 overall:', ', '.join(d['P6_overall']))\""
+ },
+ {
+  "send": "python3 -c \"import json; u=json.load(open('$ROWS/usage.json')); print('pilot runs', u['runs'], ' agent $%.2f  scorer $%.2f  total $%.2f' % (u['agent_usd'], u['scorer_usd'], u['total_usd']))\""
+ }
+]
