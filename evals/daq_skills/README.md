@@ -19,7 +19,7 @@ group access or `harvest.py`. You need the `claude` CLI logged in to your own ac
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 32 tests, OK, no model calls
+python3 -m unittest discover -s tests                          # 64 tests, OK, no model calls
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
 OUT=$HOME/daq-eval-results                                       # your results go here
 SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
@@ -40,6 +40,46 @@ python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 re
 - Unpack with `tar` so the files keep their modification times; the logs skill's helper picks sessions by them.
 - Tested: the unit tests, the sandbox and a scripted agent on S3DF (Python 3.6); real agent runs on a Linux VM
   (Python 3.12). A real Claude Code run on S3DF itself has not been tried yet.
+
+## v3: cold start (mode m1) and the controls
+
+`cases_v3.json` holds the 8 cases of the v3 eval (6 fault cases most often missed in v2, 2 healthy
+floor checks; the rule and the counts are in the file). Family A runs them as before (mode `m0`);
+family B runs the same launches re-housed in an MFX-shaped tree (mode `m1`): the prompt names the hutch,
+a vague time ("last night", "Friday afternoon") and the current date, and gives no path and no window.
+
+```bash
+python3 tree.py --work $WORK          # builds $WORK/roots (about a minute); exit 1 if a window check fails
+# family B, one arm per guidance set (--skills twice installs both sets in one folder)
+python3 run.py --work $WORK --mode m1 --arm m1-none   --skills none --out $OUT
+python3 run.py --work $WORK --mode m1 --arm m1-skills --skills $SK  --out $OUT
+python3 run.py --work $WORK --mode m1 --arm m1-map    --skills $MAP --out $OUT     # MAP: the folder holding hutch-resources/
+python3 run.py --work $WORK --mode m1 --arm m1-both   --skills $SK --skills $MAP --out $OUT
+python3 run.py --work $WORK --mode m1 --arm m1-pointer --skills none --control pointer --out $OUT
+python3 run.py --work $WORK --mode m1 --arm m1-starved --skills none --control starved --out $OUT
+# the M0 controls on family A
+python3 run.py --work $WORK --mode m0 --arm m0-crib    --skills none --control crib    --out $OUT
+python3 run.py --work $WORK --mode m0 --arm m0-starved --skills none --control starved --out $OUT
+python3 evidence.py --results $OUT --work $WORK       # calls to evidence per run
+```
+
+- **The tree** (`tree.py`): one calendar of launches mounted read-only at `/sdf`: the current MFX root
+  `/sdf/home/m/mfxopr/daq/logs/<YYYY>/<MM>`, the root used before 2026-09-17 09:29
+  `/sdf/home/m/mfxopr/<YYYY>/<MM>`, seven partition configs in `daq/scripts` (rebuilt from one launch's
+  log headers each), a month boundary, and a second hutch at `/sdf/home/t/tmoopr/daq/logs`. Each case
+  sees the calendar up to its own "now". Every launch is a bundled pool's launch moved by whole days
+  (names, directory, dates in the text, modification times; `tst` becomes `mfx`); no line is added
+  or removed. The build fails unless each case's widest reading of its vague time holds only its
+  keyed launch in the MFX roots. The second hutch has launches inside some windows on purpose (a
+  wrong-tree trap; `manifest.json` counts them).
+- **ask-operator** (mode m1): a command on the agent's PATH. It answers from the case's fixed table
+  (when, which hutch, what was seen; anything else gets "I don't know more than what I told you.")
+  and every question goes to `<run>/operator.jsonl`. The table stays outside the sandbox.
+- **Controls**: `pointer` (m1) adds the log directory and the exact window; `crib` (m0) puts the
+  key's mechanism, verbatim from the key, before the prompt; `starved` removes the keyed launch's
+  root-cause files (its component's log and every file stating the key's mechanism).
+- **Calls to evidence** (`evidence.py`): tool calls before the first call that reads a file of the
+  keyed launch (a Read of it, or any output that shows one of its lines); never read = total + 1.
 
 ## Using another agent
 
@@ -101,7 +141,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 32 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 64 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181
