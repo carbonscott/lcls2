@@ -1,0 +1,21 @@
+2026-11-19T00:30:26.537+00:00 daq_sim: up on sdfrome046 (job 45757390 step 9), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef
+2026-11-19T00:30:26.537+00:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-19T00:30:47.414+00:00 daq_sim: preflight rc=0: 00:30:47 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-19T00:30:49.059+00:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-19T00:30:49.059+00:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+2026-11-19T00:30:51.498+00:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-19T00:30:57.263+00:00 daq_sim: fakecam_0 ready for transitions after 0 s (pmlogs/2026/11/19_00:30:51_sdfrome046:fakecam_0.log)
+2026-11-19T00:30:57.492+00:00 daq_sim: web GUI: -m psdaq.webgui.server --bind 127.0.0.1 --port 31053 -p 5 -H 127.0.0.1 --configdb-url http://127.0.0.1:31050/ws/ --configdb-root configDB --events-source pva --events-pv DAQ:SIM:XPM:0:PART:5:NumL0Acc
+2026-11-19T00:30:59.645+00:00 daq_sim: web GUI up: http://127.0.0.1:31053/ (pid 1802605) control state reset
+2026-11-19T00:30:59.648+00:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfrome046 (Slurm job 45757390)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef/daq_sim.cnf  pids {'control': 1802289, 'teb0': 1802290, 'fakecam_0': 1802260}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       http://127.0.0.1:31053/  (pid 1802605; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef

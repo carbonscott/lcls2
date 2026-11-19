@@ -1,0 +1,9 @@
+{"t": 1795048190.346109, "utc": "2026-11-19T00:29:50Z", "label": "1 provenance: host, job, private network namespace, checkouts, expected results"}
+{"t": 1795048202.2044067, "utc": "2026-11-19T00:30:02Z", "label": "2 the code: e2e.py:678-679, prometheus_targets since 71895fbda, scrape since 679ceb644"}
+{"t": 1795048214.3049266, "utc": "2026-11-19T00:30:14Z", "label": "3 the runner and the two read-back pollers"}
+{"t": 1795048218.889184, "utc": "2026-11-19T00:30:18Z", "label": "4 BEFORE: daq_sim e2e at P 5eb773c84b9d (--keep-up), read-back during the run"}
+{"t": 1795048284.3202012, "utc": "2026-11-19T00:31:24Z", "label": "5 read-back after RESET (DAQ kept up), then daq_sim down"}
+{"t": 1795048309.8785305, "utc": "2026-11-19T00:31:49Z", "label": "6 bisect: e2e at 71895fbda^ = e601509f9"}
+{"t": 1795048387.2430744, "utc": "2026-11-19T00:33:07Z", "label": "7 bisect: e2e at 71895fbda"}
+{"t": 1795048461.3334491, "utc": "2026-11-19T00:34:21Z", "label": "8 AFTER: e2e at P + the fix (wtF, uncommitted)"}
+{"t": 1795048529.2099154, "utc": "2026-11-19T00:35:29Z", "label": "9 summary"}

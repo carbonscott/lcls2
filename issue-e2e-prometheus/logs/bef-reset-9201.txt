@@ -1,0 +1,13 @@
+# HELP exposer_transferred_bytes_total Transferred bytes to metrics services
+# TYPE exposer_transferred_bytes_total counter
+exposer_transferred_bytes_total 352910
+# HELP exposer_scrapes_total Number of times metrics were scraped
+# TYPE exposer_scrapes_total counter
+exposer_scrapes_total 56
+# HELP exposer_request_latencies Latencies of serving scrape requests, in microseconds
+# TYPE exposer_request_latencies summary
+exposer_request_latencies_count 56
+exposer_request_latencies_sum 17610
+exposer_request_latencies{quantile="0.5"} 363
+exposer_request_latencies{quantile="0.9"} 511
+exposer_request_latencies{quantile="0.99"} 544

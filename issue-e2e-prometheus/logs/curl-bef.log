@@ -1,0 +1,17 @@
+00:31:04.633 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 0
+00:31:05.261 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 0
+00:31:05.913 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 0
+00:31:06.550 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 0
+00:31:07.184 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 0
+00:31:07.793 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 48
+00:31:08.393 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 645
+00:31:09.055 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 1310
+00:31:09.709 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 1965
+00:31:10.518 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 2759
+00:31:11.167 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 3421
+00:31:11.786 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+00:31:12.411 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+00:31:13.021 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+00:31:13.636 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+00:31:14.302 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+00:31:15.011 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027

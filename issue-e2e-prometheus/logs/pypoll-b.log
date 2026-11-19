@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/bin/pypoll.py", line 9, in <module>
+    as_e2e = ds.scrape(t, ds.COUNTERS, errors=why)                  # what e2e.py:678-679 passes
+TypeError: scrape() got an unexpected keyword argument 'errors'

@@ -1,0 +1,158 @@
+2026-11-19T00:34:28.780+00:00 e2e: host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd 5eb773c84b9d8bf804c87fb6d629646cf5631cd4  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix  events 1000  break None  edit-seed None  expect-seed None
+2026-11-19T00:34:28.780+00:00 e2e: devices: ls: cannot access '/dev/datadev*': No such file or directory
+ls: cannot access '/dev/pcie_adc*': No such file or directory
+ls: cannot access '/dev/tpr*': No such file or directory
+2026-11-19T00:34:28.949+00:00 e2e: browser venv OK: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/tools/webgui-venv/bin/python (Python 3.12.12 playwright 1.64.1), chromium /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/cache/playwright/chromium-1248/chrome-linux64/chrome
+2026-11-19T00:34:28.956+00:00 e2e: bringing the DAQ up: daq_sim up --webgui --detach (preflight first)
+2026-11-19T00:34:28.986+00:00 daq_sim: up on sdfrome046 (job 45757390 step 9), platform 5, workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix
+2026-11-19T00:34:28.986+00:00 daq_sim: preflight (fail-closed isolation check) ...
+2026-11-19T00:34:48.535+00:00 daq_sim: preflight rc=0: 00:34:48 PREFLIGHT PASS  (logs/preflight.log)
+2026-11-19T00:34:49.903+00:00 daq_sim: config DB seeded: tst/BEAM/tmoteb_0 key=1 written
+2026-11-19T00:34:49.903+00:00 daq_sim: config DB seeded: tst/BEAM/fakecam_0 key=2 written
+2026-11-19T00:34:51.736+00:00 daq_sim: procmgr start daq_sim.cnf
+2026-11-19T00:34:56.998+00:00 daq_sim: fakecam_0 ready for transitions after 0 s (pmlogs/2026/11/19_00:34:52_sdfrome046:fakecam_0.log)
+2026-11-19T00:34:57.143+00:00 daq_sim: web GUI: -m psdaq.webgui.server --bind 127.0.0.1 --port 31053 -p 5 -H 127.0.0.1 --configdb-url http://127.0.0.1:31050/ws/ --configdb-root configDB --events-source pva --events-pv DAQ:SIM:XPM:0:PART:5:NumL0Acc
+2026-11-19T00:34:58.763+00:00 daq_sim: web GUI up: http://127.0.0.1:31053/ (pid 1821223) control state reset
+2026-11-19T00:34:58.766+00:00 daq_sim: UP. Endpoints (also in endpoints.json):
+  host         sdfrome046 (Slurm job 45757390)
+  control      platform 5 on localhost: ZMQ ports 29985-30045 (front_rep 30005, front_pub 30015); daqstate -p 5 -P tst -C localhost
+  configdb     http://127.0.0.1:31050/ws/configDB  (tst/BEAM: tmoteb_0, fakecam_0 sim_seed=0x1234)
+  rundb        http://127.0.0.1:31051/  (experiment tstx00001; log logs/lgbk.jsonl)
+  simxpm       PVs DAQ:SIM:XPM:0:* on PVA 127.0.0.1:15075, frames tcp://127.0.0.1:31052, control -X tcp://127.0.0.1:30050, 1000 Hz; count: pvget DAQ:SIM:XPM:0:PART:5:NumL0Acc
+  procmgr      /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/daq_sim.cnf  pids {'control': 1821011, 'teb0': 1821012, 'fakecam_0': 1821013}  logs /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/pmlogs
+  data         /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/data  (xtc2 written when recording)
+  prometheus   /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/prom/*.yaml  (exporters on 0.0.0.0:9200-9299)
+  webgui       http://127.0.0.1:31053/  (pid 1821223; from your machine: ssh -L 31053:127.0.0.1:31053 <node>, via the login host)
+  drive        daq_sim cycle -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix --events 1000   or   daq_sim e2e -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix
+  stop         Ctrl-C the up process, or daq_sim down -w /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix
+2026-11-19T00:34:59.465+00:00 e2e: driver up (pid 1821287): chromium 156.0.8078.4, Python 3.12.12
+2026-11-19T00:34:59.967+00:00 e2e: control state at start: reset; web GUI http://127.0.0.1:31053/; counter PV DAQ:SIM:XPM:0:PART:5:NumL0Acc; need >= 1100 L1Accepts
+2026-11-19T00:34:59.968+00:00 e2e: web GUI backend daqcontrol, events source pva
+  DRV {"id": 1, "op": "open", "ok": true, "t0": "2026-11-19T00:34:59.968+00:00", "t1": "2026-11-19T00:35:00.123+00:00"}
+  DOM 2026-11-19T00:35:00.134+00:00 state=RESET transition=RESET evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=false errors=[]
+  DRV {"id": 3, "op": "shot", "ok": true, "t0": "2026-11-19T00:35:00.134+00:00", "path": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/e2e-shots/e2e-00-reset.png", "t1": "2026-11-19T00:35:00.186+00:00"}
+  DRV {"id": 4, "op": "click", "ok": true, "t0": "2026-11-19T00:35:00.186+00:00", "target": "select", "t1": "2026-11-19T00:35:00.221+00:00"}
+  DOM 2026-11-19T00:35:01.233+00:00 state=UNALLOCATED transition=ROLLCALL evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=false errors=[]
+UNALLOCATED clicked 2026-11-19T00:35:00.221+00:00 reported 2026-11-19T00:35:01.224+00:00 (page shows it 2026-11-19T00:35:01.233+00:00)
+  DRV {"id": 6, "op": "click", "ok": true, "t0": "2026-11-19T00:35:01.233+00:00", "target": "apply", "t1": "2026-11-19T00:35:01.263+00:00"}
+2026-11-19T00:35:01.667+00:00 control [warning] ami NOT supported in absence of MEB
+  DOM 2026-11-19T00:35:01.673+00:00 state=ALLOCATED transition=ALLOC evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=false errors=[]
+ALLOCATED clicked 2026-11-19T00:35:01.263+00:00 reported 2026-11-19T00:35:01.671+00:00 (page shows it 2026-11-19T00:35:01.673+00:00)
+  DOM 2026-11-19T00:35:01.674+00:00 state=ALLOCATED transition=ALLOC evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=false errors=[]
+  DRV {"id": 9, "op": "click", "ok": true, "t0": "2026-11-19T00:35:01.675+00:00", "target": "record", "t1": "2026-11-19T00:35:01.712+00:00"}
+  DOM 2026-11-19T00:35:01.715+00:00 state=ALLOCATED transition=ALLOC evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=false errors=[]
+  DOM 2026-11-19T00:35:02.218+00:00 state=ALLOCATED transition=ALLOC evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=true errors=[]
+RECORD clicked 2026-11-19T00:35:01.712+00:00 reported recording=True (page aria-pressed true)
+  DRV {"id": 12, "op": "state", "ok": true, "t0": "2026-11-19T00:35:02.218+00:00", "value": "CONNECTED", "t1": "2026-11-19T00:35:02.224+00:00"}
+  DOM 2026-11-19T00:35:02.866+00:00 state=CONNECTED transition=CONNECT evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=true errors=[]
+CONNECTED clicked 2026-11-19T00:35:02.224+00:00 reported 2026-11-19T00:35:02.856+00:00 (page shows it 2026-11-19T00:35:02.866+00:00)
+  DRV {"id": 14, "op": "state", "ok": true, "t0": "2026-11-19T00:35:02.871+00:00", "value": "CONFIGURED", "t1": "2026-11-19T00:35:02.875+00:00"}
+  DOM 2026-11-19T00:35:04.240+00:00 state=CONFIGURED transition=CONFIGURE evt='0' source=pva ts=1795048499.8147469 final=0 run_label='last run:' run=0 exp=tstx00001 rec=true errors=[]
+CONFIGURED clicked 2026-11-19T00:35:02.875+00:00 reported 2026-11-19T00:35:04.231+00:00 (page shows it 2026-11-19T00:35:04.240+00:00)
+CONFIGURE window 2026-11-19T00:35:02.870+00:00 (before the click) .. 2026-11-19T00:35:04.240+00:00 (control reported configured)
+CONFIGURE   config DB access: 2026-11-19T00:35:02.878092+00:00 GET /ws/configDB/get_configuration/tst/BEAM/tmoteb_0/ status 200 success True
+CONFIGURE   config DB access: 2026-11-19T00:35:03.181064+00:00 GET /ws/configDB/get_configuration/tst/BEAM/fakecam_0/ status 200 success True
+CONFIGURE   DRP log (/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/pmlogs/2026/11/19_00:34:52_sdfrome046:fakecam_0.log): tst-drp[1821013]: <I> Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0
+CONFIGURE   DRP pid 1821013; page /api/configdb requests in the window: 0 []
+  DRV {"id": 17, "op": "state", "ok": true, "t0": "2026-11-19T00:35:04.245+00:00", "value": "STARTING", "t1": "2026-11-19T00:35:04.249+00:00"}
+2026-11-19T00:35:05.350+00:00 control [fileReport] /tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+2026-11-19T00:35:05.359+00:00 control [fileReport] /tst/tstx00001/xtc/smalldata/tstx00001-r0001-s000-c000.smd.xtc2
+  DOM 2026-11-19T00:35:05.377+00:00 state=STARTING transition=BEGINRUN evt='0' source=pva ts=1795048499.8147469 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+STARTING clicked 2026-11-19T00:35:04.249+00:00 reported 2026-11-19T00:35:05.367+00:00 (page shows it 2026-11-19T00:35:05.377+00:00)
+  DRV {"id": 19, "op": "state", "ok": true, "t0": "2026-11-19T00:35:05.378+00:00", "value": "PAUSED", "t1": "2026-11-19T00:35:05.382+00:00"}
+  DOM 2026-11-19T00:35:05.485+00:00 state=PAUSED transition=BEGINSTEP evt='0' source=pva ts=1795048499.8147469 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+PAUSED clicked 2026-11-19T00:35:05.382+00:00 reported 2026-11-19T00:35:05.483+00:00 (page shows it 2026-11-19T00:35:05.485+00:00)
+  DRV {"id": 21, "op": "state", "ok": true, "t0": "2026-11-19T00:35:05.485+00:00", "value": "RUNNING", "t1": "2026-11-19T00:35:05.489+00:00"}
+  DOM 2026-11-19T00:35:05.592+00:00 state=RUNNING transition=ENABLE evt='0' source=pva ts=1795048499.8147469 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+RUNNING clicked 2026-11-19T00:35:05.489+00:00 reported 2026-11-19T00:35:05.590+00:00 (page shows it 2026-11-19T00:35:05.592+00:00)
+  DOM 2026-11-19T00:35:05.593+00:00 state=RUNNING transition=ENABLE evt='0' source=pva ts=1795048499.8147469 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DRV {"id": 24, "op": "shot", "ok": true, "t0": "2026-11-19T00:35:05.593+00:00", "path": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/e2e-shots/e2e-01-running.png", "t1": "2026-11-19T00:35:05.639+00:00"}
+2026-11-19T00:35:07.255+00:00 e2e: own read DAQ:SIM:XPM:0:PART:5:NumL0Acc = 1558 at 2026-11-19T00:35:07.255+00:00
+2026-11-19T00:35:09.269+00:00 e2e: assertion 1 PASS: own NumL0Acc read 1558 >= 1100 while RUNNING, then 3558 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  DOM 2026-11-19T00:35:09.311+00:00 state=RUNNING transition=ENABLE evt='3558' source=pva ts=1795048509.1943295 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+2026-11-19T00:35:09.311+00:00 e2e: assertion 4 PASS: page events '3558' while RUNNING parse as ^\d+$
+  DRV {"id": 26, "op": "state", "ok": true, "t0": "2026-11-19T00:35:09.312+00:00", "value": "PAUSED", "t1": "2026-11-19T00:35:09.316+00:00"}
+  DOM 2026-11-19T00:35:09.419+00:00 state=PAUSED transition=DISABLE evt='3558' source=pva ts=1795048509.1943295 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+PAUSED clicked 2026-11-19T00:35:09.316+00:00 reported 2026-11-19T00:35:09.417+00:00 (page shows it 2026-11-19T00:35:09.419+00:00)
+  DOM 2026-11-19T00:35:09.432+00:00 state=PAUSED transition=DISABLE evt='3558' source=pva ts=1795048509.1943295 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DOM 2026-11-19T00:35:09.936+00:00 state=PAUSED transition=DISABLE evt='3558' source=pva ts=1795048509.1943295 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DOM 2026-11-19T00:35:10.456+00:00 state=PAUSED transition=DISABLE evt='3827' source=pva ts=1795048510.2363858 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DOM 2026-11-19T00:35:10.958+00:00 state=PAUSED transition=DISABLE evt='3827' source=pva ts=1795048510.2363858 final=0 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DOM 2026-11-19T00:35:11.468+00:00 state=PAUSED transition=DISABLE evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+  DOM 2026-11-19T00:35:12.679+00:00 state=PAUSED transition=DISABLE evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+2026-11-19T00:35:12.680+00:00 e2e: assertion 3 PASS: after Disable (reported 2026-11-19T00:35:09.417+00:00): data-final 1,1; data-ts 2026-11-19T00:35:11.277+00:00 > Disable; readings at 2026-11-19T00:35:11.468+00:00 and 2026-11-19T00:35:12.679+00:00: '3827' == '3827'; source pva
+2026-11-19T00:35:12.680+00:00 e2e: assertion 4 PASS: page events '3827' parse as ^\d+$
+  DRV {"id": 34, "op": "shot", "ok": true, "t0": "2026-11-19T00:35:12.680+00:00", "path": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/e2e-shots/e2e-02-paused.png", "t1": "2026-11-19T00:35:12.726+00:00"}
+  DRV {"id": 35, "op": "state", "ok": true, "t0": "2026-11-19T00:35:12.726+00:00", "value": "STARTING", "t1": "2026-11-19T00:35:12.730+00:00"}
+  DOM 2026-11-19T00:35:12.833+00:00 state=STARTING transition=ENDSTEP evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='run:' run=1 exp=tstx00001 rec=true errors=[]
+STARTING clicked 2026-11-19T00:35:12.730+00:00 reported 2026-11-19T00:35:12.831+00:00 (page shows it 2026-11-19T00:35:12.833+00:00)
+  DRV {"id": 37, "op": "state", "ok": true, "t0": "2026-11-19T00:35:12.833+00:00", "value": "CONFIGURED", "t1": "2026-11-19T00:35:12.836+00:00"}
+  DOM 2026-11-19T00:35:12.939+00:00 state=CONFIGURED transition=ENDRUN evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='last run:' run=1 exp=tstx00001 rec=true errors=[]
+CONFIGURED clicked 2026-11-19T00:35:12.836+00:00 reported 2026-11-19T00:35:12.937+00:00 (page shows it 2026-11-19T00:35:12.939+00:00)
+2026-11-19T00:35:12.956+00:00 e2e: in CONFIGURED: Prometheus {'TEB_EvtCt': 3827, 'TEB_TrCt': 11, 'TEB_WrtCt': 3827, 'DRP_Damage': 0, 'DRP_RecordSize': 1592598, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}; own NumL0Acc 3827
+  DRV {"id": 39, "op": "state", "ok": true, "t0": "2026-11-19T00:35:12.956+00:00", "value": "CONNECTED", "t1": "2026-11-19T00:35:12.958+00:00"}
+  DOM 2026-11-19T00:35:13.060+00:00 state=CONNECTED transition=UNCONFIGURE evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='last run:' run=1 exp=tstx00001 rec=true errors=[]
+CONNECTED clicked 2026-11-19T00:35:12.958+00:00 reported 2026-11-19T00:35:13.059+00:00 (page shows it 2026-11-19T00:35:13.060+00:00)
+  DRV {"id": 41, "op": "state", "ok": true, "t0": "2026-11-19T00:35:13.061+00:00", "value": "ALLOCATED", "t1": "2026-11-19T00:35:13.063+00:00"}
+  DOM 2026-11-19T00:35:13.310+00:00 state=ALLOCATED transition=DISCONNECT evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='last run:' run=1 exp=tstx00001 rec=true errors=[]
+ALLOCATED clicked 2026-11-19T00:35:13.063+00:00 reported 2026-11-19T00:35:13.307+00:00 (page shows it 2026-11-19T00:35:13.310+00:00)
+  DRV {"id": 43, "op": "state", "ok": true, "t0": "2026-11-19T00:35:13.311+00:00", "value": "RESET", "t1": "2026-11-19T00:35:13.314+00:00"}
+  DOM 2026-11-19T00:35:13.417+00:00 state=RESET transition=RESET evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='last run:' run=1 exp=tstx00001 rec=true errors=[]
+RESET clicked 2026-11-19T00:35:13.314+00:00 reported 2026-11-19T00:35:13.415+00:00 (page shows it 2026-11-19T00:35:13.417+00:00)
+  DOM 2026-11-19T00:35:13.418+00:00 state=RESET transition=RESET evt='3827' source=pva ts=1795048511.2776992 final=1 run_label='last run:' run=1 exp=tstx00001 rec=true errors=[]
+2026-11-19T00:35:13.418+00:00 e2e: assertion 5 PASS: after RESET the page shows '3827' (data-final 1), after Disable it showed '3827'
+  DRV {"id": 46, "op": "shot", "ok": true, "t0": "2026-11-19T00:35:13.418+00:00", "path": "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/e2e-shots/e2e-03-reset.png", "t1": "2026-11-19T00:35:13.465+00:00"}
+2026-11-19T00:35:13.936+00:00 e2e: assertion 2 PASS: control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+2026-11-19T00:35:17.689+00:00 e2e: assertion 6 PASS: page 3827 == TEB_WrtCt 3827 == psana2 events 3827 == with data 3827 >= 1000: True; page == own NumL0Acc after Disable 3827: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)
+2026-11-19T00:35:17.689+00:00 e2e: assertion 7 PASS: Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1821013 (log pids ['1821013']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+2026-11-19T00:35:17.689+00:00 e2e: daq_sim down
+2026-11-19T00:35:17.694+00:00 daq_sim: stopping webgui pid 1821223: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.webgui.server --bind 127.0.0.1 --port 31
+2026-11-19T00:35:18.095+00:00 daq_sim: procmgr stop daq_sim.cnf
+2026-11-19T00:35:23.471+00:00 daq_sim: stopping simxpm pid 1820928: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.simxpm -P DAQ:SIM -x 0 --frames tcp:
+2026-11-19T00:35:23.572+00:00 daq_sim: stopping lgbk pid 1820918: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.lgbk_server --instrument tst --exper
+2026-11-19T00:35:23.872+00:00 daq_sim: stopping configdb pid 1820879: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python3 -m psdaq.sim.configdb_server --store /sdf/data/lc
+2026-11-19T00:35:24.787+00:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31053]
+2026-11-19T00:35:24.793+00:00 daq_sim: down: clean
+====================================================================================================
+E2E summary  host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd 5eb773c84b9d8bf804c87fb6d629646cf5631cd4  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix  events 1000  break None  edit-seed None  expect-seed None  run 1  took 56 s  down clean
+transitions (driver click -> own DaqControl.getState read-back):
+  UNALLOCATED  clicked 2026-11-19T00:35:00.221+00:00 reported 2026-11-19T00:35:01.224+00:00  OK
+  ALLOCATED    clicked 2026-11-19T00:35:01.263+00:00 reported 2026-11-19T00:35:01.671+00:00  OK
+  CONNECTED    clicked 2026-11-19T00:35:02.224+00:00 reported 2026-11-19T00:35:02.856+00:00  OK
+  CONFIGURED   clicked 2026-11-19T00:35:02.875+00:00 reported 2026-11-19T00:35:04.231+00:00  OK
+  STARTING     clicked 2026-11-19T00:35:04.249+00:00 reported 2026-11-19T00:35:05.367+00:00  OK
+  PAUSED       clicked 2026-11-19T00:35:05.382+00:00 reported 2026-11-19T00:35:05.483+00:00  OK
+  RUNNING      clicked 2026-11-19T00:35:05.489+00:00 reported 2026-11-19T00:35:05.590+00:00  OK
+  PAUSED       clicked 2026-11-19T00:35:09.316+00:00 reported 2026-11-19T00:35:09.417+00:00  OK
+  STARTING     clicked 2026-11-19T00:35:12.730+00:00 reported 2026-11-19T00:35:12.831+00:00  OK
+  CONFIGURED   clicked 2026-11-19T00:35:12.836+00:00 reported 2026-11-19T00:35:12.937+00:00  OK
+  CONNECTED    clicked 2026-11-19T00:35:12.958+00:00 reported 2026-11-19T00:35:13.059+00:00  OK
+  ALLOCATED    clicked 2026-11-19T00:35:13.063+00:00 reported 2026-11-19T00:35:13.307+00:00  OK
+  RESET        clicked 2026-11-19T00:35:13.314+00:00 reported 2026-11-19T00:35:13.415+00:00  OK
+counts:
+  web GUI #edi_evt (page)              3827  data-final 1  data-ts 2026-11-19T00:35:11.277+00:00  source pva
+  web GUI after RESET                  3827
+  own NumL0Acc read, RUNNING           1558, 2 s later 3558
+  own NumL0Acc read, after Disable     3827
+  own NumL0Acc read, CONFIGURED        3827
+  TEB_WrtCt (Prometheus, CONFIGURED)   3827
+  TEB_EvtCt                            3827
+  psana2 events                        3827
+  psana2 events with data              3827
+  psana2 checks                        PASS
+  psana2 seq                           1..3827
+  psana2 w3 seeds seen                 {'0x1234': 3827}
+  xtc2 file                            /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1592598 B)
+  run (page / control)                 1 / 1  experiment tstx00001 / tstx00001
+  control log                          /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix/pmlogs/2026/11/19_00:34:52_sdfrome046:control.log (0 KeyError lines)
+  DRP config read at Configure         1 get_configuration of fakecam_0; ['Sim payload seed 4660 (0x00001234) from configdb BEAM/fakecam_0']
+  expected sim_seed                    4660 (0x1234)
+assertions:
+  1 PASS  own NumL0Acc read 1558 >= 1100 while RUNNING, then 3558 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-19T00:35:09.417+00:00): data-final 1,1; data-ts 2026-11-19T00:35:11.277+00:00 > Disable; readings at 2026-11-19T00:35:11.468+00:00 and 2026-11-19T00:35:12.679+00:00: '3827' == '3827'; source pva
+  4 PASS  page events '3827' parse as ^\d+$
+  5 PASS  after RESET the page shows '3827' (data-final 1), after Disable it showed '3827'
+  6 PASS  page 3827 == TEB_WrtCt 3827 == psana2 events 3827 == with data 3827 >= 1000: True; page == own NumL0Acc after Disable 3827: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1821013 (log pids ['1821013']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+E2E PASS

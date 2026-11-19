@@ -1,0 +1,12 @@
+W13 expected results, written 2026-11-19T00:20:26Z before this take, from the code and from two dry runs that are not
+this take (R/runs/w13-explore-20261119T0011Z, R/runs/w13-explore2-20261119T0014Z). N = the page's event count (~3400-6000).
+(a) BEFORE  P 5eb773c84b9d (lcls2), --keep-up:
+      e2e: in CONFIGURED: Prometheus {}  ->  1-5 PASS, 6 FAIL 'TEB_WrtCt None', 7 PASS; E2E FAIL; E2E_EXIT=1
+      read-back while it runs: curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",...} N  (the exporter has the counter)
+      pypoll: e2e call -> {} ["InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'"] | fixed call -> {..., 'TEB_WrtCt': N}
+      after RESET (--keep-up): both exporters answer http 200 with 0 TEB_ lines (so the read-back runs during the run)
+(b) bisect  71895fbda^ = e601509f9 (wtA): Prometheus {'TEB_EvtCt': N, 'TEB_TrCt': .., 'TEB_WrtCt': N, ...}; 7/7 PASS; E2E PASS
+            71895fbda (wtB): the tuple reaches scrape, which then caught only OSError: assertion 2 FAIL
+            'stopped: InvalidURL: nonnumeric port', 5 'not reached', 6 'TEB_WrtCt None'; E2E FAIL
+            (679ceb644 later widened scrape's except to http.client.HTTPException: the crash became the silent {} of (a))
+(c) AFTER   P + the two-line fix, uncommitted (wtF): Prometheus {..., 'TEB_WrtCt': N, ...}; 7/7 PASS; E2E PASS; E2E_EXIT=0

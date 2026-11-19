@@ -1,0 +1,246 @@
+Script started on 2026-11-19 00:29:49+00:00
+00:29:50Z root@sdfrome046:w13# date -u; hostname; id -un; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ip -br addr   # unshare -rn: only lo, uid 0 is the user namespace's
+Thu Nov 19 00:29:50 UTC 2026
+sdfrome046
+root
+Slurm job 45757390 step 9
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+00:29:50Z root@sdfrome046:w13# for d in lcls2 wtA wtB wtF; do echo "$d $(git -C $d log -1 --format='%h %cI %s' | cut -c1-100) | dirty $(git -C $d status --porcelain --untracked-files=no | wc -l)"; done
+lcls2 5eb773c84 2026-11-13T15:55:30-08:00 sim simsls: frames follow the hutch's beam (--beam FILE, PSDAQ_S | dirty 0
+wtA e601509f9 2026-11-09T13:36:04-08:00 docs: what coverage catches of a re-hashed record, and what it s | dirty 0
+wtB 71895fbda 2026-11-09T13:55:27-08:00 sim: daq_sim up --hosts A,B runs one partition over two hosts of | dirty 0
+wtF 5eb773c84 2026-11-13T15:55:30-08:00 sim simsls: frames follow the hutch's beam (--beam FILE, PSDAQ_S | dirty 1
+00:29:53Z root@sdfrome046:w13# git -C wtF diff   # the fix, in a scratch worktree of P, never committed
+diff --git a/psdaq/psdaq/webgui/e2e.py b/psdaq/psdaq/webgui/e2e.py
+index 616615bd7..8d66ce33e 100644
+--- a/psdaq/psdaq/webgui/e2e.py
++++ b/psdaq/psdaq/webgui/e2e.py
+@@ -675,8 +675,8 @@ class Run:
+                 return False
+             if label == 'CONFIGURED':                     # DAQ counters live until Unconfigure
+                 counts = {}
+-                for port in ds.prometheus_targets(self.work.path('prom')):
+-                    for k, v in ds.scrape(port, ds.COUNTERS).items():
++                for host, port in ds.prometheus_targets(self.work.path('prom')):
++                    for k, v in ds.scrape(port, ds.COUNTERS, host).items():
+                         counts[k.split('{')[0]] = int(v)
+                 self.info['prom'] = counts
+                 self.info['count_configured'] = self.pv_count()
+00:29:55Z root@sdfrome046:w13# cat expected.txt
+W13 expected results, written 2026-11-19T00:20:26Z before this take, from the code and from two dry runs that are not
+this take (R/runs/w13-explore-20261119T0011Z, R/runs/w13-explore2-20261119T0014Z). N = the page's event count (~3400-6000).
+(a) BEFORE  P 5eb773c84b9d (lcls2), --keep-up:
+      e2e: in CONFIGURED: Prometheus {}  ->  1-5 PASS, 6 FAIL 'TEB_WrtCt None', 7 PASS; E2E FAIL; E2E_EXIT=1
+      read-back while it runs: curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",...} N  (the exporter has the counter)
+      pypoll: e2e call -> {} ["InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'"] | fixed call -> {..., 'TEB_WrtCt': N}
+      after RESET (--keep-up): both exporters answer http 200 with 0 TEB_ lines (so the read-back runs during the run)
+(b) bisect  71895fbda^ = e601509f9 (wtA): Prometheus {'TEB_EvtCt': N, 'TEB_TrCt': .., 'TEB_WrtCt': N, ...}; 7/7 PASS; E2E PASS
+            71895fbda (wtB): the tuple reaches scrape, which then caught only OSError: assertion 2 FAIL
+            'stopped: InvalidURL: nonnumeric port', 5 'not reached', 6 'TEB_WrtCt None'; E2E FAIL
+            (679ceb644 later widened scrape's except to http.client.HTTPException: the crash became the silent {} of (a))
+(c) AFTER   P + the two-line fix, uncommitted (wtF): Prometheus {..., 'TEB_WrtCt': N, ...}; 7/7 PASS; E2E PASS; E2E_EXIT=0
+00:29:57Z root@sdfrome046:w13# git -C lcls2 log -2 --format='%h %cI %s' -- psdaq/psdaq/webgui/e2e.py; git -C lcls2 blame -s -L 678,679 psdaq/psdaq/webgui/e2e.py y
+8db943f26 2026-11-08T05:36:27-08:00 e2e: --edit-seed (config edit in the web editor read back at the next Configure), --break truncate-xtc2, stronger kill gate, Host/Origin tests, RUNBOOK fixes from a fresh-clone rehearsal
+cf99d9b54 2026-11-08T04:29:50-08:00 webgui: drive the real DAQ; daq_sim up --webgui and daq_sim e2e
+cf99d9b541 678)                 for port in ds.prometheus_targets(self.work.path('prom')):
+cf99d9b541 679)                     for k, v in ds.scrape(port, ds.COUNTERS).items():
+00:30:02Z root@sdfrome046:w13# git -C lcls2 log -1 -L '/^def prometheus_targets/,+9:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 71895fbda
+71895fbda 2026-11-09T13:55:27-08:00 sim: daq_sim up --hosts A,B runs one partition over two hosts of the job; feature d runs it
+
+diff --git a/psdaq/psdaq/sim/daq_sim.py b/psdaq/psdaq/sim/daq_sim.py
+--- a/psdaq/psdaq/sim/daq_sim.py
++++ b/psdaq/psdaq/sim/daq_sim.py
+@@ -1298,7 +1384,9 @@
+ def prometheus_targets(promdir):
+-    out = []
++    """[(host, port)] of the exporters the DAQ's processes wrote in promdir (<host>:<port> in each yaml);
++    the host is 127.0.0.1 for this host (up --hosts: a DRP on the other host exports there)."""
++    out, here = [], {socket.gethostname(), socket.gethostname().split('.')[0], 'localhost'}
+     for name in sorted(os.listdir(promdir)) if os.path.isdir(promdir) else []:
+         if name.endswith('.yaml'):
+-            m = re.search(r":(\d+)'", open(os.path.join(promdir, name)).read())
++            m = re.search(r"([^'\s:]*):(\d+)'", open(os.path.join(promdir, name)).read())
+             if m:
+-                out.append(int(m.group(1)))
++                out.append(('127.0.0.1' if not m.group(1) or m.group(1) in here else m.group(1), int(m.group(2))))
+00:30:04Z root@sdfrome046:w13# git -C lcls2 log -1 -L '/^def scrape(/,+13:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 679ceb644
+679ceb644 2026-11-09T21:22:13-08:00 sim: the counts after Disable ask a Prometheus exporter that does not answer again
+
+diff --git a/psdaq/psdaq/sim/daq_sim.py b/psdaq/psdaq/sim/daq_sim.py
+--- a/psdaq/psdaq/sim/daq_sim.py
++++ b/psdaq/psdaq/sim/daq_sim.py
+@@ -1772,9 +1772,13 @@
+-def scrape(port, names, host='127.0.0.1'):
+-    """{metric{labels}: value} for metric names in 'names', from host:port."""
++def scrape(port, names, host='127.0.0.1', errors=None):
++    """{metric{labels}: value} for metric names in 'names', from host:port; {} when the exporter
++    does not answer in 3 s, and then why is appended to 'errors' (a list), if given."""
++    import http.client
+     import urllib.request
+     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+     out = {}
+     try:
+         text = opener.open(f'http://{host}:{port}/metrics', timeout=3).read().decode()
+-    except OSError:
++    except (OSError, http.client.HTTPException) as e:
++        if errors is not None:
++            errors.append(f'{type(e).__name__}: {getattr(e, "reason", None) or e}')
+         return out
+00:30:08Z root@sdfrome046:w13# cd lcls2; grep -n 'prometheus_targets(\|^def scrape(' psdaq/psdaq/sim/daq_sim.py psdaq/psdaq/webgui/e2e.py; echo "P vs sim-main c0d9bb1, these 2 files: $(git diff 5eb773c84b9d c0d9bb1eae2c -- psdaq/psdaq/webgui/e2e.py psdaq/psdaq/sim/daq_sim.py | wc -l) diff lines"; cd ..
+psdaq/psdaq/sim/daq_sim.py:1827:def prometheus_targets(promdir):
+psdaq/psdaq/sim/daq_sim.py:1839:def scrape(port, names, host='127.0.0.1', errors=None):
+psdaq/psdaq/sim/daq_sim.py:1922:    for host, port in prometheus_targets(work.path('prom')):
+psdaq/psdaq/sim/daq_sim.py:2230:    targets = prometheus_targets(work.path('prom'))
+psdaq/psdaq/webgui/e2e.py:678:                for port in ds.prometheus_targets(self.work.path('prom')):
+P vs sim-main c0d9bb1, these 2 files: 0 diff lines
+00:30:12Z root@sdfrome046:w13# cat bin/e2e-at.sh bin/curlpoll.sh bin/pypoll.py
+#!/bin/bash
+# W13: e2e-at.sh CHECKOUT WORKDIR [e2e args]: `daq_sim e2e` from that checkout of $W13, as the suite's
+# fork/webgui-e2e row runs it, with two read-back pollers in the background while it runs:
+#   bin/curlpoll.sh  curl of each exporter in WORKDIR/prom (no psdaq code)
+#   bin/pypoll.py    the e2e's own scrape call next to the fixed call
+C=$1 WD=$2; shift 2
+cd $W13/$C && source ./setup_env_daq.sh >/dev/null 2>&1 || exit 1
+E=$(python -c 'import psdaq.webgui.e2e as m; print(m.__file__)')
+echo "checkout $C: $(git log -1 --format='%h %cI') dirty $(git status --porcelain --untracked-files=no | wc -l); e2e.py in use: ${E#$(realpath $W13)/}"
+grep -n -A1 'in ds.prometheus_targets' $E
+case " $* " in *" --keep-up "*)   # e2e that brings the DAQ up itself holds it in the foreground; so up first, detached
+  daq_sim up --webgui --detach -w $WD > $WD-up.log 2>&1; echo "--keep-up: daq_sim up --webgui --detach first: UP_EXIT=$?";;
+esac
+bash $W13/bin/curlpoll.sh $WD > $WD-curl.log 2>&1 & P1=$!
+python $W13/bin/pypoll.py $WD/prom > $WD-py.log 2>&1 & P2=$!
+daq_sim e2e -w $WD --events 1000 --browser-python $BP "$@" > $WD.log 2>&1; rc=$?
+kill $P1 $P2
+grep -E 'e2e: in CONFIGURED|^  [1-7] (PASS|FAIL)|^E2E' $WD.log | cut -c1-300
+echo "read-back during the run: $(wc -l < $WD-curl.log) curl readings; last: $(tail -n 1 $WD-curl.log)"
+echo "pypoll last: $(tail -n 1 $WD-py.log)"
+echo "E2E_EXIT=$rc $(date -u +%FT%TZ) log ${WD#$W13/}.log shots ${WD#$W13/}/e2e-shots"
+#!/bin/bash
+# independent read-back: every 0.3 s, curl each exporter listed in $1/prom/*.yaml and print its TEB_WrtCt line
+while :; do
+  for y in "$1"/prom/*.yaml; do
+    p=$(grep -o ":[0-9]*'" "$y" | tr -d ":'")
+    v=$(curl -s -m 1 "http://127.0.0.1:$p/metrics" | grep '^TEB_WrtCt')
+    [ -n "$v" ] && echo "$(date -u +%T.%3N) curl 127.0.0.1:$p $v"
+  done
+  sleep 0.3
+done
+"""Every 0.5 s, for each exporter prometheus_targets() lists: the e2e's own call scrape(<target>, COUNTERS),
+which since 71895fbda gets a (host, port) tuple as its port, next to scrape(port, COUNTERS, host)."""
+import datetime, sys, time
+from psdaq.sim import daq_sim as ds
+while True:
+    for t in ds.prometheus_targets(sys.argv[1]):
+        host, port = t if isinstance(t, tuple) else ('127.0.0.1', t)   # tuples since 71895fbda, ints before
+        why = []
+        as_e2e = ds.scrape(t, ds.COUNTERS, errors=why)                  # what e2e.py:678-679 passes
+        fixed = ds.scrape(port, ds.COUNTERS, host)                       # what the fix passes
+        teb = {k.split('{')[0]: int(v) for k, v in fixed.items() if k.startswith('TEB_')}
+        if teb:
+            got = {k.split('{')[0]: int(v) for k, v in as_e2e.items() if k.startswith('TEB_')}
+            print(datetime.datetime.utcnow().strftime('%H:%M:%S.%f')[:12], 'target', t, '| e2e call ->', got, why,
+                  '| fixed call ->', teb, flush=True)
+    time.sleep(0.5)
+00:30:14Z root@sdfrome046:w13# bin/e2e-at.sh lcls2 $M/bef --keep-up
+checkout lcls2: 5eb773c84 2026-11-13T15:55:30-08:00 dirty 0; e2e.py in use: lcls2/install/lib/python3.9/site-packages/psdaq/webgui/e2e.py
+678:                for port in ds.prometheus_targets(self.work.path('prom')):
+679-                    for k, v in ds.scrape(port, ds.COUNTERS).items():
+--keep-up: daq_sim up --webgui --detach first: UP_EXIT=0
+2026-11-19T00:31:14.778+00:00 e2e: in CONFIGURED: Prometheus {}; own NumL0Acc 4027
+E2E summary  host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd 5eb773c84b9d8bf804c87fb6d629646cf5631cd4  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/bef  events 1000  break None  edit-seed None  expect-seed None  run 1  took 20 s  down skipped
+  1 PASS  own NumL0Acc read 1860 >= 1100 while RUNNING, then 3860 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-19T00:31:11.861+00:00): data-final 1,1; data-ts 2026-11-19T00:31:13.203+00:00 > Disable; readings at 2026-11-19T00:31:13.392+00:00 and 2026-11-19T00:31:14.602+00:00: '4027' == '4027'; source pva
+  4 PASS  page events '4027' parse as ^\d+$
+  5 PASS  after RESET the page shows '4027' (data-final 1), after Disable it showed '4027'
+  6 FAIL  page 4027 == TEB_WrtCt None == psana2 events 4027 == with data 4027 >= 1000: False; page == own NumL0Acc after Disable 4027: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 4027
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1802260 (log pids ['1802260']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+E2E FAIL: assertion 6: page 4027 == TEB_WrtCt None == psana2 events 4027 == with data 4027 >= 1000: False; page == own NumL0Acc after Disable 4027: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 4027
+E2E FAIL
+read-back during the run: 17 curl readings; last: 00:31:15.011 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 4027
+pypoll last: 00:31:14.835 target ('127.0.0.1', 9200) | e2e call -> {} ["InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'"] | fixed call -> {'TEB_EvtCt': 4027, 'TEB_TrCt': 12, 'TEB_WrtCt': 4027}
+E2E_EXIT=1 2026-11-19T00:31:20Z log m/bef.log shots m/bef/e2e-shots
+00:31:20Z root@sdfrome046:w13# for p in 9200 9201; do echo "127.0.0.1:$p after RESET: http $(curl -s -m 2 -o $M/bef-reset-$p.txt -w '%{http_code}' http://127.0.0.1:$p/metrics), $(grep -c '^TEB_' $M/bef-reset-$p.txt) TEB_ lines"; done
+127.0.0.1:9200 after RESET: http 200, 0 TEB_ lines
+127.0.0.1:9201 after RESET: http 200, 0 TEB_ lines
+00:31:24Z root@sdfrome046:w13# grep -c . $M/bef-curl.log; grep -m 2 ' [1-9][0-9]*$' $M/bef-curl.log; tail -n 1 $M/bef-py.log | cut -c1-300
+17
+00:31:07.793 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 48
+00:31:08.393 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 645
+00:31:14.835 target ('127.0.0.1', 9200) | e2e call -> {} ["InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'"] | fixed call -> {'TEB_EvtCt': 4027, 'TEB_TrCt': 12, 'TEB_WrtCt': 4027}
+00:31:26Z root@sdfrome046:w13# (cd lcls2 && source ./setup_env_daq.sh >/dev/null 2>&1 && daq_sim status -w $M/bef | tail -n 8 && daq_sim down -w $M/bef 2>&1 | tail -n 2)
+  webgui     pid 1802605  alive
+  control    pid 1802289  RUNNING
+  teb0       pid 1802290  RUNNING
+  fakecam_0  pid 1802260  RUNNING
+  control    state reset  transition reset  config BEAM  recording True  experiment tstx00001  run 0  last run 1
+  webgui     http://127.0.0.1:31053/ state reset  events 4027 (source pva, final True)
+  simxpm     PART:5:NumL0Acc = Thu Nov 19 00:31:39 2026 4027.0
+  simxpm     PART:5:NumL0Inp = Thu Nov 19 00:31:39 2026 4027.0
+2026-11-19T00:31:47.970+00:00 daq_sim: ports free: [31050, 31051, 31052, 30050, 29985, 29995, 30005, 30015, 30025, 30035, 30045, 31053]
+2026-11-19T00:31:47.991+00:00 daq_sim: down: clean
+00:31:47Z root@sdfrome046:w13# bin/e2e-at.sh wtA $M/a
+checkout wtA: e601509f9 2026-11-09T13:36:04-08:00 dirty 0; e2e.py in use: wtA/install/lib/python3.9/site-packages/psdaq/webgui/e2e.py
+678:                for port in ds.prometheus_targets(self.work.path('prom')):
+679-                    for k, v in ds.scrape(port, ds.COUNTERS).items():
+bin/e2e-at.sh: line 17: kill: (1807955) - No such process
+2026-11-19T00:32:50.431+00:00 e2e: in CONFIGURED: Prometheus {'TEB_EvtCt': 3962, 'TEB_TrCt': 11, 'TEB_WrtCt': 3962, 'DRP_Damage': 0, 'DRP_RecordSize': 1648488, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}; own NumL0Acc 3962
+E2E summary  host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd e601509f962aaed04d97202035fa60bebd77fb11  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/a  events 1000  break None  edit-seed None  expect-seed None  run 1  took 63 s  down clean
+  1 PASS  own NumL0Acc read 1555 >= 1100 while RUNNING, then 3555 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-19T00:32:47.355+00:00): data-final 1,1; data-ts 2026-11-19T00:32:48.474+00:00 > Disable; readings at 2026-11-19T00:32:48.926+00:00 and 2026-11-19T00:32:50.138+00:00: '3962' == '3962'; source pva
+  4 PASS  page events '3962' parse as ^\d+$
+  5 PASS  after RESET the page shows '3962' (data-final 1), after Disable it showed '3962'
+  6 PASS  page 3962 == TEB_WrtCt 3962 == psana2 events 3962 == with data 3962 >= 1000: True; page == own NumL0Acc after Disable 3962: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1809810 (log pids ['1809810']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+E2E PASS
+read-back during the run: 84 curl readings; last: 00:32:49.958 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 3962
+pypoll last: TypeError: scrape() got an unexpected keyword argument 'errors'
+E2E_EXIT=0 2026-11-19T00:33:03Z log m/a.log shots m/a/e2e-shots
+00:33:03Z root@sdfrome046:w13# bin/e2e-at.sh wtB $M/b
+checkout wtB: 71895fbda 2026-11-09T13:55:27-08:00 dirty 0; e2e.py in use: wtB/install/lib/python3.9/site-packages/psdaq/webgui/e2e.py
+678:                for port in ds.prometheus_targets(self.work.path('prom')):
+679-                    for k, v in ds.scrape(port, ds.COUNTERS).items():
+bin/e2e-at.sh: line 17: kill: (1813932) - No such process
+E2E summary  host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd 71895fbdace35105f95b55c3dc11057de625d778  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/b  events 1000  break None  edit-seed None  expect-seed None  run 1  took 60 s  down clean
+  1 PASS  own NumL0Acc read 1258 >= 1100 while RUNNING, then 3258 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  2 FAIL  stopped: InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'
+  3 PASS  after Disable (reported 2026-11-19T00:34:02.858+00:00): data-final 1,1; data-ts 2026-11-19T00:34:03.921+00:00 > Disable; readings at 2026-11-19T00:34:04.388+00:00 and 2026-11-19T00:34:05.598+00:00: '3702' == '3702'; source pva
+  4 PASS  page events '3702' parse as ^\d+$
+  5 FAIL  not reached
+  6 FAIL  page 3702 == TEB_WrtCt None == psana2 events 3702 == with data 3702 >= 1000: False; page == own NumL0Acc after Disable 3702: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 3702
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1816188 (log pids ['1816188']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+E2E FAIL: assertion 2: stopped: InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'
+E2E FAIL: assertion 5: not reached
+E2E FAIL: assertion 6: page 3702 == TEB_WrtCt None == psana2 events 3702 == with data 3702 >= 1000: False; page == own NumL0Acc after Disable 3702: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 3702
+E2E FAIL
+read-back during the run: 100 curl readings; last: 00:34:11.017 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 3702
+pypoll last: TypeError: scrape() got an unexpected keyword argument 'errors'
+E2E_EXIT=1 2026-11-19T00:34:17Z log m/b.log shots m/b/e2e-shots
+00:34:17Z root@sdfrome046:w13# bin/e2e-at.sh wtF $M/fix
+checkout wtF: 5eb773c84 2026-11-13T15:55:30-08:00 dirty 1; e2e.py in use: wtF/install/lib/python3.9/site-packages/psdaq/webgui/e2e.py
+678:                for host, port in ds.prometheus_targets(self.work.path('prom')):
+679-                    for k, v in ds.scrape(port, ds.COUNTERS, host).items():
+2026-11-19T00:35:12.956+00:00 e2e: in CONFIGURED: Prometheus {'TEB_EvtCt': 3827, 'TEB_TrCt': 11, 'TEB_WrtCt': 3827, 'DRP_Damage': 0, 'DRP_RecordSize': 1592598, 'drp_num_dma_errors': 0, 'drp_num_missing_rogs': 0, 'drp_num_th_error': 0, 'drp_num_pgp_jump': 0}; own NumL0Acc 3827
+E2E summary  host sdfrome046  Slurm job 45757390 step 9  git HEAD of cwd 5eb773c84b9d8bf804c87fb6d629646cf5631cd4  workdir /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/agentify-lcls2/sim-main-sync/w/w13/m/fix  events 1000  break None  edit-seed None  expect-seed None  run 1  took 56 s  down clean
+  1 PASS  own NumL0Acc read 1558 >= 1100 while RUNNING, then 3558 after 2.01 s: +2000 >= 1007 (half of --rate 1000 Hz), before the click down
+  2 PASS  control read back 13/13 clicked states; 0 error message(s) on control's status stream; 0 KeyError line(s) in the control log
+  3 PASS  after Disable (reported 2026-11-19T00:35:09.417+00:00): data-final 1,1; data-ts 2026-11-19T00:35:11.277+00:00 > Disable; readings at 2026-11-19T00:35:11.468+00:00 and 2026-11-19T00:35:12.679+00:00: '3827' == '3827'; source pva
+  4 PASS  page events '3827' parse as ^\d+$
+  5 PASS  after RESET the page shows '3827' (data-final 1), after Disable it showed '3827'
+  6 PASS  page 3827 == TEB_WrtCt 3827 == psana2 events 3827 == with data 3827 >= 1000: True; page == own NumL0Acc after Disable 3827: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)
+  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 1821013 (log pids ['1821013']) logged ['4660 (0x1234) from configdb BEAM/fakecam_0']; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+E2E PASS
+read-back during the run: 92 curl readings; last: 00:35:13.147 curl 127.0.0.1:9200 TEB_WrtCt{alias="teb0",detname="teb0",instrument="tst",partition="5"} 3827
+pypoll last: 00:35:13.164 target ('127.0.0.1', 9200) | e2e call -> {} ["InvalidURL: nonnumeric port: '('127.0.0.1', 9200)'"] | fixed call -> {'TEB_EvtCt': 3827, 'TEB_TrCt': 12, 'TEB_WrtCt': 3827}
+E2E_EXIT=0 2026-11-19T00:35:24Z log m/fix.log shots m/fix/e2e-shots
+00:35:24Z root@sdfrome046:w13# for r in bef a b fix; do echo "$r: $(grep -h -o 'in CONFIGURED: Prometheus {[^}]\{0,60\}' $M/$r.log) | $(grep -h -E '^E2E (PASS|FAIL)$' $M/$r.log) | shots: $(ls $M/$r/e2e-shots | tr '\n' ' ')"; done; date -u
+bef: in CONFIGURED: Prometheus { | E2E FAIL | shots: e2e-00-reset.png e2e-01-running.png e2e-02-paused.png e2e-03-reset.png 
+a: in CONFIGURED: Prometheus {'TEB_EvtCt': 3962, 'TEB_TrCt': 11, 'TEB_WrtCt': 3962, 'DRP_D | E2E PASS | shots: e2e-00-reset.png e2e-01-running.png e2e-02-paused.png e2e-03-reset.png 
+b:  | E2E FAIL | shots: e2e-00-reset.png e2e-01-running.png e2e-02-paused.png 
+fix: in CONFIGURED: Prometheus {'TEB_EvtCt': 3827, 'TEB_TrCt': 11, 'TEB_WrtCt': 3827, 'DRP_D | E2E PASS | shots: e2e-00-reset.png e2e-01-running.png e2e-02-paused.png e2e-03-reset.png 
+Thu Nov 19 00:35:29 UTC 2026
+00:35:29Z root@sdfrome046:w13# exit
+exit
+
+Script done on 2026-11-19 00:35:35+00:00

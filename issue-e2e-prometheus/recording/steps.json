@@ -1,0 +1,79 @@
+[
+ {
+  "chapter": "1 provenance: host, job, private network namespace, checkouts, expected results",
+  "send": "date -u; hostname; id -un; echo \"Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID\"; ip -br addr   # unshare -rn: only lo, uid 0 is the user namespace's"
+ },
+ {
+  "send": "for d in lcls2 wtA wtB wtF; do echo \"$d $(git -C $d log -1 --format='%h %cI %s' | cut -c1-100) | dirty $(git -C $d status --porcelain --untracked-files=no | wc -l)\"; done"
+ },
+ {
+  "send": "git -C wtF diff   # the fix, in a scratch worktree of P, never committed"
+ },
+ {
+  "send": "cat expected.txt",
+  "pause": 4
+ },
+ {
+  "chapter": "2 the code: e2e.py:678-679, prometheus_targets since 71895fbda, scrape since 679ceb644",
+  "send": "git -C lcls2 log -2 --format='%h %cI %s' -- psdaq/psdaq/webgui/e2e.py; git -C lcls2 blame -s -L 678,679 psdaq/psdaq/webgui/e2e.py"
+ },
+ {
+  "send": "git -C lcls2 log -1 -L '/^def prometheus_targets/,+9:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 71895fbda",
+  "pause": 3
+ },
+ {
+  "send": "git -C lcls2 log -1 -L '/^def scrape(/,+13:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 679ceb644",
+  "pause": 3
+ },
+ {
+  "send": "cd lcls2; grep -n 'prometheus_targets(\\|^def scrape(' psdaq/psdaq/sim/daq_sim.py psdaq/psdaq/webgui/e2e.py; echo \"P vs sim-main c0d9bb1, these 2 files: $(git diff 5eb773c84b9d c0d9bb1eae2c -- psdaq/psdaq/webgui/e2e.py psdaq/psdaq/sim/daq_sim.py | wc -l) diff lines\"; cd .."
+ },
+ {
+  "chapter": "3 the runner and the two read-back pollers",
+  "send": "cat bin/e2e-at.sh bin/curlpoll.sh bin/pypoll.py",
+  "pause": 4
+ },
+ {
+  "chapter": "4 BEFORE: daq_sim e2e at P 5eb773c84b9d (--keep-up), read-back during the run",
+  "send": "bin/e2e-at.sh lcls2 $M/bef --keep-up",
+  "timeout": 400,
+  "pause": 4
+ },
+ {
+  "chapter": "5 read-back after RESET (DAQ kept up), then daq_sim down",
+  "send": "for p in 9200 9201; do echo \"127.0.0.1:$p after RESET: http $(curl -s -m 2 -o $M/bef-reset-$p.txt -w '%{http_code}' http://127.0.0.1:$p/metrics), $(grep -c '^TEB_' $M/bef-reset-$p.txt) TEB_ lines\"; done"
+ },
+ {
+  "send": "grep -c . $M/bef-curl.log; grep -m 2 ' [1-9][0-9]*$' $M/bef-curl.log; tail -n 1 $M/bef-py.log | cut -c1-300"
+ },
+ {
+  "send": "(cd lcls2 && source ./setup_env_daq.sh >/dev/null 2>&1 && daq_sim status -w $M/bef | tail -n 8 && daq_sim down -w $M/bef 2>&1 | tail -n 2)",
+  "timeout": 120
+ },
+ {
+  "chapter": "6 bisect: e2e at 71895fbda^ = e601509f9",
+  "send": "bin/e2e-at.sh wtA $M/a",
+  "timeout": 400,
+  "pause": 4
+ },
+ {
+  "chapter": "7 bisect: e2e at 71895fbda",
+  "send": "bin/e2e-at.sh wtB $M/b",
+  "timeout": 400,
+  "pause": 4
+ },
+ {
+  "chapter": "8 AFTER: e2e at P + the fix (wtF, uncommitted)",
+  "send": "bin/e2e-at.sh wtF $M/fix",
+  "timeout": 400,
+  "pause": 4
+ },
+ {
+  "chapter": "9 summary",
+  "send": "for r in bef a b fix; do echo \"$r: $(grep -h -o 'in CONFIGURED: Prometheus {[^}]\\{0,60\\}' $M/$r.log) | $(grep -h -E '^E2E (PASS|FAIL)$' $M/$r.log) | shots: $(ls $M/$r/e2e-shots | tr '\\n' ' ')\"; done; date -u",
+  "pause": 5
+ },
+ {
+  "send": "exit"
+ }
+]

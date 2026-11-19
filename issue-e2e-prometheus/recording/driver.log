@@ -1,0 +1,20 @@
+00:29:50.004 start; waiting for the first prompt
+00:29:50.346 step 0: date -u; hostname; id -un; echo "Slurm job $SLURM_JOB_ID step $SLURM_STEP_ID"; ip -br addr   # unshare -rn: only lo, uid 0 is the user namespace's
+00:29:52.285 step 1: for d in lcls2 wtA wtB wtF; do echo "$d $(git -C $d log -1 --format='%h %cI %s' | cut -c1-100) | dirty $(git -C $d status --porcelain --untracked-file
+00:29:55.399 step 2: git -C wtF diff   # the fix, in a scratch worktree of P, never committed
+00:29:57.626 step 3: cat expected.txt
+00:30:02.204 step 4: git -C lcls2 log -2 --format='%h %cI %s' -- psdaq/psdaq/webgui/e2e.py; git -C lcls2 blame -s -L 678,679 psdaq/psdaq/webgui/e2e.py
+00:30:04.441 step 5: git -C lcls2 log -1 -L '/^def prometheus_targets/,+9:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 71895fbda
+00:30:08.259 step 6: git -C lcls2 log -1 -L '/^def scrape(/,+13:psdaq/psdaq/sim/daq_sim.py' --format='%h %cI %s' 679ceb644
+00:30:12.077 step 7: cd lcls2; grep -n 'prometheus_targets(\|^def scrape(' psdaq/psdaq/sim/daq_sim.py psdaq/psdaq/webgui/e2e.py; echo "P vs sim-main c0d9bb1, these 2 files
+00:30:14.305 step 8: cat bin/e2e-at.sh bin/curlpoll.sh bin/pypoll.py
+00:30:18.889 step 9: bin/e2e-at.sh lcls2 $M/bef --keep-up
+00:31:24.320 step 10: for p in 9200 9201; do echo "127.0.0.1:$p after RESET: http $(curl -s -m 2 -o $M/bef-reset-$p.txt -w '%{http_code}' http://127.0.0.1:$p/metrics), $(gr
+00:31:26.633 step 11: grep -c . $M/bef-curl.log; grep -m 2 ' [1-9][0-9]*$' $M/bef-curl.log; tail -n 1 $M/bef-py.log | cut -c1-300
+00:31:28.909 step 12: (cd lcls2 && source ./setup_env_daq.sh >/dev/null 2>&1 && daq_sim status -w $M/bef | tail -n 8 && daq_sim down -w $M/bef 2>&1 | tail -n 2)
+00:31:49.878 step 13: bin/e2e-at.sh wtA $M/a
+00:33:07.243 step 14: bin/e2e-at.sh wtB $M/b
+00:34:21.333 step 15: bin/e2e-at.sh wtF $M/fix
+00:35:29.210 step 16: for r in bef a b fix; do echo "$r: $(grep -h -o 'in CONFIGURED: Prometheus {[^}]\{0,60\}' $M/$r.log) | $(grep -h -E '^E2E (PASS|FAIL)$' $M/$r.log) | s
+00:35:34.882 step 17: exit
+00:35:38.241 done
