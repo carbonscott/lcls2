@@ -6,17 +6,24 @@
     python3 score.py --traps tests/judge_set.json             # the hand-labelled trap reports
 
 RESULTS_DIR is run.py's layout: <arm>/<run>/{meta.json, final.md}.  A run's id is <arm>/<run>.
-Each report is scored in four steps; only steps 1 and 3 call a model.
+Each report is scored in four steps; only steps 1, 1b and 3 call a model.
 
   1. EXTRACT  one model call sees ONLY the report (no key, no arm, no question) and returns a
               record: the verdict (fault | no-fault | unsure), the launches it names, its
               problems, each with a role (cause | side-issue | consequence | possible), the
               component, the stage and a verbatim quote of the mechanism, and its asks to the
               operator.  Cached by the report's sha256, so a re-run costs nothing.
+  1b. CONCLUDE cold-start runs only: a second call, which also sees only the report, returns the launch
+              the report concludes about (the launch of its main cause; for a report that finds no
+              fault, the session it says it reviewed), never one it only lists as examined.  Cached
+              the same way.
   2. FACTS    scripts compare the record with the key: launch (only where the pool holds many
               launches), component and stage by aliases, and 'located': the report names the
               keyed launch (its start stamp, a log-file prefix, or a time that falls in that
-              launch, or within 2 minutes of its start when no launch holds it).
+              launch, or within 2 minutes of its start when no launch holds it).  For cold-start
+              runs, 'located' is stricter: the launch from step 1b must be the keyed one; naming
+              the keyed launch elsewhere (a list of the sessions examined) does not count
+              (facts.keyed_named_anywhere keeps the looser reading for comparison).
   3. MECHANISM the only judged fact.  A model sees the extracted mechanism quote and the key's
               accepted and near-miss lists, nothing else, --votes times (default 3); the
               majority of accepted | near-miss | other wins (no majority: 'split').
@@ -90,6 +97,25 @@ Return one JSON object with these keys.
 "asks_operator": questions the report asks the operator, or checks it says a person must make (short phrases); [] if none.
 
 "confidence": the confidence the report states ("high", "medium" or "low"), or null.
+
+Reply with the JSON object only."""
+
+CONCLUDE_PROMPT = """You read one DAQ incident report and say which launch its answer is about. A script will compare your answer with an answer key that you do not see, so copy what the report says. Do not judge whether the report is right and do not add your own analysis.
+
+The report answers an operator's question about LCLS-II DAQ logs. A "launch" is one start of the DAQ processes; its log files are named DD_HH:MM:SS_<host>:<process>.log, and DD_HH:MM:SS is the launch's start stamp.
+
+REPORT:
+<<<
+{report}
+>>>
+
+Return one JSON object: {{"concluded_launch": {{"time": "HH:MM:SS or HH:MM as written", "date": "YYYY-MM-DD or null", "tz": "local" | "UTC" | "unstated"}} or null, "basis": "cause" | "reviewed" | "none", "quote": "the report's words that name that launch, at most 30 words"}}.
+- If the report concludes that something failed, concluded_launch is the launch in which its main conclusion happened: the launch of the root cause or failure it puts first. basis "cause".
+- If it concludes that the session worked (no failure, or only harmless problems), concluded_launch is the launch it says it reviewed and found working, the one its answer is about. basis "reviewed".
+- Never a launch the report only lists among those it looked at, compares with, sets aside, or mentions as context (an earlier or later launch, a retry, another day), unless its conclusion is about that launch.
+- If its conclusion covers several launches as equals, give the first of them in the report.
+- Use the launch's start stamp or log-file prefix when the report gives one, else the earliest time it gives for that launch. PST, PT and Pacific are "local".
+- null, with basis "none", if the report names no launch for its conclusion or says it cannot tell.
 
 Reply with the JSON object only."""
 
@@ -269,6 +295,17 @@ def extract(caller, report):
     return rec, calls
 
 
+def conclude(caller, report):
+    """(conclusion or None, [call records]): the launch the report's answer is about, from a second model call that,
+    like the extraction, sees only the report.  Cold-start runs only (Located); cached by the report's sha256."""
+    d, calls = call_json(caller, CONCLUDE_PROMPT.format(report=report[:40000]), 'conclude', name=sha(report))
+    if d is None:
+        return None, calls
+    l = d.get('concluded_launch')
+    return {'launch': l if isinstance(l, dict) else None, 'basis': str(d.get('basis') or 'none'),
+            'quote': str(d.get('quote') or '')}, calls
+
+
 # ---------------------------------------------------------------------------
 # step 2: scripted facts
 
@@ -367,6 +404,33 @@ def named_launches(key, keys, rec, text):
         if r:
             named.add(r)
     return named
+
+
+def concluded_launch(key, keys, rec):
+    """The keyed-pool launch (prefix) the report concludes about, or None: the conclusion's launch resolved like any
+    launch time (inside its span, or within 2 minutes of its start)."""
+    c = (rec or {}).get('conclusion') or {}
+    l = c.get('launch')
+    if not isinstance(l, dict):
+        return None
+    return resolve(to_local(str(l.get('time') or ''), l.get('date'), l.get('tz'), default_date(key), tz_offset(keys, key)),
+                   pool_launches(keys, key))
+
+
+def located_fact(key, keys, rec, named):
+    """Located.  Cold-start keys: the launch the report concludes about (its main cause's launch; for a report that finds
+    no fault, the session it says it reviewed) is the keyed one; naming the keyed launch elsewhere does not count.
+    Other keys: the report names every keyed launch."""
+    if not key['launches']:
+        return None
+    if key.get('cold'):
+        return concluded_launch(key, keys, rec) == key['launches'][0]['prefix']
+    return all(l['prefix'] in named for l in key['launches'])
+
+
+def cold_facts(key, keys, rec, named):
+    return {'concluded_launch': concluded_launch(key, keys, rec), 'conclusion': rec.get('conclusion'),
+            'keyed_named_anywhere': bool(key['launches']) and key['launches'][0]['prefix'] in named}
 
 
 def norm(s):
@@ -478,7 +542,9 @@ def score_fault(key, keys, rec, text, caller, votes):
             pick, how = side[0], 'non-fatal problem (the key allows it)'
     f = {'cause_found': pick is not None, 'picked': how if pick else None, 'verdict_kind': rec['verdict_kind'],
          'affected': rec['verdict_kind'] == 'fault', 'named_launches': sorted(named)}
-    f['located'] = all(l['prefix'] in named for l in key['launches']) if key['launches'] else None
+    f['located'] = located_fact(key, keys, rec, named)
+    if key.get('cold'):
+        f.update(cold_facts(key, keys, rec, named))
     if key.get('launch_keyed'):
         at = resolve(to_local(pick['launch_time'], None, pick['tz'], dd, off), launches) if pick else None
         f['cause_launch'] = at
@@ -566,10 +632,12 @@ def score_healthy(key, keys, rec, text):
     noted = ' | '.join('%s %s %s' % (p['component'], p['stage'], p['mechanism']) for p in rec['problems'])
     benign = [b['id'] for b in key.get('benign', []) if alias_hits(b['aliases'], norm(noted) + ' ' + norm(text))]
     f = {'verdict_kind': vk, 'affected': vk == 'fault', 'unsure': vk == 'unsure', 'named_launches': sorted(named),
-         'located': (all(l['prefix'] in named for l in key['launches']) if key['launches'] else None),
+         'located': located_fact(key, keys, rec, named),
          'causes_given': [{'component': c['component'], 'stage': c['stage'], 'mechanism': c['mechanism'][:300]} for c in cs],
          'problems_noted': len(rec['problems']), 'benign_named': benign,
          'known_issue_cited': [n for n in key.get('known_issues', []) if re.search(r'(#|issues/)%d\b' % n, text)]}
+    if key.get('cold'):
+        f.update(cold_facts(key, keys, rec, named))
     return f, {'verdict': 'n/a'}, {'kind': 'healthy', 'outcome': outcome}, []
 
 
@@ -577,6 +645,13 @@ def score_report(key, keys, text, caller, votes=3):
     """The scored row for one report: facts, mechanism, outcome, record, calls."""
     rec, xcalls = extract(caller, text)
     row = {'report_sha256': sha(text), 'record': rec, 'calls': {'extract': xcalls, 'judge': []}}
+    if rec is not None and key.get('cold'):            # cold start: which launch the report concludes about (Located)
+        conc, ccalls = conclude(caller, text)
+        row['calls']['conclude'] = ccalls
+        if conc is None:
+            row['error'] = 'conclusion extraction failed'
+        rec = dict(rec, conclusion=conc)
+        row['record'] = rec
     if rec is None:
         row.update(error='extraction failed', facts={}, mechanism={}, outcome={'kind': key['kind'], 'cause': False}
                    if key['kind'] != 'healthy' else {'kind': 'healthy', 'outcome': None})
@@ -593,7 +668,7 @@ def score_report(key, keys, text, caller, votes=3):
 
 
 def usage(row):
-    calls = row['calls']['extract'] + row['calls']['judge']
+    calls = row['calls']['extract'] + row['calls'].get('conclude', []) + row['calls']['judge']
     return {'calls': len(calls), 'cost_usd': round(sum(c.get('cost_usd') or 0 for c in calls), 6),
             'fresh_calls': sum(not c.get('cached') for c in calls),
             'fresh_cost_usd': round(sum(c.get('cost_usd') or 0 for c in calls if not c.get('cached')), 6),
@@ -822,7 +897,7 @@ def main(argv=None):
 
     class Both:                                       # extraction and judging may use different commands
         def call(self, prompt, kind, tag='', name=None):
-            return (xc if kind == 'extract' else jc).call(prompt, kind, tag, name)
+            return (xc if kind in ('extract', 'conclude') else jc).call(prompt, kind, tag, name)
 
     caller = Both()
     if a.traps:
@@ -878,6 +953,7 @@ def main(argv=None):
     table, tot = summarize(allrows)
     meta = {'scored': len(allrows), 'model_flag': a.model, 'votes': a.votes, 'keys': os.path.abspath(a.keys),
             'keys_sha256': sha(read_text(a.keys)), 'extract_prompt_sha256': sha(EXTRACT_PROMPT),
+            'conclude_prompt_sha256': sha(CONCLUDE_PROMPT),
             'judge_prompt_sha256': sha(JUDGE_PROMPT), 'scorer_calls': tot['calls'], 'scorer_cost_usd': round(tot['cost'], 4),
             'fresh_calls_this_run': xc.fresh_calls + jc.fresh_calls,
             'fresh_cost_usd_this_run': round(xc.fresh_cost + jc.fresh_cost, 4),

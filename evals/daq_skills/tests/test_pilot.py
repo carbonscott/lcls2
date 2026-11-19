@@ -99,14 +99,17 @@ if "yesterday afternoon" in prompt:          # family C fault case
     tool(3, "Bash", {"command": "grep -h Illegal *timing_1.log"}, sh("grep -h Illegal %s/home/m/mfxopr/2026/09/*timing_1.log" % root))
     rec = {"verdict_kind": "fault", "launches": [{"time": "15:05:23", "date": "2026-09-16", "tz": "local", "status": "failed"}],
            "problems": [{"role": "cause", "launch_time": "15:05:23", "tz": "local", "component": "timing_1", "stage": "alloc",
-                         "mechanism": "Illegal XPM Remote link id"}]}
+                         "mechanism": "Illegal XPM Remote link id"}],
+           "concluded_launch": {"time": "15:05:23", "date": "2026-09-16", "tz": "local"}, "basis": "cause"}
 elif "Tuesday afternoon" in prompt:          # family C healthy case
-    rec = {"verdict_kind": "no-fault", "launches": [{"time": "14:37:58", "date": "2026-09-15", "tz": "local", "status": "ok"}], "problems": []}
+    rec = {"verdict_kind": "no-fault", "launches": [{"time": "14:37:58", "date": "2026-09-15", "tz": "local", "status": "ok"}], "problems": [],
+           "concluded_launch": {"time": "14:37:58", "date": "2026-09-15", "tz": "local"}, "basis": "reviewed"}
 else:                                        # family B case c1 (tt_0, Verify error, 2026-11-17 12:12:52)
     tool(2, "Bash", {"command": "grep -h Verify *tt_0.log"}, sh("grep -h Verify %s/home/m/mfxopr/daq/logs/2026/11/*tt_0.log" % root))
     rec = {"verdict_kind": "fault", "launches": [{"time": "12:12:52", "date": "2026-11-17", "tz": "local", "status": "failed"}],
            "problems": [{"role": "cause", "launch_time": "12:12:52", "tz": "local", "component": "tt_0", "stage": "configure",
-                         "mechanism": "Verify error for block Top.TriggerDelay"}]}
+                         "mechanism": "Verify error for block Top.TriggerDelay"}],
+           "concluded_launch": {"time": "12:12:52", "date": "2026-11-17", "tz": "local"}, "basis": "cause"}
 say({"type": "result", "result": "Report (operator: %s)\nRECORD: %s\n" % (ans, json.dumps(rec)), "total_cost_usd": 0.02,
      "num_turns": 3, "usage": {"output_tokens": 9}, "modelUsage": {"claude-haiku-x": {}}})
 '''
@@ -294,7 +297,7 @@ class ColdKeys(unittest.TestCase, World):
 
         class Both:
             def call(self, prompt, kind, tag='', name=None):
-                return (xc if kind == 'extract' else jc).call(prompt, kind, tag, name)
+                return (xc if kind in ('extract', 'conclude') else jc).call(prompt, kind, tag, name)
         return Both()
 
     def rep(self, rec):
@@ -303,14 +306,16 @@ class ColdKeys(unittest.TestCase, World):
     def test_family_c_cause_is_located_component_and_stage_without_a_judge(self):
         k = self.book.key('real-t-fault', 'm1')
         good = {'verdict_kind': 'fault', 'launches': [{'time': '15:05:23', 'tz': 'local'}],
-                'problems': [{'role': 'cause', 'component': 'timing_1 DRP', 'stage': 'alloc transition', 'mechanism': 'link id'}]}
+                'problems': [{'role': 'cause', 'component': 'timing_1 DRP', 'stage': 'alloc transition', 'mechanism': 'link id'}],
+                'concluded_launch': {'time': '15:05:23', 'tz': 'local'}, 'basis': 'cause'}
         r = score.score_report(k, c1_keys(), self.rep(good), self.caller())
         self.assertEqual((r['facts']['located'], r['outcome']['cause'], r['mechanism']['verdict'], r['calls']['judge']),
                          (True, True, 'not scored', []))
+        self.assertEqual(len(r['calls']['conclude']), 1)
         self.assertFalse(os.path.exists(self.judged))
-        utc = dict(good, launches=[{'time': '22:05:23', 'tz': 'UTC', 'date': '2026-09-16'}])      # PDT: 15:05:23 local
+        utc = dict(good, concluded_launch={'time': '22:05:23', 'tz': 'UTC', 'date': '2026-09-16'})      # PDT: 15:05:23 local
         self.assertTrue(score.score_report(k, c1_keys(), self.rep(utc), self.caller())['facts']['located'])
-        elsewhere = dict(good, launches=[{'time': '13:58:21', 'tz': 'local'}])
+        elsewhere = dict(good, launches=[{'time': '13:58:21', 'tz': 'local'}], concluded_launch={'time': '13:58:21', 'tz': 'local'})
         r = score.score_report(k, c1_keys(), self.rep(elsewhere), self.caller())
         self.assertEqual((r['facts']['located'], r['outcome']['cause']), (False, False))
         blame_control = dict(good, problems=[dict(good['problems'][0], component='control')])
@@ -320,18 +325,40 @@ class ColdKeys(unittest.TestCase, World):
         k = self.book.key('c1', 'm1')
         rec = {'verdict_kind': 'fault', 'launches': [], 'problems': [{'role': 'cause', 'component': 'tt_0', 'stage': 'configure',
                                                                        'mechanism': 'Verify error for block Top.TriggerDelay'}]}
-        r = score.score_report(k, c1_keys(), self.rep(rec) + ' launch 17_12:12:52', self.caller())
+        here = dict(rec, concluded_launch={'time': '17_12:12:52', 'tz': 'unstated'}, basis='cause')
+        r = score.score_report(k, c1_keys(), self.rep(here) + ' launch 17_12:12:52', self.caller())
         self.assertEqual((r['facts']['located'], r['outcome']['cause']), (True, True))
         r = score.score_report(k, c1_keys(), self.rep(rec), self.caller())          # right cause, launch never named
         self.assertEqual((r['facts']['located'], r['outcome']['cause']), (False, False))
-        r = score.score_report(k, c1_keys(), self.rep(rec) + ' launch 17_13:20:00', self.caller())   # another launch of that day
+        there = dict(rec, concluded_launch={'time': '17_13:20:00', 'tz': 'unstated'}, basis='cause')
+        r = score.score_report(k, c1_keys(), self.rep(there) + ' launch 17_13:20:00', self.caller())   # another launch of that day
         self.assertEqual((r['facts']['located'], r['outcome']['cause']), (False, False))
+
+    def test_located_is_the_launch_the_report_concludes_about_not_one_it_lists(self):
+        k = self.book.key('c1', 'm1')
+        cause = [{'role': 'cause', 'launch_time': '13:20:00', 'tz': 'local', 'component': 'tt_0', 'stage': 'configure',
+                  'mechanism': 'Verify error for block Top.TriggerDelay'}]
+        listed = {'verdict_kind': 'fault', 'problems': cause, 'concluded_launch': {'time': '13:20:00', 'tz': 'local'}, 'basis': 'cause',
+                  'launches': [{'time': '12:12:52', 'tz': 'local', 'status': 'unclear'}, {'time': '13:20:00', 'tz': 'local', 'status': 'failed'}]}
+        text = self.rep(listed) + ' Sessions examined: 17_12:12:52, 17_13:20:00.  The failure was in 17_13:20:00.'
+        r = score.score_report(k, c1_keys(), text, self.caller())
+        self.assertEqual((r['facts']['located'], r['facts']['keyed_named_anywhere'], r['facts']['concluded_launch'], r['outcome']['cause']),
+                         (False, True, None, False))
+        mine = dict(listed, concluded_launch={'time': '12:13:30', 'date': '2026-11-17', 'tz': 'local'})       # a time inside the launch
+        r = score.score_report(k, c1_keys(), self.rep(mine), self.caller())
+        self.assertEqual((r['facts']['located'], r['facts']['concluded_launch']), (True, '17_12:12:52'))
+        r = score.score_report(k, c1_keys(), self.rep(dict(listed, concluded_launch=None, basis='none')), self.caller())
+        self.assertEqual((r['facts']['located'], r.get('error')), (False, None))
 
     def test_family_c_healthy_is_three_way(self):
         k = self.book.key('real-t-ok', 'm1')
-        clean = {'verdict_kind': 'no-fault', 'launches': [{'time': '14:37:58'}], 'problems': []}
+        clean = {'verdict_kind': 'no-fault', 'launches': [{'time': '14:37:58'}], 'problems': [],
+                 'concluded_launch': {'time': '14:37:58'}, 'basis': 'reviewed'}
         r = score.score_report(k, c1_keys(), self.rep(clean), self.caller())
         self.assertEqual((r['outcome']['outcome'], r['facts']['located']), ('clean', True))
+        other = dict(clean, launches=[{'time': '14:37:58'}, {'time': '12:39:26'}], concluded_launch={'time': '12:39:26'})
+        r = score.score_report(k, c1_keys(), self.rep(other), self.caller())    # reviewed another session; this one only listed
+        self.assertEqual((r['outcome']['outcome'], r['facts']['located'], r['facts']['keyed_named_anywhere']), ('clean', False, True))
         alarm = {'verdict_kind': 'fault', 'launches': [], 'problems': [{'role': 'cause', 'component': 'x', 'stage': '', 'mechanism': 'y'}]}
         self.assertEqual(score.score_report(k, c1_keys(), self.rep(alarm), self.caller())['outcome']['outcome'], 'false-alarm')
 
@@ -357,8 +384,8 @@ class Pilot(unittest.TestCase, World):
     def test_refuses_a_batch_over_the_budget_and_prints_the_estimate(self):
         rc, out = self.pilot('--budget-left', '0.5')
         self.assertEqual(rc, 2)
-        self.assertIn('per-run estimate: model haiku    agent $0.100 (table) + scorer $0.050', out)
-        self.assertIn('6 to do; projected usage $0.90', out)
+        self.assertIn('per-run estimate: model haiku    agent $0.100 (table) + scorer $0.060', out)
+        self.assertIn('6 to do; projected usage $0.96', out)
         self.assertIn('refusing to start', out)
         self.assertFalse(os.path.exists(self.out))
         self.assertEqual(self.pilot()[0], 2)                         # no --budget-left: refused too
@@ -380,7 +407,7 @@ class Pilot(unittest.TestCase, World):
                                                                               'C.pointer.haiku'])
         usage = json.load(open(os.path.join(self.out, 'usage.json')))
         self.assertEqual((usage['agent_usd'], usage['runs']), (0.12, 6))
-        self.assertAlmostEqual(usage['scorer_usd'], 6 * 0.01 + 3 * 0.002 * 3)  # extraction each; 3 judge votes on 3 B runs
+        self.assertAlmostEqual(usage['scorer_usd'], 6 * 0.01 * 2 + 3 * 0.002 * 3)  # extraction and conclusion each; 3 judge votes on 3 B runs
         v = subprocess.run([sys.executable, os.path.join(EVAL, 'verdict.py'), os.path.join(self.out, 'rows.json')],
                            stdout=subprocess.PIPE, universal_newlines=True)
         self.assertEqual(v.returncode, 0)

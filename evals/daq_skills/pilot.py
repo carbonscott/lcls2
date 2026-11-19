@@ -51,7 +51,7 @@ ALLOWED = {'A': ('none', 'skills', 'map', 'both', 'crib', 'starved'), 'B': ('non
            'C': ('none', 'skills', 'map', 'both', 'pointer')}
 AGENT_USD = {'default': 2.00, 'haiku': 0.10}          # per run; P8 expects $1.0-2.5 for a default-model M1 run
 OTHER_MODEL_USD = 2.00
-SCORER_USD = 0.05                                      # one extraction + 3 judge votes (sonnet): $0.038 a report on v2
+SCORER_USD = 0.06                                      # one extraction + 3 judge votes (sonnet): $0.038 a report on v2; + one conclusion call (m1)
 
 
 def read_json(path):

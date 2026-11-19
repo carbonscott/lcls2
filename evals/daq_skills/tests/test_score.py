@@ -110,11 +110,21 @@ class Keys(unittest.TestCase):
         self.assertIn('double-free-exit', [b['id'] for b in KEYS['cases']['healthy-tt']['benign']])
 
     def test_the_extractor_never_sees_the_key_or_the_arm(self):
-        prompt = score.EXTRACT_PROMPT.format(report='REPORT TEXT')
         k = KEYS['cases']['reg-cfg-tt']
-        for leak in [k['mechanism']['accepted'][0], k['mechanism']['near_miss'][0], 'TriggerDelay', 'skills', 'reg-cfg-tt',
-                     k['question']]:
-            self.assertNotIn(leak, prompt)
+        for prompt in (score.EXTRACT_PROMPT.format(report='REPORT TEXT'), score.CONCLUDE_PROMPT.format(report='REPORT TEXT')):
+            for leak in [k['mechanism']['accepted'][0], k['mechanism']['near_miss'][0], 'TriggerDelay', 'skills', 'reg-cfg-tt',
+                         k['question'], 'map', 'pointer', 'keyed']:
+                self.assertNotIn(leak, prompt)
+
+    def test_m0_runs_make_no_conclusion_call(self):
+        kinds = []
+
+        class Caller:
+            def call(self, prompt, kind, tag='', name=None):
+                kinds.append(kind)
+                return {'text': '{"verdict_kind": "unsure"}', 'cost_usd': 0, 'model': 'm', 'cached': False, 'error': None}
+        r = score.score_report(KEYS['cases']['reg-cfg-tt'], KEYS, 'A report.', Caller())
+        self.assertEqual((kinds, 'conclude' in r['calls']), (['extract'], False))
 
 
 class ScriptedFacts(unittest.TestCase):
