@@ -11,35 +11,68 @@ programs, so the files have the production layout and messages:
 
 ## Quick start for skill authors
 
-Everything needed is in this folder: the tools, the cases, and the logs the cases are
+Three families of cases. **A** hands the agent the log folder and the window (mode `m0`, the
+v2 cases). **B** is a cold start (mode `m1`): the prompt names the hutch and a vague time,
+and the agent must find the logs in an MFX-shaped tree built from the bundled logs. **C** is
+a cold start on real MFX logs.
+
+Families A and B need only this folder: the tools, the cases, and the logs the cases are
 about (`data/pools.tar.gz`, 8.3 MB, 45 log directories). You do not need the sim, S3DF
-group access or `harvest.py`. You need the `claude` CLI logged in to your own account, and
-`bwrap` and `zstd` (both are on the S3DF interactive nodes).
+group access or `harvest.py`. Family C needs the real MFX logs, which are not in the
+repository: `real_mfx.py fetch` copies them from S3DF with your own login. Agent runs need
+the `claude` CLI logged in to your own account, and `bwrap` and `zstd` (both are on the
+S3DF interactive nodes).
 
 ```bash
 git clone --depth 1 https://github.com/carbonscott/lcls2 daq-evals   # the default branch, sim-main
 cd daq-evals/evals/daq_skills
-python3 -m unittest discover -s tests                          # 138 tests, OK, no model calls
+python3 -m unittest discover -s tests          # 152 tests, OK, no model calls (a few skip without zstd or a skills checkout)
 WORK=$HOME/daq-eval-work && mkdir -p $WORK && tar xzf data/pools.tar.gz -C $WORK      # any folder of yours
-OUT=$HOME/daq-eval-results                                       # your results go here
-SK=/path/to/your/lcls2/psana/psana/skills                        # the skills you are working on
+python3 tree.py --work $WORK                   # family B's tree in $WORK/roots, about a minute; ends "8 cases, window check passed for all"
+OUT=$HOME/daq-eval-results                     # your results go here
+SK=/path/to/your/lcls2/psana/psana/skills      # the skills under test
+MAP=/path/to/skills                            # the folder holding hutch-resources/ (the hutch map)
 
-python3 run.py --work $WORK --arm mine --skills $SK  --out $OUT --case reg-cfg-tt --case day-window-utc   # 2 runs, about a minute
-python3 run.py --work $WORK --arm none --skills none --out $OUT --case reg-cfg-tt --case day-window-utc
-python3 judge.py --results $OUT && python3 grade.py --results $OUT
+# Family B by hand: one case, no skills and with them (add --dry-run to write the prompts without an agent)
+python3 run.py --work $WORK --mode m1 --arm m1-none   --skills none --out $OUT --case ctl-blames-meb
+python3 run.py --work $WORK --mode m1 --arm m1-skills --skills $SK  --out $OUT --case ctl-blames-meb
 
-# the whole core set (34 cases per arm, about 15 minutes with --jobs 3, about $1.30 of usage per run on the default model)
-python3 run.py --work $WORK --arm mine --skills $SK  --out $OUT --jobs 3 --resume
-python3 run.py --work $WORK --arm none --skills none --out $OUT --jobs 3 --resume
-python3 judge.py --results $OUT && python3 grade.py --results $OUT && python3 report.py --results $OUT --out $OUT/report.html
+# Family C by hand: fetch the real MFX logs first (rsync over ssh from sdfiana025; at most 2 GB, --max-bytes)
+REAL=$HOME/mfx-root
+python3 real_mfx.py fetch --dest $REAL         # checks every case file's sha256
+python3 real_mfx.py keys  --root $REAL         # exit 1 if a file or key drifted
+python3 real_mfx.py check --root $REAL         # each vague window holds only keyed launches
+python3 run.py --work $WORK --mode m1 --family C --real-root $REAL --arm C-none --skills none --out $OUT --case real-qadc-run
+
+# Score what you ran: facts per report (model calls), then calls to evidence (no model)
+python3 score.py --results $OUT --out $OUT/scored.json --summary $OUT/scored.txt
+python3 evidence.py --results $OUT --work $WORK --write
+
+# The pilot: pilot.py runs cells (FAMILY/ARM[/MODEL[/CASES[/REPEATS]]]) at most --jobs at a time,
+# then score.py and evidence.py, and writes rows.json; --dry-run prints the plan and the projected usage only
+PILOT=$HOME/daq-eval-pilot
+P="python3 pilot.py --out $PILOT --work $WORK --real-root $REAL --skills $SK --map $MAP --jobs 2 --resume"
+$P --dry-run       --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
+$P --budget-left 200 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
+$P --budget-left 150 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
+$P --budget-left 15  --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3    # the M0 controls
+python3 verdict.py $PILOT/rows.json            # the pre-registered verdicts (P2-P6, P3m)
 ```
 
+- `pilot.py` refuses to start (exit 2) when its projection exceeds `--budget-left` (USD); it
+  estimates $2.00 a default-model run and $0.10 a Haiku run until finished runs say otherwise,
+  plus $0.06 of scoring, so the B cells above project about $190.
+- Controls: `pointer` (B, C) hands over the folder and window, `crib` (A) the key's mechanism,
+  `starved` (A, B) removes the root-cause files. They show whether the eval can move at all.
+- Family C's per-case views decompress the week before each case's "now": about 19 GB under
+  `$WORK/roots/real` for the seven cases.
+- Family A as in v2 (`judge.py`, `grade.py`, `report.py`): see [The tools](#the-tools).
 - Use any arm name; edit a skill, pick a new name (`--arm mine-v2`) and compare the summary lines.
 - If `claude` is not under `~/.local` or a system directory, add `--expose <its folder>`.
 - To test the skills when they are certainly read, add `--preface "Load the psana-daq skill before you start."` under its own arm name.
 - Unpack with `tar` so the files keep their modification times; the logs skill's helper picks sessions by them.
-- Tested: the unit tests, the sandbox and a scripted agent on S3DF (Python 3.6); real agent runs on a Linux VM
-  (Python 3.12). A real Claude Code run on S3DF itself has not been tried yet.
+- Tested: the unit tests on S3DF (Python 3.6) and on a Linux VM (Python 3.12); the sandbox and a scripted
+  agent on S3DF (v2); real agent runs on the VM. A real Claude Code run on S3DF itself has not been tried yet.
 
 ## v3: cold start (mode m1) and the controls
 
@@ -152,7 +185,7 @@ P="python3 pilot.py --out $OUT --work $WORK --real-root $REAL --skills $SK --map
 $P --budget-left 100 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
 $P --budget-left 100 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
 $P --budget-left 5 --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3
-python3 verdict.py $OUT/rows.json                         # P2-P6 and P3m, the rules of .goal/daq-skill-eval-v3.predictions.json
+python3 verdict.py $OUT/rows.json                         # P2-P6 and P3m, the pre-registered rules in verdict.py's docstring
 ```
 
 ## Using another agent
@@ -216,7 +249,7 @@ An **arm** is one configuration under test: the skills at some commit, or `none`
 
 ```bash
 cd evals/daq_skills
-python3 -m unittest discover -s tests -v                       # 138 tests, no model calls
+python3 -m unittest discover -s tests -v                       # 152 tests, no model calls
 tar xzf data/pools.tar.gz -C $WORK                             # the bundled logs; or rebuild them from the sim runs:
 # python3 harvest.py --root $SIM_RUNS --out $WORK              # exit 1 if a hint word leaks
 mkdir -p $WORK/skills-181 && git archive upstream/features/daq-skills-v2 psana/psana/skills | tar -x -C $WORK/skills-181

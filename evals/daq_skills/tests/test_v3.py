@@ -493,10 +493,9 @@ class Evidence(unittest.TestCase):
         self.assertNotIn(quoted[:40], js)                                   # JSON shows \" and \\
         self.assertEqual(self.calls(('Bash', {'command': 'daq-logs.py grep --json'}, js))['calls'], 0)
 
-    HELPER = os.environ.get('DAQ_SKILLS_HELPER', '/home/exedev/projects/daq-eval-v3/arms/skills-181/psana/psana/skills/'
-                            'psana-daq-logs/scripts/daq-logs.py')
+    HELPER = os.environ.get('DAQ_SKILLS_HELPER', '')     # <skills>/psana-daq-logs/scripts/daq-logs.py of a skills checkout
 
-    @unittest.skipUnless(os.path.exists(HELPER) and shutil.which('zstd'), 'needs the skills checkout (DAQ_SKILLS_HELPER) and zstd')
+    @unittest.skipUnless(os.path.isfile(HELPER) and shutil.which('zstd'), 'set DAQ_SKILLS_HELPER to psana-daq-logs/scripts/daq-logs.py; needs zstd')
     def test_real_helper_output_counts(self):
         t = tree.epoch(datetime.datetime(2026, 11, 17, 21, 15))
         for f in self.KEYED:
