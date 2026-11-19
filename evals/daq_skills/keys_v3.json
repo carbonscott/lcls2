@@ -1,0 +1,5177 @@
+{
+ "version": 3,
+ "about": "One key per scored case of catalog.json (sets core and full; disputed cases are left out).\nEach key holds the facts a report must state, each checked on its own:",
+ "tz_offset_hours": -8,
+ "pools": {
+  "day": [
+   [
+    "09_11:08:52",
+    "2026-11-09 11:08:52",
+    "2026-11-09 11:09:31"
+   ],
+   [
+    "09_11:19:01",
+    "2026-11-09 11:19:01",
+    "2026-11-09 11:19:40"
+   ],
+   [
+    "09_11:23:05",
+    "2026-11-09 11:23:05",
+    "2026-11-09 11:23:47"
+   ],
+   [
+    "09_11:30:25",
+    "2026-11-09 11:30:25",
+    "2026-11-09 11:32:11"
+   ],
+   [
+    "09_11:32:49",
+    "2026-11-09 11:32:49",
+    "2026-11-09 11:33:43"
+   ],
+   [
+    "09_11:34:23",
+    "2026-11-09 11:34:23",
+    "2026-11-09 11:35:07"
+   ],
+   [
+    "09_11:42:03",
+    "2026-11-09 11:42:03",
+    "2026-11-09 11:43:34"
+   ],
+   [
+    "09_11:44:11",
+    "2026-11-09 11:44:11",
+    "2026-11-09 11:45:05"
+   ],
+   [
+    "09_11:58:38",
+    "2026-11-09 11:58:38",
+    "2026-11-09 12:00:19"
+   ],
+   [
+    "09_12:04:22",
+    "2026-11-09 12:04:22",
+    "2026-11-09 12:04:45"
+   ],
+   [
+    "09_12:06:35",
+    "2026-11-09 12:06:35",
+    "2026-11-09 12:08:16"
+   ],
+   [
+    "09_12:10:17",
+    "2026-11-09 12:10:17",
+    "2026-11-09 12:10:55"
+   ],
+   [
+    "09_12:11:41",
+    "2026-11-09 12:11:41",
+    "2026-11-09 12:12:02"
+   ],
+   [
+    "09_12:12:52",
+    "2026-11-09 12:12:52",
+    "2026-11-09 12:14:33"
+   ],
+   [
+    "09_12:15:15",
+    "2026-11-09 12:15:15",
+    "2026-11-09 12:15:53"
+   ],
+   [
+    "09_12:21:27",
+    "2026-11-09 12:21:27",
+    "2026-11-09 12:21:48"
+   ],
+   [
+    "09_12:22:37",
+    "2026-11-09 12:22:37",
+    "2026-11-09 12:24:18"
+   ],
+   [
+    "09_12:24:58",
+    "2026-11-09 12:24:58",
+    "2026-11-09 12:25:35"
+   ],
+   [
+    "09_12:26:54",
+    "2026-11-09 12:26:54",
+    "2026-11-09 12:27:31"
+   ],
+   [
+    "09_12:33:58",
+    "2026-11-09 12:33:58",
+    "2026-11-09 12:35:28"
+   ],
+   [
+    "09_12:48:10",
+    "2026-11-09 12:48:10",
+    "2026-11-09 12:48:31"
+   ],
+   [
+    "09_12:49:29",
+    "2026-11-09 12:49:29",
+    "2026-11-09 12:50:07"
+   ],
+   [
+    "09_12:53:33",
+    "2026-11-09 12:53:33",
+    "2026-11-09 12:55:08"
+   ],
+   [
+    "09_12:55:54",
+    "2026-11-09 12:55:54",
+    "2026-11-09 12:57:35"
+   ],
+   [
+    "09_12:58:11",
+    "2026-11-09 12:58:11",
+    "2026-11-09 12:58:39"
+   ],
+   [
+    "09_13:03:58",
+    "2026-11-09 13:03:58",
+    "2026-11-09 13:04:29"
+   ],
+   [
+    "09_13:05:07",
+    "2026-11-09 13:05:07",
+    "2026-11-09 13:05:36"
+   ],
+   [
+    "09_13:06:52",
+    "2026-11-09 13:06:52",
+    "2026-11-09 13:08:33"
+   ],
+   [
+    "09_13:23:06",
+    "2026-11-09 13:23:06",
+    "2026-11-09 13:24:43"
+   ],
+   [
+    "09_13:57:13",
+    "2026-11-09 13:57:13",
+    "2026-11-09 13:57:33"
+   ],
+   [
+    "09_13:59:27",
+    "2026-11-09 13:59:27",
+    "2026-11-09 13:59:47"
+   ],
+   [
+    "09_14:00:27",
+    "2026-11-09 14:00:27",
+    "2026-11-09 14:00:48"
+   ],
+   [
+    "09_14:01:26",
+    "2026-11-09 14:01:26",
+    "2026-11-09 14:01:58"
+   ],
+   [
+    "09_14:02:31",
+    "2026-11-09 14:02:31",
+    "2026-11-09 14:02:53"
+   ],
+   [
+    "09_14:03:31",
+    "2026-11-09 14:03:31",
+    "2026-11-09 14:03:58"
+   ],
+   [
+    "09_14:04:33",
+    "2026-11-09 14:04:33",
+    "2026-11-09 14:04:57"
+   ],
+   [
+    "09_14:24:24",
+    "2026-11-09 14:24:24",
+    "2026-11-09 14:24:54"
+   ],
+   [
+    "09_14:41:22",
+    "2026-11-09 14:41:22",
+    "2026-11-09 14:44:16"
+   ],
+   [
+    "09_14:52:57",
+    "2026-11-09 14:52:57",
+    "2026-11-09 14:55:44"
+   ],
+   [
+    "09_14:57:50",
+    "2026-11-09 14:57:50",
+    "2026-11-09 14:58:05"
+   ],
+   [
+    "09_14:58:47",
+    "2026-11-09 14:58:47",
+    "2026-11-09 14:59:02"
+   ],
+   [
+    "09_14:59:43",
+    "2026-11-09 14:59:43",
+    "2026-11-09 14:59:58"
+   ],
+   [
+    "09_15:00:41",
+    "2026-11-09 15:00:41",
+    "2026-11-09 15:02:52"
+   ],
+   [
+    "09_15:03:36",
+    "2026-11-09 15:03:36",
+    "2026-11-09 15:03:51"
+   ],
+   [
+    "09_15:04:34",
+    "2026-11-09 15:04:34",
+    "2026-11-09 15:04:48"
+   ],
+   [
+    "09_15:05:30",
+    "2026-11-09 15:05:30",
+    "2026-11-09 15:06:15"
+   ],
+   [
+    "09_15:06:58",
+    "2026-11-09 15:06:58",
+    "2026-11-09 15:07:13"
+   ],
+   [
+    "09_15:07:55",
+    "2026-11-09 15:07:55",
+    "2026-11-09 15:08:10"
+   ],
+   [
+    "09_15:08:52",
+    "2026-11-09 15:08:52",
+    "2026-11-09 15:10:09"
+   ],
+   [
+    "09_15:14:29",
+    "2026-11-09 15:14:29",
+    "2026-11-09 15:15:16"
+   ],
+   [
+    "09_15:16:00",
+    "2026-11-09 15:16:00",
+    "2026-11-09 15:17:40"
+   ],
+   [
+    "09_15:18:23",
+    "2026-11-09 15:18:23",
+    "2026-11-09 15:19:10"
+   ],
+   [
+    "09_15:19:54",
+    "2026-11-09 15:19:54",
+    "2026-11-09 15:22:44"
+   ],
+   [
+    "09_15:23:27",
+    "2026-11-09 15:23:27",
+    "2026-11-09 15:24:21"
+   ],
+   [
+    "09_15:24:58",
+    "2026-11-09 15:24:58",
+    "2026-11-09 15:25:31"
+   ],
+   [
+    "09_15:29:11",
+    "2026-11-09 15:29:11",
+    "2026-11-09 15:31:39"
+   ],
+   [
+    "09_15:32:28",
+    "2026-11-09 15:32:28",
+    "2026-11-09 15:35:29"
+   ],
+   [
+    "09_15:36:13",
+    "2026-11-09 15:36:13",
+    "2026-11-09 15:38:41"
+   ],
+   [
+    "09_15:42:46",
+    "2026-11-09 15:42:46",
+    "2026-11-09 15:45:13"
+   ],
+   [
+    "09_15:46:01",
+    "2026-11-09 15:46:01",
+    "2026-11-09 15:48:50"
+   ],
+   [
+    "09_15:49:34",
+    "2026-11-09 15:49:34",
+    "2026-11-09 15:51:57"
+   ],
+   [
+    "09_15:56:22",
+    "2026-11-09 15:56:22",
+    "2026-11-09 15:58:58"
+   ],
+   [
+    "09_15:59:42",
+    "2026-11-09 15:59:42",
+    "2026-11-09 16:02:43"
+   ],
+   [
+    "09_16:20:46",
+    "2026-11-09 16:20:46",
+    "2026-11-09 16:21:06"
+   ],
+   [
+    "09_16:21:44",
+    "2026-11-09 16:21:44",
+    "2026-11-09 16:22:16"
+   ],
+   [
+    "09_16:22:54",
+    "2026-11-09 16:22:54",
+    "2026-11-09 16:23:29"
+   ],
+   [
+    "09_16:24:07",
+    "2026-11-09 16:24:07",
+    "2026-11-09 16:24:41"
+   ],
+   [
+    "09_16:25:18",
+    "2026-11-09 16:25:18",
+    "2026-11-09 16:25:44"
+   ],
+   [
+    "09_16:26:16",
+    "2026-11-09 16:26:16",
+    "2026-11-09 16:27:16"
+   ],
+   [
+    "09_16:27:53",
+    "2026-11-09 16:27:53",
+    "2026-11-09 16:28:14"
+   ],
+   [
+    "09_16:28:47",
+    "2026-11-09 16:28:47",
+    "2026-11-09 16:29:08"
+   ],
+   [
+    "09_16:29:46",
+    "2026-11-09 16:29:46",
+    "2026-11-09 16:30:13"
+   ],
+   [
+    "09_16:30:48",
+    "2026-11-09 16:30:48",
+    "2026-11-09 16:31:12"
+   ],
+   [
+    "09_16:54:33",
+    "2026-11-09 16:54:33",
+    "2026-11-09 16:54:52"
+   ],
+   [
+    "09_16:55:28",
+    "2026-11-09 16:55:28",
+    "2026-11-09 16:55:58"
+   ],
+   [
+    "09_16:56:36",
+    "2026-11-09 16:56:36",
+    "2026-11-09 16:57:10"
+   ],
+   [
+    "09_16:57:47",
+    "2026-11-09 16:57:47",
+    "2026-11-09 16:58:21"
+   ],
+   [
+    "09_16:58:58",
+    "2026-11-09 16:58:58",
+    "2026-11-09 16:59:22"
+   ],
+   [
+    "09_16:59:55",
+    "2026-11-09 16:59:55",
+    "2026-11-09 17:01:39"
+   ],
+   [
+    "09_17:02:19",
+    "2026-11-09 17:02:19",
+    "2026-11-09 17:02:41"
+   ],
+   [
+    "09_17:03:15",
+    "2026-11-09 17:03:15",
+    "2026-11-09 17:03:38"
+   ],
+   [
+    "09_17:04:16",
+    "2026-11-09 17:04:16",
+    "2026-11-09 17:04:43"
+   ],
+   [
+    "09_17:05:19",
+    "2026-11-09 17:05:19",
+    "2026-11-09 17:05:42"
+   ],
+   [
+    "09_17:42:18",
+    "2026-11-09 17:42:18",
+    "2026-11-09 17:42:39"
+   ],
+   [
+    "09_17:43:16",
+    "2026-11-09 17:43:16",
+    "2026-11-09 17:43:49"
+   ],
+   [
+    "09_17:44:26",
+    "2026-11-09 17:44:26",
+    "2026-11-09 17:45:01"
+   ],
+   [
+    "09_17:45:35",
+    "2026-11-09 17:45:35",
+    "2026-11-09 17:46:08"
+   ],
+   [
+    "09_17:46:42",
+    "2026-11-09 17:46:42",
+    "2026-11-09 17:47:15"
+   ],
+   [
+    "09_17:47:45",
+    "2026-11-09 17:47:45",
+    "2026-11-09 17:48:45"
+   ],
+   [
+    "09_17:49:20",
+    "2026-11-09 17:49:20",
+    "2026-11-09 17:49:41"
+   ],
+   [
+    "09_17:50:13",
+    "2026-11-09 17:50:13",
+    "2026-11-09 17:50:35"
+   ],
+   [
+    "09_17:51:08",
+    "2026-11-09 17:51:08",
+    "2026-11-09 17:51:36"
+   ],
+   [
+    "09_17:52:09",
+    "2026-11-09 17:52:09",
+    "2026-11-09 17:52:32"
+   ],
+   [
+    "09_18:20:56",
+    "2026-11-09 18:20:56",
+    "2026-11-09 18:21:15"
+   ],
+   [
+    "09_18:21:49",
+    "2026-11-09 18:21:49",
+    "2026-11-09 18:22:20"
+   ],
+   [
+    "09_18:22:55",
+    "2026-11-09 18:22:55",
+    "2026-11-09 18:23:32"
+   ],
+   [
+    "09_18:24:08",
+    "2026-11-09 18:24:08",
+    "2026-11-09 18:24:43"
+   ],
+   [
+    "09_18:25:19",
+    "2026-11-09 18:25:19",
+    "2026-11-09 18:25:46"
+   ],
+   [
+    "09_18:26:19",
+    "2026-11-09 18:26:19",
+    "2026-11-09 18:27:22"
+   ],
+   [
+    "09_18:27:58",
+    "2026-11-09 18:27:58",
+    "2026-11-09 18:28:19"
+   ],
+   [
+    "09_18:28:51",
+    "2026-11-09 18:28:51",
+    "2026-11-09 18:29:13"
+   ],
+   [
+    "09_18:29:49",
+    "2026-11-09 18:29:49",
+    "2026-11-09 18:30:16"
+   ],
+   [
+    "09_18:30:50",
+    "2026-11-09 18:30:50",
+    "2026-11-09 18:31:14"
+   ],
+   [
+    "09_19:38:45",
+    "2026-11-09 19:38:45",
+    "2026-11-09 19:40:01"
+   ],
+   [
+    "09_19:40:36",
+    "2026-11-09 19:40:36",
+    "2026-11-09 19:40:55"
+   ],
+   [
+    "09_19:41:29",
+    "2026-11-09 19:41:29",
+    "2026-11-09 19:42:00"
+   ],
+   [
+    "09_19:42:35",
+    "2026-11-09 19:42:35",
+    "2026-11-09 19:43:09"
+   ],
+   [
+    "09_19:43:43",
+    "2026-11-09 19:43:43",
+    "2026-11-09 19:44:17"
+   ],
+   [
+    "09_19:44:51",
+    "2026-11-09 19:44:51",
+    "2026-11-09 19:45:17"
+   ],
+   [
+    "09_19:45:49",
+    "2026-11-09 19:45:49",
+    "2026-11-09 19:46:50"
+   ],
+   [
+    "09_19:47:25",
+    "2026-11-09 19:47:25",
+    "2026-11-09 19:47:46"
+   ],
+   [
+    "09_19:48:17",
+    "2026-11-09 19:48:17",
+    "2026-11-09 19:48:39"
+   ],
+   [
+    "09_19:49:13",
+    "2026-11-09 19:49:13",
+    "2026-11-09 19:49:40"
+   ],
+   [
+    "09_19:50:13",
+    "2026-11-09 19:50:13",
+    "2026-11-09 19:50:36"
+   ],
+   [
+    "09_20:24:52",
+    "2026-11-09 20:24:52",
+    "2026-11-09 20:25:12"
+   ],
+   [
+    "09_20:25:46",
+    "2026-11-09 20:25:46",
+    "2026-11-09 20:26:17"
+   ],
+   [
+    "09_20:26:51",
+    "2026-11-09 20:26:51",
+    "2026-11-09 20:27:24"
+   ],
+   [
+    "09_20:27:58",
+    "2026-11-09 20:27:58",
+    "2026-11-09 20:28:31"
+   ],
+   [
+    "09_20:29:06",
+    "2026-11-09 20:29:06",
+    "2026-11-09 20:29:33"
+   ],
+   [
+    "09_20:30:04",
+    "2026-11-09 20:30:04",
+    "2026-11-09 20:31:01"
+   ],
+   [
+    "09_20:31:36",
+    "2026-11-09 20:31:36",
+    "2026-11-09 20:31:57"
+   ],
+   [
+    "09_20:32:28",
+    "2026-11-09 20:32:28",
+    "2026-11-09 20:32:49"
+   ],
+   [
+    "09_20:33:23",
+    "2026-11-09 20:33:23",
+    "2026-11-09 20:33:50"
+   ],
+   [
+    "09_20:34:22",
+    "2026-11-09 20:34:22",
+    "2026-11-09 20:34:45"
+   ],
+   [
+    "09_20:50:25",
+    "2026-11-09 20:50:25",
+    "2026-11-09 20:51:14"
+   ],
+   [
+    "09_20:51:50",
+    "2026-11-09 20:51:50",
+    "2026-11-09 20:52:37"
+   ],
+   [
+    "09_20:53:14",
+    "2026-11-09 20:53:14",
+    "2026-11-09 20:54:01"
+   ],
+   [
+    "09_21:14:32",
+    "2026-11-09 21:14:32",
+    "2026-11-09 21:15:13"
+   ],
+   [
+    "09_21:26:49",
+    "2026-11-09 21:26:49",
+    "2026-11-09 21:27:29"
+   ],
+   [
+    "09_21:28:59",
+    "2026-11-09 21:28:59",
+    "2026-11-09 21:29:19"
+   ],
+   [
+    "09_21:29:52",
+    "2026-11-09 21:29:52",
+    "2026-11-09 21:30:22"
+   ],
+   [
+    "09_21:30:57",
+    "2026-11-09 21:30:57",
+    "2026-11-09 21:31:31"
+   ],
+   [
+    "09_21:32:05",
+    "2026-11-09 21:32:05",
+    "2026-11-09 21:32:39"
+   ],
+   [
+    "09_21:33:13",
+    "2026-11-09 21:33:13",
+    "2026-11-09 21:33:43"
+   ],
+   [
+    "09_21:34:14",
+    "2026-11-09 21:34:14",
+    "2026-11-09 21:35:33"
+   ],
+   [
+    "09_21:36:08",
+    "2026-11-09 21:36:08",
+    "2026-11-09 21:36:29"
+   ],
+   [
+    "09_21:37:00",
+    "2026-11-09 21:37:00",
+    "2026-11-09 21:37:21"
+   ],
+   [
+    "09_21:37:55",
+    "2026-11-09 21:37:55",
+    "2026-11-09 21:38:20"
+   ],
+   [
+    "09_21:38:53",
+    "2026-11-09 21:38:53",
+    "2026-11-09 21:39:16"
+   ],
+   [
+    "09_22:03:25",
+    "2026-11-09 22:03:25",
+    "2026-11-09 22:03:46"
+   ],
+   [
+    "09_22:04:22",
+    "2026-11-09 22:04:22",
+    "2026-11-09 22:04:53"
+   ],
+   [
+    "09_22:05:29",
+    "2026-11-09 22:05:29",
+    "2026-11-09 22:06:03"
+   ],
+   [
+    "09_22:06:37",
+    "2026-11-09 22:06:37",
+    "2026-11-09 22:07:10"
+   ],
+   [
+    "09_22:07:45",
+    "2026-11-09 22:07:45",
+    "2026-11-09 22:08:10"
+   ],
+   [
+    "09_22:08:41",
+    "2026-11-09 22:08:41",
+    "2026-11-09 22:09:40"
+   ],
+   [
+    "09_22:10:14",
+    "2026-11-09 22:10:14",
+    "2026-11-09 22:10:36"
+   ],
+   [
+    "09_22:11:07",
+    "2026-11-09 22:11:07",
+    "2026-11-09 22:11:29"
+   ],
+   [
+    "09_22:12:04",
+    "2026-11-09 22:12:04",
+    "2026-11-09 22:12:31"
+   ],
+   [
+    "09_22:13:05",
+    "2026-11-09 22:13:05",
+    "2026-11-09 22:13:28"
+   ]
+  ]
+ },
+ "cases": {
+  "reg-cfg-tt": {
+   "id": "reg-cfg-tt",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:12 and 12:15. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:12:52",
+     "start": "2026-11-09 12:12:52",
+     "first": "2026-11-09 12:12:54",
+     "last": "2026-11-09 12:14:33",
+     "files": [
+      "09_12:12:52_sdfmilan082:control.log",
+      "09_12:12:52_sdfmilan082:teb0.log",
+      "09_12:12:52_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:12:52",
+   "catalog_summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+  },
+  "reg-cfg-tt-q": {
+   "id": "reg-cfg-tt-q",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-tt-q",
+   "question": "On 2026-11-09 around 12:24 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:22:37",
+     "start": "2026-11-09 12:22:37",
+     "first": "2026-11-09 12:22:39",
+     "last": "2026-11-09 12:24:18",
+     "files": [
+      "09_12:22:37_sdfmilan082:control.log",
+      "09_12:22:37_sdfmilan082:teb0.log",
+      "09_12:22:37_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:22:37",
+   "catalog_summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match) (register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+  },
+  "reg-cfg-hsd": {
+   "id": "reg-cfg-hsd",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-hsd",
+   "question": "The DAQ was used on 2026-11-09 between 12:04 and 12:07. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:04:24",
+     "start": "2026-11-09 12:04:24",
+     "first": "2026-11-09 12:04:26",
+     "last": "2026-11-09 12:06:05",
+     "files": [
+      "09_12:04:24_sdfada013:control.log",
+      "09_12:04:24_sdfada013:hsd_0.log",
+      "09_12:04:24_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "hsd_0",
+    "aliases": [
+     "hsd_0",
+     "drp/hsd_0",
+     "hsd DRP",
+     "hsd_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "hsd_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register PgpQPllReset (DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset) failed: its readback did not match what was written.",
+     "A write to the named register PgpQPllReset failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register PgpQPllReset than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "hsd_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "hsd_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:04:24",
+   "catalog_summary": "hsd_0 aborted during configure: a register failed its write-verify (readback did not match) (register DrpPgpIlv.PcieControl.DevPcie.PgpQPllReset)"
+  },
+  "reg-cfg-epix100": {
+   "id": "reg-cfg-epix100",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epix100",
+   "question": "The DAQ was used on 2026-11-09 between 20:19 and 20:21. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_20:19:02",
+     "start": "2026-11-09 20:19:02",
+     "first": "2026-11-09 20:19:04",
+     "last": "2026-11-09 20:20:42",
+     "files": [
+      "09_20:19:02_sdfmilan023:control.log",
+      "09_20:19:02_sdfmilan023:epix100_0.log",
+      "09_20:19:02_sdfmilan023:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epix100_0",
+    "aliases": [
+     "epix100_0",
+     "drp/epix100_0",
+     "epix100 DRP",
+     "epix100_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epix100_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register DaqTriggerDelay (ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register DaqTriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register DaqTriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epix100_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epix100_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_20:19:02",
+   "catalog_summary": "epix100_0 aborted during configure: a register failed its write-verify (readback did not match) (register ePixBoard.ePix100aFPGA.EpixFpgaRegisters.DaqTriggerDelay)"
+  },
+  "reg-cfg-epixhr2x2-q": {
+   "id": "reg-cfg-epixhr2x2-q",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epixhr2x2-q",
+   "question": "On 2026-11-09 around 13:41 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_13:40:08",
+     "start": "2026-11-09 13:40:08",
+     "first": "2026-11-09 13:40:10",
+     "last": "2026-11-09 13:41:52",
+     "files": [
+      "09_13:40:08_sdfada013:control.log",
+      "09_13:40:08_sdfada013:epixhr2x2_0.log",
+      "09_13:40:08_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixhr2x2_0",
+    "aliases": [
+     "epixhr2x2_0",
+     "drp/epixhr2x2_0",
+     "epixhr2x2 DRP",
+     "epixhr2x2_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixhr2x2_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register DevRoot.DevPcie.Application.EventBuilder.Timeout",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Timeout (DevRoot.DevPcie.Application.EventBuilder.Timeout) failed: its readback did not match what was written.",
+     "A write to the named register Timeout failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Timeout than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epixhr2x2_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epixhr2x2_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_13:40:08",
+   "catalog_summary": "epixhr2x2_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Application.EventBuilder.Timeout)"
+  },
+  "reg-cfg-opal": {
+   "id": "reg-cfg-opal",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-opal",
+   "question": "The DAQ was used on 2026-11-09 between 02:45 and 02:47. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_02:45:07",
+     "start": "2026-11-09 02:45:07",
+     "first": "2026-11-09 02:45:10",
+     "last": "2026-11-09 02:46:51",
+     "files": [
+      "09_02:45:07_sdfmilan048:control.log",
+      "09_02:45:07_sdfmilan048:opal_0.log",
+      "09_02:45:07_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "opal_0",
+    "aliases": [
+     "opal_0",
+     "drp/opal_0",
+     "opal DRP",
+     "opal_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "opal_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register ClinkDevRoot.ClinkFeb[0].TrigCtrl[0].TrigPulseWidthRaw",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TrigPulseWidthRaw (ClinkDevRoot.ClinkFeb[0].TrigCtrl[0].TrigPulseWidthRaw) failed: its readback did not match what was written.",
+     "A write to the named register TrigPulseWidthRaw failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TrigPulseWidthRaw than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "opal_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "opal_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_02:45:07",
+   "catalog_summary": "opal_0 aborted during configure: a register failed its write-verify (readback did not match) (register ClinkDevRoot.ClinkFeb[0].TrigCtrl[0].TrigPulseWidthRaw)"
+  },
+  "reg-cfg-epixquad": {
+   "id": "reg-cfg-epixquad",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epixquad",
+   "question": "The DAQ was used on 2026-11-09 between 02:52 and 02:54. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_02:52:05",
+     "start": "2026-11-09 02:52:05",
+     "first": "2026-11-09 02:52:07",
+     "last": "2026-11-09 02:53:49",
+     "files": [
+      "09_02:52:05_sdfmilan048:control.log",
+      "09_02:52:05_sdfmilan048:epixquad_0.log",
+      "09_02:52:05_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixquad_0",
+    "aliases": [
+     "epixquad_0",
+     "drp/epixquad_0",
+     "epixquad DRP",
+     "epixquad_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixquad_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register Top.AcqCore.AsicAcqWidth",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register AsicAcqWidth (Top.AcqCore.AsicAcqWidth) failed: its readback did not match what was written.",
+     "A write to the named register AsicAcqWidth failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register AsicAcqWidth than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epixquad_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epixquad_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_02:52:05",
+   "catalog_summary": "epixquad_0 aborted during configure: a register failed its write-verify (readback did not match) (register Top.AcqCore.AsicAcqWidth)"
+  },
+  "reg-cfg-piranha4": {
+   "id": "reg-cfg-piranha4",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-piranha4",
+   "question": "The DAQ was used on 2026-11-09 between 02:47 and 02:50. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_02:47:28",
+     "start": "2026-11-09 02:47:28",
+     "first": "2026-11-09 02:47:31",
+     "last": "2026-11-09 02:49:11",
+     "files": [
+      "09_02:47:28_sdfmilan048:control.log",
+      "09_02:47:28_sdfmilan048:piranha4_0.log",
+      "09_02:47:28_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "piranha4_0",
+    "aliases": [
+     "piranha4_0",
+     "drp/piranha4_0",
+     "piranha4 DRP",
+     "piranha4_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "piranha4_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Partition (ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition) failed: its readback did not match what was written.",
+     "A write to the named register Partition failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Partition than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "piranha4_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "piranha4_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_02:47:28",
+   "catalog_summary": "piranha4_0 aborted during configure: a register failed its write-verify (readback did not match) (register ClinkDevRoot.ClinkPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].Partition)"
+  },
+  "reg-cfg-tb": {
+   "id": "reg-cfg-tb",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-tb",
+   "question": "The DAQ was used on 2026-11-09 between 02:49 and 02:52. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_02:49:47",
+     "start": "2026-11-09 02:49:47",
+     "first": "2026-11-09 02:49:50",
+     "last": "2026-11-09 02:51:28",
+     "files": [
+      "09_02:49:47_sdfmilan048:control.log",
+      "09_02:49:47_sdfmilan048:tb_0.log",
+      "09_02:49:47_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tb_0",
+    "aliases": [
+     "tb_0",
+     "drp/tb_0",
+     "tb DRP",
+     "tb_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tb_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].Partition",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Partition (DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].Partition) failed: its readback did not match what was written.",
+     "A write to the named register Partition failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Partition than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tb_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tb_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_02:49:47",
+   "catalog_summary": "tb_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[3].Partition)"
+  },
+  "reg-cfg-hrencoder": {
+   "id": "reg-cfg-hrencoder",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-hrencoder",
+   "question": "The DAQ was used on 2026-11-08 between 21:37 and 21:40. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_21:37:37",
+     "start": "2026-11-08 21:37:37",
+     "first": "2026-11-08 21:37:39",
+     "last": "2026-11-08 21:39:18",
+     "files": [
+      "08_21:37:37_sdfmilan048:control.log",
+      "08_21:37:37_sdfmilan048:hrencoder_0.log",
+      "08_21:37:37_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "hrencoder_0",
+    "aliases": [
+     "hrencoder_0",
+     "drp/hrencoder_0",
+     "hrencoder DRP",
+     "hrencoder_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "hrencoder_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register Root.App.EventBuilder.Bypass",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Bypass (Root.App.EventBuilder.Bypass) failed: its readback did not match what was written.",
+     "A write to the named register Bypass failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Bypass than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "hrencoder_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "hrencoder_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "08_21:37:37",
+   "catalog_summary": "hrencoder_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.App.EventBuilder.Bypass)"
+  },
+  "reg-cfg-epixUHR": {
+   "id": "reg-cfg-epixUHR",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epixUHR",
+   "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:23. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:21:10",
+     "start": "2026-11-09 12:21:10",
+     "first": "2026-11-09 12:21:13",
+     "last": "2026-11-09 12:22:55",
+     "files": [
+      "09_12:21:10_sdfada013:control.log",
+      "09_12:21:10_sdfada013:epixUHR_0.log",
+      "09_12:21:10_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixUHR_0",
+    "aliases": [
+     "epixUHR_0",
+     "drp/epixUHR_0",
+     "epixUHR DRP",
+     "epixUHR_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixUHR_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epixUHR_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epixUHR_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:21:10",
+   "catalog_summary": "epixUHR_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay)"
+  },
+  "reg-cfg-epixuhr3x2": {
+   "id": "reg-cfg-epixuhr3x2",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epixuhr3x2",
+   "question": "The DAQ was used on 2026-11-09 between 14:29 and 14:33. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_14:29:32",
+     "start": "2026-11-09 14:29:32",
+     "first": "2026-11-09 14:29:34",
+     "last": "2026-11-09 14:32:05",
+     "files": [
+      "09_14:29:32_sdfada013:control.log",
+      "09_14:29:32_sdfada013:epixuhr3x2_0.log",
+      "09_14:29:32_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixuhr3x2_0",
+    "aliases": [
+     "epixuhr3x2_0",
+     "drp/epixuhr3x2_0",
+     "epixuhr3x2 DRP",
+     "epixuhr3x2_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixuhr3x2_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epixuhr3x2_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epixuhr3x2_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_14:29:32",
+   "catalog_summary": "epixuhr3x2_0 aborted during configure: a register failed its write-verify (readback did not match) (register Root.ROS[0].FebFpga.App.TimingRx.TriggerEventManager.TriggerEventBuffer[1].TriggerDelay)"
+  },
+  "reg-cfg-epixquad1kfps": {
+   "id": "reg-cfg-epixquad1kfps",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-cfg-epixquad1kfps",
+   "question": "The DAQ was used on 2026-11-09 between 12:16 and 12:19. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:16:40",
+     "start": "2026-11-09 12:16:40",
+     "first": "2026-11-09 12:16:43",
+     "last": "2026-11-09 12:18:25",
+     "files": [
+      "09_12:16:40_sdfada013:control.log",
+      "09_12:16:40_sdfada013:epixquad1kfps_0.log",
+      "09_12:16:40_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixquad1kfps_0",
+    "aliases": [
+     "epixquad1kfps_0",
+     "drp/epixquad1kfps_0",
+     "epixquad1kfps DRP",
+     "epixquad1kfps_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixquad1kfps_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "epixquad1kfps_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "epixquad1kfps_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:16:40",
+   "catalog_summary": "epixquad1kfps_0 aborted during configure: a register failed its write-verify (readback did not match) (register DevRoot.DevPcie.Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay)"
+  },
+  "reg-connect-fakecam": {
+   "id": "reg-connect-fakecam",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-connect-fakecam",
+   "question": "The DAQ was used on 2026-11-09 between 08:16 and 08:18. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_08:16:32",
+     "start": "2026-11-09 08:16:32",
+     "first": "2026-11-09 08:16:35",
+     "last": "2026-11-09 08:17:34",
+     "files": [
+      "09_08:16:32_sdfada013:control.log",
+      "09_08:16:32_sdfada013:fakecam_0.log",
+      "09_08:16:32_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "connect",
+    "aliases": [
+     "connect",
+     "connecting",
+     "connect transition",
+     "allocated to connected",
+     "allocated->connected"
+    ]
+   },
+   "mechanism": {
+    "summary": "fakecam_0 aborted during connect: a register write failed its verify (the value read back did not match the value written), register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Length_0 (DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0) failed: its readback did not match what was written.",
+     "A write to the named register Length_0 failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Length_0 than was written (Got ..., Exp ...), so the connect step failed."
+    ],
+    "near_miss": [
+     "fakecam_0 did not respond to connect / control timed out waiting for it, with no register or readback failure named.",
+     "fakecam_0 raised a python error, crashed or aborted (signal 6) during connect, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_08:16:32",
+   "catalog_summary": "fakecam_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+  },
+  "reg-connect-epixuhremu": {
+   "id": "reg-connect-epixuhremu",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-connect-epixuhremu",
+   "question": "On 2026-11-09 around 08:15 the DAQ would not connect. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_08:14:33",
+     "start": "2026-11-09 08:14:33",
+     "first": "2026-11-09 08:14:35",
+     "last": "2026-11-09 08:15:45",
+     "files": [
+      "09_08:14:33_sdfada013:control.log",
+      "09_08:14:33_sdfada013:epixuhremu_0.log",
+      "09_08:14:33_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixuhremu_0",
+    "aliases": [
+     "epixuhremu_0",
+     "drp/epixuhremu_0",
+     "epixuhremu DRP",
+     "epixuhremu_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "connect",
+    "aliases": [
+     "connect",
+     "connecting",
+     "connect transition",
+     "allocated to connected",
+     "allocated->connected"
+    ]
+   },
+   "mechanism": {
+    "summary": "epixuhremu_0 aborted during connect: a register write failed its verify (the value read back did not match the value written), register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Length_0 (DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0) failed: its readback did not match what was written.",
+     "A write to the named register Length_0 failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Length_0 than was written (Got ..., Exp ...), so the connect step failed."
+    ],
+    "near_miss": [
+     "epixuhremu_0 did not respond to connect / control timed out waiting for it, with no register or readback failure named.",
+     "epixuhremu_0 raised a python error, crashed or aborted (signal 6) during connect, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_08:14:33",
+   "catalog_summary": "epixuhremu_0 aborted during connect: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Length_0)"
+  },
+  "reg-alloc-fakecam": {
+   "id": "reg-alloc-fakecam",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "reg-alloc-fakecam",
+   "question": "The DAQ was used on 2026-11-09 between 10:21 and 10:23. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_10:21:31",
+     "start": "2026-11-09 10:21:31",
+     "first": "2026-11-09 10:21:33",
+     "last": "2026-11-09 10:22:03",
+     "files": [
+      "09_10:21:31_sdfada013:control.log",
+      "09_10:21:31_sdfada013:fakecam_0.log",
+      "09_10:21:31_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "alloc",
+    "aliases": [
+     "alloc",
+     "allocate",
+     "allocation",
+     "allocating",
+     "alloc transition"
+    ]
+   },
+   "mechanism": {
+    "summary": "fakecam_0 aborted during alloc: a register write failed its verify (the value read back did not match the value written), register DrpTDet.PcieControl.DevPcie.TDetSemi.Enable_0",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register Enable_0 (its block, as rogue reports it: TDetSemi.Length_0) (DrpTDet.PcieControl.DevPcie.TDetSemi.Enable_0) failed: its readback did not match what was written.",
+     "A write to the named register Enable_0 (its block, as rogue reports it: TDetSemi.Length_0) failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register Enable_0 (its block, as rogue reports it: TDetSemi.Length_0) than was written (Got ..., Exp ...), so the alloc step failed."
+    ],
+    "near_miss": [
+     "fakecam_0 did not respond to alloc / control timed out waiting for it, with no register or readback failure named.",
+     "fakecam_0 raised a python error, crashed or aborted (signal 6) during alloc, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_10:21:31",
+   "catalog_summary": "fakecam_0 aborted during alloc: a register failed its write-verify (readback did not match) (register DrpTDet.PcieControl.DevPcie.TDetSemi.Enable_0)"
+  },
+  "kill-drp": {
+   "id": "kill-drp",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "kill-drp",
+   "question": "The DAQ was used on 2026-11-08 between 04:36 and 04:39. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_04:36:38",
+     "start": "2026-11-08 04:36:38",
+     "first": "2026-11-08 04:36:41",
+     "last": "2026-11-08 04:38:42",
+     "files": [
+      "08_04:36:38_sdfmilan119:control.log",
+      "08_04:36:38_sdfmilan119:fakecam_0.log",
+      "08_04:36:38_sdfmilan119:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "the DRP",
+     "detector DRP",
+     "DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state",
+     "disable"
+    ],
+    "judgment": "The first failure is in the running state; \"disable\" is also accepted because the catalog key lists it and the failure is noticed there."
+   },
+   "mechanism": {
+    "summary": "fakecam_0 was killed by signal 9 (SIGKILL, from outside) while the DAQ was running, with no error of its own",
+    "accepted": [
+     "fakecam_0 was killed by signal 9 (SIGKILL) while the DAQ was running.",
+     "fakecam_0 died abruptly while the DAQ was running (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone."
+    ],
+    "near_miss": [
+     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "fakecam_0 crashed (segfault or abort, its own error) while the DAQ was running.",
+     "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "08_04:36:38",
+   "catalog_summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+  },
+  "kill-drp-q": {
+   "id": "kill-drp-q",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "kill-drp-q",
+   "question": "On 2026-11-08 around 05:15 the DAQ would not leave running (Disable failed). Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_05:13:47",
+     "start": "2026-11-08 05:13:47",
+     "first": "2026-11-08 05:13:50",
+     "last": "2026-11-08 05:15:51",
+     "files": [
+      "08_05:13:47_sdfmilan119:control.log",
+      "08_05:13:47_sdfmilan119:fakecam_0.log",
+      "08_05:13:47_sdfmilan119:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "the DRP",
+     "detector DRP",
+     "DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state",
+     "disable"
+    ],
+    "judgment": "The first failure is in the running state; \"disable\" is also accepted because the catalog key lists it and the failure is noticed there."
+   },
+   "mechanism": {
+    "summary": "fakecam_0 was killed by signal 9 (SIGKILL, from outside) while the DAQ was running, with no error of its own",
+    "accepted": [
+     "fakecam_0 was killed by signal 9 (SIGKILL) while the DAQ was running.",
+     "fakecam_0 died abruptly while the DAQ was running (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone."
+    ],
+    "near_miss": [
+     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "fakecam_0 crashed (segfault or abort, its own error) while the DAQ was running.",
+     "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "08_05:13:47",
+   "catalog_summary": "fakecam_0 DRP was killed by signal 9 (from outside) while running; Disable then failed because it was gone"
+  },
+  "startup-crash-tt": {
+   "id": "startup-crash-tt",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "startup-crash-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:15 and 12:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:15:15",
+     "start": "2026-11-09 12:15:15",
+     "first": "2026-11-09 12:15:18",
+     "last": "2026-11-09 12:15:53",
+     "files": [
+      "09_12:15:15_sdfmilan082:control.log",
+      "09_12:15:15_sdfmilan082:teb0.log",
+      "09_12:15:15_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "startup",
+    "aliases": [
+     "alloc",
+     "allocate",
+     "allocation",
+     "start",
+     "startup",
+     "start-up",
+     "start up",
+     "launch",
+     "init",
+     "initialisation",
+     "initialization",
+     "tt_init",
+     "rollcall",
+     "roll call",
+     "before rollcall",
+     "process start"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+    "accepted": [
+     "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+     "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+     "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+     "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:15:15",
+   "catalog_summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+  },
+  "startup-crash-tt-q": {
+   "id": "startup-crash-tt-q",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "startup-crash-tt-q",
+   "question": "On 2026-11-09 around 12:25 the DAQ would not allocate; control said 'at least one DRP is required'. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:24:58",
+     "start": "2026-11-09 12:24:58",
+     "first": "2026-11-09 12:25:01",
+     "last": "2026-11-09 12:25:35",
+     "files": [
+      "09_12:24:58_sdfmilan082:control.log",
+      "09_12:24:58_sdfmilan082:teb0.log",
+      "09_12:24:58_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "startup",
+    "aliases": [
+     "alloc",
+     "allocate",
+     "allocation",
+     "start",
+     "startup",
+     "start-up",
+     "start up",
+     "launch",
+     "init",
+     "initialisation",
+     "initialization",
+     "tt_init",
+     "rollcall",
+     "roll call",
+     "before rollcall",
+     "process start"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+    "accepted": [
+     "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+     "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+     "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+     "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:24:58",
+   "catalog_summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+  },
+  "cfg-badname-tt": {
+   "id": "cfg-badname-tt",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "cfg-badname-tt",
+   "question": "The DAQ was used on 2026-11-09 between 11:58 and 12:01. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_11:58:38",
+     "start": "2026-11-09 11:58:38",
+     "first": "2026-11-09 11:58:40",
+     "last": "2026-11-09 12:00:19",
+     "files": [
+      "09_11:58:38_sdfmilan082:control.log",
+      "09_11:58:38_sdfmilan082:teb0.log",
+      "09_11:58:38_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure with '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.': its configuration carries bracketed field names (ROI[0], ROI[1], SAD[2]) that are not legal XTC names",
+    "accepted": [
+     "tt_0 aborted in configure on '*** Error: illegal XtcData::Name: ...UartPiranha4.ROI[0]'.",
+     "A configuration field name with brackets (ROI[0], ROI[1], SAD[2]) is not a legal XTC name, so writing the configuration into the data stream aborted the DRP (signal 6)."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out after 60 s, with no illegal-name error named.",
+     "tt_0 crashed or aborted (signal 6) during configure, with no illegal XtcData::Name named.",
+     "The Piranha4 camera rejected the ROI setting, or its serial (UART) setup failed.",
+     "tt_0 hung while configuring the camera ROI."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_11:58:38",
+   "catalog_summary": "tt_0 (timetool DRP) aborted (SIGABRT, signal 6) during configure with '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' - its configuration carries bracketed field names (ROI[1], SAD[2]; healthy sessions show ROI1, SAD2) that are not legal XTC names. Consequences: teb0 lost its DRP link and aborted (signal 6), control timed out 60 s waiting for tt_0 on configure, and the following disconnect timed out for both dead processes."
+  },
+  "cfg-value-wave8": {
+   "id": "cfg-value-wave8",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "cfg-value-wave8",
+   "question": "The DAQ was used on 2026-11-08 between 18:19 and 18:21. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_18:18:57",
+     "start": "2026-11-08 18:18:57",
+     "first": "2026-11-08 18:19:00",
+     "last": "2026-11-08 18:20:39",
+     "files": [
+      "08_18:18:57_sdfmilan048:control.log",
+      "08_18:18:57_sdfmilan048:teb0.log",
+      "08_18:18:57_sdfmilan048:wave8_0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "wave8_0",
+    "aliases": [
+     "wave8_0",
+     "wave8",
+     "drp wave8",
+     "drp/wave8_0",
+     "wave8 DRP",
+     "wave8_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "wave8_0 failed in configure: wave8_config -> configure_trigger_delay raised ValueError('TriggerDelay(ns) too small') because the IOC-managed controls trigger delay could not be read (the simulated IOC serves no ...EvrV2TriggerReg[0]:Delay PV, reads None / 0); the DRP aborted (python error, signal 6)",
+    "accepted": [
+     "wave8_0's configure raised ValueError('TriggerDelay(ns) too small') in configure_trigger_delay.",
+     "The controls trigger delay could not be read from the IOC (its PV is not served / reads None or 0), so the computed trigger delay was too small and configure raised an error.",
+     "The trigger delay configuration was invalid (too small / zero) and the wave8 configure code rejected it."
+    ],
+    "near_miss": [
+     "wave8_0 did not respond to configure / control timed out, with no trigger-delay error named.",
+     "wave8_0 raised a python error or aborted (signal 6) during configure, with no trigger-delay error named.",
+     "A register write-verify (readback) failure on a TriggerDelay register."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "08_18:18:57",
+   "catalog_summary": "wave8_0 failed in configure: wave8_config -> configure_trigger_delay raised ValueError('TriggerDelay(ns) too small') (IOC-managed trigger delay reads as 0 / not above the partition delay), the DRP logged '<C> **** python error' and aborted (signal 6). Consequences: teb0 lost its DRP link and aborted (signal 6), control timed out on configure ('wave8_0 did not respond to configure'), then disconnect timed out for both dead processes. (register PV)"
+  },
+  "jf-readback": {
+   "id": "jf-readback",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "jf-readback",
+   "question": "On 2026-11-09 around 09:03 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_09:03:02",
+     "start": "2026-11-09 09:03:02",
+     "first": "2026-11-09 09:03:04",
+     "last": "2026-11-09 09:03:44",
+     "files": [
+      "09_09:03:02_sdfada013:control.log",
+      "09_09:03:02_sdfada013:jungfrau_0.log",
+      "09_09:03:02_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "jungfrau_0",
+    "aliases": [
+     "jungfrau_0",
+     "jungfrau",
+     "jf",
+     "drp jungfrau",
+     "Jungfrau module",
+     "drp/jungfrau_0",
+     "jungfrau DRP",
+     "jungfrau_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "jungfrau_0 failed configure phase 1: the exposure-time readback check failed ('Failed readback check of exposure time for module 0: 0.000020 [0.000010]': 20 us read back where 10 us was set), so 'Failed to configure 1 of 1 Jungfrau modules'",
+    "accepted": [
+     "jungfrau_0's readback check of the module's exposure time failed (set 10 us, read back 20 us: 'Failed readback check of exposure time for module 0').",
+     "The Jungfrau module did not take the requested exposure time (its readback differed), so configuring the module failed."
+    ],
+    "near_miss": [
+     "jungfrau_0 reported 'Phase 1 error in Detector::configure()' or 'Failed to configure 1 of 1 Jungfrau modules', with no readback or exposure-time failure named.",
+     "teb0 lost connection with a DRP / did not respond to disconnect, given as the cause.",
+     "The double free at shutdown, or the unpinned-workers / SMT warning, given as the cause."
+    ]
+   },
+   "side_issues_known": [
+    "double free",
+    "free(): double free detected in tcache 2",
+    "jungfrau_0 killed by signal 6 at shutdown",
+    "SMT is on",
+    "workers are left unpinned"
+   ],
+   "fault_launch": "09_09:03:02",
+   "catalog_summary": "jungfrau_0 failed configure phase 1: after 'Setting module 0 exposure time to 0.000010 s' the readback check failed ('Failed readback check of exposure time for module 0: 0.000020 [0.000010]' - module returned 20 us instead of the requested 10 us), so 'Failed to configure 1 of 1 Jungfrau modules' and 'Phase 1 error in Detector::configure()'. Control reported the configure failure immediately; on the following disconnect teb0 crashed ('TEB thread lost connection with a DRP', signal 6) and control logged 'teb0 did not respond to disconnect'."
+  },
+  "pv-missing-pvcam": {
+   "id": "pv-missing-pvcam",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "pv-missing-pvcam",
+   "question": "The DAQ was used on 2026-11-09 between 18:22 and 18:24. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_18:22:24",
+     "start": "2026-11-09 18:22:24",
+     "first": "2026-11-09 18:22:26",
+     "last": "2026-11-09 18:23:09",
+     "files": [
+      "09_18:22:24_sdfada011:control.log",
+      "09_18:22:24_sdfada011:fakecam_0.log",
+      "09_18:22:24_sdfada011:pvcam_0.log",
+      "09_18:22:24_sdfada011:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its EPICS PV DAQ:SIM:CAM:IMAGE never connected ('PV DAQ:SIM:CAM:IMAGE hasn't connected', 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE')",
+    "accepted": [
+     "pvcam_0's source PV DAQ:SIM:CAM:IMAGE never connected (\"hasn't connected\" / \"Failed to get parameters for PV DAQ:SIM:CAM:IMAGE\"), so configure phase 1 failed.",
+     "The EPICS/PVA PV that the PVA detector reads (DAQ:SIM:CAM:IMAGE) was not served or not reachable, so the detector could not get its parameters and failed configure."
+    ],
+    "near_miss": [
+     "pvcam_0 reported 'Phase 1 error in Detector::configure()', with no PV named.",
+     "The ConfigDB lookup failed ('get_configuration: No device pvcam_0' / 'Internal error fetching detector configuration'), so configure failed.",
+     "teb0/meb0 lost connection with a DRP, or encoder_0 crashed with terminate(), and that made configure fail."
+    ]
+   },
+   "side_issues_known": [
+    "double free",
+    "free(): double free detected in tcache 2",
+    "get_configuration: No device pvcam_0",
+    "Internal error fetching detector configuration",
+    "No integer sim_seed in configdb BEAM/pvcam_0"
+   ],
+   "fault_launch": "09_18:22:24",
+   "catalog_summary": "pvcam_0 (drp_pva) failed configure phase 1 because its EPICS PV DAQ:SIM:CAM:IMAGE never connected: control got the warning \"pvcam_0: PV DAQ:SIM:CAM:IMAGE hasn't connected\" ~3 s after configure, and pvcam_0 logged 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE' then 'Phase 1 error in Detector::configure()'. fakecam_0 and teb0 configured fine. Consequence: on the following disconnect teb0 crashed ('TEB thread lost connection with a DRP', signal 6) and control logged 'teb0 did not respond to disconnect'; the operator then reset."
+  },
+  "ctl-blames-meb": {
+   "id": "ctl-blames-meb",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "ctl-blames-meb",
+   "question": "On 2026-11-09 around 09:11 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_09:10:21",
+     "start": "2026-11-09 09:10:21",
+     "first": "2026-11-09 09:10:24",
+     "last": "2026-11-09 09:11:13",
+     "files": [
+      "09_09:10:21_sdfmilan048:control.log",
+      "09_09:10:21_sdfmilan048:fakecam_0.log",
+      "09_09:10:21_sdfmilan048:meb0.log",
+      "09_09:10:21_sdfmilan048:shmc0.log",
+      "09_09:10:21_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "the DRP",
+     "detector DRP",
+     "DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "meb0",
+     "teb0",
+     "control",
+     "MEB",
+     "TEB"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "fakecam_0 was killed by signal 9 (SIGKILL, from outside) during the second configure, with no error of its own",
+    "accepted": [
+     "fakecam_0 was killed by signal 9 (SIGKILL) during the second configure.",
+     "fakecam_0 died abruptly during the second configure (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone.",
+     "fakecam_0 went silent (stalled) on the second configure: it never logged receipt of configure, and was then killed (signal 9); teb0 and meb0 failed only because their link to DRP ID 0 was gone.",
+     "The DRP fakecam_0 stopped responding / was killed during configure, so the event builders could not synchronise with DRP ID 0 ('Link ID 0 is disconnected'); control names meb0 only because its reply came first."
+    ],
+    "near_miss": [
+     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "fakecam_0 crashed (segfault or abort, its own error) during the second configure.",
+     "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped.",
+     "meb0 (or teb0) failed to configure ('Failed synchronize Begin with DRP: rc -107', 'Link ID 0 is disconnected'), given as the cause, with nothing said about the DRP dying or stalling.",
+     "The DRP link (Link ID 0) was disconnected, with no cause on the DRP side named."
+    ]
+   },
+   "judgment": "Accepts either the SIGKILL or the stall before it (the key says both: silent, then killed).",
+   "side_issues_known": [],
+   "fault_launch": "09_09:10:21",
+   "catalog_summary": "On the second configure of the session (09:10:47) the DRP fakecam_0 went silent: it never logged receipt of configure, and was killed by signal 9 at 09:11:07. teb0 and meb0, both blocked synchronising their links with DRP ID 0, then failed ('Link ID 0 is disconnected', 'Failed synchronize Begin with DRP: rc -107') and reported 'Phase 1 error: Failed to configure'; control names meb0 only because its reply arrived first."
+  },
+  "drp-gone-cfg": {
+   "id": "drp-gone-cfg",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "drp-gone-cfg",
+   "question": "The DAQ was used on 2026-11-09 between 09:14 and 09:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_09:14:23",
+     "start": "2026-11-09 09:14:23",
+     "first": "2026-11-09 09:14:26",
+     "last": "2026-11-09 09:15:50",
+     "files": [
+      "09_09:14:23_sdfmilan048:control.log",
+      "09_09:14:23_sdfmilan048:fakecam_0.log",
+      "09_09:14:23_sdfmilan048:meb0.log",
+      "09_09:14:23_sdfmilan048:shmc0.log",
+      "09_09:14:23_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "the DRP",
+     "detector DRP",
+     "DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "fakecam_0 was killed by signal 9 (SIGKILL, from outside) part-way through configure (second cycle), with no error of its own",
+    "accepted": [
+     "fakecam_0 was killed by signal 9 (SIGKILL) part-way through configure (second cycle).",
+     "fakecam_0 died abruptly part-way through configure (second cycle) (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone."
+    ],
+    "near_miss": [
+     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "fakecam_0 crashed (segfault or abort, its own error) part-way through configure (second cycle).",
+     "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_09:14:23",
+   "catalog_summary": "In the second cycle the DRP fakecam_0 was killed by signal 9 at 09:14:52, part-way through configure (last line 'AreaDetector configure', no error of its own). teb0 then lost its DRP link and aborted (uncaught exception, signal 6); meb0 noted the disconnect; control timed out after 60 s with 'fakecam_0 did not respond to configure'."
+  },
+  "drp-killed-idle": {
+   "id": "drp-killed-idle",
+   "set": "full",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "drp-killed-idle",
+   "question": "The DAQ was used on 2026-11-09 between 11:11 and 11:13. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_11:11:53",
+     "start": "2026-11-09 11:11:53",
+     "first": "2026-11-09 11:11:55",
+     "last": "2026-11-09 11:12:56",
+     "files": [
+      "09_11:11:53_sdfmilan023:control.log",
+      "09_11:11:53_sdfmilan023:fakecam_0.log",
+      "09_11:11:53_sdfmilan023:meb0.log",
+      "09_11:11:53_sdfmilan023:shmc0.log",
+      "09_11:11:53_sdfmilan023:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "the DRP",
+     "detector DRP",
+     "DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "idle-after-unconfigure",
+    "aliases": [
+     "connected",
+     "connected state",
+     "unconfigure",
+     "after unconfigure",
+     "idle",
+     "disconnect",
+     "between cycles",
+     "between runs",
+     "unconfigured"
+    ],
+    "judgment": "Killed after unconfigure completed, before disconnect; the failure surfaces at disconnect, so disconnect is accepted."
+   },
+   "mechanism": {
+    "summary": "fakecam_0 was killed by signal 9 (SIGKILL, from outside) after configure and unconfigure had completed (state connected), with no error of its own",
+    "accepted": [
+     "fakecam_0 was killed by signal 9 (SIGKILL) after configure and unconfigure had completed (state connected).",
+     "fakecam_0 died abruptly after configure and unconfigure had completed (state connected) (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone."
+    ],
+    "near_miss": [
+     "fakecam_0 and/or other processes did not respond to a transition (a timeout), with no death of fakecam_0 named.",
+     "fakecam_0 crashed (segfault or abort, its own error) after configure and unconfigure had completed (state connected).",
+     "teb0 (or another process) lost its connection to fakecam_0 and aborted, with nothing said about why the link dropped."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_11:11:53",
+   "catalog_summary": "In the second cycle, after configure and unconfigure had completed (state connected, 11:12:17.97), the DRP fakecam_0 was killed by signal 9 at 11:12:18 with no error of its own. teb0 saw its DRP link drop and aborted (uncaught exception 'lost connection with a DRP', signal 6); meb0 handled the drop. The later disconnect (11:12:23) timed out after 30 s for the two dead processes: 'teb0 did not respond to disconnect', 'fakecam_0 did not respond to disconnect'."
+  },
+  "control-keyerror": {
+   "id": "control-keyerror",
+   "set": "full",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "control-keyerror",
+   "question": "The DAQ was used on 2026-11-08 between 02:12 and 02:16. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_02:12:02",
+     "start": "2026-11-08 02:12:02",
+     "first": "2026-11-08 02:12:04",
+     "last": "2026-11-08 02:15:19",
+     "files": [
+      "08_02:12:02_sdfmilan119:control.log",
+      "08_02:12:02_sdfmilan119:fakecam_0.log",
+      "08_02:12:02_sdfmilan119:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "control",
+    "aliases": [
+     "control",
+     "control.log",
+     "run control",
+     "collection manager",
+     "controller",
+     "DAQ control"
+    ],
+    "not": [
+     "fakecam_0",
+     "teb0"
+    ]
+   },
+   "stage": {
+    "name": "beginrun",
+    "aliases": [
+     "beginrun",
+     "begin run",
+     "begin-run",
+     "BeginRun",
+     "start of the run",
+     "start of run",
+     "run start"
+    ]
+   },
+   "mechanism": {
+    "summary": "Non-fatal control error at beginrun: control logged \"KeyError: 'monitor'\" while building run parameters (the per-process 'monitor' key is missing because this session never issued selectplatform before alloc), so only 1 run parameter was recorded and monitor_info was empty; the run itself was not affected",
+    "accepted": [
+     "control hit KeyError: 'monitor' at beginrun while building the run parameters.",
+     "Control's collection state lacked the per-process 'monitor' key (no selectplatform before alloc), so beginrun recorded only 1 run parameter and sent an empty monitor_info."
+    ],
+    "near_miss": [
+     "fakecam_0's output directory stat error (No such file or directory), given as the cause.",
+     "'ami NOT supported in absence of MEB', given as the cause.",
+     "A control error at beginrun, with no KeyError or missing monitor key named."
+    ]
+   },
+   "side_issue_ok": true,
+   "judgment": "The key itself says the run was not affected, so the keyed error may be reported as a non-fatal problem: a report that concludes \"no failure\" but names it passes.",
+   "side_issues_known": [
+    "stat(...) error: No such file or directory",
+    "Output dir stat error",
+    "output directory missing at startup",
+    "ami NOT supported in absence of MEB"
+   ],
+   "fault_launch": "08_02:12:02",
+   "catalog_summary": "Non-fatal control-level error at beginrun: control logged \"error: 'monitor'\" and \"<E> KeyError: 'monitor'\" while building run parameters, because the per-process 'monitor' key is absent from its collection state (this session never issued selectplatform before alloc, unlike every other session). Consequence: only 1 run parameter ('partition') was recorded in the logbook instead of the usual 2 (the 'DAQ Detectors/drp/fakecam' entry is missing) and beginrun's monitor_info was sent empty ({}). The run itself was not affected: configure, beginrun, enable, ~5 s running, endrun and return to reset all completed with fakecam_0 and teb0 acknowledging every transition."
+  },
+  "gpu-hang-cfg": {
+   "id": "gpu-hang-cfg",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "gpu-hang-cfg",
+   "question": "On 2026-11-09 around 21:14 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_21:12:48",
+     "start": "2026-11-09 21:12:48",
+     "first": "2026-11-09 21:12:50",
+     "last": "2026-11-09 21:14:51",
+     "files": [
+      "09_21:12:48_sdfada013:control.log",
+      "09_21:12:48_sdfada013:jungfrau_0.log",
+      "09_21:12:48_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "jungfrau_0",
+    "aliases": [
+     "jungfrau_0",
+     "jungfrau",
+     "drp_gpu",
+     "GPU DRP",
+     "jf",
+     "drp/jungfrau_0",
+     "jungfrau DRP",
+     "jungfrau_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "jungfrau_0 received configure, after starting its Collector and TrgInpGen receiver threads, then went silent with no error of its own and never replied; control timed out after 60 s",
+    "accepted": [
+     "jungfrau_0 hung in configure: it went silent (after starting its Collector and TrgInpGen receiver threads) with no error of its own and never replied, so control timed out after 60 s.",
+     "jungfrau_0 stopped responding (stalled, froze, got stuck) during configure without logging an error or crashing.",
+     "jungfrau_0 stayed alive but never finished configure; its log just stops with no error."
+    ],
+    "near_miss": [
+     "Control reports that jungfrau_0 did not respond to configure (a 60 s timeout), and nothing is said about jungfrau_0 itself stalling or logging no error.",
+     "jungfrau_0 crashed, aborted or was killed during configure.",
+     "teb0's segmentation fault (Error reading Rx CQ, comp_error_dump), given as the cause.",
+     "jungfrau_0 lost connection with the TEB ('TEB Receiver thread lost connection with a TEB').",
+     "A GPU or CUDA error in jungfrau_0."
+    ],
+    "judgment": "For a hang the mechanism is the hang itself: \"stopped responding with no error of its own\" passes; control's timeout message alone is a near-miss."
+   },
+   "side_issues_known": [
+    "Segmentation Fault",
+    "segfault in teb0 at disconnect",
+    "comp_error_dump"
+   ],
+   "fault_launch": "09_21:12:48",
+   "catalog_summary": "The GPU DRP jungfrau_0 received configure at 21:13:20, got as far as starting its Collector and TrgInpGen receiver threads, then went silent and never replied; control timed out after 60 s ('jungfrau_0 did not respond to configure'). teb0 had answered configure in 3 ms. Control then issued disconnect, during which teb0 segfaulted (comp_error_dump while 'Error reading Rx CQ') and jungfrau_0 aborted on 'lost connection with a TEB' -- both after, and because of, the failed configure."
+  },
+  "teb-overflow": {
+   "id": "teb-overflow",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "teb-overflow",
+   "question": "The DAQ was used on 2026-11-09 between 21:36 and 21:38. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_21:36:16",
+     "start": "2026-11-09 21:36:16",
+     "first": "2026-11-09 21:36:18",
+     "last": "2026-11-09 21:37:32",
+     "files": [
+      "09_21:36:16_sdfmilan023:control.log",
+      "09_21:36:16_sdfmilan023:opal_0.log",
+      "09_21:36:16_sdfmilan023:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "opal_0",
+    "aliases": [
+     "opal_0",
+     "opal",
+     "drp/opal_0",
+     "the DRP",
+     "TebContributor",
+     "opal DRP",
+     "opal_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state"
+    ]
+   },
+   "mechanism": {
+    "summary": "Immediately after Enable the DRP opal_0 hit '<C> TebContributor::_post: _pending queue overflow' and aborted (signal 6); teb0 then lost its DRP link and aborted; disable later timed out",
+    "accepted": [
+     "Right after enable opal_0 hit 'TebContributor::_post: _pending queue overflow' and aborted.",
+     "opal_0's queue of batches pending for the TEB (TebContributor _pending queue) overflowed at the start of the run, which killed the DRP."
+    ],
+    "near_miss": [
+     "opal_0 and teb0 did not respond to disable, with no queue overflow named.",
+     "teb0 lost connection with a DRP and aborted, given as the cause.",
+     "opal_0 crashed or aborted after enable, with no queue overflow named."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_21:36:16",
+   "catalog_summary": "Immediately after Enable (21:36:31) the DRP opal_0 hit '<C> TebContributor::_post: _pending queue overflow' and aborted (signal 6). teb0 then lost its DRP link and aborted too (uncaught exception, 21:36:32). Control noticed nothing for 33 s and stayed 'running' with no data; the disable at 21:37:04 then failed with 'teb0 did not respond to disable' and 'opal_0 did not respond to disable'."
+  },
+  "gpu-cuda": {
+   "id": "gpu-cuda",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "gpu-cuda",
+   "question": "The DAQ was used on 2026-11-09 between 07:43 and 07:46. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_07:43:54",
+     "start": "2026-11-09 07:43:54",
+     "first": "2026-11-09 07:43:56",
+     "last": "2026-11-09 07:45:05",
+     "files": [
+      "09_07:43:54_sdfada013:control.log",
+      "09_07:43:54_sdfada013:fakecam_0.log",
+      "09_07:43:54_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "fakecam_0",
+    "aliases": [
+     "fakecam_0",
+     "fakecam",
+     "drp_gpu",
+     "GPU DRP",
+     "drp/fakecam_0",
+     "fakecam DRP",
+     "fakecam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state",
+     "disable"
+    ],
+    "judgment": "The first failure is in the running state; \"disable\" is also accepted because the catalog key lists it and the failure is noticed there."
+   },
+   "mechanism": {
+    "summary": "Right after Enable the GPU DRP fakecam_0 logged 'cudaErrorIllegalAddress (700): an illegal memory access was encountered' (drpGpu/MemPool.cc) and processed nothing further; disable phase 2 never completed",
+    "accepted": [
+     "After enable the GPU DRP fakecam_0 hit CUDA errors ('cudaErrorIllegalAddress (700): an illegal memory access was encountered') and stopped processing.",
+     "An illegal memory access on the GPU (CUDA error 700 in drpGpu MemPool) broke the DRP pipeline, so the disable transition never got through."
+    ],
+    "near_miss": [
+     "fakecam_0 did not respond to disable phase 2, with no CUDA error named.",
+     "The 'double free or corruption' crash at shutdown, given as the cause.",
+     "The GPU DRP stalled or hung during the run, with no CUDA error named."
+    ]
+   },
+   "side_issues_known": [
+    "double free or corruption",
+    "double free",
+    "signal 6 at shutdown"
+   ],
+   "fault_launch": "09_07:43:54",
+   "catalog_summary": "Right after Enable (07:44:08) the GPU DRP fakecam_0 began logging 'cudaErrorIllegalAddress (700): an illegal memory access was encountered' from drpGpu/MemPool.cc:547-550 (about 250 lines) and processed nothing further. At disable (07:44:41) it acknowledged phase 1 but the Disable transition never came through its pipeline, so control reported 'fakecam_0 did not respond to disable phase 2' at 07:44:54."
+  },
+  "jf-missing-packets": {
+   "id": "jf-missing-packets",
+   "set": "full",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "jf-missing-packets",
+   "question": "The DAQ was used on 2026-11-09 between 16:27 and 16:28. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_16:27:01",
+     "start": "2026-11-09 16:27:01",
+     "first": "2026-11-09 16:27:04",
+     "last": "2026-11-09 16:27:45",
+     "files": [
+      "09_16:27:01_sdfmilan023:control.log",
+      "09_16:27:01_sdfmilan023:jungfrau_0.log",
+      "09_16:27:01_sdfmilan023:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "jungfrau_0",
+    "aliases": [
+     "jungfrau_0",
+     "jungfrau",
+     "jungfrau module",
+     "127.0.0.1:31054",
+     "Jungfrau detector",
+     "drp/jungfrau_0",
+     "jungfrau DRP",
+     "jungfrau_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state",
+     "disable"
+    ],
+    "judgment": "The first failure is in the running state; \"disable\" is also accepted because the catalog key lists it and the failure is noticed there."
+   },
+   "mechanism": {
+    "summary": "While running, the jungfrau module at 127.0.0.1:31054 stopped delivering its UDP data: from frame 1342 jungfrau_0 logged 'sent 0 of 128 packets', 'Missing data' and 'Out-of-Order data'; the Disable transition was queued behind those frames, so disable phase 2 timed out",
+    "accepted": [
+     "While running, the Jungfrau module stopped sending its UDP packets ('sent 0 of 128 packets', 'Missing data', 'Out-of-Order data' from frame 1342).",
+     "jungfrau_0 lost the detector data stream (missing/out-of-order packets from the module), and disable phase 2 was stuck behind those incomplete frames."
+    ],
+    "near_miss": [
+     "jungfrau_0 did not respond to disable phase 2, with no missing packets or data named.",
+     "The double free at shutdown, given as the cause.",
+     "jungfrau_0 hung or was slow at disable, with no missing data named."
+    ]
+   },
+   "side_issues_known": [
+    "double free",
+    "free(): double free detected in tcache 2",
+    "signal 6 at shutdown"
+   ],
+   "fault_launch": "09_16:27:01",
+   "catalog_summary": "While running, the jungfrau module at 127.0.0.1:31054 stopped delivering its UDP data: from frame 1342 on jungfrau_0 logged 'sent 0 of 128 packets of frame 0', 'Missing data' and 'Out-of-Order data' for 25 consecutive frames (1342-1366). The Disable transition (16:27:16) was queued behind those frames; phase 1 was acknowledged but phase 2 did not return within 13 s, so control reported 'jungfrau_0 did not respond to disable phase 2' at 16:27:29 (the reply finally arrived at 16:27:41)."
+  },
+  "ctl-blames-teb": {
+   "id": "ctl-blames-teb",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "ctl-blames-teb",
+   "question": "On 2026-11-09 around 07:28 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_07:27:42",
+     "start": "2026-11-09 07:27:42",
+     "first": "2026-11-09 07:27:45",
+     "last": "2026-11-09 07:28:33",
+     "files": [
+      "09_07:27:42_sdfada013:control.log",
+      "09_07:27:42_sdfada013:epixuhremu_0.log",
+      "09_07:27:42_sdfada013:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "epixuhremu_0",
+    "aliases": [
+     "epixuhremu_0",
+     "epixuhremu",
+     "drp_gpu",
+     "gpu drp",
+     "epixuhr",
+     "drp/epixuhremu_0",
+     "epixuhremu DRP",
+     "epixuhremu_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "control"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "The GPU DRP epixuhremu_0 aborted during configure: 'TebContributor::configure(): maxEntries (64) must divide evenly into numBuffers (16)' (started with dmaBufCount=16, fewer buffers than the 64-entry TEB batch); teb0's 'Failed to configure' is a consequence",
+    "accepted": [
+     "epixuhremu_0 aborted in configure on 'TebContributor::configure(): maxEntries (64) must divide evenly into numBuffers (16)'.",
+     "The DRP was started with too few DMA buffers (dmaBufCount=16) for the 64-entry TEB batch, so its TEB contributor refused to configure and the process aborted."
+    ],
+    "near_miss": [
+     "teb0 failed to configure ('Phase 1 error: Failed to configure', 'Failed synchronize Begin with DRP', 'Link ID 0 is disconnected'), given as the cause.",
+     "epixuhremu_0's timing link was still down after ConfigLclsTimingV2().",
+     "epixuhremu_0 crashed or aborted during configure, with no maxEntries/numBuffers mismatch named."
+    ]
+   },
+   "side_issues_known": [
+    "timing link is still down after ConfigLclsTimingV2()",
+    "could not read PHY status",
+    "GPU is on NUMA node 1, REMOTE from our CPUs",
+    "SMT is on",
+    "no runtime green contexts"
+   ],
+   "fault_launch": "09_07:27:42",
+   "catalog_summary": "The GPU DRP epixuhremu_0 (drp_gpu) aborted during configure: '<C> int Pds::Eb::TebContributor::configure(): maxEntries (64) must divide evenly into numBuffers (16)' followed by signal 6 - it was started with dmaBufCount=16, fewer buffers than the 64-entry TEB batch. teb0's configure error is a consequence: it found 'Link ID 0 is disconnected' / 'Failed synchronize Begin with DRP: rc -107' / 'Failed to prepare link with DRP ID 0' / 'Teb::configure() failed' and returned 'Phase 1 error: Failed to configure', which is the only error control shows for configure. The later 'epixuhremu_0 did not respond to disconnect' is because the DRP was already dead."
+  },
+  "hang-cfg-tt": {
+   "id": "hang-cfg-tt",
+   "set": "core",
+   "tier": 1,
+   "key_source": "observed",
+   "pool": "hang-cfg-tt",
+   "question": "On 2026-11-09 around 12:57 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:55:54",
+     "start": "2026-11-09 12:55:54",
+     "first": "2026-11-09 12:55:57",
+     "last": "2026-11-09 12:57:35",
+     "files": [
+      "09_12:55:54_sdfmilan082:control.log",
+      "09_12:55:54_sdfmilan082:teb0.log",
+      "09_12:55:54_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 received configure, while setting up its Piranha4 camera over the serial link, last line 'sleeping for ...UartPiranha4.ROI[0]', then went silent with no error of its own and never replied; control timed out after 60 s",
+    "accepted": [
+     "tt_0 hung in configure: it went silent (while setting up its Piranha4 camera over the serial link, last line 'sleeping for ...UartPiranha4.ROI[0]') with no error of its own and never replied, so control timed out after 60 s.",
+     "tt_0 stopped responding (stalled, froze, got stuck) during configure without logging an error or crashing.",
+     "tt_0 stayed alive but never finished configure; its log just stops with no error."
+    ],
+    "near_miss": [
+     "Control reports that tt_0 did not respond to configure (a 60 s timeout), and nothing is said about tt_0 itself stalling or logging no error.",
+     "tt_0 crashed, aborted or was killed during configure.",
+     "The illegal XtcData::Name on ROI[0] aborted tt_0.",
+     "teb0's segmentation fault on the recovery disconnect, given as the cause.",
+     "The double free in tt_0 at shutdown, given as the cause."
+    ],
+    "judgment": "For a hang the mechanism is the hang itself: \"stopped responding with no error of its own\" passes; control's timeout message alone is a near-miss."
+   },
+   "side_issues_known": [
+    "Segmentation Fault in teb0 on disconnect",
+    "double free at shutdown"
+   ],
+   "fault_launch": "09_12:55:54",
+   "catalog_summary": "tt_0 received configure, set its camera up over the serial link and then went silent at 'sleeping for ...UartPiranha4.ROI[0]' with no error of its own; it stayed alive but never replied, so control timed out after 60 s ('tt_0 did not respond to configure'). teb0's segmentation fault came later, on the recovery disconnect, and is not the cause."
+  },
+  "healthy-tt": {
+   "id": "healthy-tt",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "healthy-tt",
+   "question": "The DAQ was used on 2026-11-09 between 12:21 and 12:22. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_12:21:27",
+     "start": "2026-11-09 12:21:27",
+     "first": "2026-11-09 12:21:29",
+     "last": "2026-11-09 12:21:48",
+     "files": [
+      "09_12:21:27_sdfmilan082:control.log",
+      "09_12:21:27_sdfmilan082:teb0.log",
+      "09_12:21:27_sdfmilan082:tt_0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "double-free-exit",
+     "desc": "a DRP aborts at shutdown with 'free(): double free detected in tcache 2' (signal 6), after the run ended (upstream #134)",
+     "aliases": [
+      "double free",
+      "double-free",
+      "tcache",
+      "#134",
+      "issues/134",
+      "crash at shutdown",
+      "crashed at shutdown",
+      "crash at exit",
+      "signal 6 at shutdown",
+      "abort at shutdown"
+     ]
+    },
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    },
+    {
+     "id": "ami-no-meb",
+     "desc": "control '<W> ami NOT supported in absence of MEB'",
+     "aliases": [
+      "ami NOT supported",
+      "absence of MEB"
+     ]
+    },
+    {
+     "id": "applane-lookup",
+     "desc": "'Lookup failed for node [AppLane]' in tt_0's configuration",
+     "aliases": [
+      "AppLane",
+      "Lookup failed for node"
+     ]
+    }
+   ],
+   "catalog_summary": "NO FAULT"
+  },
+  "healthy-fakecam": {
+   "id": "healthy-fakecam",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "healthy-fakecam",
+   "question": "The DAQ was used on 2026-11-08 between 14:18 and 14:19. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "08_14:18:17",
+     "start": "2026-11-08 14:18:17",
+     "first": "2026-11-08 14:18:20",
+     "last": "2026-11-08 14:18:38",
+     "files": [
+      "08_14:18:17_sdfmilan048:control.log",
+      "08_14:18:17_sdfmilan048:fakecam_0.log",
+      "08_14:18:17_sdfmilan048:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    },
+    {
+     "id": "ami-no-meb",
+     "desc": "control '<W> ami NOT supported in absence of MEB'",
+     "aliases": [
+      "ami NOT supported",
+      "absence of MEB"
+     ]
+    }
+   ],
+   "catalog_summary": "NO FAULT"
+  },
+  "healthy-jungfrau": {
+   "id": "healthy-jungfrau",
+   "set": "core",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "healthy-jungfrau",
+   "question": "The DAQ was used on 2026-11-09 between 19:47 and 19:49. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_19:47:22",
+     "start": "2026-11-09 19:47:22",
+     "first": "2026-11-09 19:47:24",
+     "last": "2026-11-09 19:48:04",
+     "files": [
+      "09_19:47:22_sdfmilan023:control.log",
+      "09_19:47:22_sdfmilan023:jungfrau_0.log",
+      "09_19:47:22_sdfmilan023:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "double-free-exit",
+     "desc": "a DRP aborts at shutdown with 'free(): double free detected in tcache 2' (signal 6), after the run ended (upstream #134)",
+     "aliases": [
+      "double free",
+      "double-free",
+      "tcache",
+      "#134",
+      "issues/134",
+      "crash at shutdown",
+      "crashed at shutdown",
+      "crash at exit",
+      "signal 6 at shutdown",
+      "abort at shutdown"
+     ]
+    },
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    },
+    {
+     "id": "ami-no-meb",
+     "desc": "control '<W> ami NOT supported in absence of MEB'",
+     "aliases": [
+      "ami NOT supported",
+      "absence of MEB"
+     ]
+    }
+   ],
+   "catalog_summary": "NO FAULT"
+  },
+  "healthy-ami": {
+   "id": "healthy-ami",
+   "set": "full",
+   "tier": 1,
+   "key_source": "planted",
+   "pool": "healthy-ami",
+   "question": "The DAQ was used on 2026-11-09 between 20:50 and 20:52. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_20:50:25",
+     "start": "2026-11-09 20:50:25",
+     "first": "2026-11-09 20:50:27",
+     "last": "2026-11-09 20:51:14",
+     "files": [
+      "09_20:50:25_sdfmilan082:ami-client.log",
+      "09_20:50:25_sdfmilan082:ami-global.log",
+      "09_20:50:25_sdfmilan082:ami-manager.log",
+      "09_20:50:25_sdfmilan082:ami-node_0.log",
+      "09_20:50:25_sdfmilan082:ami-worker_0.log",
+      "09_20:50:25_sdfmilan082:control.log",
+      "09_20:50:25_sdfmilan082:fakecam_0.log",
+      "09_20:50:25_sdfmilan082:meb0.log",
+      "09_20:50:25_sdfmilan082:shmc0.log",
+      "09_20:50:25_sdfmilan082:teb0.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "double-free-exit",
+     "desc": "a DRP aborts at shutdown with 'free(): double free detected in tcache 2' (signal 6), after the run ended (upstream #134)",
+     "aliases": [
+      "double free",
+      "double-free",
+      "tcache",
+      "#134",
+      "issues/134",
+      "crash at shutdown",
+      "crashed at shutdown",
+      "crash at exit",
+      "signal 6 at shutdown",
+      "abort at shutdown"
+     ]
+    },
+    {
+     "id": "ami-killed-at-shutdown",
+     "desc": "ami-client / ami-worker killed by signal 9, shmc0 by signal 2, at shutdown",
+     "aliases": [
+      "ami-client",
+      "ami-worker",
+      "shmc0",
+      "signal 9"
+     ]
+    },
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    }
+   ],
+   "catalog_summary": "NO FAULT"
+  },
+  "big-pvcam": {
+   "id": "big-pvcam",
+   "set": "core",
+   "tier": 2,
+   "key_source": "observed",
+   "pool": "big-pvcam",
+   "question": "The DAQ was used on 2026-11-09 between 15:05 and 15:07. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_15:05:16",
+     "start": "2026-11-09 15:05:16",
+     "first": "2026-11-09 15:05:19",
+     "last": "2026-11-09 15:06:06",
+     "files": [
+      "09_15:05:16_sdfmilan023:ami-client.log",
+      "09_15:05:16_sdfmilan023:ami-global.log",
+      "09_15:05:16_sdfmilan023:ami-manager.log",
+      "09_15:05:16_sdfmilan023:ami-node_0.log",
+      "09_15:05:16_sdfmilan023:ami-worker_0.log",
+      "09_15:05:16_sdfmilan023:bldcas.log",
+      "09_15:05:16_sdfmilan023:control.log",
+      "09_15:05:16_sdfmilan023:control_gui.log",
+      "09_15:05:16_sdfmilan023:daqstat.log",
+      "09_15:05:16_sdfmilan023:deadca.log",
+      "09_15:05:16_sdfmilan023:dtica.log",
+      "09_15:05:16_sdfmilan023:enc_trig.log",
+      "09_15:05:16_sdfmilan023:encoder_0.log",
+      "09_15:05:16_sdfmilan023:epics_0.log",
+      "09_15:05:16_sdfmilan023:fakecam_0.log",
+      "09_15:05:16_sdfmilan023:groupca.log",
+      "09_15:05:16_sdfmilan023:hpsdbuscas.log",
+      "09_15:05:16_sdfmilan023:hsdpva.log",
+      "09_15:05:16_sdfmilan023:meb0.log",
+      "09_15:05:16_sdfmilan023:partca.log",
+      "09_15:05:16_sdfmilan023:procstat.log",
+      "09_15:05:16_sdfmilan023:pvant.log",
+      "09_15:05:16_sdfmilan023:pvatable.log",
+      "09_15:05:16_sdfmilan023:pvcam_0.log",
+      "09_15:05:16_sdfmilan023:pvrtmon_0.log",
+      "09_15:05:16_sdfmilan023:shmc0.log",
+      "09_15:05:16_sdfmilan023:simenc.log",
+      "09_15:05:16_sdfmilan023:teb0.log",
+      "09_15:05:16_sdfmilan023:tprca.log",
+      "09_15:05:16_sdfmilan023:tprtrig.log",
+      "09_15:05:16_sdfmilan023:xpmpva.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its EPICS PV DAQ:SIM:CAM:IMAGE never connected ('PV DAQ:SIM:CAM:IMAGE hasn't connected', 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE')",
+    "accepted": [
+     "pvcam_0's source PV DAQ:SIM:CAM:IMAGE never connected (\"hasn't connected\" / \"Failed to get parameters for PV DAQ:SIM:CAM:IMAGE\"), so configure phase 1 failed.",
+     "The EPICS/PVA PV that the PVA detector reads (DAQ:SIM:CAM:IMAGE) was not served or not reachable, so the detector could not get its parameters and failed configure."
+    ],
+    "near_miss": [
+     "pvcam_0 reported 'Phase 1 error in Detector::configure()', with no PV named.",
+     "The ConfigDB lookup failed ('get_configuration: No device pvcam_0' / 'Internal error fetching detector configuration'), so configure failed.",
+     "teb0/meb0 lost connection with a DRP, or encoder_0 crashed with terminate(), and that made configure fail."
+    ]
+   },
+   "side_issues_known": [
+    "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+    "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+    "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+    "pvatable helper: 'Error processing Subscription event for DAQ:SIM:HSD:1_DA:[AB]:MONTIMING' with KeyError: 'readcntsum' (unrelated GUI helper",
+    "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign warning)"
+   ],
+   "fault_launch": "09_15:05:16",
+   "catalog_summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+  },
+  "big-tebctrb-connect": {
+   "id": "big-tebctrb-connect",
+   "set": "core",
+   "tier": 2,
+   "key_source": "observed",
+   "pool": "big-tebctrb-connect",
+   "question": "The DAQ was used on 2026-11-09 between 15:12 and 15:13. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_15:12:41",
+     "start": "2026-11-09 15:12:41",
+     "first": "2026-11-09 15:12:44",
+     "last": "2026-11-09 15:12:55",
+     "files": [
+      "09_15:12:41_sdfmilan023:ami-client.log",
+      "09_15:12:41_sdfmilan023:ami-global.log",
+      "09_15:12:41_sdfmilan023:ami-manager.log",
+      "09_15:12:41_sdfmilan023:ami-node_0.log",
+      "09_15:12:41_sdfmilan023:ami-worker_0.log",
+      "09_15:12:41_sdfmilan023:bldcas.log",
+      "09_15:12:41_sdfmilan023:control.log",
+      "09_15:12:41_sdfmilan023:control_gui.log",
+      "09_15:12:41_sdfmilan023:daqstat.log",
+      "09_15:12:41_sdfmilan023:deadca.log",
+      "09_15:12:41_sdfmilan023:dtica.log",
+      "09_15:12:41_sdfmilan023:enc_trig.log",
+      "09_15:12:41_sdfmilan023:encoder_0.log",
+      "09_15:12:41_sdfmilan023:epics_0.log",
+      "09_15:12:41_sdfmilan023:fakecam_0.log",
+      "09_15:12:41_sdfmilan023:groupca.log",
+      "09_15:12:41_sdfmilan023:hpsdbuscas.log",
+      "09_15:12:41_sdfmilan023:hsdpva.log",
+      "09_15:12:41_sdfmilan023:meb0.log",
+      "09_15:12:41_sdfmilan023:partca.log",
+      "09_15:12:41_sdfmilan023:procstat.log",
+      "09_15:12:41_sdfmilan023:pvant.log",
+      "09_15:12:41_sdfmilan023:pvatable.log",
+      "09_15:12:41_sdfmilan023:pvcam_0.log",
+      "09_15:12:41_sdfmilan023:pvrtmon_0.log",
+      "09_15:12:41_sdfmilan023:shmc0.log",
+      "09_15:12:41_sdfmilan023:simenc.log",
+      "09_15:12:41_sdfmilan023:teb0.log",
+      "09_15:12:41_sdfmilan023:tprca.log",
+      "09_15:12:41_sdfmilan023:tprtrig.log",
+      "09_15:12:41_sdfmilan023:xpmpva.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "connect",
+    "aliases": [
+     "connect",
+     "connecting",
+     "connect transition",
+     "allocated to connected",
+     "allocated->connected"
+    ]
+   },
+   "mechanism": {
+    "summary": "At the connect transition pvcam_0 (drp_pva) could not open its libfabric link to teb0: 'Error connecting to 127.0.0.1:40459 ...: fi_eq_sread: Interrupted system call(-4)' -> 'TebContributor connect failed'",
+    "accepted": [
+     "pvcam_0's TebContributor connect to teb0 failed at the connect transition ('TebContributor connect failed').",
+     "pvcam_0 could not open its libfabric link to teb0 ('Error connecting to 127.0.0.1:40459', fi_eq_sread: Interrupted system call, EINTR)."
+    ],
+    "near_miss": [
+     "Connect failed ('connect failed to change state'), with no failing link to teb0 named.",
+     "pvcam_0's link to meb0 (the MebContributor) failed.",
+     "meb0, teb0 or another process reported a connect error (e.g. 'Error in MEB connect()', 'Failed to accept connection'), and that is given as the cause.",
+     "A network or port problem, with no failing pvcam_0 link named."
+    ]
+   },
+   "side_issues_known": [
+    "pvatable helper: KeyError: 'readcntsum' while processing DAQ:SIM:HSD:1_DA:[AB]:MONTIMING subscription events (unrelated)",
+    "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign)",
+    "meb0 '<E> Error in MEB connect()' / 'Failed to accept connection: fi_eq_sread: Interrupted system call(-4)' appears AFTER '^C ... Shutting d"
+   ],
+   "fault_launch": "09_15:12:41",
+   "catalog_summary": "At the connect transition pvcam_0 (drp_pva) could not open its outbound libfabric link to teb0: 'Error connecting to 127.0.0.1:40459 after 569 ms: fi_eq_sread: Interrupted system call(-4)' -> 'DrpBase::connect: TebContributor connect failed'. Control reported 'pvcam_0: TebContributor connect failed', connect failed, the DAQ stayed in 'allocated' and was reset and shut down about a second later; it never configured or ran."
+  },
+  "big-meb-killed": {
+   "id": "big-meb-killed",
+   "set": "core",
+   "tier": 2,
+   "key_source": "observed",
+   "pool": "big-meb-killed",
+   "question": "The DAQ was used on 2026-11-09 between 09:12 and 09:14. An operator asks: did anything go wrong? Give a full assessment.",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_09:11:58",
+     "start": "2026-11-09 09:11:58",
+     "first": "2026-11-09 09:12:01",
+     "last": "2026-11-09 09:13:43",
+     "files": [
+      "09_09:11:58_sdfmilan048:ami-client.log",
+      "09_09:11:58_sdfmilan048:ami-global.log",
+      "09_09:11:58_sdfmilan048:ami-manager.log",
+      "09_09:11:58_sdfmilan048:ami-node_0.log",
+      "09_09:11:58_sdfmilan048:ami-worker_0.log",
+      "09_09:11:58_sdfmilan048:control.log",
+      "09_09:11:58_sdfmilan048:control_gui.log",
+      "09_09:11:58_sdfmilan048:dtica.log",
+      "09_09:11:58_sdfmilan048:encoder_0.log",
+      "09_09:11:58_sdfmilan048:epics_0.log",
+      "09_09:11:58_sdfmilan048:fakecam_0.log",
+      "09_09:11:58_sdfmilan048:groupca.log",
+      "09_09:11:58_sdfmilan048:hsdpva.log",
+      "09_09:11:58_sdfmilan048:meb0.log",
+      "09_09:11:58_sdfmilan048:partca.log",
+      "09_09:11:58_sdfmilan048:procstat.log",
+      "09_09:11:58_sdfmilan048:pvant.log",
+      "09_09:11:58_sdfmilan048:pvcam_0.log",
+      "09_09:11:58_sdfmilan048:pvrtmon_0.log",
+      "09_09:11:58_sdfmilan048:shmc0.log",
+      "09_09:11:58_sdfmilan048:simenc.log",
+      "09_09:11:58_sdfmilan048:teb0.log",
+      "09_09:11:58_sdfmilan048:tprca.log"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "meb0",
+    "aliases": [
+     "meb0",
+     "meb",
+     "monReqServer",
+     "monitoring event builder",
+     "MEB"
+    ],
+    "not": [
+     "pvcam_0",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0",
+     "teb0",
+     "control",
+     "DRP",
+     "DRPs"
+    ]
+   },
+   "stage": {
+    "name": "running",
+    "aliases": [
+     "running",
+     "run",
+     "enable",
+     "enabled",
+     "after enable",
+     "during the run",
+     "while running",
+     "data taking",
+     "first events",
+     "L1Accept",
+     "L1Accepts",
+     "running state"
+    ]
+   },
+   "mechanism": {
+    "summary": "meb0 was killed by signal 9 (SIGKILL, from outside) while the DAQ was running, with no error of its own",
+    "accepted": [
+     "meb0 was killed by signal 9 (SIGKILL) while the DAQ was running.",
+     "meb0 died abruptly while the DAQ was running (killed from outside, signal 9) with no error of its own; the other processes failed because it was gone.",
+     "meb0 (the monitoring event builder) disappeared during the run (SIGKILL), after which the DRPs failed on their MEB links ('Error receiving transition buffer index from MEB ID 0') and aborted."
+    ],
+    "near_miss": [
+     "meb0 and/or other processes did not respond to a transition (a timeout), with no death of meb0 named.",
+     "meb0 crashed (segfault or abort, its own error) while the DAQ was running.",
+     "teb0 (or another process) lost its connection to meb0 and aborted, with nothing said about why the link dropped.",
+     "The DRPs aborted with 'Error receiving transition buffer index from MEB ID 0 needed for SlowUpdate' (MebContributor::post), given as the cause.",
+     "All six clients did not respond to disable, with no death of meb0 named."
+    ]
+   },
+   "side_issues_known": [
+    "configdb 'get_configuration: No device <det>!' / 'Internal error fetching detector configuration' tracebacks in pvcam_0, encoder_0, epics_0 ",
+    "ami-worker_0 'Error connecting myTrFd socket (will retry): Connection refused' and shmc0 'shmemClient's server appears to have disconnected "
+   ],
+   "fault_launch": "09_09:11:58",
+   "catalog_summary": "meb0 (monReqServer) was killed by signal 9 (SIGKILL) at 09:12:41 while the DAQ was running (enable at 09:12:27), with no error of its own. All four DRPs then got Tx errors on their MEB link and aborted at 09:13:05 ('Error receiving transition buffer index from MEB ID 0 needed for SlowUpdate'), teb0 aborted at 09:13:06 ('lost connection with a DRP'), and the disable at 09:13:09 timed out with all 6 clients not responding."
+  },
+  "big-pvcam-23": {
+   "id": "big-pvcam-23",
+   "set": "full",
+   "tier": 2,
+   "key_source": "observed",
+   "pool": "big-pvcam-23",
+   "question": "On 2026-11-09 around 09:08 the DAQ would not configure. Why?",
+   "launch_keyed": false,
+   "launches": [
+    {
+     "prefix": "09_09:01:59",
+     "start": "2026-11-09 09:01:59",
+     "first": "2026-11-09 09:02:02",
+     "last": "2026-11-09 09:08:08",
+     "files": [
+      "09_09:01:59_sdfmilan048:ami-client.log",
+      "09_09:01:59_sdfmilan048:ami-global.log",
+      "09_09:01:59_sdfmilan048:ami-manager.log",
+      "09_09:01:59_sdfmilan048:ami-node_0.log",
+      "09_09:01:59_sdfmilan048:ami-worker_0.log",
+      "09_09:01:59_sdfmilan048:control.log",
+      "09_09:01:59_sdfmilan048:control_gui.log",
+      "09_09:01:59_sdfmilan048:dtica.log",
+      "09_09:01:59_sdfmilan048:encoder_0.log",
+      "09_09:01:59_sdfmilan048:epics_0.log",
+      "09_09:01:59_sdfmilan048:fakecam_0.log",
+      "09_09:01:59_sdfmilan048:groupca.log",
+      "09_09:01:59_sdfmilan048:hsdpva.log",
+      "09_09:01:59_sdfmilan048:meb0.log",
+      "09_09:01:59_sdfmilan048:partca.log",
+      "09_09:01:59_sdfmilan048:procstat.log",
+      "09_09:01:59_sdfmilan048:pvant.log",
+      "09_09:01:59_sdfmilan048:pvcam_0.log",
+      "09_09:01:59_sdfmilan048:pvrtmon_0.log",
+      "09_09:01:59_sdfmilan048:shmc0.log",
+      "09_09:01:59_sdfmilan048:simenc.log",
+      "09_09:01:59_sdfmilan048:teb0.log",
+      "09_09:01:59_sdfmilan048:tprca.log"
+     ]
+    }
+   ],
+   "known_issues": [
+    134
+   ],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its EPICS PV DAQ:SIM:CAM:IMAGE never connected ('PV DAQ:SIM:CAM:IMAGE hasn't connected', 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE')",
+    "accepted": [
+     "pvcam_0's source PV DAQ:SIM:CAM:IMAGE never connected (\"hasn't connected\" / \"Failed to get parameters for PV DAQ:SIM:CAM:IMAGE\"), so configure phase 1 failed.",
+     "The EPICS/PVA PV that the PVA detector reads (DAQ:SIM:CAM:IMAGE) was not served or not reachable, so the detector could not get its parameters and failed configure."
+    ],
+    "near_miss": [
+     "pvcam_0 reported 'Phase 1 error in Detector::configure()', with no PV named.",
+     "The ConfigDB lookup failed ('get_configuration: No device pvcam_0' / 'Internal error fetching detector configuration'), so configure failed.",
+     "teb0/meb0 lost connection with a DRP, or encoder_0 crashed with terminate(), and that made configure fail."
+    ]
+   },
+   "side_issues_known": [
+    "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+    "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+    "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+    "shmc0: 'shmemClient's server appears to have disconnected - attempting to reconnect' (consequence of meb0 dying)"
+   ],
+   "fault_launch": "09_09:01:59",
+   "catalog_summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+  },
+  "day-window": {
+   "id": "day-window",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09 around 12:13 the DAQ would not configure. Why?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_12:12:52",
+     "start": "2026-11-09 12:12:52",
+     "first": "2026-11-09 12:12:54",
+     "last": "2026-11-09 12:14:33",
+     "files": [
+      "09_12:12:52_sdfmilan082:control.log.zst",
+      "09_12:12:52_sdfmilan082:teb0.log.zst",
+      "09_12:12:52_sdfmilan082:tt_0.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:12:52",
+   "catalog_summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+  },
+  "day-window-utc": {
+   "id": "day-window-utc",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "A monitoring alert says the DAQ failed to configure at about 2026-11-09 20:24 UTC. What happened?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_12:22:37",
+     "start": "2026-11-09 12:22:37",
+     "first": "2026-11-09 12:22:39",
+     "last": "2026-11-09 12:24:18",
+     "files": [
+      "09_12:22:37_sdfmilan082:control.log.zst",
+      "09_12:22:37_sdfmilan082:teb0.log.zst",
+      "09_12:22:37_sdfmilan082:tt_0.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:22:37",
+   "catalog_summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+  },
+  "day-startup": {
+   "id": "day-startup",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09 around 12:50 the DAQ would not allocate. Why?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_12:49:29",
+     "start": "2026-11-09 12:49:29",
+     "first": "2026-11-09 12:49:32",
+     "last": "2026-11-09 12:50:07",
+     "files": [
+      "09_12:49:29_sdfmilan082:control.log.zst",
+      "09_12:49:29_sdfmilan082:teb0.log.zst",
+      "09_12:49:29_sdfmilan082:tt_0.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "startup",
+    "aliases": [
+     "alloc",
+     "allocate",
+     "allocation",
+     "start",
+     "startup",
+     "start-up",
+     "start up",
+     "launch",
+     "init",
+     "initialisation",
+     "initialization",
+     "tt_init",
+     "rollcall",
+     "roll call",
+     "before rollcall",
+     "process start"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+    "accepted": [
+     "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+     "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+     "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+     "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+    ]
+   },
+   "side_issues_known": [],
+   "fault_launch": "09_12:49:29",
+   "catalog_summary": "tt_0 DRP crashed at startup (TypeError: unexpected keyword argument 'size'), so it never answered rollcall and Alloc failed with 'at least one DRP is required'"
+  },
+  "day-big-window": {
+   "id": "day-big-window",
+   "set": "core",
+   "tier": 3,
+   "key_source": "observed",
+   "pool": "day",
+   "question": "On 2026-11-09 around 15:15 the DAQ would not configure. Why?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_15:14:29",
+     "start": "2026-11-09 15:14:29",
+     "first": "2026-11-09 15:14:33",
+     "last": "2026-11-09 15:15:16",
+     "files": [
+      "09_15:14:29_sdfmilan082:ami-client.log.zst",
+      "09_15:14:29_sdfmilan082:ami-global.log.zst",
+      "09_15:14:29_sdfmilan082:ami-manager.log.zst",
+      "09_15:14:29_sdfmilan082:ami-node_0.log.zst",
+      "09_15:14:29_sdfmilan082:ami-worker_0.log.zst",
+      "09_15:14:29_sdfmilan082:bldcas.log.zst",
+      "09_15:14:29_sdfmilan082:control.log.zst",
+      "09_15:14:29_sdfmilan082:control_gui.log.zst",
+      "09_15:14:29_sdfmilan082:daqstat.log.zst",
+      "09_15:14:29_sdfmilan082:deadca.log.zst",
+      "09_15:14:29_sdfmilan082:dtica.log.zst",
+      "09_15:14:29_sdfmilan082:enc_trig.log.zst",
+      "09_15:14:29_sdfmilan082:encoder_0.log.zst",
+      "09_15:14:29_sdfmilan082:epics_0.log.zst",
+      "09_15:14:29_sdfmilan082:fakecam_0.log.zst",
+      "09_15:14:29_sdfmilan082:groupca.log.zst",
+      "09_15:14:29_sdfmilan082:hpsdbuscas.log.zst",
+      "09_15:14:29_sdfmilan082:hsdpva.log.zst",
+      "09_15:14:29_sdfmilan082:meb0.log.zst",
+      "09_15:14:29_sdfmilan082:partca.log.zst",
+      "09_15:14:29_sdfmilan082:procstat.log.zst",
+      "09_15:14:29_sdfmilan082:pvant.log.zst",
+      "09_15:14:29_sdfmilan082:pvatable.log.zst",
+      "09_15:14:29_sdfmilan082:pvcam_0.log.zst",
+      "09_15:14:29_sdfmilan082:pvrtmon_0.log.zst",
+      "09_15:14:29_sdfmilan082:shmc0.log.zst",
+      "09_15:14:29_sdfmilan082:simenc.log.zst",
+      "09_15:14:29_sdfmilan082:teb0.log.zst",
+      "09_15:14:29_sdfmilan082:tprca.log.zst",
+      "09_15:14:29_sdfmilan082:tprtrig.log.zst",
+      "09_15:14:29_sdfmilan082:xpmpva.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its EPICS PV DAQ:SIM:CAM:IMAGE never connected ('PV DAQ:SIM:CAM:IMAGE hasn't connected', 'Failed to get parameters for PV DAQ:SIM:CAM:IMAGE')",
+    "accepted": [
+     "pvcam_0's source PV DAQ:SIM:CAM:IMAGE never connected (\"hasn't connected\" / \"Failed to get parameters for PV DAQ:SIM:CAM:IMAGE\"), so configure phase 1 failed.",
+     "The EPICS/PVA PV that the PVA detector reads (DAQ:SIM:CAM:IMAGE) was not served or not reachable, so the detector could not get its parameters and failed configure."
+    ],
+    "near_miss": [
+     "pvcam_0 reported 'Phase 1 error in Detector::configure()', with no PV named.",
+     "The ConfigDB lookup failed ('get_configuration: No device pvcam_0' / 'Internal error fetching detector configuration'), so configure failed.",
+     "teb0/meb0 lost connection with a DRP, or encoder_0 crashed with terminate(), and that made configure fail."
+    ]
+   },
+   "side_issues_known": [
+    "configdb lookup 'get_configuration: No device <det>!' / 'RuntimeError: Internal error fetching detector configuration' in pvcam_0, encoder_0",
+    "encoder_0 crashes on the disconnect transition with '<C> terminate() called without an active exception' (signal 6): a separate bug exposed ",
+    "teb0 and meb0 abort on disconnect with 'EbLfClient N disconnected on far side' / 'lost connection with a DRP' (signal 6) instead of disconne",
+    "pvatable helper: 'Error processing Subscription event for DAQ:SIM:HSD:1_DA:[AB]:MONTIMING' with KeyError: 'readcntsum' (unrelated GUI helper",
+    "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign warning)"
+   ],
+   "fault_launch": "09_15:14:29",
+   "catalog_summary": "pvcam_0 (drp_pva) failed phase 1 of configure because its source PV DAQ:SIM:CAM:IMAGE never connected ('Failed to get parameters for PV DAQ:SIM:CAM:IMAGE', about 3 s after configure arrived), so control stayed in 'connected'. The follow-up disconnect then failed too: encoder_0 aborted (terminate()), and teb0 and meb0 aborted with 'lost connection with a DRP', so three clients did not answer disconnect within 30 s."
+  },
+  "day-other-error": {
+   "id": "day-other-error",
+   "set": "core",
+   "tier": 3,
+   "key_source": "observed",
+   "pool": "day",
+   "question": "On 2026-11-09 shortly after 15:04 a launch failed. Why?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_15:04:34",
+     "start": "2026-11-09 15:04:34",
+     "first": "2026-11-09 15:04:37",
+     "last": "2026-11-09 15:04:48",
+     "files": [
+      "09_15:04:34_sdfmilan082:ami-client.log.zst",
+      "09_15:04:34_sdfmilan082:ami-global.log.zst",
+      "09_15:04:34_sdfmilan082:ami-manager.log.zst",
+      "09_15:04:34_sdfmilan082:ami-node_0.log.zst",
+      "09_15:04:34_sdfmilan082:ami-worker_0.log.zst",
+      "09_15:04:34_sdfmilan082:bldcas.log.zst",
+      "09_15:04:34_sdfmilan082:control.log.zst",
+      "09_15:04:34_sdfmilan082:control_gui.log.zst",
+      "09_15:04:34_sdfmilan082:daqstat.log.zst",
+      "09_15:04:34_sdfmilan082:deadca.log.zst",
+      "09_15:04:34_sdfmilan082:dtica.log.zst",
+      "09_15:04:34_sdfmilan082:enc_trig.log.zst",
+      "09_15:04:34_sdfmilan082:encoder_0.log.zst",
+      "09_15:04:34_sdfmilan082:epics_0.log.zst",
+      "09_15:04:34_sdfmilan082:fakecam_0.log.zst",
+      "09_15:04:34_sdfmilan082:groupca.log.zst",
+      "09_15:04:34_sdfmilan082:hpsdbuscas.log.zst",
+      "09_15:04:34_sdfmilan082:hsdpva.log.zst",
+      "09_15:04:34_sdfmilan082:meb0.log.zst",
+      "09_15:04:34_sdfmilan082:partca.log.zst",
+      "09_15:04:34_sdfmilan082:procstat.log.zst",
+      "09_15:04:34_sdfmilan082:pvant.log.zst",
+      "09_15:04:34_sdfmilan082:pvatable.log.zst",
+      "09_15:04:34_sdfmilan082:pvcam_0.log.zst",
+      "09_15:04:34_sdfmilan082:pvrtmon_0.log.zst",
+      "09_15:04:34_sdfmilan082:shmc0.log.zst",
+      "09_15:04:34_sdfmilan082:simenc.log.zst",
+      "09_15:04:34_sdfmilan082:teb0.log.zst",
+      "09_15:04:34_sdfmilan082:tprca.log.zst",
+      "09_15:04:34_sdfmilan082:tprtrig.log.zst",
+      "09_15:04:34_sdfmilan082:xpmpva.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "pvcam_0",
+    "aliases": [
+     "pvcam_0",
+     "pvcam",
+     "drp_pva",
+     "PV camera",
+     "PVA detector",
+     "PVA DRP",
+     "drp/pvcam_0",
+     "pvcam DRP",
+     "pvcam_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "encoder_0",
+     "epics_0",
+     "fakecam_0"
+    ]
+   },
+   "stage": {
+    "name": "connect",
+    "aliases": [
+     "connect",
+     "connecting",
+     "connect transition",
+     "allocated to connected",
+     "allocated->connected"
+    ]
+   },
+   "mechanism": {
+    "summary": "At the connect transition pvcam_0 (drp_pva) could not open its libfabric link to meb0: 'Error connecting to 127.0.0.1:44567 ...: fi_eq_sread: Interrupted system call(-4)' -> 'MebContributor connect failed'",
+    "accepted": [
+     "pvcam_0's MebContributor connect to meb0 failed at the connect transition ('MebContributor connect failed').",
+     "pvcam_0 could not open its libfabric link to meb0 ('Error connecting to 127.0.0.1:44567', fi_eq_sread: Interrupted system call, EINTR)."
+    ],
+    "near_miss": [
+     "Connect failed ('connect failed to change state'), with no failing link to meb0 named.",
+     "pvcam_0's link to teb0 (the TebContributor) failed.",
+     "meb0, teb0 or another process reported a connect error (e.g. 'Error in MEB connect()', 'Failed to accept connection'), and that is given as the cause.",
+     "A network or port problem, with no failing pvcam_0 link named."
+    ]
+   },
+   "side_issues_known": [
+    "pvatable helper: KeyError: 'readcntsum' on DAQ:SIM:HSD:1_DA:[AB]:MONTIMING subscription events (unrelated)",
+    "control '<W> rollcall: tpr/enc_trig NOT selected for data collection' (benign)",
+    "ami-client FileNotFoundError for setuptools/_vendor/autocommand-2.2.2.dist-info/entry_points.txt, raised inside the Ctrl-C traceback at shut"
+   ],
+   "fault_launch": "09_15:04:34",
+   "catalog_summary": "At the connect transition pvcam_0 (drp_pva) connected to teb0 but failed to open its link to meb0: 'Error connecting to 127.0.0.1:44567 after 15 ms: fi_eq_sread: Interrupted system call(-4)' -> 'DrpBase::connect: MebContributor connect failed'. Control reported 'pvcam_0: MebContributor connect failed', connect failed, the DAQ stayed in 'allocated', was reset 0.4 s later and shut down; the other connect errors (teb0, meb0, encoder_0, epics_0) are consequences."
+  },
+  "day-healthy-window": {
+   "id": "day-healthy-window",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09 between 16:00 and 16:30, did anything go wrong with the DAQ? Give a full assessment.",
+   "launch_keyed": true,
+   "launches": [],
+   "known_issues": [],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "double-free-exit",
+     "desc": "a DRP aborts at shutdown with 'free(): double free detected in tcache 2' (signal 6), after the run ended (upstream #134)",
+     "aliases": [
+      "double free",
+      "double-free",
+      "tcache",
+      "#134",
+      "issues/134",
+      "crash at shutdown",
+      "crashed at shutdown",
+      "crash at exit",
+      "signal 6 at shutdown",
+      "abort at shutdown"
+     ]
+    },
+    {
+     "id": "segfault-exit",
+     "desc": "epixm320_0 'FATAL: Segmentation Fault' after Ctrl-C at shutdown",
+     "aliases": [
+      "epixm320",
+      "Segmentation Fault",
+      "segfault"
+     ]
+    },
+    {
+     "id": "node-lookup",
+     "desc": "epixquad 'WARNING: Lookup failed for node [OverSampleEn] ...'",
+     "aliases": [
+      "Lookup failed",
+      "OverSampleEn"
+     ]
+    },
+    {
+     "id": "configdb-no-device",
+     "desc": "'get_configuration: No device <det>!' / 'Internal error fetching detector configuration' tracebacks (encoder_0, epics_0, pvcam_0)",
+     "aliases": [
+      "No device",
+      "Internal error fetching detector configuration",
+      "get_configuration",
+      "configdb",
+      "ConfigDB"
+     ]
+    },
+    {
+     "id": "pvatable-keyerror",
+     "desc": "pvatable helper KeyError 'readcntsum'",
+     "aliases": [
+      "readcntsum",
+      "pvatable"
+     ]
+    },
+    {
+     "id": "enc-trig-not-selected",
+     "desc": "control '<W> rollcall: tpr/enc_trig NOT selected for data collection'",
+     "aliases": [
+      "enc_trig",
+      "NOT selected"
+     ]
+    },
+    {
+     "id": "ami-killed-at-shutdown",
+     "desc": "ami-client / ami-worker killed by signal 9, shmc0 by signal 2, at shutdown",
+     "aliases": [
+      "ami-client",
+      "ami-worker",
+      "shmc0",
+      "signal 9"
+     ]
+    },
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    },
+    {
+     "id": "applane-lookup",
+     "desc": "'Lookup failed for node [AppLane]' in tt_0's configuration",
+     "aliases": [
+      "AppLane",
+      "Lookup failed for node"
+     ]
+    }
+   ],
+   "window_note": "no keyed launch: the question names a window whose launches were all healthy",
+   "catalog_summary": "NO FAULT"
+  },
+  "day-healthy-late": {
+   "id": "day-healthy-late",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09 between 21:00 and 21:30, did anything go wrong with the DAQ? Give a full assessment.",
+   "launch_keyed": true,
+   "launches": [],
+   "known_issues": [],
+   "kind": "healthy",
+   "benign": [
+    {
+     "id": "double-free-exit",
+     "desc": "a DRP aborts at shutdown with 'free(): double free detected in tcache 2' (signal 6), after the run ended (upstream #134)",
+     "aliases": [
+      "double free",
+      "double-free",
+      "tcache",
+      "#134",
+      "issues/134",
+      "crash at shutdown",
+      "crashed at shutdown",
+      "crash at exit",
+      "signal 6 at shutdown",
+      "abort at shutdown"
+     ]
+    },
+    {
+     "id": "node-lookup",
+     "desc": "epixquad 'WARNING: Lookup failed for node [OverSampleEn] ...'",
+     "aliases": [
+      "Lookup failed",
+      "OverSampleEn"
+     ]
+    },
+    {
+     "id": "rtprio",
+     "desc": "'<C> Inadequate RTPRIO limit: got 0, require 99' at startup in every process",
+     "aliases": [
+      "RTPRIO",
+      "real-time priority",
+      "realtime priority"
+     ]
+    }
+   ],
+   "window_note": "no keyed launch: the question names a window whose launches were all healthy",
+   "catalog_summary": "NO FAULT"
+  },
+  "day-count": {
+   "id": "day-count",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09 between 11:50 and 13:10, which DAQ launches failed, and why did each one fail? List every failed launch.",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_11:58:38",
+     "start": "2026-11-09 11:58:38",
+     "first": "2026-11-09 11:58:40",
+     "last": "2026-11-09 12:00:19",
+     "files": [
+      "09_11:58:38_sdfmilan082:control.log.zst",
+      "09_11:58:38_sdfmilan082:teb0.log.zst",
+      "09_11:58:38_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:06:35",
+     "start": "2026-11-09 12:06:35",
+     "first": "2026-11-09 12:06:37",
+     "last": "2026-11-09 12:08:16",
+     "files": [
+      "09_12:06:35_sdfmilan082:control.log.zst",
+      "09_12:06:35_sdfmilan082:teb0.log.zst",
+      "09_12:06:35_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:12:52",
+     "start": "2026-11-09 12:12:52",
+     "first": "2026-11-09 12:12:54",
+     "last": "2026-11-09 12:14:33",
+     "files": [
+      "09_12:12:52_sdfmilan082:control.log.zst",
+      "09_12:12:52_sdfmilan082:teb0.log.zst",
+      "09_12:12:52_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:15:15",
+     "start": "2026-11-09 12:15:15",
+     "first": "2026-11-09 12:15:18",
+     "last": "2026-11-09 12:15:53",
+     "files": [
+      "09_12:15:15_sdfmilan082:control.log.zst",
+      "09_12:15:15_sdfmilan082:teb0.log.zst",
+      "09_12:15:15_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:22:37",
+     "start": "2026-11-09 12:22:37",
+     "first": "2026-11-09 12:22:39",
+     "last": "2026-11-09 12:24:18",
+     "files": [
+      "09_12:22:37_sdfmilan082:control.log.zst",
+      "09_12:22:37_sdfmilan082:teb0.log.zst",
+      "09_12:22:37_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:24:58",
+     "start": "2026-11-09 12:24:58",
+     "first": "2026-11-09 12:25:01",
+     "last": "2026-11-09 12:25:35",
+     "files": [
+      "09_12:24:58_sdfmilan082:control.log.zst",
+      "09_12:24:58_sdfmilan082:teb0.log.zst",
+      "09_12:24:58_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:49:29",
+     "start": "2026-11-09 12:49:29",
+     "first": "2026-11-09 12:49:32",
+     "last": "2026-11-09 12:50:07",
+     "files": [
+      "09_12:49:29_sdfmilan082:control.log.zst",
+      "09_12:49:29_sdfmilan082:teb0.log.zst",
+      "09_12:49:29_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:55:54",
+     "start": "2026-11-09 12:55:54",
+     "first": "2026-11-09 12:55:57",
+     "last": "2026-11-09 12:57:35",
+     "files": [
+      "09_12:55:54_sdfmilan082:control.log.zst",
+      "09_12:55:54_sdfmilan082:teb0.log.zst",
+      "09_12:55:54_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_13:06:52",
+     "start": "2026-11-09 13:06:52",
+     "first": "2026-11-09 13:06:54",
+     "last": "2026-11-09 13:08:33",
+     "files": [
+      "09_13:06:52_sdfmilan082:control.log.zst",
+      "09_13:06:52_sdfmilan082:teb0.log.zst",
+      "09_13:06:52_sdfmilan082:tt_0.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "multi",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "tt",
+     "timetool",
+     "time tool",
+     "drp tt",
+     "TimeTool DRP",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "failed": [
+    {
+     "prefix": "09_11:58:38",
+     "family": "badname",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 aborted during configure with '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.': its configuration carries bracketed field names (ROI[0], ROI[1], SAD[2]) that are not legal XTC names",
+      "accepted": [
+       "tt_0 aborted in configure on '*** Error: illegal XtcData::Name: ...UartPiranha4.ROI[0]'.",
+       "A configuration field name with brackets (ROI[0], ROI[1], SAD[2]) is not a legal XTC name, so writing the configuration into the data stream aborted the DRP (signal 6)."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to configure / control timed out after 60 s, with no illegal-name error named.",
+       "tt_0 crashed or aborted (signal 6) during configure, with no illegal XtcData::Name named.",
+       "The Piranha4 camera rejected the ROI setting, or its serial (UART) setup failed.",
+       "tt_0 hung while configuring the camera ROI."
+      ]
+     },
+     "catalog_cause": "tt_0, configure: tt_0 aborted during configure: '*** Error: illegal XtcData::Name: expert.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]. Aborting.' (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 aborted as a consequence"
+    },
+    {
+     "prefix": "09_12:06:35",
+     "family": "register",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+      "accepted": [
+       "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+       "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+       "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+       "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+       "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+       "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+       "A configuration value was wrong or out of range, with no failed register write or readback named."
+      ],
+      "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+     },
+     "catalog_cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:12:52",
+     "family": "register",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+      "accepted": [
+       "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+       "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+       "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+       "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+       "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+       "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+       "A configuration value was wrong or out of range, with no failed register write or readback named."
+      ],
+      "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+     },
+     "catalog_cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:15:15",
+     "family": "typeerror",
+     "stage": {
+      "name": "startup",
+      "aliases": [
+       "alloc",
+       "allocate",
+       "allocation",
+       "start",
+       "startup",
+       "start-up",
+       "start up",
+       "launch",
+       "init",
+       "initialisation",
+       "initialization",
+       "tt_init",
+       "rollcall",
+       "roll call",
+       "before rollcall",
+       "process start"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+      "accepted": [
+       "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+       "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+       "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+       "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+      ]
+     },
+     "catalog_cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:22:37",
+     "family": "register",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+      "accepted": [
+       "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+       "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+       "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+       "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+       "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+       "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+       "A configuration value was wrong or out of range, with no failed register write or readback named."
+      ],
+      "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+     },
+     "catalog_cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    },
+    {
+     "prefix": "09_12:24:58",
+     "family": "typeerror",
+     "stage": {
+      "name": "startup",
+      "aliases": [
+       "alloc",
+       "allocate",
+       "allocation",
+       "start",
+       "startup",
+       "start-up",
+       "start up",
+       "launch",
+       "init",
+       "initialisation",
+       "initialization",
+       "tt_init",
+       "rollcall",
+       "roll call",
+       "before rollcall",
+       "process start"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+      "accepted": [
+       "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+       "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+       "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+       "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+      ]
+     },
+     "catalog_cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:49:29",
+     "family": "typeerror",
+     "stage": {
+      "name": "startup",
+      "aliases": [
+       "alloc",
+       "allocate",
+       "allocation",
+       "start",
+       "startup",
+       "start-up",
+       "start up",
+       "launch",
+       "init",
+       "initialisation",
+       "initialization",
+       "tt_init",
+       "rollcall",
+       "roll call",
+       "before rollcall",
+       "process start"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 crashed at startup in tt_init with TypeError: __init__() got an unexpected keyword argument 'size', so it never answered rollcall and alloc failed with 'at least one DRP is required'",
+      "accepted": [
+       "tt_0 crashed at startup with a Python TypeError (__init__() got an unexpected keyword argument 'size'), before rollcall.",
+       "A TypeError (unexpected keyword argument 'size') in the detector's initialisation code (surf/rogue flash classes, a software version mismatch) killed the DRP at startup, so it never joined rollcall and alloc failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to rollcall / was missing at alloc, so alloc failed with 'at least one DRP is required', with no TypeError named.",
+       "tt_0 crashed or raised a python error at startup, with no TypeError or unexpected keyword argument named.",
+       "A configuration or hardware problem stopped tt_0 from starting, with no TypeError named."
+      ]
+     },
+     "catalog_cause": "tt_0, startup/rollcall (error surfaces at alloc): tt_0 crashed at startup in tt_init, before rollcall: TypeError: __init__() got an unexpected keyword argument 'size' (surf _AxiMicronN25Q.py via _CypressS25Fl.py / ClinkFeb) -> '<C> **** python error', signal 6; control: 'drp/tt_0 did not respond to rollcall' then '<E> at least one DRP is required', alloc failed"
+    },
+    {
+     "prefix": "09_12:55:54",
+     "family": "hang",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 received configure, while setting up its Piranha4 camera over the serial link, last line 'sleeping for ...UartPiranha4.ROI[0]', then went silent with no error of its own and never replied; control timed out after 60 s",
+      "accepted": [
+       "tt_0 hung in configure: it went silent (while setting up its Piranha4 camera over the serial link, last line 'sleeping for ...UartPiranha4.ROI[0]') with no error of its own and never replied, so control timed out after 60 s.",
+       "tt_0 stopped responding (stalled, froze, got stuck) during configure without logging an error or crashing.",
+       "tt_0 stayed alive but never finished configure; its log just stops with no error."
+      ],
+      "near_miss": [
+       "Control reports that tt_0 did not respond to configure (a 60 s timeout), and nothing is said about tt_0 itself stalling or logging no error.",
+       "tt_0 crashed, aborted or was killed during configure.",
+       "The illegal XtcData::Name on ROI[0] aborted tt_0.",
+       "teb0's segmentation fault on the recovery disconnect, given as the cause.",
+       "The double free in tt_0 at shutdown, given as the cause."
+      ],
+      "judgment": "For a hang the mechanism is the hang itself: \"stopped responding with no error of its own\" passes; control's timeout message alone is a near-miss."
+     },
+     "catalog_cause": "tt_0, configure: tt_0 hung (no crash, no error) in configure while programming the Piranha4 camera over the ClinkFeb UART: last line 'sleeping for cl.ClinkFeb.ClinkTop.ClinkCh.UartPiranha4.ROI[0]', then silence until Ctrl-C; control: 'tt_0 did not respond to configure' after 60 s and again to disconnect; teb0 segfaulted while handling the disconnect (side effect)"
+    },
+    {
+     "prefix": "09_13:06:52",
+     "family": "register",
+     "stage": {
+      "name": "configure",
+      "aliases": [
+       "configure",
+       "configuration",
+       "configuring",
+       "configured",
+       "config",
+       "Configure transition",
+       "configure phase 1",
+       "phase 1 of configure",
+       "connected to configured",
+       "connected->configured"
+      ]
+     },
+     "mechanism": {
+      "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+      "accepted": [
+       "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+       "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+       "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+       "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+      ],
+      "near_miss": [
+       "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+       "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+       "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+       "A configuration value was wrong or out of range, with no failed register write or readback named."
+      ],
+      "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+     },
+     "catalog_cause": "tt_0, configure: Verify error for block TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay (address 0x0094900c, Got 0xff, Exp 0x17) while setting value 19991 in tt_config.config_expert -> '<C> **** python error', tt_0 aborted (signal 6); control: 'tt_0 did not respond to configure' after 60 s; teb0 then aborted ('lost connection with a DRP')"
+    }
+   ],
+   "healthy_in_window": [
+    "09_12:04:22",
+    "09_12:10:17",
+    "09_12:11:41",
+    "09_12:21:27",
+    "09_12:26:54",
+    "09_12:33:58",
+    "09_12:48:10",
+    "09_12:53:33",
+    "09_12:58:11",
+    "09_13:03:58",
+    "09_13:05:07"
+   ],
+   "catalog_summary": "9 launches failed, all on tt_0: four register write-verify failures on TriggerDelay during Configure, three startup crashes (TypeError, unexpected keyword argument 'size') that made Alloc fail with 'at least one DRP is required', one abort on an illegal XtcData::Name during Configure, and one Configure that hung with no error"
+  },
+  "day-last-good": {
+   "id": "day-last-good",
+   "set": "core",
+   "tier": 3,
+   "key_source": "planted",
+   "pool": "day",
+   "question": "On 2026-11-09, when was the last launch before 12:30 in which the tt detector configured successfully, and what went wrong in the launch right after it?",
+   "launch_keyed": true,
+   "launches": [
+    {
+     "prefix": "09_12:21:27",
+     "start": "2026-11-09 12:21:27",
+     "first": "2026-11-09 12:21:29",
+     "last": "2026-11-09 12:21:48",
+     "files": [
+      "09_12:21:27_sdfmilan082:control.log.zst",
+      "09_12:21:27_sdfmilan082:teb0.log.zst",
+      "09_12:21:27_sdfmilan082:tt_0.log.zst"
+     ]
+    },
+    {
+     "prefix": "09_12:22:37",
+     "start": "2026-11-09 12:22:37",
+     "first": "2026-11-09 12:22:39",
+     "last": "2026-11-09 12:24:18",
+     "files": [
+      "09_12:22:37_sdfmilan082:control.log.zst",
+      "09_12:22:37_sdfmilan082:teb0.log.zst",
+      "09_12:22:37_sdfmilan082:tt_0.log.zst"
+     ]
+    }
+   ],
+   "known_issues": [],
+   "kind": "fault",
+   "component": {
+    "name": "tt_0",
+    "aliases": [
+     "tt_0",
+     "drp/tt_0",
+     "tt DRP",
+     "tt_0 DRP"
+    ],
+    "not": [
+     "teb0",
+     "meb0",
+     "control",
+     "control.log",
+     "shmc0"
+    ]
+   },
+   "stage": {
+    "name": "configure",
+    "aliases": [
+     "configure",
+     "configuration",
+     "configuring",
+     "configured",
+     "config",
+     "Configure transition",
+     "configure phase 1",
+     "phase 1 of configure",
+     "connected to configured",
+     "connected->configured"
+    ]
+   },
+   "mechanism": {
+    "summary": "tt_0 aborted during configure: a register write failed its verify (the value read back did not match the value written), register TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay",
+    "accepted": [
+     "A register write failed its verify: the value read back from the device did not match the value written (rogue \"Verify error\" / Block::checkTransaction, Got ... Exp ...).",
+     "Writing register TriggerDelay (TimeToolKcu1500Root.TimeToolKcu1500.Kcu1500Hsio.TimingRx.TriggerEventManager.TriggerEventBuffer[0].TriggerDelay) failed: its readback did not match what was written.",
+     "A write to the named register TriggerDelay failed in rogue (GeneralError / Verify error), the configuration script raised a python error and the process aborted.",
+     "The device read back a different value for register TriggerDelay than was written (Got ..., Exp ...), so the configure step failed."
+    ],
+    "near_miss": [
+     "tt_0 did not respond to configure / control timed out waiting for it, with no register or readback failure named.",
+     "tt_0 raised a python error, crashed or aborted (signal 6) during configure, with no register write or readback failure named.",
+     "A hardware, firmware or link problem with the device, with no register write-verify failure named.",
+     "A configuration value was wrong or out of range, with no failed register write or readback named."
+    ],
+    "judgment": "Naming the register and saying its write failed counts as the mechanism even without the word \"verify\"; a python error or abort without the register does not."
+   },
+   "required_launches": [
+    "09_12:21:27"
+   ],
+   "fault_launch": "09_12:22:37",
+   "side_issues_known": [],
+   "catalog_summary": "tt_0 aborted during configure: a register failed its write-verify (readback did not match)"
+  }
+ }
+}
