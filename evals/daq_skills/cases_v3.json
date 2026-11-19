@@ -301,13 +301,13 @@
     "keyed_stamp": "17_21:12:48",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
     "keyed_files": [
-     "17_21:12:48_sdfada013:control.log",
-     "17_21:12:48_sdfada013:jungfrau_0.log",
-     "17_21:12:48_sdfada013:teb0.log"
+     "17_21:12:48_drp-srcf-cmp014:control.log",
+     "17_21:12:48_drp-srcf-cmp014:teb0.log",
+     "17_21:12:48_drp-srcf-cmp033:jungfrau_0.log"
     ],
     "starve_files": [
-     "17_21:12:48_sdfada013:control.log",
-     "17_21:12:48_sdfada013:jungfrau_0.log"
+     "17_21:12:48_drp-srcf-cmp014:control.log",
+     "17_21:12:48_drp-srcf-cmp033:jungfrau_0.log"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-17 between 21:12 and 21:15."
    }
@@ -345,12 +345,12 @@
     "keyed_stamp": "31_18:18:57",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
     "keyed_files": [
-     "31_18:18:57_sdfmilan048:control.log",
-     "31_18:18:57_sdfmilan048:teb0.log",
-     "31_18:18:57_sdfmilan048:wave8_0.log"
+     "31_18:18:57_drp-srcf-cmp014:control.log",
+     "31_18:18:57_drp-srcf-cmp014:teb0.log",
+     "31_18:18:57_drp-srcf-cmp039:wave8_0.log"
     ],
     "starve_files": [
-     "31_18:18:57_sdfmilan048:wave8_0.log"
+     "31_18:18:57_drp-srcf-cmp039:wave8_0.log"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-31 between 18:18 and 18:21."
    }
@@ -389,14 +389,14 @@
     "keyed_stamp": "16_18:22:24",
     "keyed_dir": "/sdf/home/m/mfxopr/2026/09",
     "keyed_files": [
-     "16_18:22:24_sdfada011:control.log",
-     "16_18:22:24_sdfada011:fakecam_0.log",
-     "16_18:22:24_sdfada011:pvcam_0.log",
-     "16_18:22:24_sdfada011:teb0.log"
+     "16_18:22:24_drp-srcf-cmp014:control.log",
+     "16_18:22:24_drp-srcf-cmp014:pvcam_0.log",
+     "16_18:22:24_drp-srcf-cmp014:teb0.log",
+     "16_18:22:24_drp-srcf-cmp038:fakecam_0.log"
     ],
     "starve_files": [
-     "16_18:22:24_sdfada011:control.log",
-     "16_18:22:24_sdfada011:pvcam_0.log"
+     "16_18:22:24_drp-srcf-cmp014:control.log",
+     "16_18:22:24_drp-srcf-cmp014:pvcam_0.log"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/2026/09, and the launch in question ran on 2026-09-16 between 18:22 and 18:24."
    }
@@ -436,16 +436,16 @@
     "keyed_stamp": "17_09:10:21",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
     "keyed_files": [
-     "17_09:10:21_sdfmilan048:control.log",
-     "17_09:10:21_sdfmilan048:fakecam_0.log",
-     "17_09:10:21_sdfmilan048:meb0.log",
-     "17_09:10:21_sdfmilan048:shmc0.log",
-     "17_09:10:21_sdfmilan048:teb0.log"
+     "17_09:10:21_drp-srcf-cmp014:control.log",
+     "17_09:10:21_drp-srcf-cmp014:teb0.log",
+     "17_09:10:21_drp-srcf-cmp038:fakecam_0.log",
+     "17_09:10:21_drp-srcf-mon006:meb0.log",
+     "17_09:10:21_drp-srcf-mon006:shmc0.log"
     ],
     "starve_files": [
-     "17_09:10:21_sdfmilan048:fakecam_0.log",
-     "17_09:10:21_sdfmilan048:meb0.log",
-     "17_09:10:21_sdfmilan048:teb0.log"
+     "17_09:10:21_drp-srcf-cmp038:fakecam_0.log",
+     "17_09:10:21_drp-srcf-mon006:meb0.log",
+     "17_09:10:21_drp-srcf-cmp014:teb0.log"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-17 between 09:10 and 09:12."
    }
@@ -485,42 +485,42 @@
     "keyed_stamp": "13_15:05:16",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
     "keyed_files": [
-     "13_15:05:16_sdfmilan023:ami-client.log",
-     "13_15:05:16_sdfmilan023:ami-global.log",
-     "13_15:05:16_sdfmilan023:ami-manager.log",
-     "13_15:05:16_sdfmilan023:ami-node_0.log",
-     "13_15:05:16_sdfmilan023:ami-worker_0.log",
-     "13_15:05:16_sdfmilan023:bldcas.log",
-     "13_15:05:16_sdfmilan023:control.log",
-     "13_15:05:16_sdfmilan023:control_gui.log",
-     "13_15:05:16_sdfmilan023:daqstat.log",
-     "13_15:05:16_sdfmilan023:deadca.log",
-     "13_15:05:16_sdfmilan023:dtica.log",
-     "13_15:05:16_sdfmilan023:enc_trig.log",
-     "13_15:05:16_sdfmilan023:encoder_0.log",
-     "13_15:05:16_sdfmilan023:epics_0.log",
-     "13_15:05:16_sdfmilan023:fakecam_0.log",
-     "13_15:05:16_sdfmilan023:groupca.log",
-     "13_15:05:16_sdfmilan023:hpsdbuscas.log",
-     "13_15:05:16_sdfmilan023:hsdpva.log",
-     "13_15:05:16_sdfmilan023:meb0.log",
-     "13_15:05:16_sdfmilan023:partca.log",
-     "13_15:05:16_sdfmilan023:procstat.log",
-     "13_15:05:16_sdfmilan023:pvant.log",
-     "13_15:05:16_sdfmilan023:pvatable.log",
-     "13_15:05:16_sdfmilan023:pvcam_0.log",
-     "13_15:05:16_sdfmilan023:pvrtmon_0.log",
-     "13_15:05:16_sdfmilan023:shmc0.log",
-     "13_15:05:16_sdfmilan023:simenc.log",
-     "13_15:05:16_sdfmilan023:teb0.log",
-     "13_15:05:16_sdfmilan023:tprca.log",
-     "13_15:05:16_sdfmilan023:tprtrig.log",
-     "13_15:05:16_sdfmilan023:xpmpva.log"
+     "13_15:05:16_drp-srcf-cmp014:control.log",
+     "13_15:05:16_drp-srcf-cmp014:enc_trig.log",
+     "13_15:05:16_drp-srcf-cmp014:encoder_0.log",
+     "13_15:05:16_drp-srcf-cmp014:epics_0.log",
+     "13_15:05:16_drp-srcf-cmp014:pvcam_0.log",
+     "13_15:05:16_drp-srcf-cmp014:pvrtmon_0.log",
+     "13_15:05:16_drp-srcf-cmp014:simenc.log",
+     "13_15:05:16_drp-srcf-cmp014:teb0.log",
+     "13_15:05:16_drp-srcf-cmp014:tprtrig.log",
+     "13_15:05:16_drp-srcf-cmp038:fakecam_0.log",
+     "13_15:05:16_drp-srcf-mon006:ami-global.log",
+     "13_15:05:16_drp-srcf-mon006:ami-manager.log",
+     "13_15:05:16_drp-srcf-mon006:ami-node_0.log",
+     "13_15:05:16_drp-srcf-mon006:ami-worker_0.log",
+     "13_15:05:16_drp-srcf-mon006:meb0.log",
+     "13_15:05:16_drp-srcf-mon006:shmc0.log",
+     "13_15:05:16_mfx-daq:ami-client.log",
+     "13_15:05:16_mfx-daq:bldcas.log",
+     "13_15:05:16_mfx-daq:control_gui.log",
+     "13_15:05:16_mfx-daq:daqstat.log",
+     "13_15:05:16_mfx-daq:deadca.log",
+     "13_15:05:16_mfx-daq:dtica.log",
+     "13_15:05:16_mfx-daq:groupca.log",
+     "13_15:05:16_mfx-daq:hpsdbuscas.log",
+     "13_15:05:16_mfx-daq:hsdpva.log",
+     "13_15:05:16_mfx-daq:partca.log",
+     "13_15:05:16_mfx-daq:procstat.log",
+     "13_15:05:16_mfx-daq:pvant.log",
+     "13_15:05:16_mfx-daq:pvatable.log",
+     "13_15:05:16_mfx-daq:tprca.log",
+     "13_15:05:16_mfx-daq:xpmpva.log"
     ],
     "starve_files": [
-     "13_15:05:16_sdfmilan023:control.log",
-     "13_15:05:16_sdfmilan023:control_gui.log",
-     "13_15:05:16_sdfmilan023:pvcam_0.log"
+     "13_15:05:16_drp-srcf-cmp014:control.log",
+     "13_15:05:16_mfx-daq:control_gui.log",
+     "13_15:05:16_drp-srcf-cmp014:pvcam_0.log"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-13 between 15:05 and 15:07."
    }
@@ -560,42 +560,42 @@
     "keyed_stamp": "09_15:14:29",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/11",
     "keyed_files": [
-     "09_15:14:29_sdfmilan082:ami-client.log.zst",
-     "09_15:14:29_sdfmilan082:ami-global.log.zst",
-     "09_15:14:29_sdfmilan082:ami-manager.log.zst",
-     "09_15:14:29_sdfmilan082:ami-node_0.log.zst",
-     "09_15:14:29_sdfmilan082:ami-worker_0.log.zst",
-     "09_15:14:29_sdfmilan082:bldcas.log.zst",
-     "09_15:14:29_sdfmilan082:control.log.zst",
-     "09_15:14:29_sdfmilan082:control_gui.log.zst",
-     "09_15:14:29_sdfmilan082:daqstat.log.zst",
-     "09_15:14:29_sdfmilan082:deadca.log.zst",
-     "09_15:14:29_sdfmilan082:dtica.log.zst",
-     "09_15:14:29_sdfmilan082:enc_trig.log.zst",
-     "09_15:14:29_sdfmilan082:encoder_0.log.zst",
-     "09_15:14:29_sdfmilan082:epics_0.log.zst",
-     "09_15:14:29_sdfmilan082:fakecam_0.log.zst",
-     "09_15:14:29_sdfmilan082:groupca.log.zst",
-     "09_15:14:29_sdfmilan082:hpsdbuscas.log.zst",
-     "09_15:14:29_sdfmilan082:hsdpva.log.zst",
-     "09_15:14:29_sdfmilan082:meb0.log.zst",
-     "09_15:14:29_sdfmilan082:partca.log.zst",
-     "09_15:14:29_sdfmilan082:procstat.log.zst",
-     "09_15:14:29_sdfmilan082:pvant.log.zst",
-     "09_15:14:29_sdfmilan082:pvatable.log.zst",
-     "09_15:14:29_sdfmilan082:pvcam_0.log.zst",
-     "09_15:14:29_sdfmilan082:pvrtmon_0.log.zst",
-     "09_15:14:29_sdfmilan082:shmc0.log.zst",
-     "09_15:14:29_sdfmilan082:simenc.log.zst",
-     "09_15:14:29_sdfmilan082:teb0.log.zst",
-     "09_15:14:29_sdfmilan082:tprca.log.zst",
-     "09_15:14:29_sdfmilan082:tprtrig.log.zst",
-     "09_15:14:29_sdfmilan082:xpmpva.log.zst"
+     "09_15:14:29_drp-srcf-cmp014:control.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:enc_trig.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:encoder_0.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:epics_0.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:pvcam_0.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:pvrtmon_0.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:simenc.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:teb0.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:tprtrig.log.zst",
+     "09_15:14:29_drp-srcf-cmp038:fakecam_0.log.zst",
+     "09_15:14:29_drp-srcf-mon006:ami-global.log.zst",
+     "09_15:14:29_drp-srcf-mon006:ami-manager.log.zst",
+     "09_15:14:29_drp-srcf-mon006:ami-node_0.log.zst",
+     "09_15:14:29_drp-srcf-mon006:ami-worker_0.log.zst",
+     "09_15:14:29_drp-srcf-mon006:meb0.log.zst",
+     "09_15:14:29_drp-srcf-mon006:shmc0.log.zst",
+     "09_15:14:29_mfx-daq:ami-client.log.zst",
+     "09_15:14:29_mfx-daq:bldcas.log.zst",
+     "09_15:14:29_mfx-daq:control_gui.log.zst",
+     "09_15:14:29_mfx-daq:daqstat.log.zst",
+     "09_15:14:29_mfx-daq:deadca.log.zst",
+     "09_15:14:29_mfx-daq:dtica.log.zst",
+     "09_15:14:29_mfx-daq:groupca.log.zst",
+     "09_15:14:29_mfx-daq:hpsdbuscas.log.zst",
+     "09_15:14:29_mfx-daq:hsdpva.log.zst",
+     "09_15:14:29_mfx-daq:partca.log.zst",
+     "09_15:14:29_mfx-daq:procstat.log.zst",
+     "09_15:14:29_mfx-daq:pvant.log.zst",
+     "09_15:14:29_mfx-daq:pvatable.log.zst",
+     "09_15:14:29_mfx-daq:tprca.log.zst",
+     "09_15:14:29_mfx-daq:xpmpva.log.zst"
     ],
     "starve_files": [
-     "09_15:14:29_sdfmilan082:control.log.zst",
-     "09_15:14:29_sdfmilan082:control_gui.log.zst",
-     "09_15:14:29_sdfmilan082:pvcam_0.log.zst"
+     "09_15:14:29_drp-srcf-cmp014:control.log.zst",
+     "09_15:14:29_mfx-daq:control_gui.log.zst",
+     "09_15:14:29_drp-srcf-cmp014:pvcam_0.log.zst"
     ],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/11, and the launch in question ran on 2026-11-09 between 15:14 and 15:16."
    }
@@ -629,9 +629,9 @@
     "keyed_stamp": "04_14:18:17",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
     "keyed_files": [
-     "04_14:18:17_sdfmilan048:control.log",
-     "04_14:18:17_sdfmilan048:fakecam_0.log",
-     "04_14:18:17_sdfmilan048:teb0.log"
+     "04_14:18:17_drp-srcf-cmp014:control.log",
+     "04_14:18:17_drp-srcf-cmp014:teb0.log",
+     "04_14:18:17_drp-srcf-cmp038:fakecam_0.log"
     ],
     "starve_files": [],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-04 between 14:18 and 14:19."
@@ -666,9 +666,9 @@
     "keyed_stamp": "22_19:47:22",
     "keyed_dir": "/sdf/home/m/mfxopr/daq/logs/2026/10",
     "keyed_files": [
-     "22_19:47:22_sdfmilan023:control.log",
-     "22_19:47:22_sdfmilan023:jungfrau_0.log",
-     "22_19:47:22_sdfmilan023:teb0.log"
+     "22_19:47:22_drp-srcf-cmp014:control.log",
+     "22_19:47:22_drp-srcf-cmp014:teb0.log",
+     "22_19:47:22_drp-srcf-cmp033:jungfrau_0.log"
     ],
     "starve_files": [],
     "pointer": "The DAQ logs are in /sdf/home/m/mfxopr/daq/logs/2026/10, and the launch in question ran on 2026-10-22 between 19:47 and 19:49."

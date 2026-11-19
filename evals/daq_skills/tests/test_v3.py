@@ -48,8 +48,8 @@ def write_pool(work, name, prefix, host, procs, ym='2026/11', day='2026-11-09'):
 
 
 def control_lines(day, hhmm, pid, extra):
-    return ['# ID:      control', '# HOST:    node%s' % pid, '# CMDLINE: control -P tst -r /sdf/data/lcls/ds/tst/tstx00001/scratch/a.json',
-            '@@@ Restarting child "%s/%s_%s:00_node%s:control.log"' % (day[:7].replace('-', '/'), day[8:], hhmm, pid),
+    return ['# ID:      control', '# HOST:    sdfmilan%s' % pid, '# CMDLINE: control -P tst -r /sdf/data/lcls/ds/tst/tstx00001/scratch/a.json',
+            '@@@ Restarting child "%s/%s_%s:00_sdfmilan%s:control.log"' % (day[:7].replace('-', '/'), day[8:], hhmm, pid),
             '%s %s:01,001 tst-control[%s]: <I> logging initialized for launch %s' % (day, hhmm, pid, pid),
             '%s %s:02,002 tst-control[%s]: <D> headers: {\'Date\': \'Mon, 09 Nov 2026 20:13:00 GMT\'} for %s' % (day, hhmm, pid, pid),
             'tst-drp[%s]: <I> received key = configure @ Mon Nov  9 %s:03 2026 (launch %s)' % (pid, hhmm, pid)] + extra
@@ -61,12 +61,14 @@ class Fixture(object):
     def make(self):
         self.tmp = tempfile.mkdtemp(prefix='daqeval3-')
         self.work = os.path.join(self.tmp, 'work')
-        write_pool(self.work, 'one', '09_12:12:52', 'node1',
-                   {'control': control_lines('2026-11-09', '12:12', '101', ['2026-11-09 12:14:02,000 tst-control[101]: <E> tt_0 did not respond to configure']),
-                    'tt_0': ['# HOST: node1', '# CMDLINE: drp -P tst -D tt', '2026-11-09 12:13:30,000 tst-drp[102]: rogue.GeneralError: Verify error for block Top.TriggerDelay'],
-                    'teb0': ['# HOST: node1', '# CMDLINE: teb -P tst', '2026-11-09 12:13:00,500 tst-teb[103]: <I> teb configured for the launch']})
+        write_pool(self.work, 'one', '09_12:12:52', 'sdfmilan001',
+                   {'control': control_lines('2026-11-09', '12:12', '101', ['2026-11-09 12:14:02,000 tst-control[101]: <E> tt_0 did not respond to configure',
+                                                                          "2026-11-09 12:14:03,000 tst-control[101]: <D> {'proc_info': {'alias': 'tt_0', 'host': 'sdfmilan001', 'pid': 7}}",
+                                                                          "2026-11-09 12:14:04,000 tst-control[101]: <D> {'gen': 2, 'hostname': 'sdfmilan001', 'run_num': 1}"]),
+                    'tt_0': ['# HOST: sdfmilan001', '# CMDLINE: drp -P tst -D tt', '2026-11-09 12:13:30,000 tst-drp[102]: rogue.GeneralError: Verify error for block Top.TriggerDelay'],
+                    'teb0': ['# HOST: sdfmilan001', '# CMDLINE: teb -P tst', '2026-11-09 12:13:00,500 tst-teb[103]: <I> teb configured for the launch']})
         for i, (name, pre) in enumerate([('d1', '09_09:00:10'), ('d2', '09_18:30:20'), ('d3', '09_13:00:30')]):
-            write_pool(self.work, name, pre, 'node%d' % (i + 2),
+            write_pool(self.work, name, pre, 'sdfada%03d' % (i + 2),
                        {'control': control_lines('2026-11-09', pre[3:8], str(200 + i), ['2026-11-09 %s:30,000 tst-control[%d]: <E> decoy %s failed' % (pre[3:8], 200 + i, name)])})
         self.cat = {'version': 2, 'logs_path': '/sdf/home/t/tstopr/daq/logs', 'context': 'Logs are under /sdf/home/t/tstopr/daq/logs.',
                     'pools': {n: {'sessions': []} for n in ('one', 'd1', 'd2', 'd3')},
@@ -78,7 +80,7 @@ class Fixture(object):
         self.table = json.load(open(os.path.join(EVAL, 'cases_v3.json')))
         self.table['cases'] = [{'id': 'c1', 'families': ['A', 'B'], 'pool': 'one', 'healthy': False, 'keyed_launches': ['09_12:12:52'],
                                 'crib': 'tt_0 failed configure: Verify error.', 'starve_component': 'tt_0',
-                                'starve_files': ['09_12:12:52_node1:tt_0.log'],
+                                'starve_files': ['09_12:12:52_sdfmilan001:tt_0.log'],
                                 'm1': {'date': '2026-11-17', 'now': '2026-11-18 09:40', 'vague': 'Tuesday around lunch',
                                        'widest': ['2026-11-17 11:00', '2026-11-17 14:00'], 'question': 'On Tuesday around lunch the DAQ would not configure. Why?',
                                        'answers': {'when': 'Tuesday the 17th, around 12:15.', 'hutch': 'MFX.'}}}]
@@ -105,27 +107,33 @@ class Tree(unittest.TestCase, Fixture):
     def test_keyed_launch_is_rehoused_at_the_mfx_path_on_its_new_day(self):
         m = self.manifest['cases']['c1']
         self.assertEqual((m['keyed_dir'], m['keyed_stamp']), ('/sdf/home/m/mfxopr/daq/logs/2026/11', '17_12:12:52'))
-        self.assertEqual(m['keyed_files'], ['17_12:12:52_node1:control.log', '17_12:12:52_node1:teb0.log', '17_12:12:52_node1:tt_0.log'])
+        self.assertEqual(m['keyed_files'], ['17_12:12:52_drp-srcf-cmp014:control.log', '17_12:12:52_drp-srcf-cmp014:teb0.log',
+                                            '17_12:12:52_drp-srcf-cmp033:tt_0.log'])
         self.assertEqual(self.failed, [])
         self.assertTrue(m['check']['pass'])
         self.assertEqual(m['check']['in_window'], ['home/m/mfxopr/daq/logs/2026/11/17_12:12:52'])
         self.assertEqual(m['check']['other_hutch_in_window'], 1)        # the second hutch's launch is a trap, not a failure
 
     def test_text_is_rewritten_hutch_and_dates_but_nothing_else(self):
-        p = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11/17_12:12:52_node1:control.log')
+        p = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11/17_12:12:52_drp-srcf-cmp014:control.log')
         text = open(p).read()
         self.assertNotIn('tst', text)
         self.assertIn('2026-11-17 12:12:01,001 mfx-control[101]', text)
         self.assertIn('/sdf/data/lcls/ds/mfx/mfxx00001/', text)
-        self.assertIn('2026/11/17_12:12:00_node101:control.log', text)
+        self.assertIn('2026/11/17_12:12:00_drp-srcf-cmp014:control.log', text)
+        self.assertIn('# HOST:    drp-srcf-cmp014', text)
+        self.assertIn("'alias': 'tt_0', 'host': 'drp-srcf-cmp033'", text)     # a node name takes its process's host
+        self.assertIn("'hostname': 'drp-srcf-cmp033'", text)                 # a file report: the launch's detector DRP
+        self.assertEqual(tree.node_names(text), [])
         self.assertIn('Tue, 17 Nov 2026 20:13:00 GMT', text)
         self.assertIn('@ Tue Nov 17 12:12:03 2026', text)
-        self.assertEqual(len(text.splitlines()), len(open(os.path.join(self.work, 'pools', harvest.pool_id('one'), 'logs/2026/11/09_12:12:52_node1:control.log')).read().splitlines()))
+        self.assertEqual(len(text.splitlines()), len(open(os.path.join(self.work, 'pools', harvest.pool_id('one'), 'logs/2026/11/09_12:12:52_sdfmilan001:control.log')).read().splitlines()))
         self.assertEqual(self.manifest['stale_local_dates'], 0)
         self.assertEqual(self.manifest['cases']['c1']['leftovers'], {})
+        self.assertEqual((self.manifest['cases']['c1']['node_leftovers'], self.manifest['shared_node_leftovers']), (0, 0))
 
     def test_modification_time_moves_with_the_day(self):
-        p = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11/17_12:12:52_node1:control.log')
+        p = os.path.join(self.roots, 'm1', 'c1', 'home/m/mfxopr/daq/logs/2026/11/17_12:12:52_drp-srcf-cmp014:control.log')
         self.assertEqual(tree.local_of_epoch(os.stat(p).st_mtime), datetime.datetime(2026, 11, 17, 12, 13, 52))
 
     def test_launches_before_the_cutover_go_to_the_old_root(self):
@@ -142,9 +150,10 @@ class Tree(unittest.TestCase, Fixture):
 
     def test_starved_roots_lack_exactly_the_root_cause_files(self):
         d = os.path.join(self.roots, 'm1-starved', 'c1', 'home/m/mfxopr/daq/logs/2026/11')
-        self.assertEqual(sorted(f for f in os.listdir(d) if f.startswith('17_12')), ['17_12:12:52_node1:control.log', '17_12:12:52_node1:teb0.log'])
+        self.assertEqual(sorted(f for f in os.listdir(d) if f.startswith('17_12')),
+                         ['17_12:12:52_drp-srcf-cmp014:control.log', '17_12:12:52_drp-srcf-cmp014:teb0.log'])
         m0 = os.path.join(self.roots, 'm0-starved', 'c1', 'logs', '2026', '11')
-        self.assertEqual(sorted(os.listdir(m0)), ['09_12:12:52_node1:control.log', '09_12:12:52_node1:teb0.log'])
+        self.assertEqual(sorted(os.listdir(m0)), ['09_12:12:52_sdfmilan001:control.log', '09_12:12:52_sdfmilan001:teb0.log'])
         self.assertTrue(self.manifest['cases']['c1']['starved_absent'])
 
     def test_case_tree_holds_nothing_after_now(self):
@@ -156,7 +165,7 @@ class Tree(unittest.TestCase, Fixture):
         root = os.path.join(self.tmp, 'bad')
         shutil.copytree(os.path.join(self.roots, 'm1', 'c1'), root)
         d = os.path.join(root, 'home/m/mfxopr/daq/logs/2026/11')
-        shutil.copy2(os.path.join(d, '17_12:12:52_node1:teb0.log'), os.path.join(d, '17_13:20:00_node9:teb0.log'))
+        shutil.copy2(os.path.join(d, '17_12:12:52_drp-srcf-cmp014:teb0.log'), os.path.join(d, '17_13:20:00_drp-srcf-cmp014:teb0.log'))
         mine = [l for l in self.manifest['launches'] if l['case'] == 'c1'][0]
         chk = tree.check_root(root, mine, *tree.window(self.table['cases'][0]))
         self.assertFalse(chk['pass'])
@@ -177,6 +186,56 @@ class Tree(unittest.TestCase, Fixture):
         self.assertEqual(out, '"begin_time": "2026-09-17T04:36:29.949485+00:00" at 2026-09-16 21:36:29')
         self.assertEqual(tree.shift_text('Mon Nov  9 09:03:08 2026 getstate _bootstrap Ctst-teb tstopr', 8, 'mfx'),
                          'Tue Nov 17 09:03:08 2026 getstate _bootstrap Cmfx-teb mfxopr')
+
+
+class Hosts(unittest.TestCase):
+    """The sim's S3DF node names become real MFX hosts, per process, in names and text."""
+
+    def test_roles_put_control_on_the_collect_host_and_detectors_on_drp_nodes(self):
+        self.assertEqual([tree.host_for(p) for p in ('control', 'teb0', 'pvcam_0', 'control_gui', 'ami-client', 'ami-node_0', 'meb0')],
+                         ['drp-srcf-cmp014', 'drp-srcf-cmp014', 'drp-srcf-cmp014', 'mfx-daq', 'mfx-daq', 'drp-srcf-mon006', 'drp-srcf-mon006'])
+        self.assertEqual(tree.host_for('jungfrau_0'), 'drp-srcf-cmp033')          # where MFX runs it
+        for p in ('fakecam_0', 'tt_0', 'wave8_0', 'cspad_0', 'some_new_det_0'):
+            self.assertIn(tree.host_for(p), tree.HOSTS['mfx']['drps'])
+            self.assertEqual(tree.host_for(p), tree.host_for(p))                     # deterministic
+        self.assertEqual(tree.host_for('control', 'tmo'), 'drp-srcf-mon001')
+
+    def test_rename_keeps_stamp_process_and_suffix(self):
+        self.assertEqual(tree.rename('09_21:12:48_sdfada013:jungfrau_0.log.zst', '09_21:12:48', '17_21:12:48'),
+                         '17_21:12:48_drp-srcf-cmp033:jungfrau_0.log.zst')
+        self.assertEqual(tree.rename('09_21:12:48_sdfmilan082:control.log', '09_21:12:48', '01_21:12:48'),
+                         '01_21:12:48_drp-srcf-cmp014:control.log')
+
+    def test_each_node_name_takes_the_host_of_its_process(self):
+        text = '\n'.join([
+            '# HOST:    sdfmilan082',
+            '@@@ Restarting child "2026/11/09_15:14:29_sdfmilan082:teb0.log"',
+            "{'alias': 'meb0', 'device': '', 'host': 'sdfmilan082', 'pid': 1}, {'alias': 'fakecam_0', 'host': 'sdfmilan082'}",
+            "{'gen': 2, 'hostname': 'sdfmilan082', 'run_num': 1}",
+            "[[False, 'drp/123/sdfmilan082', 5], [False, 'fakecam_0', 5]]",
+            'no context sdfmilan082 here; a path hash /daq/sdfdefd/prom stays'])
+        out = tree.rehost(text, 'control', ['control', 'teb0', 'fakecam_0', 'meb0'])
+        self.assertEqual(out.splitlines(), [
+            '# HOST:    drp-srcf-cmp014',
+            '@@@ Restarting child "2026/11/09_15:14:29_drp-srcf-cmp014:teb0.log"',
+            "{'alias': 'meb0', 'device': '', 'host': 'drp-srcf-mon006', 'pid': 1}, {'alias': 'fakecam_0', 'host': '%s'}" % tree.host_for('fakecam_0'),
+            "{'gen': 2, 'hostname': '%s', 'run_num': 1}" % tree.host_for('fakecam_0'),
+            "[[False, 'drp/123/%s', 5], [False, 'fakecam_0', 5]]" % tree.host_for('fakecam_0'),
+            'no context drp-srcf-cmp014 here; a path hash /daq/sdfdefd/prom stays'])
+        self.assertEqual(tree.node_names(out), [])
+        self.assertEqual(tree.node_names('sdfiana025 sdfrome001.slac.stanford.edu x_sdfada013:y sdfdefd'),
+                         ['sdfiana025', 'sdfrome001.slac.stanford.edu', 'sdfada013'])
+
+    @unittest.skipUnless(os.environ.get('HUTCH_RESOURCES'), 'set HUTCH_RESOURCES to the hutch-resources skill folder')
+    def test_hosts_are_the_maps_mfx_hosts(self):
+        m = json.load(open(os.path.join(os.environ['HUTCH_RESOURCES'], 'resources', 'mfx-resources.json')))
+        nodes = m['code']['daq_nodes']['verified_active_assignments_2026_09_20']
+        h = tree.HOSTS['mfx']
+        for host in [h['collect'], h['gui'], h['monitor']] + h['drps']:
+            self.assertIn(host, nodes)
+        self.assertIn('control', ' '.join(nodes[h['collect']]))
+        for proc, host in h['fixed'].items():
+            self.assertTrue(any(x.startswith(proc) for x in nodes[host]), proc)
 
 
 FAKE_M1 = r'''
@@ -264,7 +323,8 @@ class RunV3(unittest.TestCase, Fixture):
     def test_starved_m0_mounts_the_starved_pool(self):
         self.run_('starved', 'm0', 'starved', extra=['--dry-run'])
         meta = json.load(open(os.path.join(self.one('starved'), 'meta.json')))
-        self.assertEqual(sorted(os.listdir(os.path.join(meta['logs_src'], '2026', '11'))), ['09_12:12:52_node1:control.log', '09_12:12:52_node1:teb0.log'])
+        self.assertEqual(sorted(os.listdir(os.path.join(meta['logs_src'], '2026', '11'))),
+                         ['09_12:12:52_sdfmilan001:control.log', '09_12:12:52_sdfmilan001:teb0.log'])
         self.assertIn(meta['logs_src'], open(os.path.join(self.one('starved'), 'prompt.txt')).read())
 
     def test_starved_m1_and_evidence_never_found_is_censored(self):

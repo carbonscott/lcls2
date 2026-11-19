@@ -21,13 +21,21 @@ The calendar (one history for all cases, so each case's tree also holds the othe
 Each launch is a pool's launch moved to another day: the file names' day, the directory, every date in the
 text (local dates, UTC ISO stamps, HTTP dates, ctime dates) and the modification times move by whole days with
 the time of day kept; UTC stamps follow US Pacific daylight time on the new day.  The hutch name 'tst' becomes
-'mfx' (or 'tmo') wherever it is not inside another word.  No line is added, removed or reordered.  The keyed
+'mfx' (or 'tmo') wherever it is not inside another word.  The sim's S3DF node names (sdfmilan082, sdfada013, ...)
+become the hutch's real DAQ hosts, in file names and in the text, per process (HOSTS, from the hutch-resources map):
+on MFX, control and teb0 run on drp-srcf-cmp014 (so the map's '<stamp>_drp-srcf-cmp014:control.log' works), the
+timing, EPICS, BLD, PVA-camera and encoder DRPs there too, the GUIs and the sim's helper servers on mfx-daq, AMI and the
+monitoring MEB on drp-srcf-mon006, and each detector DRP on one of MFX's drp-srcf-cmpNNN DRP nodes (jungfrau_N and
+epix100_0 where MFX has them, any other by a fixed hash of its name).  In the text a node name takes the host of the
+process it belongs to: the file's own process ('# HOST:'), the alias of the dict it sits in, the process of a log-file
+name it is part of; a DAQ file report's 'hostname' takes the launch's first detector DRP.  No line is added, removed or
+reordered.  The keyed
 launch of each case sits on the case's day; decoy launches from the other pools fill other days, chosen by a
 fixed seed, never inside any case's widest window.  The partition configs are rebuilt from the '# HOST' and
 '# CMDLINE' headers of one launch each, so they match processes that really ran in the sim.
 
 The build fails (exit 1) unless, for every case, the MFX roots of its tree hold no launch but the keyed one
-inside the widest reading of its vague time.  Launches of the second hutch inside that window are counted
+inside the widest reading of its vague time, and no S3DF node name is left in any file name or text of the tree.  Launches of the second hutch inside that window are counted
 (manifest 'other_hutch_in_window'): they are a deliberate wrong-tree trap.
 
 Standard library only, Python 3.6+; needs zstd for the compressed launches.
@@ -35,6 +43,7 @@ Standard library only, Python 3.6+; needs zstd for the compressed launches.
 
 import argparse
 import datetime
+import hashlib
 import json
 import os
 import random
@@ -95,6 +104,95 @@ STAMPS = re.compile(r'(?P<utc>\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:\+00:00
                     r'|(?P<date>\d{4}-\d\d-\d\d)'
                     r'|(?P<path>\d{4}/\d\d/\d\d(?=_\d\d:\d\d:\d\d))' % (WDAY, MON, WDAY, MON))
 BENIGN_TST = re.compile(r'getstate|setstate|getstatus|bootstrap|TSTRB|tStream|tStartup|tStore|TStamp|Tstate')   # not the hutch name
+
+# Real DAQ hosts per hutch (hutch-resources 974ee6d: mfx-resources.json code.daq_nodes.verified_active_assignments_2026_09_20,
+# tmo-resources.json logs).  collect: control and the event builder; gui: the control host (GUIs, entries with no host key);
+# monitor: AMI and the monitoring MEB; drps: the detector DRP nodes; fixed: where MFX runs that detector.
+HOSTS = {
+    'mfx': {'collect': 'drp-srcf-cmp014', 'gui': 'mfx-daq', 'monitor': 'drp-srcf-mon006',
+            'drps': ['drp-srcf-cmp031', 'drp-srcf-cmp032', 'drp-srcf-cmp033', 'drp-srcf-cmp035', 'drp-srcf-cmp038',
+                     'drp-srcf-cmp039', 'drp-srcf-cmp044'],
+            'fixed': {'jungfrau_0': 'drp-srcf-cmp033', 'jungfrau_1': 'drp-srcf-cmp032', 'jungfrau_2': 'drp-srcf-cmp035',
+                      'jungfrau_3': 'drp-srcf-cmp038', 'jungfrau_4': 'drp-srcf-cmp039', 'epix100_0': 'drp-srcf-cmp031'}},
+    'tmo': {'collect': 'drp-srcf-mon001', 'gui': 'tmo-daq', 'monitor': 'drp-srcf-mon004',
+            'drps': ['drp-srcf-cmp001', 'drp-srcf-cmp003', 'drp-srcf-cmp004', 'drp-srcf-cmp011', 'drp-srcf-cmp013',
+                     'drp-srcf-cmp026', 'drp-srcf-cmp030', 'drp-srcf-cmp043'], 'fixed': {}},
+}
+# Process roles by name (first match wins); a name matching none is a detector DRP.
+ROLES = [
+    ('collect', re.compile(r'(?:control|teb\d*|ts_\d+|epics_\d+|bld_\d+|pvcam_\d+|encoder_\d+|simenc|enc_trig|tprtrig|pvrtmon_\d+)$')),
+    ('gui', re.compile(r'(?:control_gui|daqstat|xpmpva|groupca|ami-client\w*|det_protec_mon|procstat|pvatable|hsdpva|dtica|pvant'
+                       r'|partca|tprca|bldcas|hpsbldcas|hpsbldcpa|hpsbldsvc|lclsbldsvc|hpsdbuscas|deadca|wave8pvs)$')),
+    ('monitor', re.compile(r'(?:ami-[\w-]+|meb\d*\w*|shmc\d*)$')),
+]
+S3DF_NODE = re.compile(r'(?<![A-Za-z0-9])sdf[a-z]{3,}\d{3}(?:\.[a-z0-9.-]*stanford\.edu)?(?![A-Za-z0-9])')   # sdfmilan082, sdfada013
+_ALIAS_BEFORE = re.compile(r"""['"]alias['"]:\s*['"]([^'"]+)['"][^{}]*$""")
+_FILE_AFTER = re.compile(r'^:([\w.+-]+?)\.log')
+_ALIAS_AFTER = re.compile(r"""^['"],\s*\d+\],\s*\[\w+,\s*['"]([^'"]+)['"]""")          # [False, 'drp/<pid>/<host>', 5], [False, '<alias>', ...]
+_HOSTNAME_BEFORE = re.compile(r"""['"]hostname['"]:\s*['"]$""")
+
+
+def role_of(proc):
+    for role, rx in ROLES:
+        if rx.match(proc):
+            return role
+    return 'drp'
+
+
+def host_for(proc, hutch='mfx'):
+    """The real host of a process of the sim on `hutch` (deterministic)."""
+    h = HOSTS[hutch]
+    role = role_of(proc)
+    if role != 'drp':
+        return h[role]
+    return h['fixed'].get(proc) or h['drps'][int(hashlib.sha1(proc.encode()).hexdigest(), 16) % len(h['drps'])]
+
+
+def proc_of(fname):
+    """'09_21:12:48_sdfada013:control.log[.zst]' -> 'control'."""
+    p = fname.rsplit(':', 1)[-1]
+    return re.sub(r'\.log(?:\.zst)?$', '', p)
+
+
+def rename(fname, old_prefix, new_prefix, hutch='mfx'):
+    """A launch file's name under its new day and its process's real host."""
+    rest = fname[len(old_prefix):]
+    m = re.match(r'_([^:]+):(.+)$', rest)
+    if not m:
+        return new_prefix + rest
+    return '%s_%s:%s' % (new_prefix, host_for(proc_of(fname), hutch), m.group(2))
+
+
+def rehost(text, proc, procs=(), hutch='mfx'):
+    """Every S3DF node name in a file of `proc` replaced by the real host of the process it belongs to.
+    procs: the launch's process names (a file report's 'hostname' takes the first detector DRP among them)."""
+    drps = sorted(p for p in procs if role_of(p) == 'drp')
+    report_host = host_for(drps[0] if drps else proc, hutch)
+
+    def sub(m):
+        line0 = text.rfind('\n', 0, m.start()) + 1
+        before = text[max(line0, m.start() - 400):m.start()]
+        after = text[m.end():m.end() + 160]
+        if re.search(r'#\s*HOST:\s*$', before):
+            return host_for(proc, hutch)
+        f = _FILE_AFTER.match(after)
+        if f:
+            return host_for(f.group(1), hutch)
+        a = _ALIAS_BEFORE.search(before)
+        if a:
+            return host_for(a.group(1), hutch)
+        if _HOSTNAME_BEFORE.search(before):
+            return report_host
+        a = _ALIAS_AFTER.match(after)
+        if a and re.search(r'/\d+/$', before):
+            return host_for(a.group(1), hutch)
+        return host_for(proc, hutch)
+    return S3DF_NODE.sub(sub, text)
+
+
+def node_names(text):
+    """S3DF node names left in a text (should be none in a built tree)."""
+    return S3DF_NODE.findall(text)
 
 
 # ---------------------------------------------------------------------------- US Pacific time, by hand
@@ -307,7 +405,7 @@ def config_text(ln):
         h = dict((m.group(1), m.group(2).strip()) for m in (re.match(r'# (HOST|CMDLINE):\s*(.*)', l) for l in head) if m)
         if 'CMDLINE' in h:
             pid = f.rsplit(':', 1)[-1].replace('.log.zst', '').replace('.log', '')
-            rows.append(" { host: '%s', id: '%s', flags: 'spu', cmd: '%s' }," % (h.get('HOST', 'localhost'), pid, h['CMDLINE'].replace("'", '"')))
+            rows.append(" { host: '%s', id: '%s', flags: 'spu', cmd: '%s' }," % (host_for(pid), pid, h['CMDLINE'].replace("'", '"')))
     return ("platform = '5'\nhost, cores, id, flags, env, cmd, rtprio = ('host', 'cores', 'id', 'flags', 'env', 'cmd', 'rtprio')\n\n"
             "procmgr_config = [\n%s\n]\n" % '\n'.join(rows))
 
@@ -320,7 +418,7 @@ def placements(work, cases, cat, calendar=None):
     for ln, date, tree, cid in plan(cases, pools, cat, calendar):
         start, end, prefix, days = ln.moved(date)
         rel = os.path.join(where(start, tree), '%04d' % start.year, '%02d' % start.month)
-        out.append((ln, {'tree': tree, 'dir': rel, 'prefix': prefix, 'files': sorted(prefix + f[len(ln.prefix):] for f in ln.files),
+        out.append((ln, {'tree': tree, 'dir': rel, 'prefix': prefix, 'files': sorted(rename(f, ln.prefix, prefix, tree) for f in ln.files),
                          'start': start.strftime('%Y-%m-%d %H:%M:%S'), 'end': end.strftime('%Y-%m-%d %H:%M:%S'), 'case': cid,
                          'pool': ln.pool, 'source': ln.prefix, 'days': days}))
     return pools, out
@@ -330,17 +428,18 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
     pools, placed = placements(work, cases, cat, calendar)
     configs = CONFIGS if configs is None else configs
     shared = os.path.join(out, 'shared')
-    for d in ('shared', 'm1', 'm1-starved', 'm0-starved'):
+    for d in ('shared', 'm1', 'm1-starved'):       # m0-starved is only redone where it differs (a run may have it mounted)
         if os.path.exists(os.path.join(out, d)):
             shutil.rmtree(os.path.join(out, d))
     launches, stale = [], 0                        # what is on disk
     for ln, rec in placed:
+        procs = [proc_of(f) for f in ln.files]
         for f in ln.files:
             src = os.path.join(ln.src, f)
             mt = epoch(local_of_epoch(os.stat(src).st_mtime) + rec['days'] * DAY)
-            text = shift_text(read_log(src), rec['days'], rec['tree'])
+            text = rehost(shift_text(read_log(src), rec['days'], rec['tree']), proc_of(f), procs, rec['tree'])
             stale += len(stale_dates(text, ln, rec['days']))
-            write_log(os.path.join(shared, rec['dir'], rec['prefix'] + f[len(ln.prefix):]), text, mt)
+            write_log(os.path.join(shared, rec['dir'], rename(f, ln.prefix, rec['prefix'], rec['tree'])), text, mt)
         launches.append(rec)
     first = dict((name, ls[0]) for name, ls in pools.items())
     for name, pool in configs:
@@ -377,7 +476,10 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
             failed.append(c['id'])
         m = derived(c, mine)
         m.update(check=chk, now=c['m1']['now'], files=sum(len(fs) for _d, _s, fs in os.walk(os.path.join(out, 'm1', c['id']))),
-                 bytes=du(os.path.join(out, 'm1', c['id'])), leftovers=leftovers(os.path.join(out, 'm1', c['id'])))
+                 bytes=du(os.path.join(out, 'm1', c['id'])), leftovers=leftovers(os.path.join(out, 'm1', c['id'])),
+                 node_leftovers=node_leftovers(os.path.join(out, 'm1', c['id']), 'home'))
+        if m['node_leftovers']:
+            failed.append('%s: %d S3DF node names left' % (c['id'], m['node_leftovers']))
         if starve:
             gone = [f for f in m['starve_files'] if os.path.exists(os.path.join(out, 'm1-starved', c['id'], mine['dir'], f))]
             m['starved_absent'] = not gone and all(os.path.exists(os.path.join(out, 'm1', c['id'], mine['dir'], f)) for f in m['starve_files'])
@@ -386,30 +488,37 @@ def build(work, cases, cat, out, quiet=False, calendar=None, configs=None):
         if c.get('starve_files'):
             pdir = os.path.join(work, 'pools', pool_id(c['pool']), 'logs')
             dst = os.path.join(out, 'm0-starved', c['id'], 'logs')
-            for d, _s, fs in os.walk(pdir):
-                for f in fs:
-                    if f not in c['starve_files']:
-                        link_or_copy(os.path.join(d, f), os.path.join(dst, os.path.relpath(d, pdir), f))
+            want = dict((os.path.relpath(os.path.join(d, f), pdir), os.path.join(d, f)) for d, _s, fs in os.walk(pdir)
+                        for f in fs if f not in c['starve_files'])
+            have = dict((os.path.relpath(os.path.join(d, f), dst), os.path.join(d, f)) for d, _s, fs in os.walk(dst) for f in fs)
+            if sorted(have) != sorted(want) or any(not os.path.samefile(have[k], want[k]) for k in want):
+                if os.path.exists(dst):
+                    shutil.rmtree(dst)
+                for rel, src in sorted(want.items()):
+                    link_or_copy(src, os.path.join(dst, rel))
             for d, _s, _f in os.walk(pdir):
                 st = os.stat(d)
                 if os.path.isdir(os.path.join(dst, os.path.relpath(d, pdir))):
                     os.utime(os.path.join(dst, os.path.relpath(d, pdir)), (st.st_atime, st.st_mtime))
     manifest['shared_bytes'] = du(shared)
+    manifest['shared_node_leftovers'] = node_leftovers(shared, 'home')
+    if manifest['shared_node_leftovers']:
+        failed.append('%d S3DF node names left in the shared calendar' % manifest['shared_node_leftovers'])
     manifest['stale_local_dates'] = stale
     if stale:
         failed.append('%d local time stamps still carry a launch\'s old day' % stale)
     json.dump(manifest, open(os.path.join(out, 'manifest.json'), 'w'), indent=1, sort_keys=True)
     if not quiet:
         for cid, m in manifest['cases'].items():
-            print('%-18s now %s  keyed %s/%s  in window: %s  other hutch in window: %d  %s files %.1f MB  leftover tst %d  %s'
+            print('%-18s now %s  keyed %s/%s  in window: %s  other hutch in window: %d  %s files %.1f MB  leftover tst %d  node names %d  %s'
                   % (cid, m['now'], m['keyed_dir'], m['keyed_stamp'], m['check']['in_window'], m['check']['other_hutch_in_window'],
-                     m['files'], m['bytes'] / 1e6, sum(m['leftovers'].values()), 'PASS' if m['check']['pass'] else 'FAIL'))
+                     m['files'], m['bytes'] / 1e6, sum(m['leftovers'].values()), m['node_leftovers'], 'PASS' if m['check']['pass'] else 'FAIL'))
     return manifest, failed
 
 
 def prefix_swap(f, case, mine):
-    """A catalog file name of the keyed launch under its new day."""
-    return mine['prefix'] + f[len(mine['source']):]
+    """A catalog file name of the keyed launch under its new day and real host."""
+    return rename(f, mine['source'], mine['prefix'], mine['tree'])
 
 
 def derived(case, mine):
@@ -474,6 +583,15 @@ def leftovers(root):
                 if not BENIGN_TST.search(w):
                     out[w] = out.get(w, 0) + 1
     return out
+
+
+def node_leftovers(root, sub=os.path.join('home', 'm')):
+    """S3DF node names (sdfmilan082, ...) left in the file names and texts under root/sub."""
+    n = 0
+    for d, _s, fs in os.walk(os.path.join(root, sub)):
+        for f in fs:
+            n += len(node_names(f)) + len(node_names(read_log(os.path.join(d, f))))
+    return n
 
 
 def main(argv=None):
