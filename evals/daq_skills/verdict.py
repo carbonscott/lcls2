@@ -8,7 +8,7 @@ Input: a JSON list of rows, one per scored run:
    cost_usd, seconds}
 'score' of a run = cause_pass for a fault case; healthy_outcome != 'false-alarm' for a healthy case.
 
-Rules are copied from .goal/daq-skill-eval-v3.predictions.json (written before any run):
+Rules, fixed before any run and copied here (definitions: README.md, "v3: cold start (mode m1) and the controls"):
   P2/P3 controls: positive >= none + margin (points), negative <= none - 25 points on the same fault pools.
   P3m (iteration 2, before any default-model M1 run): families B and C pooled, mode m1, default model: positive
         control passes iff pooled pointer >= pooled none + 12.5 points (score over every B and C case x repeat);

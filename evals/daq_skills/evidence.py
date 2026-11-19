@@ -2,7 +2,7 @@
 
     python3 evidence.py --results RESULTS_DIR --work WORK [--cases-v3 FILE] [--catalog FILE] [--write] [--json]
 
-Definition (.goal/daq-skill-eval-v3.predictions.json, 'Calls to evidence'): the number of tool calls before
+Definition (README.md, "v3: cold start (mode m1) and the controls", 'Calls to evidence'): the number of tool calls before
 the first read of a file belonging to the keyed launch.  Every tool call counts, reads of skill or map files
 included, and so do ask-operator calls.  A run that never reads one is censored at its total calls + 1.
 Also written, for a descriptive sensitivity check only (verdict.py): calls_no_guidance, the same count with the

@@ -61,7 +61,9 @@ python3 verdict.py $PILOT/rows.json            # the pre-registered verdicts (P2
 
 - `pilot.py` refuses to start (exit 2) when its projection exceeds `--budget-left` (USD); it
   estimates $2.00 a default-model run and $0.10 a Haiku run until finished runs say otherwise,
-  plus $0.06 of scoring, so the B cells above project about $190.
+  plus $0.06 of scoring, so the B cells above project about $190. The budgets above leave room for that
+  estimate; the pilot of record measured about $0.90 a default-model run plus $0.05 of scoring
+  (162 runs of families B and C, $156 in all).
 - Controls: `pointer` (B, C) hands over the folder and window, `crib` (A) the key's mechanism,
   `starved` (A, B) removes the root-cause files. They show whether the eval can move at all.
 - Family C's per-case views decompress the week before each case's "now": about 19 GB under
@@ -182,9 +184,9 @@ python3 evidence.py --results $OUT --work $WORK --write
 
 ```bash
 P="python3 pilot.py --out $OUT --work $WORK --real-root $REAL --skills $SK --map $MAP --jobs 2 --resume"
-$P --budget-left 100 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
-$P --budget-left 100 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
-$P --budget-left 5 --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3
+$P --budget-left 200 --cell B/none --cell B/skills --cell B/map --cell B/both --cell B/pointer --cell B/starved --repeats 2
+$P --budget-left 150 --cell C/none --cell C/skills --cell C/map --cell C/both --cell C/pointer --repeats 2
+$P --budget-left 15  --cell A/none/haiku --cell A/crib/haiku --cell A/starved/haiku --repeats 3
 python3 verdict.py $OUT/rows.json                         # P2-P6 and P3m, the pre-registered rules in verdict.py's docstring
 ```
 

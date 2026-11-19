@@ -1,6 +1,6 @@
 {
  "version": 3,
- "about": "Cases of the v3 DAQ skill eval (.goal/daq-skill-eval-v3.predictions.json). Family A = these pools at mode m0 (catalog prompt, tst logs); family B = the same pools re-housed by tree.py in an MFX-shaped tree at mode m1. run.py reads this file for --mode m1 and for the controls; tree.py fills the m1 fields keyed_stamp, keyed_dir, keyed_files, starve_files and pointer (--write-cases).",
+ "about": "Cases of the v3 DAQ skill eval (README.md, section 'v3: cold start (mode m1) and the controls'). Family A = these pools at mode m0 (catalog prompt, tst logs); family B = the same pools re-housed by tree.py in an MFX-shaped tree at mode m1. run.py reads this file for --mode m1 and for the controls; tree.py fills the m1 fields keyed_stamp, keyed_dir, keyed_files, starve_files and pointer (--write-cases).",
  "anchor_selection": {
   "rule": "the 6 core fault cases with the most non-'correct' v2 verdicts summed over the four v2 arms (none, skills-181, none.haiku, skills-181.haiku; 6 runs per case), ties by fewer log files in the pool, then case id; plus the 2 core healthy cases with the fewest v2 false alarms, ties by case id",
   "source": "old-v2/results.json rows (arm, case, cause.verdict), 204 rows",
