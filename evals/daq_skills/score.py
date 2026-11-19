@@ -13,10 +13,10 @@ Each report is scored in four steps; only steps 1, 1b and 3 call a model.
               problems, each with a role (cause | side-issue | consequence | possible), the
               component, the stage and a verbatim quote of the mechanism, and its asks to the
               operator.  Cached by the report's sha256, so a re-run costs nothing.
-  1b. CONCLUDE cold-start runs only: a second call, which also sees only the report, returns the launch
-              the report concludes about (the launch of its main cause; for a report that finds no
-              fault, the session it says it reviewed), never one it only lists as examined.  Cached
-              the same way.
+  1b. CONCLUDE cold-start runs only: a second call, which sees only the report and the moment the
+              operator asked (the run's now), returns the launch the report concludes about (the launch
+              of its main cause; for a report that finds no fault, the session it says it reviewed),
+              never one it only lists as examined.  Cached by the whole prompt.
   2. FACTS    scripts compare the record with the key: launch (only where the pool holds many
               launches), component and stage by aliases, and 'located': the report names the
               keyed launch (its start stamp, a log-file prefix, or a time that falls in that
