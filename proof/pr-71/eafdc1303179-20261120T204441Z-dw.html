@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR #70 fixes proof</title>
+<style>
+:root {
+  --bg: #F4F6F8; --surface: #FFFFFF; --fg: #141A22; --muted: #566170; --line: #D8DEE6;
+  --accent: #1D5BB8; --pass: #1B7442; --fail: #B42318; --warn: #9A5600; --notrun: #6B4FA0;
+  --fail-bg: #FDF0EE; --warn-bg: #FFF6E5; --code: #EBEFF4;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1116; --surface: #141A21; --fg: #E3E8EE; --muted: #98A3B1; --line: #28313C;
+  --accent: #7DB0FF; --pass: #5DC98C; --fail: #FF8A7A; --warn: #E2A54C; --notrun: #B9A2F0;
+  --fail-bg: #2A1714; --warn-bg: #2A2012; --code: #1A2129; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1116; --surface: #141A21; --fg: #E3E8EE; --muted: #98A3B1; --line: #28313C;
+  --accent: #7DB0FF; --pass: #5DC98C; --fail: #FF8A7A; --warn: #E2A54C; --notrun: #B9A2F0;
+  --fail-bg: #2A1714; --warn-bg: #2A2012; --code: #1A2129; color-scheme: dark }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 var(--sans); overflow-x: hidden; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+.wrap > * { min-width: 0; }
+section { display: grid; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: 2rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.02rem; }
+p { margin: 0; max-width: 78ch; }
+.eyebrow { font: 500 0.76rem/1.55 var(--mono); color: var(--muted); letter-spacing: 0.03em; overflow-wrap: anywhere; }
+.eyebrow b { color: var(--fg); font-weight: 500; }
+.lede { font-size: 1.08rem; }
+.muted { color: var(--muted); }
+code, .mono { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
+code { background: var(--code); padding: 0.1em 0.35em; border-radius: 4px; }
+a { color: var(--accent); overflow-wrap: anywhere; }
+.banner { border: 1px solid var(--warn); background: var(--warn-bg); border-radius: 8px; padding: 12px 16px; display: grid; gap: 6px; }
+.banner.fail { border-color: var(--fail); background: var(--fail-bg); }
+.banner b { font-family: var(--mono); letter-spacing: 0.04em; }
+.verdicts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.verdict.bad { border-color: var(--fail); }
+.verdict .k { font-weight: 600; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.verdict .v { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.counts { display: flex; gap: 14px; flex-wrap: wrap; font: 600 1.5rem/1.1 var(--mono); }
+.counts span small { display: block; font: 500 0.7rem/1.3 var(--mono); color: var(--muted); letter-spacing: 0.05em; }
+.chip { display: inline-block; font: 600 0.72rem/1 var(--mono); letter-spacing: 0.05em; padding: 4px 7px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.chip.pass, .c-pass { color: var(--pass); }
+.chip.fail, .c-fail { color: var(--fail); }
+.chip.warn, .c-warn { color: var(--warn); }
+.chip.notrun, .c-notrun { color: var(--notrun); }
+.chip.notrun { border-style: dashed; }
+.chip.none { color: var(--muted); border-style: dotted; }
+.arrow { color: var(--muted); padding: 0 4px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+table.wide { min-width: 980px; }
+table.mid { min-width: 720px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 0.72rem/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+td .ev { display: block; margin-top: 5px; font: 0.78rem/1.45 var(--mono); color: var(--muted); overflow-wrap: anywhere; max-width: 60ch; }
+td.id { font-family: var(--mono); font-size: 0.84rem; white-space: nowrap; }
+td.id small, td small { display: block; color: var(--muted); font-size: 0.76rem; }
+tr.target td.id { box-shadow: inset 3px 0 0 var(--accent); }
+td.chg { font: 600 0.8rem/1.3 var(--mono); white-space: nowrap; }
+.chg.fixed { color: var(--pass); } .chg.regressed, .chg.stillbad { color: var(--fail); } .chg.same, .chg.gone, .chg.new { color: var(--muted); }
+.cards2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card.bad { border-color: var(--fail); background: var(--fail-bg); }
+.card dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; font-size: 0.9rem; }
+.card dt { color: var(--muted); }
+.card dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+pre { margin: 0; background: var(--code); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font: 0.8rem/1.55 var(--mono); max-width: 100%; }
+pre .ln { color: var(--muted); user-select: none; display: inline-block; min-width: 5ch; }
+pre.wrapit { white-space: pre-wrap; overflow-wrap: anywhere; }
+ol.list, ul.list { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; max-width: 84ch; }
+ol.list li::marker { color: var(--muted); font-family: var(--mono); }
+details { border-top: 1px solid var(--line); padding-top: 14px; }
+details summary { cursor: pointer; font-weight: 600; }
+details > div { display: grid; gap: 12px; margin-top: 12px; min-width: 0; }
+.legend { font-size: 0.84rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+@media (max-width: 560px) { h1 { font-size: 1.6rem; } .counts { font-size: 1.25rem; } }
+</style></head><body>
+<div class="wrap">
+<header style="display:grid; gap:10px">
+<div class="eyebrow">BEFORE <b>2882d4981974-20261120T070827Z-dw</b> · head 2882d4981974 · 2026-11-20T07:08:29Z → 2026-11-20T07:40:15Z<br>AFTER <b>eafdc1303179-20261120T204441Z-dw</b> · head eafdc1303179 · lcls2-sync a715a8731e32 · 2026-11-20T20:44:44Z → 2026-11-20T21:27:00Z<br>S3DF Slurm, tiers daily, weekly, mode weekly · read-back 2026-11-20T21:28:57Z · generated 2026-11-20T21:29:19Z · one self-contained file</div>
+<h1>PR #70 fixes proof</h1>
+<p class="lede">With <a href="https://github.com/carbonscott/lcls2/pull/71">carbonscott/lcls2#71</a> stacked on <a href="https://github.com/carbonscott/lcls2/pull/70">PR #70</a> and the suite from <a href="https://github.com/carbonscott/lcls2-sync/pull/1">carbonscott/lcls2-sync#1</a>, every gated row of the daily and weekly tiers passes at eafdc1303179: 16 rows, 16 PASS. Of the 12 rows that failed or did not run at 2882d4981974 (PR #70's head), 12 pass now; 0 row(s) that passed before do not. A separate read-back of the record on S3DF, with plain Python and none of the suite's code, matches the local record byte for byte and row for row.</p>
+</header>
+<section aria-label="Verdicts"><div class="verdicts">
+<div class="verdict"><div class="k">After run <span class="chip pass">PASS</span></div><div class="counts"><span class="c-pass">16<small>PASS</small></span><span class="c-fail">0<small>FAIL</small></span><span class="c-notrun">0<small>NOT RUN</small></span></div><div class="v">16 rows at eafdc1303179<br>before: 4 PASS · 4 FAIL · 8 NOT RUN</div></div>
+<div class="verdict"><div class="k"><span class="mono">fork/matrix</span><span><span class="chip fail">FAIL</span><span class="arrow">→</span><span class="chip pass">PASS</span></span></div><div class="v">fixed<br>MATRIX PASS (201 assertions)</div></div>
+<div class="verdict"><div class="k"><span class="mono">fork/webgui-e2e</span><span><span class="chip fail">FAIL</span><span class="arrow">→</span><span class="chip pass">PASS</span></span></div><div class="v">fixed<br>E2E PASS</div></div>
+<div class="verdict"><div class="k"><span class="mono">drift/guards</span><span><span class="chip fail">FAIL</span><span class="arrow">→</span><span class="chip pass">PASS</span></span></div><div class="v">fixed<br>GUARDS PASS 216/216 hunks present in 66 files; 2 hunks RETIRED by approval in 1 file; 5 hunks REVIEW (upstream touched the region) head=eafdc1303179</div></div>
+<div class="verdict"><div class="k"><span class="mono">drift/probes</span><span><span class="chip fail">FAIL</span><span class="arrow">→</span><span class="chip pass">PASS</span></span></div><div class="v">fixed<br>PROBES PASS 19/19 NEEDED vs 9635c4fe1722; self-test 19/19 FIXED at eafdc1303179</div></div>
+<div class="verdict"><div class="k">Independent read-back <span class="chip pass">PASS</span></div><div class="v">byte_equal true · agree_with_local true<br>16 of 16 rows agree</div></div>
+</div></section>
+<section><h2>Every row, before and after</h2>
+<p class="muted">The union of both records: 16 rows. Before = PR #70's head 2882d4981974 (run 2882d4981974-20261120T070827Z-dw); after = PR #71's head eafdc1303179 (run eafdc1303179-20261120T204441Z-dw). The suite records a row it never ran as FAIL with evidence <code>not run: …</code>; this page shows those as NOT-RUN. Rows with a blue edge are the four PR #70 waits on.</p>
+<div class="legend"><span class="chip pass">PASS</span><span class="chip fail">FAIL</span><span class="chip notrun">NOT-RUN</span><span class="chip none">ABSENT</span><span>gate = the row counts toward the run's verdict</span></div>
+<div class="table-wrap"><table class="wide"><thead><tr><th>Row</th><th>Before</th><th>After</th><th>Change</th></tr></thead><tbody>
+<tr class="target"><td class="id">drift/guards<small>daily · gate</small></td><td><span class="chip fail">FAIL</span><span class="ev">GUARDS FAIL 2 of 218 hunks lost in 1 of 67 files; 7 hunks REVIEW head=2882d4981974</span></td><td><span class="chip pass">PASS</span><span class="ev">GUARDS PASS 216/216 hunks present in 66 files; 2 hunks RETIRED by approval in 1 file; 5 hunks REVIEW (upstream touched the region) head=eafdc1303179</span></td><td class="chg fixed">fixed</td></tr>
+<tr class=""><td class="id">drift/kinds-static<small>daily · gate</small></td><td><span class="chip pass">PASS</span><span class="ev">KINDS-STATIC PASS 142 (file, driver call) pairs in 32 files within the baseline; MemPool 6 virtuals, every pure one overridden by MemPoolSim (head 2882d4981974, baseline 08a6634c874b)</span></td><td><span class="chip pass">PASS</span><span class="ev">KINDS-STATIC PASS 142 (file, driver call) pairs in 32 files within the baseline; MemPool 6 virtuals, every pure one overridden by MemPoolSim (head eafdc1303179, baseline eafdc1303179)</span></td><td class="chg same">still passes</td></tr>
+<tr class="target"><td class="id">drift/probes<small>daily · gate</small></td><td><span class="chip fail">FAIL</span><span class="ev">PROBES FAIL 1 of 20 probes: epixquad-import-order: now-upstream (psdaq/psdaq/configdb/epixquad_config.py at 9635c4fe1722 no longer has the defect: module-level import ePixQuad/enable_epix_quad before enable_lcls2_pgp_pcie_apps)</span></td><td><span class="chip pass">PASS</span><span class="ev">PROBES PASS 19/19 NEEDED vs 9635c4fe1722; self-test 19/19 FIXED at eafdc1303179</span></td><td class="chg fixed">fixed</td></tr>
+<tr class=""><td class="id">drift/digests<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">DIGESTS PASS 23/23 keys equal the baseline (3 excluded: drp_gpu:epixuhremu, drp_gpu:epixuhrsim, drp_gpu:fakecam; 11 attributes excluded by the baseline, each still raising as recorded)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">drift/kinds<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">KINDS PASS 26/26 types equal the baseline (35617 kinds; baseline eafdc1303179; 60 unstable not compared)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">drift/unseeded<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">UNSEEDED PASS 26/26 types within the baseline (23288 unseeded in all; 4064 address-form reads, seeding never checked, within the baseline; 0 types fewer; baseline eafdc1303179)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">drift/xtc2-path<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">XTC2-PATH PASS longest 185 &lt;= 190 (89 paths; margin 15 to psana&#x27;s 200)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">fork/break-corrupt<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">MATRIX FAIL (2 of 7 assertions failed)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">fork/break-kill-drp<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">MATRIX FAIL (5 of 7 assertions failed)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">fork/break-register<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">MATRIX FAIL (5 of 7 assertions failed)</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">fork/build<small>weekly · gate</small></td><td><span class="chip pass">PASS</span><span class="ev">BUILD_EXIT=0</span></td><td><span class="chip pass">PASS</span><span class="ev">BUILD_EXIT=0</span></td><td class="chg same">still passes</td></tr>
+<tr class=""><td class="id">fork/coverage<small>weekly · gate</small></td><td><span class="chip notrun">NOT-RUN</span><span class="ev">not run: fork/matrix did not pass</span></td><td><span class="chip pass">PASS</span><span class="ev">COV_EXIT=0</span></td><td class="chg fixed">ran, passes</td></tr>
+<tr class=""><td class="id">fork/flake-rule<small>weekly · gate</small></td><td><span class="chip pass">PASS</span><span class="ev">FLAKE-RULE PASS run 2882d4981974-20261120T070827Z-dw: 15 rows, 0 rerun after a CUT/INFRA, every attempt kept</span></td><td><span class="chip pass">PASS</span><span class="ev">FLAKE-RULE PASS run eafdc1303179-20261120T204441Z-dw: 15 rows, 0 rerun after a CUT/INFRA, every attempt kept</span></td><td class="chg same">still passes</td></tr>
+<tr class="target"><td class="id">fork/matrix<small>weekly · gate</small></td><td><span class="chip fail">FAIL</span><span class="ev">MATRIX FAIL (4 of 196 assertions failed)</span></td><td><span class="chip pass">PASS</span><span class="ev">MATRIX PASS (201 assertions)</span></td><td class="chg fixed">fixed</td></tr>
+<tr class=""><td class="id">fork/unit<small>weekly · gate</small></td><td><span class="chip pass">PASS</span><span class="ev">================== 434 passed, 1 skipped in 256.78s (0:04:16) ==================</span></td><td><span class="chip pass">PASS</span><span class="ev">================== 436 passed, 1 skipped in 227.08s (0:03:47) ==================</span></td><td class="chg same">still passes</td></tr>
+<tr class="target"><td class="id">fork/webgui-e2e<small>weekly · gate</small></td><td><span class="chip fail">FAIL</span><span class="ev">E2E FAIL</span></td><td><span class="chip pass">PASS</span><span class="ev">E2E PASS</span></td><td class="chg fixed">fixed</td></tr>
+</tbody></table></div></section>
+<section><h2>Root causes</h2>
+<div class="cards2">
+<div class="card"><h3>1. <span class="mono">fork/matrix</span>: <code>ModuleNotFoundError</code> at <code>daq_sim up --det epix100</code></h3><dl><dt>trigger</dt><dd>upstream a8f908d56 (<a href="https://github.com/slac-lcls/lcls2/pull/252">slac-lcls/lcls2#252</a>) imports epix-100a-gen2 inside <code>firmware_packages.isolated()</code> in <code>psdaq/psdaq/configdb/epix100_config.py:12-14</code>; the package leaves <code>sys.path</code> when the block ends</dd><dt>defect</dt><dd>the fork's <code>psdaq/psdaq/sim/configdb_seed.py</code> then imported <code>yaml_config_store_example</code>, whose line 5 is <code>import epix100a_gen2</code>, outside <code>isolated()</code></dd><dt>symptom</dt><dd><code>MATRIX FAIL (4 of 196 assertions failed)</code>: types/epix100/up, and the rows that need it; the 8 weekly rows gated on the matrix did not run</dd><dt>fix</dt><dd><a href="https://github.com/carbonscott/lcls2/pull/71">#71</a>: <code>configdb_seed</code> imports and runs <code>yaml_config_store_example</code> inside <code>isolated()</code> of the type's firmware package</dd></dl><p class="muted">Before run, <code>fork-matrix.1.log (run 2882d4981974-20261120T070827Z-dw)</code> lines 1070-1074, 3698. Verbatim, scrubbed (paths -&gt; {s3df_path}, node names -&gt; &lt;node&gt;); read back independently from the log on S3DF.</p><pre><span class="ln">1070</span>  [&lt;node&gt;]   epix100 up| 2026-11-19T23:20:57.383-08:00 daq_sim: up FAILED: configdb_seed failed: bootstrap_external&gt;&quot;, line 850, in exec_module
+<span class="ln">1071</span>  [&lt;node&gt;]   epix100 up|   File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 228, in _call_with_frames_removed
+<span class="ln">1072</span>  [&lt;node&gt;]   epix100 up|   File &quot;{s3df_path}&quot;, line 5, in &lt;module&gt;
+<span class="ln">1073</span>  [&lt;node&gt;]   epix100 up|     import epix100a_gen2
+<span class="ln">1074</span>  [&lt;node&gt;]   epix100 up| ModuleNotFoundError: No module named &#x27;epix100a_gen2&#x27;
+<span class="ln">3698</span>MATRIX FAIL (4 of 196 assertions failed)</pre><p class="muted">The before record's cause for this row, verbatim:</p><pre class="wrapit">missing /^MATRIX PASS \(201 assertions\)/; missing /^MATRIX_EXIT=0 /; missing /^FEATURE a PASS/; missing /^whole matrix at this HEAD .*: PASS/; found /^MATRIX FAIL/: MATRIX FAIL (4 of 196 assertions failed); found /^FAILED /: FAILED types/epix100/up: exit 1: 2026-11-19T23:20:57.383-08:00 daq_sim: up FAILED: configdb_seed failed: bootstrap_exter</pre></div>
+<div class="card"><h3>2. <span class="mono">fork/webgui-e2e</span>: assertion 6, <code>TEB_WrtCt None</code></h3><dl><dt>defect</dt><dd>known defect <a href="https://github.com/carbonscott/lcls2/issues/63">#63</a>: <code>psdaq/psdaq/webgui/e2e.py:678-679</code> passed <code>(host, port)</code> pairs to <code>scrape()</code> as the port; the URL was invalid, <code>scrape</code> caught the error and returned <code>{}</code></dd><dt>symptom</dt><dd><code>Prometheus {}</code> in CONFIGURED, so assertion 6 compared the page's count with <code>TEB_WrtCt None</code></dd><dt>fix</dt><dd><a href="https://github.com/carbonscott/lcls2/pull/71">#71</a>: the pair is unpacked before <code>scrape()</code></dd></dl><p class="muted">Before run, <code>fork-webgui-e2e.1.log (run 2882d4981974-20261120T070827Z-dw)</code> lines 93, 107, 139, 157-161. Verbatim, scrubbed; read back independently from the log on S3DF.</p><pre><span class="ln">93</span>2026-11-19T23:40:02.745-08:00 e2e: in CONFIGURED: Prometheus {}; own NumL0Acc 3882
+<span class="ln">107</span>2026-11-19T23:40:07.725-08:00 e2e: assertion 6 FAIL: page 3882 == TEB_WrtCt None == psana2 events 3882 == with data 3882 &gt;= 1000: False; page == own NumL0Acc after Disable 3882: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 3882
+<span class="ln">139</span>  TEB_WrtCt (Prometheus, CONFIGURED)   None
+<span class="ln">157</span>  6 FAIL  page 3882 == TEB_WrtCt None == psana2 events 3882 == with data 3882 &gt;= 1000: False; page == own NumL0Acc after Disable 3882: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 3882
+<span class="ln">158</span>  7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 3157119 (log pids [&#x27;3157119&#x27;]) logged [&#x27;4660 (0x1234) from configdb BEAM/fakecam_0&#x27;]; expected 4660 (0x1234) from configdb BEAM/fakecam_0
+<span class="ln">159</span>E2E FAIL: assertion 6: page 3882 == TEB_WrtCt None == psana2 events 3882 == with data 3882 &gt;= 1000: False; page == own NumL0Acc after Disable 3882: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1); MISMATCH: TEB_WrtCt None != page 3882
+<span class="ln">160</span>E2E FAIL
+<span class="ln">161</span>E2E_EXIT=1</pre><p class="muted">The before record's cause for this row, verbatim:</p><pre class="wrapit">missing /^E2E PASS/; missing /^E2E_EXIT=0$/; found /^E2E FAIL/: E2E FAIL: assertion 6: page 3882 == TEB_WrtCt None == psana2 events 3882 == with data 3882 &gt;= 1000: False; page == own N</pre></div>
+<div class="card"><h3>3. <span class="mono">drift/guards</span> and <span class="mono">drift/probes</span>: the epixquad edit is now upstream</h3><dl><dt>reading</dt><dd>at PR #70's head, <code>psdaq/psdaq/configdb/epixquad_config.py</code> already equals upstream's: the fork's import-order edit (2 guard hunks) is gone and the probe <code>epixquad-import-order</code> reads NOW-UPSTREAM</dd><dt>fix</dt><dd>decision 2, in <a href="https://github.com/carbonscott/lcls2-sync/pull/1">lcls2-sync#1</a>: the 2 hunks print <code>GUARD RETIRED</code>, the probe is removed (19/19 probes); approval <code>approvals/20261120-pr70-retire-epixquad.json</code></dd></dl><p class="muted">The before record's cause for this row, verbatim:</p><pre class="wrapit">exit 1 (want 0); missing /^GUARDS PASS (\d+)/\1 hunks present/; found /^GUARD (LOST|GONE)/: GUARD LOST psdaq/psdaq/configdb/epixquad_config.py hunk 0 (-6,2 +6,2): &#x27;#  lcls2_pgp_pcie_apps first: its axi-pcie-core </pre><p class="muted">The before record's cause for this row, verbatim:</p><pre class="wrapit">exit 1 (want 0); missing /^PROBES PASS 20/20 NEEDED vs [0-9a-f]+; self-test 20/20 FIXED/</pre></div>
+</div></section>
+<section><h2>The owner's decisions on PR #70</h2>
+<p class="muted">Recorded in <a href="https://github.com/carbonscott/lcls2/pull/70#issuecomment-7047334952">PR #70&#x27;s decisions comment</a>.</p>
+<ol class="list"><li><b>Accept the <code>DrpBase.cc</code> retDma adaptation.</b> No change needed.</li><li><b>Retire the fork's epixquad import-order edit.</b> <a href="https://github.com/carbonscott/lcls2-sync/pull/1">carbonscott/lcls2-sync#1</a> (head <code>a715a8731e32</code>): 2 guard hunks become <code>GUARD RETIRED</code>, probe <code>epixquad-import-order</code> removed, 19/19 probes; approval <code>approvals/20261120-pr70-retire-epixquad.json</code>.</li><li><b>Approve PR #70's workflow change.</b> <code>approvals/pr-70.json</code> in the same lcls2-sync PR.</li></ol>
+<p>The fork-side fixes are in <a href="https://github.com/carbonscott/lcls2/pull/71">carbonscott/lcls2#71</a> (base <code>sync/upstream-2026-11-20-2</code>, head <code>eafdc1303179</code>). Nothing here merges by itself: the merges are the owner's.</p>
+</section>
+<section><h2>Provenance checks</h2>
+<p class="muted">Expected values come from the PRs' heads, fixed before the run; measured values come from the records and the read-back. The sha256 of the after record is recomputed by this generator.</p>
+<div class="table-wrap"><table class="mid"><thead><tr><th>Check</th><th>Expected</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+<tr><td>After run&#x27;s head is PR #71&#x27;s head</td><td class="mono">eafdc13031795922c31d71476aafeb8235c6720e</td><td class="mono">eafdc13031795922c31d71476aafeb8235c6720e</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>After run&#x27;s suite is on lcls2-sync PR #1&#x27;s branch</td><td class="mono">a715a8731e32319439fd055ac1b1113b630a5b25</td><td class="mono">a715a8731e32319439fd055ac1b1113b630a5b25</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Before run&#x27;s head is PR #70&#x27;s head</td><td class="mono">2882d4981974…</td><td class="mono">2882d49819740bd62b2b3bff81d47f30b10375b2</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>After run&#x27;s tiers</td><td class="mono">daily, weekly</td><td class="mono">daily, weekly</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>After run&#x27;s fork checkout was clean</td><td class="mono">dirty 0</td><td class="mono">dirty 0</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>After run&#x27;s suite checkout was clean</td><td class="mono">suite_dirty 0</td><td class="mono">suite_dirty 0</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>After run finished</td><td class="mono">utc_end set</td><td class="mono">2026-11-20T21:27:00Z</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Every row of the before run is in the after run</td><td class="mono">16 rows</td><td class="mono">16 of 16</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back is of the after run</td><td class="mono">eafdc1303179-20261120T204441Z-dw</td><td class="mono">eafdc1303179-20261120T204441Z-dw</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back record is byte-equal to the local one</td><td class="mono">byte_equal true</td><td class="mono">byte_equal True</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back&#x27;s local sha256 is the --after file&#x27;s sha256 (recomputed here)</td><td class="mono">ad0c2a0e5a4e6f79…</td><td class="mono">ad0c2a0e5a4e6f79…</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back&#x27;s S3DF sha256 equals the local sha256</td><td class="mono">equal</td><td class="mono">equal</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back head and tree match the record</td><td class="mono">eafdc1303179 / 9644a39e06bc</td><td class="mono">eafdc1303179 / 9644a39e06bc</td><td><span class="chip pass">PASS</span></td></tr>
+<tr><td>Read-back verdicts agree with the local record, row by row</td><td class="mono">16 of 16</td><td class="mono">16 agree, 0 differ</td><td><span class="chip pass">PASS</span></td></tr>
+</tbody></table></div></section>
+<section><h2>Independent read-back</h2>
+<p>A separate agent read the record where the suite wrote it, on S3DF, with plain Python and no lcls2-sync code, and compared it with the copy fetched to this VM. Method: A separate client read record.json and every row&#x27;s last-attempt log on S3DF through the operation&#x27;s weekly bridge session with plain shell (sha256sum, base64, grep -n, sed -n, git rev-parse/status), and compared, parsed and judged them here with its own python3 stdlib code, sharing no code with lcls2-sync&#x27;s bin/ or suite/.</p>
+<div class="card"><dl><dt>run</dt><dd class="mono">eafdc1303179-20261120T204441Z-dw</dd><dt>read at</dt><dd class="mono">2026-11-20T21:28:57Z</dd><dt>S3DF sha256</dt><dd class="mono">ad0c2a0e5a4e6f7953182fd791059b5cee82e6c8c0f53a6c3e2e66116f9cf27a</dd><dt>local sha256</dt><dd class="mono">ad0c2a0e5a4e6f7953182fd791059b5cee82e6c8c0f53a6c3e2e66116f9cf27a</dd><dt>--after sha256</dt><dd class="mono">ad0c2a0e5a4e6f7953182fd791059b5cee82e6c8c0f53a6c3e2e66116f9cf27a (recomputed here)</dd><dt>byte-equal</dt><dd><span class="chip pass">PASS</span></dd><dt>head / tree</dt><dd class="mono">eafdc13031795922c31d71476aafeb8235c6720e / 9644a39e06bc91b1dbc4fd1583bd13316a1eb447</dd></dl></div>
+<div class="table-wrap"><table class="wide"><thead><tr><th>Row</th><th>Local record</th><th>Read-back</th><th>Agree</th><th>Verdict line from the row's own log (read-back)</th></tr></thead><tbody>
+<tr><td class="id">drift/guards</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>9: GUARDS PASS 216/216 hunks present in 66 files; 2 hunks RETIRED by approval in 1 file; 5 hunks REVIEW (upstream touched the region) head=eafdc1303179</code></td></tr>
+<tr><td class="id">drift/kinds-static</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>1: KINDS-STATIC PASS 142 (file, driver call) pairs in 32 files within the baseline; MemPool 6 virtuals, every pure one overridden by MemPoolSim (head eafdc1303179, baseline eafdc1303179)</code></td></tr>
+<tr><td class="id">drift/probes</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>22: PROBES PASS 19/19 NEEDED vs 9635c4fe1722; self-test 19/19 FIXED at eafdc1303179</code></td></tr>
+<tr><td class="id">drift/digests</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>449: DIGESTS PASS 23/23 keys equal the baseline (3 excluded: drp_gpu:epixuhremu, drp_gpu:epixuhrsim, drp_gpu:fakecam; 11 attributes excluded by the baseline, each still raising as recorded)</code></td></tr>
+<tr><td class="id">drift/kinds</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>1: KINDS NOTE epixhr2x2: 1 unstable kinds of the baseline not compared (seen in only one of its runs)</code><br><code>2: KINDS NOTE tt: 59 unstable kinds of the baseline not compared (seen in only one of its runs)</code><br><code>3: KINDS PASS 26/26 types equal the baseline (35617 kinds; baseline eafdc1303179; 60 unstable not compared)</code></td></tr>
+<tr><td class="id">drift/unseeded</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>1: UNSEEDED PASS 26/26 types within the baseline (23288 unseeded in all; 4064 address-form reads, seeding never checked, within the baseline; 0 types fewer; baseline eafdc1303179)</code></td></tr>
+<tr><td class="id">drift/xtc2-path</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>1: XTC2-PATH PASS longest 185 &lt;= 190 (89 paths; margin 15 to psana&#x27;s 200)</code></td></tr>
+<tr><td class="id">fork/break-corrupt</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>110: MATRIX FAIL (2 of 7 assertions failed)</code><br><code>111: BREAK corrupt exit 1</code></td></tr>
+<tr><td class="id">fork/break-kill-drp</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>97: MATRIX FAIL (5 of 7 assertions failed)</code><br><code>98: BREAK kill-drp exit 1</code></td></tr>
+<tr><td class="id">fork/break-register</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>493: MATRIX FAIL (5 of 7 assertions failed)</code><br><code>494: BREAK register exit 1</code></td></tr>
+<tr><td class="id">fork/build</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>789: BUILD_EXIT=0</code></td></tr>
+<tr><td class="id">fork/coverage</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>88: COV_EXIT=0</code></td></tr>
+<tr><td class="id">fork/flake-rule</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>1: FLAKE-RULE PASS run eafdc1303179-20261120T204441Z-dw: 15 rows, 0 rerun after a CUT/INFRA, every attempt kept</code></td></tr>
+<tr><td class="id">fork/matrix</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>5079: TYPE epix100      node &lt;node&gt; job 46135204 run {s3df_path} DAQ 2088 psana2 2088 with-data 2088 per-event PASS PASS</code><br><code>5099: FEATURE a PASS  exit 0, FEATURE a PASS</code><br><code>5100: FEATURE b PASS  exit 0, FEATURE b PASS</code><br><code>5101: FEATURE c PASS  exit 0, FEATURE c PASS</code><br><code>5102: FEATURE d PASS  exit 0, FEATURE d PASS</code><br><code>5103: FEATURE e PASS  exit 0, FEATURE e PASS</code><br><code>5169:   PASS types/epix100/up: exit 0</code><br><code>5170:   PASS types/epix100/transitions: 14 transitions reset .. running .. reset, each read back as requested, no error message</code><br><code>5171:   PASS types/epix100/drp-alive: epix100_0 drp pid 1038798 alive after the run</code><br><code>5172:   PASS types/epix100/counts: simxpm L1Accepts 2088, TEB_WrtCt 2088, psana2 events 2088, with epix100 data 2088: equal and &gt;= 1000</code><br><code>5173:   PASS types/epix100/per-event: xtc2_check --det epix100: PASS</code><br><code>5174:   PASS types/epix100/evidence: record 20261120T125744-cycle-eafdc1303-1038996</code><br><code>5175:   PASS types/epix100/down: exit 0, down: clean</code><br><code>5308: whole matrix at this HEAD (with carried results): PASS</code><br><code>5309: MATRIX PASS (201 assertions)</code><br><code>5310: MATRIX_EXIT=0 2026-11-20T21:18:49Z</code></td></tr>
+<tr><td class="id">fork/unit</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>42: ================== 436 passed, 1 skipped in 227.08s (0:03:47) ==================</code></td></tr>
+<tr><td class="id">fork/webgui-e2e</td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><span class="chip pass">PASS</span></td><td><code>92: 2026-11-20T13:26:16.304-08:00 e2e: in CONFIGURED: Prometheus {&#x27;TEB_EvtCt&#x27;: 3567, &#x27;TEB_TrCt&#x27;: 10, &#x27;TEB_WrtCt&#x27;: 3567, &#x27;DRP_Damage&#x27;: 0, &#x27;DRP_RecordSize&#x27;: 1484934, &#x27;drp_num_dma_errors&#x27;: 0, &#x27;drp_num_missing_rogs&#x27;: 0, &#x27;drp_num_th_error&#x27;: 0, &#x27;drp_num_pgp_jump&#x27;: 0}; own NumL0Acc 3567</code><br><code>138:   TEB_WrtCt (Prometheus, CONFIGURED)   3567</code><br><code>151:   1 PASS  own NumL0Acc read 1161 &gt;= 1100 while RUNNING, then 3161 after 2.01 s: +2000 &gt;= 1007 (half of --rate 1000 Hz), before the click down</code><br><code>152:   2 PASS  control read back 13/13 clicked states; 0 error message(s) on control&#x27;s status stream; 0 KeyError line(s) in the control log</code><br><code>153:   3 PASS  after Disable (reported 2026-11-20T13:26:13.274-08:00): data-final 1,1; data-ts 2026-11-20T13:26:14.566-08:00 &gt; Disable; readings at 2026-11-20T13:26:14.805-08:00 and 2026-11-20T13:26:16.016-08:00: &#x27;3567&#x27; == &#x27;3567&#x27;; source pva</code><br><code>154:   4 PASS  page events &#x27;3567&#x27; parse as ^\d+$</code><br><code>155:   5 PASS  after RESET the page shows &#x27;3567&#x27; (data-final 1), after Disable it showed &#x27;3567&#x27;</code><br><code>156:   6 PASS  page 3567 == TEB_WrtCt 3567 == psana2 events 3567 == with data 3567 &gt;= 1000: True; page == own NumL0Acc after Disable 3567: True; psana2 checks (--seed 0x1234) PASS; run 1 (page 1)</code><br><code>157:   7 PASS  Configure: 1 get_configuration/tst/BEAM/fakecam_0 in the window (page: 0 /api/configdb); DRP pid 4014423 (log pids [&#x27;4014423&#x27;]) logged [&#x27;4660 (0x1234) from configdb BEAM/fakecam_0&#x27;]; expected 4660 (0x1234) from configdb BEAM/fakecam_0</code><br><code>158: E2E PASS</code><br><code>159: E2E_EXIT=0</code></td></tr>
+</tbody></table></div>
+<p class="muted">Both columns show the record's own verdict (a row not run is FAIL there).</p>
+<ul class="list"><li>Byte-equal: the S3DF record.json was fetched as base64 through the bridge, decoded here and compared byte for byte with the local copy (9933 bytes each); sha256 also computed on S3DF with sha256sum (same value).</li><li>Record (S3DF copy): run_id eafdc1303179-20261120T204441Z-dw, sha eafdc13031795922c31d71476aafeb8235c6720e, tree 9644a39e06bc91b1dbc4fd1583bd13316a1eb447, tiers [&#x27;daily&#x27;, &#x27;weekly&#x27;], mode weekly, baseline eafdc1303179, tag p71c, suite_sha a715a8731e32319439fd055ac1b1113b630a5b25 (suite_dirty 0), 16 rows, attempts per row: [1].</li><li>Verdict rules used: break rows PASS when the log has &#x27;MATRIX FAIL (...)&#x27; and &#x27;BREAK &lt;x&gt; exit &lt;non-zero&gt;&#x27; (the deliberate break was detected); fork/matrix PASS needs &#x27;^MATRIX PASS&#x27; and &#x27;MATRIX_EXIT=0&#x27;; fork/webgui-e2e needs &#x27;^E2E PASS&#x27; and &#x27;E2E_EXIT=0&#x27;; drift/kinds and drift/unseeded need their &#x27;^KINDS PASS n/n&#x27; / &#x27;^UNSEEDED PASS n/n&#x27; summary line; the other drift rows need their &#x27;^&lt;NAME&gt; PASS&#x27; line.</li><li>fork/matrix lines are the log&#x27;s final summary block (lines starting at column 0 or with two spaces and no node prefix); interim per-node lines earlier in the log are not used.</li><li>Checkout: git rev-parse HEAD &#x27;HEAD^{tree}&#x27; and git status --porcelain --untracked-files=no | wc -l, run read-only in the record&#x27;s checkout path on S3DF.</li><li>Scrubbed: S3DF paths -&gt; {s3df_runs}/... or {s3df_path}, node names -&gt; &lt;node&gt;.</li><li>drift/kinds passes with 2 KINDS NOTE lines: 60 kinds of the new baseline eafdc1303179 are unstable (seen in only one of its runs: 1 for epixhr2x2, 59 for tt) and are not compared. drift/unseeded has no NOTE line this run.</li><li>Compared with run eafdc1303179-20261120T182254Z-dw at the same head: drift/kinds and drift/unseeded went FAIL -&gt; PASS after the baseline moved to eafdc1303179 (the record says baseline eafdc1303179; KINDS-STATIC line also names baseline eafdc1303179); the other 14 rows PASS in both.</li></ul>
+</section>
+<section><h2>Findings</h2><ol class="list">
+<li><b>An upstream change to import scoping broke a fork-only caller.</b> a8f908d56 made epix-100a-gen2 importable only inside <code>firmware_packages.isolated()</code>; the fork's configdb seed relied on the old global import. sim-main alone does not have a8f908d56, so only the merge hit it. Any other fork code that imports a firmware package's Python outside <code>isolated()</code> can fail the same way (not verified: no search of the fork was made for this page).</li>
+<li><b>One failure hid eight rows.</b> In the before run the matrix failure kept 8 weekly rows from running; the suite records them as FAIL with <code>not run:</code> evidence. Their after-run verdicts are the first evidence on those rows at this merge.</li>
+<li><b>The e2e failure was the fork's own test harness</b> (known defect <a href="https://github.com/carbonscott/lcls2/issues/63">#63</a>), not the web GUI or the DAQ: the scrape got a tuple as its port and swallowed the error.</li>
+<li><b>The epixquad edit is now upstream</b>, so its guard and probe failed by design; retiring them (decision 2) is a suite change with an approval record, not a fork change.</li>
+<li><b>drift/kinds and drift/unseeded needed a new baseline, which the owner approved.</b> In the first run at this head (eafdc1303179-20261120T182254Z-dw) both FAILed against baseline 08a6634c874b: upstream a8f908d56 (slac-lcls/lcls2#252) builds epix100&#x27;s and epixquad1kfps&#x27; PCIe-card register tree from the card&#x27;s own surf, so the DAQ now reads that card with its own register map (epix100 +10/-129 kinds, epixquad1kfps +35/-321; identical in every run). The owner approved the update (&quot;continue, approve!&quot;, 2026-11-20T19:52Z; approvals/20261120-pr71-kinds-unseeded-baseline.json in carbonscott/lcls2-sync#1).</li>
+<li><b>The new baseline is recorded from two runs at this tree.</b> baselines/eafdc1303179/kinds.json is the intersection of runs eafdc1303179-20261120T182254Z-dw and eafdc1303179-20261120T195304Z-dw. They differed only by the K2 flake (suite/KNOWN-FLAKES.md: a read logged in address form when it lands before rogue_dev&#x27;s path index): epixhr2x2&#x27;s one read in the first run, 59 tt kinds in the second. Those 60 kinds are unstable and not compared. Both runs PASS against the new baseline (KINDS PASS 26/26, UNSEEDED PASS 26/26, DIGESTS PASS 23/23).</li>
+<li><b>This page&#x27;s AFTER run is the third run at this head, against the new baseline.</b> eafdc1303179-20261120T204441Z-dw from lcls2-sync a715a8731e32: every row of the daily and weekly tiers PASSes. The first run&#x27;s two FAIL rows are recorded in carbonscott/lcls2#71&#x27;s Proof section.</li>
+</ol></section>
+<section><h2>Not covered</h2><ul class="list">
+<li><b>No screencast or screenshots.</b> The suite runs as Slurm batch jobs; this page carries their records and log lines, not a recording.</li>
+<li><b>Full logs are not embedded.</b> Only the verdict lines and the quoted excerpts are here; the logs stay on S3DF under the record's <code>{s3df_runs}</code> placeholder.</li>
+<li><b>Simulation, not hardware.</b> The matrix runs the DAQ in its simulator; no hutch or DAQ host was used.</li>
+<li><b>GitHub Actions on #71 and #70</b> are not part of this run; see the PRs' checks.</li>
+<li><b>No merge.</b> #71 into PR #70's branch, PR #70 into sim-main and lcls2-sync#1 into main are the owner's.</li>
+<li><b>The root-cause log excerpts</b> are quoted from the before run's logs by the operator; they were not re-read by the independent read-back unless it lists them.</li>
+</ul></section>
+<section><h2>Run it again</h2>
+<p class="muted">From a checkout of the lcls2-sync PR branch (<a href="https://github.com/carbonscott/lcls2-sync/pull/1">carbonscott/lcls2-sync#1</a>, head <code>a715a8731e32</code>), on the VM that runs the operation:</p>
+<pre>bin/suite run --sha eafdc13031795922c31d71476aafeb8235c6720e --tiers daily,weekly --mode weekly --tag p71c
+bin/suite status &lt;run-id&gt; --wait
+bin/suite status &lt;run-id&gt; --fetch      # copies record.json to runs/&lt;run-id&gt;/
+
+python3 gen.py --before runs/2882d4981974-20261120T070827Z-dw/record.json \
+  --after runs/&lt;run-id&gt;/record.json --readback readback.json --out page.html</pre>
+<p class="muted">The record lives at <code>{s3df_runs}/&lt;run-id&gt;/record.json</code> on S3DF; <code>bin/site get s3df_runs</code> names the place. The generator refuses to write a page that holds a site value.</p>
+</section>
+<details><summary>Audit trail</summary><div>
+<p>Inputs (sha256 of the bytes read):</p><pre class="wrapit">--before   lcls2-sync/runs/2882d4981974-20261120T070827Z-dw/record.json
+           191adb62d807a7039f227273a07ef97316477c8952a73e73555976c6b12b655d
+--after    lcls2-sync/runs/eafdc1303179-20261120T204441Z-dw/record.json
+           ad0c2a0e5a4e6f7953182fd791059b5cee82e6c8c0f53a6c3e2e66116f9cf27a
+--readback readback-C.json
+           6a23343f1b7f062a34dcd629eb2fc4d59456d0d5668285f68a747be993171866</pre>
+<p>Before record:</p><pre class="wrapit">run 2882d4981974-20261120T070827Z-dw  kind suite  mode weekly  tag w9c0b
+sha 2882d49819740bd62b2b3bff81d47f30b10375b2  tree ea87f925237136af654c4cbc30da99876d09b0a0
+suite_sha 6504ce72d048c4d5e5f6bcd20fe21c70100560ed  suite_dirty 0  baseline 08a6634c874b
+checkout {s3df_worktrees}/w9c0b  dirty 0
+jobs {&quot;cpu&quot;: &quot;46011310&quot;, &quot;gpu&quot;: &quot;46011314&quot;}  released [&quot;46011314&quot;, &quot;46011310&quot;]
+utc 2026-11-20T07:08:29Z → 2026-11-20T07:40:15Z</pre>
+<p>After record:</p><pre class="wrapit">run eafdc1303179-20261120T204441Z-dw  kind suite  mode weekly  tag p71c
+sha eafdc13031795922c31d71476aafeb8235c6720e  tree 9644a39e06bc91b1dbc4fd1583bd13316a1eb447
+suite_sha a715a8731e32319439fd055ac1b1113b630a5b25  suite_dirty 0  baseline eafdc1303179
+checkout {s3df_worktrees}/p71c  dirty 0
+jobs {&quot;cpu&quot;: &quot;46135204&quot;, &quot;gpu&quot;: &quot;46135341&quot;}  released [&quot;46135341&quot;, &quot;46135204&quot;]
+utc 2026-11-20T20:44:44Z → 2026-11-20T21:27:00Z</pre>
+<p>Every attempt in the after run:</p><div class="table-wrap"><table class="wide"><thead><tr><th>Row</th><th>#</th><th>Verdict</th><th>Exit</th><th>UTC</th><th>Cause</th><th>Log</th></tr></thead><tbody>
+<tr><td class="id">drift/guards</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:45:24Z<br>2026-11-20T20:45:29Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-guards.1.log</span></td></tr>
+<tr><td class="id">drift/kinds-static</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:45:30Z<br>2026-11-20T20:45:34Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-kinds-static.1.log</span></td></tr>
+<tr><td class="id">drift/probes</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:45:29Z<br>2026-11-20T20:45:30Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-probes.1.log</span></td></tr>
+<tr><td class="id">drift/digests</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:26:28Z<br>2026-11-20T21:26:59Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-digests.1.log</span></td></tr>
+<tr><td class="id">drift/kinds</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:26:59Z<br>2026-11-20T21:26:59Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-kinds.1.log</span></td></tr>
+<tr><td class="id">drift/unseeded</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:26:59Z<br>2026-11-20T21:27:00Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-unseeded.1.log</span></td></tr>
+<tr><td class="id">drift/xtc2-path</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:27:00Z<br>2026-11-20T21:27:00Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/drift-xtc2-path.1.log</span></td></tr>
+<tr><td class="id">fork/break-corrupt</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:24:29Z<br>2026-11-20T21:25:25Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-break-corrupt.1.log</span></td></tr>
+<tr><td class="id">fork/break-kill-drp</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:23:13Z<br>2026-11-20T21:24:29Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-break-kill-drp.1.log</span></td></tr>
+<tr><td class="id">fork/break-register</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:20:51Z<br>2026-11-20T21:23:13Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-break-register.1.log</span></td></tr>
+<tr><td class="id">fork/build</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:45:50Z<br>2026-11-20T20:48:07Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-build.1.log</span></td></tr>
+<tr><td class="id">fork/coverage</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:18:49Z<br>2026-11-20T21:20:51Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-coverage.1.log</span></td></tr>
+<tr><td class="id">fork/flake-rule</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:27:00Z<br>2026-11-20T21:27:00Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-flake-rule.1.log</span></td></tr>
+<tr><td class="id">fork/matrix</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:52:16Z<br>2026-11-20T21:18:49Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-matrix.1.log</span></td></tr>
+<tr><td class="id">fork/unit</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T20:48:07Z<br>2026-11-20T20:52:16Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-unit.1.log</span></td></tr>
+<tr><td class="id">fork/webgui-e2e</td><td>1</td><td><span class="chip pass">PASS</span></td><td class="mono">0</td><td class="mono">2026-11-20T21:25:25Z<br>2026-11-20T21:26:28Z</td><td><span class="ev"></span></td><td><span class="ev">{s3df_runs}/eafdc1303179-20261120T204441Z-dw/fork-webgui-e2e.1.log</span></td></tr>
+</tbody></table></div>
+<p>Redactions: values from the record already carry the suite's placeholders (<code>{s3df_runs}</code> …). This generator replaced any further site value with <code>{key}</code>, Slurm node names with <code>&lt;node&gt;</code> and S3DF paths with <code>{s3df_path}</code>; replacements made: none. The finished page was then checked against every value <code>bin/site env</code> prints.</p>
+<p>Generated 2026-11-20T21:29:19Z by <code>gen.py</code> (python3 stdlib, no network). The page is a snapshot of the records at that time.</p>
+</div></details>
+</div>
+</body></html>
