@@ -28,6 +28,7 @@ Usage:
 """
 
 import argparse
+import contextlib
 import importlib
 import json
 import os
@@ -193,6 +194,23 @@ STORE_KEYS = {
 STORE_DETTYPE = {'epixhr2x2': 'epixhr2x2hw'}
 
 
+# Types made from a firmware YAML (--det-yaml): the firmware package whose modules
+# yaml_config_store_example imports at its top (epix100a_gen2, ePixFpga).  The type's config
+# module imports that package inside psdaq.utils.firmware_packages.isolated(), which takes the
+# package's paths and modules away again when its block ends, so the YAML store is imported and
+# run inside a block of the same package.
+YAML_PACKAGES = {'epix100': 'epix-100a-gen2'}
+
+
+def _yaml_store_package(det_type):
+    """The context to import and run yaml_config_store_example in for this type."""
+    package = YAML_PACKAGES.get(det_type)
+    if package is None:
+        return contextlib.nullcontext()
+    from psdaq.utils import firmware_packages
+    return firmware_packages.isolated(package)
+
+
 def type_cdict(det_type, name, segm=0, yaml=None):
     """The type's own config: <type>_config_store.<type>_cdict(), the config its
     write_to_daq_config_db writes (when it has no <type>_cdict), or with a rogue YAML file
@@ -203,8 +221,9 @@ def type_cdict(det_type, name, segm=0, yaml=None):
     importlib.import_module('psdaq.configdb.%s_config' % det_type)
     if yaml:
         import pyrogue
-        mod = importlib.import_module('psdaq.configdb.yaml_config_store_example')
-        top = getattr(mod, '%s_cdict' % det_type)(pyrogue.yamlToData(fName=yaml))
+        with _yaml_store_package(det_type):
+            mod = importlib.import_module('psdaq.configdb.yaml_config_store_example')
+            top = getattr(mod, '%s_cdict' % det_type)(pyrogue.yamlToData(fName=yaml))
     else:
         store, extra = BORROWED_STORES.get(det_type, (det_type, STORE_KEYS.get(det_type, [])))
         if store != det_type:
