@@ -237,6 +237,15 @@ def bring_up(args, work):
     return work.load(), True
 
 
+def prom_counts(work):
+    """{counter: value} of ds.COUNTERS from every exporter the DAQ wrote in work's prom dir (labels dropped)."""
+    counts = {}
+    for host, port in ds.prometheus_targets(work.path('prom')):
+        for k, v in ds.scrape(port, ds.COUNTERS, host).items():
+            counts[k.split('{')[0]] = int(v)
+    return counts
+
+
 def control_log(work):
     logs = sorted(glob.glob(work.path('pmlogs', '*', '*', '*control.log')), key=os.path.getmtime)
     return logs[-1] if logs else None
@@ -674,10 +683,7 @@ class Run:
             if not self.go(drv, dc, label, lambda label=label: drv.do('state', value=label)):
                 return False
             if label == 'CONFIGURED':                     # DAQ counters live until Unconfigure
-                counts = {}
-                for port in ds.prometheus_targets(self.work.path('prom')):
-                    for k, v in ds.scrape(port, ds.COUNTERS).items():
-                        counts[k.split('{')[0]] = int(v)
+                counts = prom_counts(self.work)
                 self.info['prom'] = counts
                 self.info['count_configured'] = self.pv_count()
                 say(f'in CONFIGURED: Prometheus {counts}; own NumL0Acc {self.info["count_configured"]}')
