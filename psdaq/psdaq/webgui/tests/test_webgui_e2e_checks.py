@@ -3,16 +3,20 @@
 They show that the checks can fail:
 - assertion 1 (gate): a counter that stalls after a DRP kill fails it, whether the stall lands below
   events * 1.1 (the "1082 < 1100" case) or above it (a later kill, or a small --events);
-- assertion 6: one count that differs from the others fails it and is named (MISMATCH: ...);
+- assertion 6: one count that differs from the others fails it and is named (MISMATCH: ...), and TEB_WrtCt is
+  read from the exporter the DAQ named in its prom dir (issue #63);
 - assertion 7: the DRP's Configure read must be in the window, logged with the expected seed, by the
   DRP's pid, with no page request to /api/configdb in the window, and an edit must have been saved;
 - --break truncate-xtc2 cuts an xtc2 file at a datagram boundary, dropping only the tail.
 """
 
 import argparse
+import http.server
 import json
+import socket
 import struct
 import sys
+import threading
 
 import pytest
 
@@ -150,6 +154,37 @@ def test_expected_seed_order(tmp_path):
     assert run(tmp_path).seed == 0x1234
     assert run(tmp_path, edit_seed=0x2a2a).seed == 0x2a2a
     assert run(tmp_path, edit_seed=0x2a2a, expect_seed=0x1234).seed == 0x1234
+
+
+@pytest.fixture
+def exporter():
+    """A stand-in for the TEB's Prometheus exporter on 127.0.0.1 (an ephemeral port): its port."""
+    body = (b'# TYPE TEB_WrtCt counter\nTEB_WrtCt{instrument="tst",partition="5"} 3882\n'
+            b'TEB_EvtCt{instrument="tst",partition="5"} 3882\nTEB_Other 7\n')
+
+    class Metrics(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200 if self.path == '/metrics' else 404)
+            self.end_headers()
+            self.wfile.write(body if self.path == '/metrics' else b'')
+
+        def log_message(self, *a):
+            pass
+    srv = http.server.HTTPServer(('127.0.0.1', 0), Metrics)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    yield srv.server_address[1]
+    srv.shutdown()
+    srv.server_close()
+
+
+def test_prom_counts_reads_the_teb_exporter(tmp_path, exporter):
+    """Issue #63: the counts read in CONFIGURED come from the exporter named in the prom dir, as the DAQ writes it
+    (MetricExporter.cc: '<hostname>:<port>'), and not {} (prometheus_targets returns (host, port) pairs)."""
+    (tmp_path / 'prom').mkdir()
+    (tmp_path / 'prom' / f'drpmon_{socket.gethostname()}_0.yaml').write_text(
+        f"- targets:\n    - '{socket.gethostname()}:{exporter}'\n")
+    counts = e2e.prom_counts(ds.Work(str(tmp_path)))
+    assert counts == {'TEB_WrtCt': 3882, 'TEB_EvtCt': 3882}, counts
 
 
 # ---------------- assertion 7 ----------------

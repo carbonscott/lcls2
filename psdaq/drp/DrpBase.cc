@@ -37,7 +37,6 @@ static json createFileReportMsg(std::string path, std::string absolute_path,
                                 unsigned run_num, std::string hostname);
 static json createChunkRequestMsg();
 
-static const unsigned EvtCtrMask = 0xffffff;
 
 namespace Drp {
 
@@ -489,6 +488,7 @@ PgpReader::PgpReader(const Parameters& para, MemPool& pool, unsigned maxRetCnt, 
     m_nNoTrDgrams (0),
     m_nLaneStalls (0),
     m_nStaleEvents(0),
+    m_staleEvtCtr (0),
     m_stallPid    (0),
     m_stallChecks (0),
     m_stallReported(false),
@@ -602,9 +602,10 @@ const Pds::TimingHeader* PgpReader::handle(Detector* det, unsigned current)
         auto other = det->getTimingHeader(event->buffers[__builtin_ctz(event->mask)].index);
         if (other->pulseId() != timingHeader->pulseId()) [[unlikely]] {
             if (m_nStaleEvents++ < 5) {
-                logging::error("PGPReader: Discarding stale partial event at evtCounter %u (pulseId %014lx, lanes 0x%02x)",
-                               evtCounter, other->pulseId(), event->mask);
+                logging::error("PGPReader: Discarding stale partial event at evtCounter %u (pulseId %014lx, lanes 0x%02x) for pulseId %014lx",
+                               evtCounter, other->pulseId(), event->mask, timingHeader->pulseId());
             }
+            m_staleEvtCtr = other->evtCounter & EvtCtrMask;
             freeDma(event);             // Leaves event mask = 0
         }
     }
@@ -680,6 +681,37 @@ const Pds::TimingHeader* PgpReader::handle(Detector* det, unsigned current)
                     }
                 }
                 ++m_nPgpJumps;
+                /// NOTE: Do NOT use this for normal running!!!!
+                ///       Add kwarg -k parkOnJump=yes or 1 to enable this feature
+                ///       to keep the devGui running in cases of Jumping L1s etc.
+                ///       Parks the reader thread forever - it never returns and ignores shutdown.
+                ///       DMAs are drained and discarded so the device stays usable.
+                ///       Use kill -9 to exit.
+                static const bool parkOnJump = [this] {
+                    auto it = m_para.kwargs.find("parkOnJump");
+                    return it != m_para.kwargs.end() && (it->second == "1" || it->second == "yes");
+                }();
+                if (parkOnJump) [[unlikely]] {
+                    logging::critical("PGPReader: DEBUG parking reader after evtCounter jump %u -> %u",
+                                      m_lastComplete, evtCounter);
+                    uint64_t nDrained = 0;
+                    while (true) {
+                        m_tmo = 100;                 // force interrupt mode - block in poll(), don't spin a core
+                        int32_t n = read();          // poll + dmaReadBulkIndex (+ back-off when empty)
+                        if (n <= 0)  continue;
+
+                        if (nDrained < 20 || m_para.verbose) {   // rate-limited peek at what keeps arriving
+                            for (int32_t i = 0; i < n; ++i) {
+                                auto th = det->getTimingHeader(dmaIndex[i]);
+                                logging::info("DEBUG drain: lane %u  evtCtr %u  pid %014lx  %s  size %d  err 0x%x",
+                                              (dest[i] >> 8) & 7, th->evtCounter & EvtCtrMask, th->pulseId(),
+                                              TransitionId::name(th->service()), dmaRet[i], dmaErrors[i]);
+                            }
+                        }
+                        m_pool.retDma(n, dmaIndex.data());   // give buffers back to the f/w (through MemPool, so MemPoolSim gets them too)
+                        nDrained += n;
+                    }
+                }
                 // Try to handle out-of-sequence events
             } else if (transitionId != TransitionId::Configure) { // m_lastTid == Unconfigure
                 freeDma(event);         // Leaves event mask = 0
