@@ -145,6 +145,19 @@ def test_bld_source_sends_one_packet_per_l1accept_on_loopback_multicast():
     rx.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
                   socket.inet_aton(group) + socket.inet_aton('127.0.0.1'))
     rx.settimeout(0.5)
+    # Read rx while the sim sends. Unread, the default SO_RCVBUF (212992 bytes) holds only 221 of
+    # these packets on GitHub's runners (the kernel charges each its ~960-byte buffer, not its 44
+    # bytes) and drops the rest, and the 0.5 s burst is 200 to 251 L1Accepts.
+    got, sent_all = [], threading.Event()
+
+    def read():                 # until 0.5 s without a packet once every packet was sent
+        while True:
+            try:
+                got.append(rx.recv(9000))
+            except socket.timeout:
+                if sent_all.is_set():
+                    return
+    reader = threading.Thread(target=read, daemon=True)
     endpoint = _free_tcp()
     sim = SimXpm('SIMBLD', 0, endpoint, rate=500., bld='SIM:BLD', bld_dest=f'{group}:{port}', bld_seed=0x55)
     assert 'SIM:BLD:BLD_PAYLOAD' in sim.provider.keys()
@@ -153,23 +166,24 @@ def test_bld_source_sends_one_packet_per_l1accept_on_loopback_multicast():
     t.start()
     ctx = zmq.Context.instance()
     d = _link(ctx, endpoint, 'f0', 1)
-    got = []
     try:
         end = time.monotonic() + 10
         while not any(l.group == 1 for l in list(sim.links.values())):
             assert time.monotonic() < end
             time.sleep(0.05)
+        reader.start()
         sim.command('l0enable', None, 0x2)
         time.sleep(0.5)
         sim.command('l0disable', None, 0x2)
-        frames = _drain(d)
-        while True:
-            try:
-                got.append(rx.recv(9000))
-            except socket.timeout:
-                break
+        frames = _drain(d)      # 0.5 s after the last frame, which leaves the sim after its packet
+        sent_all.set()
+        reader.join(10)
+        assert not reader.is_alive(), 'BLD packets still arriving 10 s after l0disable'
     finally:
+        sent_all.set()
         sim.stop.set()
+        if reader.is_alive():
+            reader.join(2)
         d.close()
         rx.close()
         t.join(2)
