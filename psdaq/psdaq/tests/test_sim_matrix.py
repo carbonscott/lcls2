@@ -5,6 +5,7 @@ the features it cannot run yet, the summary's verdicts and the --only coverage c
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -445,3 +446,22 @@ def test_a_type_runs_at_its_own_rate():
     assert matrix.type_up_args('jungfrau') == ['--rate', '100']
     assert matrix.type_up_args('jungfrau', 'drp_gpu') == ['--drp', 'drp_gpu', '--rate', '100']
     assert matrix.type_up_args('epix100') == [] and matrix.type_up_args('fakecam', 'drp_gpu') == ['--drp', 'drp_gpu']
+
+
+def test_every_sim_drp_asks_for_twice_the_pebbles_its_drp_makes():
+    """tebPendingDepth must be a power of 2 >= the drp's pebble count, or TebContributor aborts the drp at its
+    start.  Without pebbleBufCount the drp makes at least MIN_PEBBLES pebbles, more than eb.hh's MAX_TEBS x
+    MAX_ENTRIES (MemPool::_initialize); jungfrau and opal (sim_dma_count=128) make 512, not 128."""
+    eb = open(os.path.join(REPO, 'psdaq/psdaq/eb/src/eb.hh')).read()
+    n = {k: int(re.search(rf'const unsigned {k}\s*=\s*(\d+);', eb).group(1)) for k in ('MAX_TEBS', 'MAX_ENTRIES')}
+    assert daq_sim.MIN_PEBBLES == 1 << (n['MAX_TEBS'] * n['MAX_ENTRIES']).bit_length()   # nextPowerOf2(x + 1)
+    depth = daq_sim.teb_pending_depth
+    assert depth('sim_dma_count=128') == depth('sim_dma_count=256') == 2 * daq_sim.MIN_PEBBLES
+    assert depth('sim_dma_count=1024') == depth('sim_seed=0x1234') == 2048 and depth('sim_dma_count=600') == 2048
+    assert depth('sim_dma_count=128,pebbleBufCount=4096') == 8192
+    for t in ('jungfrau', 'opal'):
+        assert 'tebPendingDepth=1024' in daq_sim.SIM_TYPES[t]['kwargs'].split(','), t
+    for t, v in daq_sim.SIM_TYPES.items():
+        kw = dict(x.split('=', 1) for x in v['kwargs'].split(',') if '=' in x)
+        d = int(kw['tebPendingDepth'])
+        assert d >= 2 * daq_sim.MIN_PEBBLES and d & (d - 1) == 0, (t, d)

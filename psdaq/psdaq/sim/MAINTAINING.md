@@ -671,7 +671,7 @@ kwarg `tebPendingDepth`, twice its pebble count rounded up to a power of 2
 (`teb_pending_depth` in `psdaq/psdaq/sim/daq_sim.py`), so TebContributor's queue of posted batches
 has room beyond the pebbles. drp accepts the kwarg only with `-d sim://` (`psdaq/drp/drp.cc`);
 production defaults are unchanged. Each sim drp's pmlog shows it as
-`tebPendingDepth <N> (numBuffers <M>)` (e.g. opal `tebPendingDepth 256 (numBuffers 128)`), and its
+`tebPendingDepth <N> (numBuffers <M>)` (e.g. opal `tebPendingDepth 1024 (numBuffers 512)`), and its
 `-k` on the `# CMDLINE:` line. A `_pending queue overflow` in a sim drp whose log lacks that line
 means the kwarg was not passed; with the line, it is F1 coming back (FLAKES.md).
 
