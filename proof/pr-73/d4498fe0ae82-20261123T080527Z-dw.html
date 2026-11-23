@@ -1,0 +1,1394 @@
+<!doctype html>
+<!-- bin/proof: this page is built to be read in full with the Read tool before it is published: every line is shorter than 2000 characters; read in 5 pages (Read offset/limit): 1/400 401/400 801/200 1001/349 1350/45 -->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Window weekly-2026-11-23 proof</title>
+<style>:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a65;--card:#fff;--line:#e4e1d8;--pass:#1f7a3a;--fail:#b3261e;
+--warn:#9a6700;--na:#5f6368;--accent:#2d5b8a;--code:#f3f1ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--fg:#ecebe6;--muted:#a3a19a;
+--card:#1e1e1c;--line:#34332f;--pass:#5cc27a;--fail:#ff7b72;--warn:#e3b341;--na:#9aa0a6;--accent:#7fb0e0;--code:#262623}}
+:root[data-theme="dark"]{--bg:#151514;--fg:#ecebe6;--muted:#a3a19a;--card:#1e1e1c;--line:#34332f;--pass:#5cc27a;
+--fail:#ff7b72;--warn:#e3b341;--na:#9aa0a6;--accent:#7fb0e0;--code:#262623}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,
+"Segoe UI",sans-serif}.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 64px}
+.eyebrow{font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--muted);word-break:break-word}
+h1{font-size:26px;margin:6px 0 8px}h2{font-size:19px;margin:34px 0 10px;border-bottom:1px solid var(--line);
+padding-bottom:4px}.lede{color:var(--muted);max-width:780px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:18px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+.card .k{font-size:12px;color:var(--muted)}.card .v{font-size:20px;font-weight:600}
+.PASS{color:var(--pass)}.FAIL{color:var(--fail)}.WARN{color:var(--warn)}.NOT-RUN,.NA,.IN-PROGRESS,.NOT-YET{color:var(--na)}.MISMATCH{color:var(--fail);font-weight:700}
+.snapshot{border:1px solid var(--warn);border-radius:10px;padding:10px 12px;margin:14px 0;background:var(--card)}
+.mismatch{border:2px solid var(--fail);border-radius:10px;padding:10px 12px;margin:14px 0;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{border-bottom:1px solid var(--line);padding:6px 8px;
+text-align:left;vertical-align:top}th{color:var(--muted);font-weight:600}.tw{overflow-x:auto}
+code,pre{font:12.5px/1.45 ui-monospace,Menlo,monospace;background:var(--code)}pre{padding:10px;border-radius:8px;
+overflow-x:auto;white-space:pre-wrap;word-break:break-word}code{padding:1px 4px;border-radius:4px}
+.chapters{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chapters button{font:12px ui-monospace,monospace;
+border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:6px;padding:4px 8px;cursor:pointer}
+#player{min-height:120px;background:#000;border-radius:8px;overflow:hidden}details{margin:8px 0}summary{cursor:pointer}
+.note{color:var(--muted);font-size:13px}
+#player.noplayer{background:var(--card);color:var(--fg);border:1px solid var(--line);padding:4px 12px}
+#player.noplayer pre{max-height:420px;overflow:auto}
+/* asciinema-player 3.17.0 stylesheet (inlined) */
+.ap-default-term-ff {
+  --term-font-family: "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace, "Symbols Nerd Font";
+}
+div.ap-wrapper {
+  outline: none;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+div.ap-wrapper .title-bar {
+  display: none;
+  top: -78px;
+  transition: top 0.15s linear;
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: content-box;
+  font-size: 20px;
+  line-height: 1em;
+  padding: 15px;
+  font-family: sans-serif;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+div.ap-wrapper .title-bar img {
+  vertical-align: middle;
+  height: 48px;
+  margin-right: 16px;
+}
+div.ap-wrapper .title-bar a {
+  color: white;
+  text-decoration: underline;
+}
+div.ap-wrapper .title-bar a:hover {
+  text-decoration: none;
+}
+div.ap-wrapper:fullscreen {
+  background-color: #000;
+  width: 100%;
+  align-items: center;
+}
+div.ap-wrapper:fullscreen .title-bar {
+  display: initial;
+}
+div.ap-wrapper:fullscreen.hud .title-bar {
+  top: 0;
+}
+div.ap-wrapper div.ap-player {
+  text-align: left;
+  display: inline-block;
+  padding: 0px;
+  position: relative;
+  box-sizing: content-box;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: 4px;
+  font-size: 15px;
+  background-color: var(--term-color-background);
+}
+.ap-player {
+  --term-color-foreground: #ffffff;
+  --term-color-background: #000000;
+  --term-color-0: var(--term-color-foreground);
+  --term-color-1: var(--term-color-foreground);
+  --term-color-2: var(--term-color-foreground);
+  --term-color-3: var(--term-color-foreground);
+  --term-color-4: var(--term-color-foreground);
+  --term-color-5: var(--term-color-foreground);
+  --term-color-6: var(--term-color-foreground);
+  --term-color-7: var(--term-color-foreground);
+  --term-color-8: var(--term-color-0);
+  --term-color-9: var(--term-color-1);
+  --term-color-10: var(--term-color-2);
+  --term-color-11: var(--term-color-3);
+  --term-color-12: var(--term-color-4);
+  --term-color-13: var(--term-color-5);
+  --term-color-14: var(--term-color-6);
+  --term-color-15: var(--term-color-7);
+}
+div.ap-term {
+  position: relative;
+  font-family: var(--term-font-family);
+  border-width: 0.75em;
+  border-radius: 0;
+  border-style: solid;
+  border-color: var(--term-color-background);
+  box-sizing: content-box;
+}
+div.ap-term canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+div.ap-term svg.ap-term-symbols {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+div.ap-term svg.ap-term-symbols use {
+  color: var(--term-color-foreground);
+}
+div.ap-term svg.ap-term-symbols:not(.ap-blink) .ap-blink {
+  opacity: 0;
+}
+div.ap-term pre.ap-term-text {
+  position: absolute;
+  inset: 0;
+  box-sizing: content-box;
+  overflow: hidden;
+  padding: 0;
+  margin: 0px;
+  display: block;
+  white-space: pre;
+  word-wrap: normal;
+  word-break: normal;
+  cursor: text;
+  color: var(--term-color-foreground);
+  outline: none;
+  line-height: var(--term-line-height);
+  font-family: inherit;
+  font-size: inherit;
+  font-variant-ligatures: none;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent !important;
+}
+pre.ap-term-text .ap-line {
+  display: block;
+  width: 100%;
+  height: var(--term-line-height);
+  position: absolute;
+  top: calc(100% * var(--row) / var(--term-rows));
+  letter-spacing: normal;
+  overflow: hidden;
+}
+pre.ap-term-text .ap-line span {
+  position: absolute;
+  left: calc(100% * var(--offset) / var(--term-cols));
+  padding: 0;
+  display: inline-block;
+  height: 100%;
+}
+pre.ap-term-text:not(.ap-blink) .ap-line .ap-blink {
+  color: transparent;
+  border-color: transparent;
+}
+pre.ap-term-text .ap-bold {
+  font-weight: bold;
+}
+pre.ap-term-text .ap-faint {
+  opacity: 0.5;
+}
+pre.ap-term-text .ap-underline {
+  text-decoration: underline;
+}
+pre.ap-term-text .ap-italic {
+  font-style: italic;
+}
+pre.ap-term-text .ap-strike {
+  text-decoration: line-through;
+}
+.ap-line span {
+  color: var(--term-color-foreground);
+}
+div.ap-player div.ap-control-bar {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  color: var(--term-color-foreground);
+  box-sizing: content-box;
+  line-height: 1;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.15s linear;
+  user-select: none;
+  border-top: 2px solid color-mix(in oklab, var(--term-color-background) 80%, var(--term-color-foreground));
+  z-index: 30;
+}
+div.ap-player div.ap-control-bar * {
+  box-sizing: inherit;
+}
+div.ap-control-bar svg.ap-icon path {
+  fill: var(--term-color-foreground);
+}
+div.ap-control-bar button.ap-button {
+  display: flex;
+  flex: 0 0 auto;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+div.ap-control-bar button.ap-playback-button {
+  width: 12px;
+  height: 12px;
+  padding: 10px;
+  margin: 0 0 0 2px;
+}
+div.ap-control-bar button.ap-playback-button svg {
+  height: 12px;
+  width: 12px;
+}
+div.ap-control-bar span.ap-timer {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 50px;
+  margin: 0 10px;
+  height: 100%;
+  text-align: center;
+  font-size: 13px;
+  line-height: 100%;
+  cursor: default;
+}
+div.ap-control-bar span.ap-timer span {
+  font-family: var(--term-font-family);
+  font-size: inherit;
+  font-weight: 600;
+  margin: auto;
+}
+div.ap-control-bar span.ap-timer .ap-time-remaining {
+  display: none;
+}
+div.ap-control-bar span.ap-timer:hover .ap-time-elapsed {
+  display: none;
+}
+div.ap-control-bar span.ap-timer:hover .ap-time-remaining {
+  display: flex;
+}
+div.ap-control-bar .ap-progressbar {
+  display: block;
+  flex: 1 1 auto;
+  height: 100%;
+  padding: 0 10px;
+}
+div.ap-control-bar .ap-progressbar .ap-bar {
+  display: block;
+  position: relative;
+  cursor: default;
+  height: 100%;
+  font-size: 0;
+}
+div.ap-control-bar .ap-progressbar .ap-bar .ap-gutter {
+  display: block;
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+div.ap-control-bar .ap-progressbar .ap-bar .ap-gutter-empty {
+  background-color: color-mix(in oklab, var(--term-color-foreground) 20%, var(--term-color-background));
+}
+div.ap-control-bar .ap-progressbar .ap-bar .ap-gutter-full {
+  width: 100%;
+  transform-origin: left center;
+  background-color: var(--term-color-foreground);
+  border-radius: 3px;
+}
+div.ap-control-bar.ap-seekable .ap-progressbar .ap-bar {
+  cursor: pointer;
+}
+div.ap-control-bar button.ap-fullscreen-button {
+  width: 14px;
+  height: 14px;
+  padding: 9px;
+  margin: 0 2px 0 4px;
+}
+div.ap-control-bar button.ap-fullscreen-button svg {
+  width: 14px;
+  height: 14px;
+}
+div.ap-control-bar button.ap-fullscreen-button svg.ap-icon-fullscreen-on {
+  display: inline;
+}
+div.ap-control-bar button.ap-fullscreen-button svg.ap-icon-fullscreen-off {
+  display: none;
+}
+div.ap-control-bar button.ap-fullscreen-button .ap-tooltip {
+  right: 5px;
+  left: initial;
+  transform: none;
+}
+div.ap-control-bar button.ap-kbd-button {
+  height: 14px;
+  padding: 9px;
+  margin: 0 0 0 4px;
+}
+div.ap-control-bar button.ap-kbd-button svg {
+  width: 26px;
+  height: 14px;
+}
+div.ap-control-bar button.ap-kbd-button .ap-tooltip {
+  right: 5px;
+  left: initial;
+  transform: none;
+}
+div.ap-control-bar button.ap-speaker-button {
+  width: 19px;
+  padding: 6px 9px;
+  margin: 0 0 0 4px;
+  position: relative;
+}
+div.ap-control-bar button.ap-speaker-button svg {
+  width: 19px;
+}
+div.ap-control-bar button.ap-speaker-button .ap-tooltip {
+  left: -50%;
+  transform: none;
+}
+div.ap-wrapper.ap-hud .ap-control-bar {
+  opacity: 1;
+}
+div.ap-wrapper:fullscreen button.ap-fullscreen-button svg.ap-icon-fullscreen-on {
+  display: none;
+}
+div.ap-wrapper:fullscreen button.ap-fullscreen-button svg.ap-icon-fullscreen-off {
+  display: inline;
+}
+span.ap-progressbar span.ap-marker-container {
+  display: block;
+  top: 0;
+  bottom: 0;
+  width: 21px;
+  position: absolute;
+  margin-left: -10px;
+}
+span.ap-marker-container span.ap-marker {
+  display: block;
+  top: 13px;
+  bottom: 12px;
+  left: 7px;
+  right: 7px;
+  background-color: color-mix(in oklab, var(--term-color-foreground) 33%, var(--term-color-background));
+  position: absolute;
+  transition: top 0.1s, bottom 0.1s, left 0.1s, right 0.1s, background-color 0.1s;
+  border-radius: 50%;
+}
+span.ap-marker-container span.ap-marker.ap-marker-past {
+  background-color: var(--term-color-foreground);
+}
+span.ap-marker-container span.ap-marker:hover,
+span.ap-marker-container:hover span.ap-marker {
+  background-color: var(--term-color-foreground);
+  top: 11px;
+  bottom: 10px;
+  left: 5px;
+  right: 5px;
+}
+.ap-tooltip-container span.ap-tooltip {
+  visibility: hidden;
+  background-color: var(--term-color-foreground);
+  color: var(--term-color-background);
+  font-family: var(--term-font-family);
+  font-weight: bold;
+  text-align: center;
+  padding: 0 0.5em;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  white-space: nowrap;
+  /* Prevents the text from wrapping and makes sure the tooltip width adapts to the text length */
+  font-size: 13px;
+  line-height: 2em;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.ap-tooltip-container:hover span.ap-tooltip {
+  visibility: visible;
+}
+.ap-player .ap-overlay {
+  z-index: 10;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ap-player .ap-overlay-start {
+  cursor: pointer;
+}
+.ap-player .ap-overlay-start .ap-play-button {
+  font-size: 0px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  color: white;
+  height: 80px;
+  max-height: 66%;
+  margin: auto;
+}
+.ap-player .ap-overlay-start .ap-play-button div {
+  height: 100%;
+}
+.ap-player .ap-overlay-start .ap-play-button div span {
+  height: 100%;
+  display: block;
+}
+.ap-player .ap-overlay-start .ap-play-button div span svg {
+  height: 100%;
+  display: inline-block;
+}
+.ap-player .ap-overlay-start .ap-play-button svg {
+  filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.4));
+}
+.ap-player .ap-overlay-loading .ap-loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 10px solid;
+  border-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.7) #ffffff;
+  border-color: color-mix(in srgb, var(--term-color-foreground) 30%, var(--term-color-background)) color-mix(in srgb, var(--term-color-foreground) 50%, var(--term-color-background)) color-mix(in srgb, var(--term-color-foreground) 70%, var(--term-color-background)) color-mix(in srgb, var(--term-color-foreground) 100%, var(--term-color-background));
+  box-sizing: border-box;
+  animation: ap-loader-rotation 1s linear infinite;
+}
+.ap-player .ap-overlay-info {
+  background-color: var(--term-color-background);
+}
+.ap-player .ap-overlay-info span {
+  font-family: var(--term-font-family);
+  font-size: 2em;
+  font-weight: bold;
+  color: var(--term-color-background);
+  background-color: var(--term-color-foreground);
+  padding: 0.5em 0.75em;
+  text-transform: uppercase;
+}
+.ap-player .ap-overlay-keystrokes {
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: 20px;
+  bottom: var(--ap-keystrokes-bottom);
+  z-index: 20;
+  width: auto;
+  height: auto;
+  font-size: 18px;
+  text-align: right;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35em;
+  pointer-events: none;
+}
+.ap-player .ap-overlay-keystrokes .ap-keystroke-pill {
+  font-family: var(--term-font-family);
+  font-size: inherit;
+  opacity: 1;
+  transition: opacity 80ms ease;
+}
+.ap-player .ap-overlay-keystrokes .ap-keystroke-pill kbd {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 1.2em;
+  color: var(--term-color-background);
+  background-color: var(--term-color-foreground);
+  padding: 0.3em 0.5em;
+  border-radius: 0.2em;
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  border: none;
+  margin: 0;
+}
+.ap-player .ap-overlay-keystrokes .ap-keystroke-pill.fading {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.ap-player .ap-overlay-help {
+  background-color: rgba(0, 0, 0, 0.8);
+  container-type: inline-size;
+}
+.ap-player .ap-overlay-help > div {
+  font-family: var(--term-font-family);
+  max-width: 85%;
+  max-height: 85%;
+  font-size: 18px;
+  color: var(--term-color-foreground);
+  box-sizing: border-box;
+  margin-bottom: 32px;
+}
+.ap-player .ap-overlay-help > div div {
+  padding: calc(min(4cqw, 40px));
+  font-size: calc(min(1.9cqw, 18px));
+  background-color: var(--term-color-background);
+  border: 1px solid color-mix(in oklab, var(--term-color-background) 90%, var(--term-color-foreground));
+  border-radius: 6px;
+}
+.ap-player .ap-overlay-help > div div p {
+  font-weight: bold;
+  margin: 0 0 2em 0;
+}
+.ap-player .ap-overlay-help > div div ul {
+  list-style: none;
+  padding: 0;
+}
+.ap-player .ap-overlay-help > div div ul li {
+  margin: 0 0 0.75em 0;
+}
+.ap-player .ap-overlay-help > div div kbd {
+  color: var(--term-color-background);
+  background-color: var(--term-color-foreground);
+  padding: 0.2em 0.5em;
+  border-radius: 0.2em;
+  font-family: inherit;
+  font-size: 0.85em;
+  border: none;
+  margin: 0;
+}
+.ap-player .ap-overlay-error span {
+  font-size: 8em;
+}
+.ap-player .slide-enter-active {
+  transition: opacity 0.2s;
+}
+.ap-player .slide-enter-active.ap-was-playing {
+  transition: top 0.2s ease-out, opacity 0.2s;
+}
+.ap-player .slide-exit-active {
+  transition: top 0.2s ease-in, opacity 0.2s;
+}
+.ap-player .slide-enter {
+  top: -50%;
+  opacity: 0;
+}
+.ap-player .slide-enter-to {
+  top: 0%;
+}
+.ap-player .slide-enter,
+.ap-player .slide-enter-to,
+.ap-player .slide-exit,
+.ap-player .slide-exit-to {
+  bottom: auto;
+  height: 100%;
+}
+.ap-player .slide-exit {
+  top: 0%;
+}
+.ap-player .slide-exit-to {
+  top: -50%;
+  opacity: 0;
+}
+@keyframes ap-loader-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.asciinema-player-theme-asciinema {
+  --term-color-foreground: #cccccc;
+  --term-color-background: #121314;
+  --term-color-0: #000000;
+  --term-color-1: #dd3c69;
+  --term-color-2: #4ebf22;
+  --term-color-3: #ddaf3c;
+  --term-color-4: #26b0d7;
+  --term-color-5: #b954e1;
+  --term-color-6: #54e1b9;
+  --term-color-7: #d9d9d9;
+  --term-color-8: #4d4d4d;
+  --term-color-9: #dd3c69;
+  --term-color-10: #4ebf22;
+  --term-color-11: #ddaf3c;
+  --term-color-12: #26b0d7;
+  --term-color-13: #b954e1;
+  --term-color-14: #54e1b9;
+  --term-color-15: #ffffff;
+}
+/*
+  Based on Dracula: https://draculatheme.com
+ */
+.asciinema-player-theme-dracula {
+  --term-color-foreground: #f8f8f2;
+  --term-color-background: #282a36;
+  --term-color-0: #21222c;
+  --term-color-1: #ff5555;
+  --term-color-2: #50fa7b;
+  --term-color-3: #f1fa8c;
+  --term-color-4: #bd93f9;
+  --term-color-5: #ff79c6;
+  --term-color-6: #8be9fd;
+  --term-color-7: #f8f8f2;
+  --term-color-8: #6272a4;
+  --term-color-9: #ff6e6e;
+  --term-color-10: #69ff94;
+  --term-color-11: #ffffa5;
+  --term-color-12: #d6acff;
+  --term-color-13: #ff92df;
+  --term-color-14: #a4ffff;
+  --term-color-15: #ffffff;
+}
+/* Based on Monokai from base16 collection - https://github.com/chriskempson/base16 */
+.asciinema-player-theme-monokai {
+  --term-color-foreground: #f8f8f2;
+  --term-color-background: #272822;
+  --term-color-0: #272822;
+  --term-color-1: #f92672;
+  --term-color-2: #a6e22e;
+  --term-color-3: #f4bf75;
+  --term-color-4: #66d9ef;
+  --term-color-5: #ae81ff;
+  --term-color-6: #a1efe4;
+  --term-color-7: #f8f8f2;
+  --term-color-8: #75715e;
+  --term-color-15: #f9f8f5;
+}
+/*
+  Based on Nord: https://github.com/arcticicestudio/nord
+  Via: https://github.com/neilotoole/asciinema-theme-nord
+ */
+.asciinema-player-theme-nord {
+  --term-color-foreground: #eceff4;
+  --term-color-background: #2e3440;
+  --term-color-0: #3b4252;
+  --term-color-1: #bf616a;
+  --term-color-2: #a3be8c;
+  --term-color-3: #ebcb8b;
+  --term-color-4: #81a1c1;
+  --term-color-5: #b48ead;
+  --term-color-6: #88c0d0;
+  --term-color-7: #eceff4;
+}
+.asciinema-player-theme-seti {
+  --term-color-foreground: #cacecd;
+  --term-color-background: #111213;
+  --term-color-0: #323232;
+  --term-color-1: #c22832;
+  --term-color-2: #8ec43d;
+  --term-color-3: #e0c64f;
+  --term-color-4: #43a5d5;
+  --term-color-5: #8b57b5;
+  --term-color-6: #8ec43d;
+  --term-color-7: #eeeeee;
+  --term-color-15: #ffffff;
+}
+/*
+  Based on Solarized Dark: https://ethanschoonover.com/solarized/
+ */
+.asciinema-player-theme-solarized-dark {
+  --term-color-foreground: #839496;
+  --term-color-background: #002b36;
+  --term-color-0: #073642;
+  --term-color-1: #dc322f;
+  --term-color-2: #859900;
+  --term-color-3: #b58900;
+  --term-color-4: #268bd2;
+  --term-color-5: #d33682;
+  --term-color-6: #2aa198;
+  --term-color-7: #eee8d5;
+  --term-color-8: #002b36;
+  --term-color-9: #cb4b16;
+  --term-color-10: #586e75;
+  --term-color-11: #657b83;
+  --term-color-12: #839496;
+  --term-color-13: #6c71c4;
+  --term-color-14: #93a1a1;
+  --term-color-15: #fdf6e3;
+}
+/*
+  Based on Solarized Light: https://ethanschoonover.com/solarized/
+ */
+.asciinema-player-theme-solarized-light {
+  --term-color-foreground: #657b83;
+  --term-color-background: #fdf6e3;
+  --term-color-0: #073642;
+  --term-color-1: #dc322f;
+  --term-color-2: #859900;
+  --term-color-3: #b58900;
+  --term-color-4: #268bd2;
+  --term-color-5: #d33682;
+  --term-color-6: #2aa198;
+  --term-color-7: #eee8d5;
+  --term-color-8: #002b36;
+  --term-color-9: #cb4b16;
+  --term-color-10: #586e75;
+  --term-color-11: #657c83;
+  --term-color-12: #839496;
+  --term-color-13: #6c71c4;
+  --term-color-14: #93a1a1;
+  --term-color-15: #fdf6e3;
+}
+.asciinema-player-theme-solarized-light .ap-overlay-start .ap-play-button svg .ap-play-btn-fill {
+  fill: var(--term-color-1);
+}
+.asciinema-player-theme-solarized-light .ap-overlay-start .ap-play-button svg .ap-play-btn-stroke {
+  stroke: var(--term-color-1);
+}
+/*
+  Based on Tango: https://en.wikipedia.org/wiki/Tango_Desktop_Project
+ */
+.asciinema-player-theme-tango {
+  --term-color-foreground: #cccccc;
+  --term-color-background: #121314;
+  --term-color-0: #000000;
+  --term-color-1: #cc0000;
+  --term-color-2: #4e9a06;
+  --term-color-3: #c4a000;
+  --term-color-4: #3465a4;
+  --term-color-5: #75507b;
+  --term-color-6: #06989a;
+  --term-color-7: #d3d7cf;
+  --term-color-8: #555753;
+  --term-color-9: #ef2929;
+  --term-color-10: #8ae234;
+  --term-color-11: #fce94f;
+  --term-color-12: #729fcf;
+  --term-color-13: #ad7fa8;
+  --term-color-14: #34e2e2;
+  --term-color-15: #eeeeec;
+}
+/*
+  Based on gruvbox: https://github.com/morhetz/gruvbox
+ */
+.asciinema-player-theme-gruvbox-dark {
+  --term-color-foreground: #fbf1c7;
+  --term-color-background: #282828;
+  --term-color-0: #282828;
+  --term-color-1: #cc241d;
+  --term-color-2: #98971a;
+  --term-color-3: #d79921;
+  --term-color-4: #458588;
+  --term-color-5: #b16286;
+  --term-color-6: #689d6a;
+  --term-color-7: #a89984;
+  --term-color-8: #7c6f65;
+  --term-color-9: #fb4934;
+  --term-color-10: #b8bb26;
+  --term-color-11: #fabd2f;
+  --term-color-12: #83a598;
+  --term-color-13: #d3869b;
+  --term-color-14: #8ec07c;
+  --term-color-15: #fbf1c7;
+}</style>
+</head>
+<body>
+<div class="wrap"><div class="eyebrow">host &lt;vm&gt; · built 2026-11-23T08:37:56Z · lcls2-sync 7f3573275949 · window weekly-2026-11-23 (weekly, real) · upstream 8a38b8a87be0 · H d4498fe0ae82</div>
+<h1>Window weekly-2026-11-23: snapshot at the proof step (window open; last STEP line proof start)</h1>
+<p class="lede">The proof of lcls2-sync window <code>weekly-2026-11-23</code> (weekly, real mode, branch <code>sync/upstream-2026-11-23</code>), built by <code>bin/proof build</code> from the window's own records: its step log, ledger, gate verdicts and notes, with a read-back made by other clients. Every number below is in those records. Each suite row's verdict is checked here against the record of the window's suite run (runs/&lt;run&gt;/record.json); the other gates (sim-cheap-tier, audit-statuses) are typed by the window's session from its wrappers' output, which no file keeps, and say so.</p>
+<p class="snapshot"><b>Snapshot at the proof step; final state: see the records branch.</b> Built 2026-11-23T08:37:56Z while the window was open (last STEP line: <code>proof start 2026-11-23T08:37:43Z</code>). No session republishes it after the window closes, so its verdict, PR state and the steps after the proof step are as of this moment. The final state (window.json verdict, supervisor.log, launcher.log, <code>finished</code>) is in the window's records: <code>lcls2-sync main, windows/weekly-2026-11-23/</code>.</p>
+<div class="cards">
+<div class="card"><div class="k">Window verdict</div><div class="v WARN">open: snapshot at step proof</div></div>
+<div class="card"><div class="k">Steps logged</div><div class="v WARN">6 / 11 at the snapshot</div></div>
+<div class="card"><div class="k">Gates</div><div class="v FAIL">18: 9 PASS, 1 FAIL, 8 NOT-RUN (8 counted as FAIL by the suite)</div></div>
+<div class="card"><div class="k">Gate verdicts checked</div><div class="v PASS">16 against the run record, 2 typed</div></div>
+<div class="card"><div class="k">Path</div><div class="v NA">TEAM</div></div>
+<div class="card"><div class="k">Flags for the user</div><div class="v PASS">0</div></div>
+<div class="card"><div class="k">PR</div><div class="v NA">#73 open (at the snapshot)</div></div></div>
+<h2>Screencast</h2><p class="note">Not a terminal recording: a replay of supervisor.log and ledger.json at their wall-clock times. Chapters are the window's STEP start lines (UTC).</p>
+<div class="chapters">
+<button data-marker="0">08:01:19 preflight</button>
+<button data-marker="1">08:02:05 lock</button>
+<button data-marker="2">08:02:41 merge</button>
+<button data-marker="3">08:02:49 sort</button>
+<button data-marker="4">08:03:12 team</button>
+<button data-marker="5">08:05:19 gates</button>
+<button data-marker="6">08:37:43 proof</button></div>
+<div id="player"></div>
+<h2>Checks: expected and measured</h2><div class="tw"><table><tr><th>Check</th><th>Expected</th><th>Measured</th><th>Verdict</th></tr>
+<tr><td>step preflight</td><td>a STEP start and end line</td><td>1 start, 1 end (08:01:19Z - 08:02:05Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step lock</td><td>a STEP start and end line</td><td>1 start, 1 end (08:02:05Z - 08:02:40Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step merge</td><td>a STEP start and end line</td><td>1 start, 1 end (08:02:41Z - 08:02:49Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step sort</td><td>a STEP start and end line</td><td>1 start, 1 end (08:02:49Z - 08:03:10Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step team</td><td>a STEP start and end line</td><td>1 start, 1 end (08:03:12Z - 08:05:16Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step gates</td><td>a STEP start and end line</td><td>1 start, 1 end (08:05:19Z - 08:37:37Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>step proof</td><td>a STEP start and end line</td><td>1 start, 0 end (in progress when this snapshot was built)</td><td class="IN-PROGRESS">IN-PROGRESS</td></tr>
+<tr><td>step merge-or-wait</td><td>a STEP start and end line</td><td>0 start, 0 end (after this snapshot: see lcls2-sync main, windows/weekly-2026-11-23/)</td><td class="NOT-YET">NOT-YET</td></tr>
+<tr><td>step record</td><td>a STEP start and end line</td><td>0 start, 0 end (after this snapshot: see lcls2-sync main, windows/weekly-2026-11-23/)</td><td class="NOT-YET">NOT-YET</td></tr>
+<tr><td>step release</td><td>a STEP start and end line</td><td>0 start, 0 end (after this snapshot: see lcls2-sync main, windows/weekly-2026-11-23/)</td><td class="NOT-YET">NOT-YET</td></tr>
+<tr><td>step exit</td><td>a STEP start and end line</td><td>0 start, 0 end (after this snapshot: see lcls2-sync main, windows/weekly-2026-11-23/)</td><td class="NOT-YET">NOT-YET</td></tr>
+<tr><td>gate drift/guards</td><td>exit 0 and last line `GUARDS PASS &lt;n&gt;/&lt;n&gt; hunks present in &lt;f&gt; files; &lt;r&gt; hunks REVIEW ...`: every fork hunk of the fork-edited upstream files (B..S) present at H (at 5eb773c84b9d: 218/218 in 67 files, 7 REVIEW vs upstream/master 9420f8625c97; at 2882d4981974: 216/216 in 66 files, 2 RETIRED, 5 REVIE</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): GUARDS PASS 218/218 hunks present in 66 files; 2 hunks REVIEW (upstream touched the region) head=d4498fe0ae82 | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: GUARDS PASS 218/218 hunks present in 66 files; 2 hunks REVIEW (upstream touched the region) (2026-11-23T08:36:52Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate drift/probes</td><td>exit 0 and last line `PROBES PASS 19/19 NEEDED vs &lt;merge-base(H, upstream/master)&gt;; self-test 19/19 FIXED at &lt;H&gt;`: each of the fork&#x27;s 19 fixes to upstream files still needed (the defect is in the upstream H contains) and present at H (at 5eb773c84b9d: 20/20 vs 03623f2be58f before the retirement; at </td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): PROBES PASS 19/19 NEEDED vs 8a38b8a87be0; self-test 19/19 FIXED at d4498fe0ae82 | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: PROBES PASS 19/19 NEEDED vs 8a38b8a87be0; self-test 19/19 FIXED (2026-11-23T08:36:54Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate drift/kinds-static</td><td>exit 0 and last line `KINDS-STATIC PASS ...`: no (file, driver call) pair of psdaq/drp, psdaq/drpGpu, psdaq/epicsArch beyond the baseline, no call count above it, every pure virtual of MemPool overridden by MemPoolSim (baseline at 5eb773c84b9d: 142 pairs in 32 files, 6 virtuals)</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): KINDS-STATIC PASS 142 (file, driver call) pairs in 32 files within the baseline; MemPool 6 virtuals, every pure one overridden by MemPoolSim | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: KINDS-STATIC PASS 142 (file, driver call) pairs in 32 files within the baseline (2026-11-23T08:36:55Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate fork/build</td><td>`BUILD_EXIT=0` and install/bin/{drp,drp_gpu,teb,control} exist (M:200-220; the GPU build needs the gpu slice: drp_gpu links libcuda.so.1, M:192-193)</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): BUILD_EXIT=0 | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: BUILD_EXIT=0 (2026-11-23T08:36:57Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate fork/unit</td><td>`PYTEST_EXIT=0`, pytest&#x27;s summary has `0 failed` or no failed count, every SKIPPED line&#x27;s reason is `could not import &#x27;ami&#x27;`, and `TEST_FUNCTIONS=&lt;n&gt;` with n &gt;= 256 (`grep -cE &#x27;^\s*def test_&#x27;` over the test_sim*.py files: 256 at c0d9bb1e, 262 at 5eb773c84b9d). Not `256 passed`: pytest counts paramet</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): ================== 436 passed, 1 skipped in 219.60s (0:03:39) ================== | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: 436 passed, 1 skipped in 219.60s (2026-11-23T08:36:59Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate fork/matrix</td><td>`MATRIX PASS (201 assertions)` and `MATRIX_EXIT=0`; in the summary block (after the last `==== MATRIX SUMMARY` line) 21 `TYPE &lt;type&gt; node &lt;A|B&gt;` lines and 5 `TYPE drp_gpu:&lt;type&gt;` lines, a `PROGRAMS` line, `FEATURE a` .. `FEATURE e` PASS, `whole matrix at this HEAD (with carried results): PASS` (M:52</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 1 attempt(s): MATRIX FAIL (3 of 191 assertions failed) | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: MATRIX FAIL (3 of 191 assertions failed); FAILED types/jungfrau/up: daq_sim: up FAILED: jungfrau_0 not ready for transitions (2026-11-23T08:37:00Z)</td><td class="FAIL">FAIL</td></tr>
+<tr><td>gate fork/webgui-e2e</td><td>assertions 1-7 each PASS, then `E2E PASS` and `E2E_EXIT=0` (about 1 min; N about 3400-4600 events at 1 kHz) (RB:283-296)</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): E2E PASS | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: E2E PASS (2026-11-23T08:37:02Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate fork/flake-rule</td><td>exit 0 and `FLAKE-RULE PASS`: in this run&#x27;s record every row has at most 2 attempts, a second attempt only after a first one whose verdict is CUT or INFRA with its cause, both attempts kept, and a row whose rerun was CUT, INFRA or FAIL is FAIL</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records PASS, 1 attempt(s): FLAKE-RULE PASS run d4498fe0ae82-20261123T080527Z-dw: 15 rows, 0 rerun after a CUT/INFRA, every attempt kept | verdicts.txt: run d4498fe0ae82-20261123T080527Z-dw: FLAKE-RULE PASS 15 rows, 0 rerun after a CUT/INFRA, every attempt kept (2026-11-23T08:37:03Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate fork/coverage</td><td>`78 rows, 63 run, 6 stand-in, 9 N/A, 0 unproven, 0 claimed without valid evidence`, then `PASS` and `COV_EXIT=0` (M:557-564)</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:11Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate fork/break-register</td><td>the deliberate break must FAIL with its named check: `BREAK register exit 1`, `MATRIX FAIL (5 of 7 assertions failed)` and a FAILED line `epix100_0 did not respond to configure` (type epix100; M:552-555). The row PASSES when the break fails as it must</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:13Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate fork/break-kill-drp</td><td>the deliberate break must FAIL with its named check: `BREAK kill-drp exit 1`, `MATRIX FAIL ([45] of 7 assertions failed)` and a FAILED line `fakecam_0 drp pid .* GONE after the run` (type fakecam; M:552-555; either 5 or 4 of 7 is the break failing as it must). The row PASSES when the break fails as </td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:15Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate fork/break-corrupt</td><td>the deliberate break must FAIL with its named check: `BREAK corrupt exit 1`, `MATRIX FAIL (2 of 7 assertions failed)` and a FAILED line `event 500: payload pattern broken` (type fakecam; M:552-555). The row PASSES when the break fails as it must</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:16Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate drift/digests</td><td>exit 0 and last line `DIGESTS PASS 23/23 keys equal the baseline (3 excluded: drp_gpu:epixuhremu, drp_gpu:epixuhrsim, drp_gpu:fakecam; &lt;m&gt; attributes excluded by the baseline, each still raising as recorded)`: per type, the digests of the first 100 L1Accepts (every value fed by dtype + shape + raw b</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:18Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate drift/kinds</td><td>exit 0 and last line `KINDS PASS 26/26 types equal the baseline ...`: per type, the request kinds the stand-ins received (shim logs, config DB and run DB logs) equal the baseline&#x27;s, no SHIM MISS; the config DB + run DB part is 17 kinds per type (16 for drp_gpu:epixuhrsim), as in 6 full checks of 202</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:19Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate drift/unseeded</td><td>exit 0 and last line `UNSEEDED PASS 26/26 types within the baseline ...`: no type reads a register or PV with no seeded value beyond the baseline&#x27;s set and count (PV part at the c0d9bb1e tree: wave8 1, wave8he 1, others 0)</td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:21Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate drift/xtc2-path</td><td>exit 0 and `XTC2-PATH PASS longest &lt;n&gt; &lt;= 190 (... margin &lt;200-n&gt; to psana&#x27;s 200)`: every *.xtc2 under W (smalldata included), as the DAQ spelled it. psana truncates paths over 200 (psana/psana/dgrammanager.py:35 FN_L = 200); the deepest path below W is 104 characters, so W = {s3df_matrix_dir}/&lt;tag </td><td>runs/d4498fe0ae82-20261123T080527Z-dw/record.json records FAIL, 0 attempt(s): not run: fork/matrix did not pass | verdicts.txt: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:22Z)</td><td class="NOT-RUN">NOT-RUN</td></tr>
+<tr><td>gate sim-cheap-tier</td><td>see REGRESSION.json / CHARTER.md</td><td>typed by the session (no wrapper writes a file to check it against): bin/fork pr-checks: CHECK sim-cheap-tier completed/success at d4498fe0ae82 (9m22s, actions run 45135783445) (2026-11-23T08:37:24Z)</td><td class="PASS">PASS</td></tr>
+<tr><td>gate audit-statuses</td><td>see REGRESSION.json / CHARTER.md</td><td>typed by the session (no wrapper writes a file to check it against): bin/suite audit-statuses: AUDIT PASS prs=16 statuses=2 check_runs=0 problems=0 workflow_prs=3 (2026-11-23T08:37:25Z)</td><td class="PASS">PASS</td></tr></table></div>
+<h2>Step log</h2><pre>STEP preflight start 2026-11-23T08:01:19Z
+STEP preflight end 2026-11-23T08:02:05Z
+STEP lock start 2026-11-23T08:02:05Z
+STEP lock end 2026-11-23T08:02:40Z
+STEP merge start 2026-11-23T08:02:41Z
+STEP merge end 2026-11-23T08:02:49Z
+STEP sort start 2026-11-23T08:02:49Z
+STEP sort end 2026-11-23T08:03:10Z
+STEP team start 2026-11-23T08:03:12Z
+STEP team end 2026-11-23T08:05:16Z
+STEP gates start 2026-11-23T08:05:19Z
+STEP gates end 2026-11-23T08:37:37Z
+STEP proof start 2026-11-23T08:37:43Z</pre>
+<h2>The merge</h2><pre>{
+ &quot;exit&quot;: &quot;1&quot;,
+ &quot;upstream_sha&quot;: &quot;8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05&quot;,
+ &quot;fork_sha&quot;: &quot;3635a3be32756219dfc8b416a55d688f10f5ef1e&quot;,
+ &quot;merge_base&quot;: &quot;9635c4fe1722f52e67aadaab864a39b02359c6e7&quot;,
+ &quot;conflicts&quot;: [
+  &quot;CHANGELOG.md&quot;
+ ],
+ &quot;touched&quot;: [
+  &quot;CHANGELOG.md&quot;,
+  &quot;psdaq/drp/DrpBase.cc&quot;
+ ]
+}</pre>
+<h2>tmux snapshots</h2><pre>TMUX 2026-11-23T08:03:12Z before team
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)
+TMUX 2026-11-23T08:03:33Z before team launch (sync-weekly-2026-11-23-team)
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)
+TMUX 2026-11-23T08:03:38Z during team phase (sync-weekly-2026-11-23-team)
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  sync-weekly-2026-11-23-team: 6 windows (created Mon Nov 23 08:03:33 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)
+TMUX 2026-11-23T08:03:38Z during team
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  sync-weekly-2026-11-23-team: 6 windows (created Mon Nov 23 08:03:33 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)
+TMUX 2026-11-23T08:04:39Z after team teardown (sync-weekly-2026-11-23-team)
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)
+TMUX 2026-11-23T08:04:39Z after team
+  baby: 2 windows (created Mon Nov  2 17:24:25 2026)
+  beam-info: 3 windows (created Sat Oct 10 17:09:41 2026)
+  claude-peer: 2 windows (created Thu Nov 12 22:45:07 2026)
+  drp-val: 3 windows (created Sat Oct 17 05:12:10 2026)
+  fun: 1 windows (created Mon Nov  2 19:52:35 2026)
+  goal-examples: 3 windows (created Wed Sep 23 23:06:31 2026)
+  hutch-issues: 4 windows (created Fri Oct 30 20:59:11 2026)
+  lcls-ai: 4 windows (created Sat Oct 17 21:26:03 2026)
+  main: 4 windows (created Sun Nov  1 18:14:04 2026)
+  opt-qrix: 3 windows (created Fri Oct 23 22:46:20 2026)
+  paper-review: 1 windows (created Wed Nov 18 23:49:24 2026)
+  service-lcls2-sync: 4 windows (created Thu Nov 19 18:30:03 2026)
+  sync-weekly-2026-11-20-2: 2 windows (created Fri Nov 20 07:02:31 2026)
+  sync-weekly-2026-11-23: 2 windows (created Mon Nov 23 08:01:07 2026)
+  time: 2 windows (created Mon Oct 19 17:07:09 2026)
+  warp-themes: 2 windows (created Tue Sep 29 20:31:21 2026)</pre>
+<h2>Independent read-back</h2><div class="tw"><table><tr><th>Client and query</th><th>Answer</th></tr>
+<tr><td><code>git ls-remote https://github.com/carbonscott/lcls2 sim-main sync/upstream-2026-11-23</code></td><td><code>3635a3be32756219dfc8b416a55d688f10f5ef1e	refs/heads/sim-main
+d4498fe0ae8286b5c151a436bde49640747b8e28	refs/heads/sync/upstream-2026-11-23</code></td></tr>
+<tr><td><code>gh pr view 73 -R carbonscott/lcls2</code></td><td><code>state OPEN draft true head d4498fe0ae8286b5c151a436bde49640747b8e28 merge null</code></td></tr>
+<tr><td><code>gh api repos/carbonscott/lcls2-sync/contents/windows/weekly-2026-11-23/window.json (main)</code></td><td><code>not on lcls2-sync main ({&quot;message&quot;:&quot;Not Found&quot;,&quot;documentation_url&quot;:&quot;https://docs.github.com/rest/repos/contents#get-repository-content&quot;,&quot;status&quot;)</code></td></tr></table></div>
+<h2>Findings</h2>
+<ul>
+<li>Findings of window weekly-2026-11-23 (from its records only)
+
+1. The merge of upstream master 8a38b8a87be0 into sim-main 3635a3be3275 had one conflict (CHANGELOG.md) and
+   touched two fork-edited files (CHANGELOG.md, psdaq/drp/DrpBase.cc). The path was TEAM.
+2. The team resolved both statements with verdict switch-ok; verify.py passed 2 of 2 on a fresh checkout and
+   copy-back left 0 open statements. CHANGELOG.md keeps upstream&#x27;s DMA-buffer deadlock entry and the fork&#x27;s two
+   entries. In DrpBase.cc upstream changed only MemPool&#x27;s pebble buffer sizing (minBuffers = max(nDmaBuffers,
+   nextPowerOf2(MAX_TEBS*MAX_ENTRIES+1)), a power-of-2 check); the fork&#x27;s DMA wrappers are in disjoint regions.
+3. The regression suite at H d4498fe0ae82 (run d4498fe0ae82-20261123T080527Z-dw): the daily tier passed 3/3; the
+   weekly tier FAILED: fork/matrix failed 3 of 191 assertions, first failure `types/jungfrau/up: daq_sim: up FAILED:
+   jungfrau_0 not ready for transitions`. The eight rows that need fork/matrix were not run.
+4. Whether the matrix failure comes from upstream&#x27;s change (for example the MemPool sizing above) or from the
+   environment is NOT established by these records: the suite&#x27;s flake rule forbids a rerun after a FAIL, and the
+   matrix log stays on S3DF (fork-matrix.1.log of the run).
+5. The fork&#x27;s CI (sim-cheap-tier, build-lcls-ii, changelog) passed at H; audit-statuses printed AUDIT PASS.
+6. The `regression suite` status was not posted (post-status refused: 9 rows not PASS).</li>
+<li>claim <code>path</code> (verified): path TEAM <span class="note">evidence: bin/fork merge: MERGE exit=1 conflicts=1 touched=2 PATH TEAM</span></li>
+<li>claim <code>conflicts</code> (verified): 1 conflict: CHANGELOG.md <span class="note">evidence: bin/fork merge @@CONFLICTS: CHANGELOG.md</span></li>
+<li>claim <code>touched</code> (verified): 2 fork-edited files touched by upstream: CHANGELOG.md, psdaq/drp/DrpBase.cc <span class="note">evidence: bin/fork merge @@TOUCHED: CHANGELOG.md psdaq/drp/DrpBase.cc</span></li>
+<li>claim <code>upstream-sha</code> (verified): upstream master 8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05 <span class="note">evidence: bin/fork merge SIDES upstream=8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05</span></li>
+<li>claim <code>team-verdicts</code> (verified): conflict:CHANGELOG.md switch-ok; review:psdaq/drp/DrpBase.cc switch-ok; no open or flagged statement <span class="note">evidence: reviews/CHANGELOG.md.md, reviews/psdaq/drp/DrpBase.cc.md; verify.py 2/2 PASS</span></li>
+<li>claim <code>pr</code> (verified): draft PR carbonscott/lcls2#73 <span class="note">evidence: bin/fork commit-merge: PR #73 sync/upstream-2026-11-23 -&gt; sim-main (draft, label regression-suite)</span></li>
+<li>claim <code>head</code> (verified): H d4498fe0ae8286b5c151a436bde49640747b8e28 <span class="note">evidence: bin/fork head: H=d4498fe0ae8286b5c151a436bde49640747b8e28 SAME</span></li>
+<li>claim <code>gates</code> (verified): daily 3/3 PASS; weekly: fork/build, fork/unit, fork/webgui-e2e, fork/flake-rule PASS; fork/matrix FAIL (jungfrau_0 not ready for transitions); fork/coverage, fork/break-register, fork/break-kill-drp, fork/break-corrupt, drift/digests, drift/kinds, drift/unseeded, drift/xtc2-path NOT-RUN; sim-cheap-tier PASS; audit-statuses PASS <span class="note">evidence: runs/d4498fe0ae82-20261123T080527Z-dw/record.json; gates/verdicts.txt</span></li></ul>
+<h2>Not covered</h2><ul>
+<li>gate fork/coverage NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:11Z)</li>
+<li>gate fork/break-register NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:13Z)</li>
+<li>gate fork/break-kill-drp NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:15Z)</li>
+<li>gate fork/break-corrupt NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:16Z)</li>
+<li>gate drift/digests NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:18Z)</li>
+<li>gate drift/kinds NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:19Z)</li>
+<li>gate drift/unseeded NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:21Z)</li>
+<li>gate drift/xtc2-path NOT-RUN: (counted as FAIL by the suite: prerequisite fork/matrix failed) run d4498fe0ae82-20261123T080527Z-dw: not run: fork/matrix did not pass (2026-11-23T08:37:22Z)</li>
+<li>the steps from proof on (proof, merge-or-wait, record, release, exit): this page is a snapshot at the proof step; final state: see the records, lcls2-sync main, windows/weekly-2026-11-23/</li>
+<li>no terminal recording in this window&#x27;s records: the screencast replays supervisor.log and ledger.json at their wall-clock times</li>
+<li>Not covered by window weekly-2026-11-23
+
+- fork/coverage, fork/break-register, fork/break-kill-drp, fork/break-corrupt, drift/digests, drift/kinds,
+  drift/unseeded, drift/xtc2-path: not run, because their prerequisite fork/matrix failed.
+- No rerun of fork/matrix: the flake rule allows one rerun only after an infrastructure cut, never after a FAIL.
+- The cause of the jungfrau_0 readiness failure was not diagnosed by this window (no window step reads the matrix
+  log on S3DF); the user, or a rerun at this head, decides whether it is a regression from upstream.
+- The monthly tier does not run in a weekly window.</li></ul>
+<h2>Run it again</h2><pre># the page, from the records in a checkout of carbonscott/lcls2-sync
+bin/proof build --window weekly-2026-11-23
+# the window itself: README.md, &quot;Start a window now&quot;; a resume: bin/launch-window --resume --window-id weekly-2026-11-23</pre>
+<h2>Audit trail</h2>
+<details><summary>launcher.log (5 lines)</summary><pre>GUARD 2026-11-23T08:01:05Z window=weekly-2026-11-23 site values cached for the guard (3 weekly bridges)
+SETTINGS 2026-11-23T08:01:05Z window=weekly-2026-11-23 rendered allow=66 deny=159 mode=dontAsk (outside the checkout, read-only)
+UPDATE 2026-11-23T08:01:07Z window=weekly-2026-11-23 before=2.1.330 after=2.1.330 rc=0
+LAUNCH 2026-11-23T08:01:14Z window=weekly-2026-11-23 kind=weekly mode=real tmux=sync-weekly-2026-11-23 claude_pid=1471720 cli=2.1.330 update=2.1.330-&gt;2.1.330(0) trust=not-asked startup=hook 2026-11-23T08:01:09Z remote_control=sync-weekly-2026-11-23 resume=0 argv0-2=claude --name sync-weekly-2026-11-23
+WATCH 2026-11-23T08:01:14Z watching sync-weekly-2026-11-23 for windows/weekly-2026-11-23/finished</pre></details>
+<details><summary>hook.log (32 lines)</summary><pre>HOOK 2026-11-23T08:01:09Z source=startup session=d0512e69-2505-49e8-89b0-a3892b70aed2 window=weekly-2026-11-23 printed 31 lines:
+  | LCLS2-SYNC-HOOK source=startup utc=2026-11-23T08:01:09Z window=weekly-2026-11-23 session=d0512e69-2505-49e8-89b0-a3892b70aed2
+  | --- STATE (rendered now by bin/window state)
+  | # STATE
+  | 
+  | Rendered by `bin/window state` at 2026-11-23T08:01:09Z from windows/*/window.json and ledgers and from the rehearsal-records/* branches this checkout has fetched (the SessionStart hook renders it live; the record step of a real window commits it to main); edit the windows, not this file.
+  | 
+  | **STATE.md on main is a copy as of its last commit, and shows only the windows recorded on main:** a rehearsal records on its own branch `rehearsal-records/&lt;id&gt;` and never updates it. The live picture, rehearsals included: `git fetch origin &amp;&amp; bin/window state`.
+  | 
+  | **Open window:** `weekly-2026-11-23` (weekly, real), tmux session `sync-weekly-2026-11-23`, since 2026-11-23T08:01:04Z; last ledger entry: none yet.
+  | **Held by the open window (its notes):** nothing noted.
+  | **Last window:** `weekly-2026-11-23` (weekly, real), opened 2026-11-23T08:01:04Z, not closed.
+  | **Last rehearsal:** `rehearsal-2026-11-19-4` (opened 2026-11-19T07:05:46Z, closed 2026-11-19T07:46:01Z), records on lcls2-sync branch `rehearsal-records/rehearsal-2026-11-19-4`: rehearsal PASSED (infrastructure); gates 6 PASS, 4 FAIL, 8 NOT-RUN; ran from this checkout. Verdict: rehearsal done.
+  | **Open PR:** none recorded by a window.
+  | **Next tick:** lcls2-sync-weekly.timer: enabled (no tick: the timer is not enabled); lcls2-sync-monthly.timer: enabled, next Sun 2026-12-06 08:00:00 UTC.
+  | 
+  | ## How to resume
+  | 
+  | - A window is open and its supervisor is gone: `bin/launch-window --resume --window-id &lt;id&gt;` starts a fresh supervisor that reads windows/&lt;id&gt;/ledger.json, continues at the first step with no end line and adopts what the notes above name.
+  | - No window is open: `bin/launch-window --rehearsal` first; `bin/launch-window` starts this week&#x27;s REAL window (README.md, &quot;Start a window now&quot;).
+  | - The VM is gone: README.md, &quot;Resume after losing the VM&quot;.
+  | 
+  | --- last ledger entry of window weekly-2026-11-23 (windows/weekly-2026-11-23/ledger.json)
+  | window weekly-2026-11-23: no ledger entry yet
+  | --- notes of window weekly-2026-11-23 (bin/window notes)
+  | --- adopt on resume:
+  |   no suite run was noted, and none was started: the gates step (which starts it) has no STEP line yet
+  |   no Slurm allocation is noted as held
+  |   no weekly bridge was noted: `bin/weekly-bridge start --window weekly-2026-11-23` starts one
+  |   no team session was noted
+  | --- last STEP line of windows/weekly-2026-11-23/supervisor.log
+  | --- end of lcls2-sync state</pre></details>
+<details><summary>ledger.json (24 entries)</summary><pre>[
+ {
+  &quot;n&quot;: 1,
+  &quot;utc&quot;: &quot;2026-11-23T08:01:55Z&quot;,
+  &quot;step&quot;: &quot;preflight&quot;,
+  &quot;did&quot;: &quot;preflight checks: 7 recorded, 0 failed&quot;,
+  &quot;evidence&quot;: &quot;OK   claude --version: 2.1.330 (Claude Code) || OK   gh auth status: \u2713 Logged in to github.com account carbonscott (~/.config/gh/hosts.yml) || OK   tmux -V: tmux 3.4 || OK   bin/site lint: LINT OK 0 matches, 112 patterns, 290 files || OK   bin/site ssh-config: ~/&lt;site:ssh_config_path&gt;/ssh_config || OK   bin/site check --quick: SITE CHECK OK 63/63 OK (1 skipped, 2 info) in 5 s || OK   daily watch run 45038339491 (2026-11-22T15:26:37Z, success): date 2026-11-22T15:26:43Z run 45038339491 | upstream slac-lcls/lcls2 master 8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05 | sim-main carbonscott/lcls2 sim-main 3635a3be32756219dfc8b416a55d688f10f5ef1e | merge-base 9635c4fe1722f52e67aadaab864a39b02359c6e7 | behind 10 (upstream commits not in sim-main); ah&quot;,
+  &quot;next&quot;: &quot;weekly bridge&quot;
+ },
+ {
+  &quot;n&quot;: 2,
+  &quot;utc&quot;: &quot;2026-11-23T08:01:59Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note bridge=bridges_weekly[0]&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;bridge&quot;,
+   &quot;value&quot;: &quot;bridges_weekly[0]&quot;,
+   &quot;by&quot;: &quot;bin/weekly-bridge&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 3,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:04Z&quot;,
+  &quot;step&quot;: &quot;preflight&quot;,
+  &quot;did&quot;: &quot;bin/weekly-bridge start: the window&#x27;s weekly bridge started and noted&quot;,
+  &quot;evidence&quot;: &quot;BRIDGE &lt;site:bridges_weekly&gt; UP; NOTE bridge=bridges_weekly[0]; PREFLIGHT OK 7/7&quot;,
+  &quot;next&quot;: &quot;lock&quot;
+ },
+ {
+  &quot;n&quot;: 4,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:17Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note worktree=sync/upstream-2026-11-23&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;worktree&quot;,
+   &quot;value&quot;: &quot;sync/upstream-2026-11-23&quot;,
+   &quot;by&quot;: &quot;bin/fork&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 5,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:19Z&quot;,
+  &quot;step&quot;: &quot;lock&quot;,
+  &quot;did&quot;: &quot;branch sync/upstream-2026-11-23 on the fork at sim-main&#x27;s head (S3DF worktree)&quot;,
+  &quot;evidence&quot;: &quot;BRANCH sync/upstream-2026-11-23 3635a3be32756219dfc8b416a55d688f10f5ef1e sim-main 3635a3be32756219dfc8b416a55d688f10f5ef1e upstream 8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05&quot;,
+  &quot;next&quot;: &quot;&quot;
+ },
+ {
+  &quot;n&quot;: 6,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:39Z&quot;,
+  &quot;step&quot;: &quot;lock&quot;,
+  &quot;did&quot;: &quot;LOCK FREE; bin/fork open-branch cut sync/upstream-2026-11-23 at sim-main and pushed it; wrote notes/pr-body.md (template headings, proof pending)&quot;,
+  &quot;evidence&quot;: &quot;LOCK FREE: no other open window here, no open sync/ or rehearsal/ PR; BRANCH sync/upstream-2026-11-23 3635a3be32756219dfc8b416a55d688f10f5ef1e sim-main 3635a3be32756219dfc8b416a55d688f10f5ef1e upstream 8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05; NOTE worktree&quot;,
+  &quot;next&quot;: &quot;merge&quot;
+ },
+ {
+  &quot;n&quot;: 7,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:42Z&quot;,
+  &quot;step&quot;: &quot;merge&quot;,
+  &quot;did&quot;: &quot;merged upstream 8a38b8a87be0: exit 1, 1 conflicts, 2 touched fork-edited files; path TEAM&quot;,
+  &quot;evidence&quot;: &quot;conflicts: CHANGELOG.md | touched: CHANGELOG.md psdaq/drp/DrpBase.cc&quot;,
+  &quot;next&quot;: &quot;&quot;
+ },
+ {
+  &quot;n&quot;: 8,
+  &quot;utc&quot;: &quot;2026-11-23T08:02:47Z&quot;,
+  &quot;step&quot;: &quot;merge&quot;,
+  &quot;did&quot;: &quot;bin/fork merge: git merge --no-ff upstream/master in the S3DF worktree; 1 conflict, 2 fork-edited files touched; path TEAM (set by bin/fork merge). MAINTAINING.md section 4 skipped.&quot;,
+  &quot;evidence&quot;: &quot;MERGE exit=1 conflicts=1 touched=2 PATH TEAM; SIDES fork=3635a3be3275 upstream=8a38b8a87be01d0ec1e5bd1d57c1e281b379bf05 base=9635c4fe1722; CONFLICTS CHANGELOG.md; TOUCHED CHANGELOG.md psdaq/drp/DrpBase.cc&quot;,
+  &quot;next&quot;: &quot;sort&quot;
+ },
+ {
+  &quot;n&quot;: 9,
+  &quot;utc&quot;: &quot;2026-11-23T08:03:08Z&quot;,
+  &quot;step&quot;: &quot;sort&quot;,
+  &quot;did&quot;: &quot;path TEAM read from window.json; path, conflicts, touched files and upstream SHA recorded as claims; no push in sort (TEAM: commit-merge opens the PR at the team step)&quot;,
+  &quot;evidence&quot;: &quot;window.json path TEAM; claims path, conflicts, touched, upstream-sha&quot;,
+  &quot;next&quot;: &quot;team&quot;
+ },
+ {
+  &quot;n&quot;: 10,
+  &quot;utc&quot;: &quot;2026-11-23T08:03:14Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note seed=2 statements, 170896 bytes&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;seed&quot;,
+   &quot;value&quot;: &quot;2 statements, 170896 bytes&quot;,
+   &quot;by&quot;: &quot;team/run-team.sh&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 11,
+  &quot;utc&quot;: &quot;2026-11-23T08:03:19Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note team_dir=~/.cache/lcls2-sync/teams/weekly-2026-11-23&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;team_dir&quot;,
+   &quot;value&quot;: &quot;~/.cache/lcls2-sync/teams/weekly-2026-11-23&quot;,
+   &quot;by&quot;: &quot;team/run-team.sh&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 12,
+  &quot;utc&quot;: &quot;2026-11-23T08:03:31Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note team_session=sync-weekly-2026-11-23-team&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;team_session&quot;,
+   &quot;value&quot;: &quot;sync-weekly-2026-11-23-team&quot;,
+   &quot;by&quot;: &quot;team/run-team.sh&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 13,
+  &quot;utc&quot;: &quot;2026-11-23T08:04:55Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note head=d4498fe0ae8286b5c151a436bde49640747b8e28&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;head&quot;,
+   &quot;value&quot;: &quot;d4498fe0ae8286b5c151a436bde49640747b8e28&quot;,
+   &quot;by&quot;: &quot;bin/fork&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 14,
+  &quot;utc&quot;: &quot;2026-11-23T08:04:56Z&quot;,
+  &quot;step&quot;: &quot;team&quot;,
+  &quot;did&quot;: &quot;merge committed (two parents) and pushed to sync/upstream-2026-11-23&quot;,
+  &quot;evidence&quot;: &quot;PUSHED d4498fe0ae8286b5c151a436bde49640747b8e28&quot;,
+  &quot;next&quot;: &quot;&quot;
+ },
+ {
+  &quot;n&quot;: 15,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:04Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note pr=73&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;pr&quot;,
+   &quot;value&quot;: &quot;73&quot;,
+   &quot;by&quot;: &quot;bin/fork&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 16,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:12Z&quot;,
+  &quot;step&quot;: &quot;team&quot;,
+  &quot;did&quot;: &quot;TEAM path: fetch-seed (2 statements: conflict:CHANGELOG.md, review:psdaq/drp/DrpBase.cc), setup (TEAM SETUP OK, 15/15), launch, wait DONE, finish (verify 2/2 PASS, team session gone), copy-back (copied 2, open 0, no flag), commit-merge pushed the two-parent merge and opened draft PR #73. Gateway flagged one helper command (h1: cd versions/CHANGELOG.md; python3 -c ...: path outside workspace) for review; no merge request rejected, no HALT.&quot;,
+  &quot;evidence&quot;: &quot;TEAM FINISH verify exit 0; 2 of 2 statements pass on a fresh checkout; COPY-BACK weekly-2026-11-23: copied 2, open 0; MARKERS=0; both verdicts switch-ok; COMMITTED d4498fe0ae8286b5c151a436bde49640747b8e28 parents 3635a3be3 8a38b8a87; PR #73 (draft, label regression-suite); tmux after team: no sync-weekly-2026-11-23-team&quot;,
+  &quot;next&quot;: &quot;gates&quot;
+ },
+ {
+  &quot;n&quot;: 17,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:24Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note head=d4498fe0ae8286b5c151a436bde49640747b8e28&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;head&quot;,
+   &quot;value&quot;: &quot;d4498fe0ae8286b5c151a436bde49640747b8e28&quot;,
+   &quot;by&quot;: &quot;bin/fork&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 18,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:32Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note suite_run=d4498fe0ae82-20261123T080527Z-dw&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;suite_run&quot;,
+   &quot;value&quot;: &quot;d4498fe0ae82-20261123T080527Z-dw&quot;,
+   &quot;by&quot;: &quot;bin/fork&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 19,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:44Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note alloc=46611580&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;alloc&quot;,
+   &quot;value&quot;: &quot;46611580&quot;,
+   &quot;by&quot;: &quot;bin/suite&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 20,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:46Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note alloc=46611587&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;alloc&quot;,
+   &quot;value&quot;: &quot;46611587&quot;,
+   &quot;by&quot;: &quot;bin/suite&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 21,
+  &quot;utc&quot;: &quot;2026-11-23T08:05:52Z&quot;,
+  &quot;step&quot;: &quot;gates&quot;,
+  &quot;did&quot;: &quot;Looked before allocating: bin/fork squeue showed no job of the account, bin/weekly-bridge status 1 bridge (ours, cap 4); nothing to defer for, so bin/fork head and bin/fork gates started the daily,weekly run at H; Slurm granted cpu and gpu allocations at once&quot;,
+  &quot;evidence&quot;: &quot;squeue: (no jobs); HEAD H=d4498fe0ae8286b5c151a436bde49640747b8e28 SAME; suite_run=d4498fe0ae82-20261123T080527Z-dw; ALLOC cpu 46611580, gpu 46611587&quot;,
+  &quot;next&quot;: &quot;follow the run with bin/suite status --wait&quot;
+ },
+ {
+  &quot;n&quot;: 22,
+  &quot;utc&quot;: &quot;2026-11-23T08:36:08Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note alloc_released=46611580&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;alloc_released&quot;,
+   &quot;value&quot;: &quot;46611580&quot;,
+   &quot;by&quot;: &quot;bin/suite&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 23,
+  &quot;utc&quot;: &quot;2026-11-23T08:36:10Z&quot;,
+  &quot;step&quot;: &quot;note&quot;,
+  &quot;did&quot;: &quot;note alloc_released=46611587&quot;,
+  &quot;evidence&quot;: &quot;&quot;,
+  &quot;next&quot;: &quot;&quot;,
+  &quot;note&quot;: {
+   &quot;key&quot;: &quot;alloc_released&quot;,
+   &quot;value&quot;: &quot;46611587&quot;,
+   &quot;by&quot;: &quot;bin/suite&quot;
+  }
+ },
+ {
+  &quot;n&quot;: 24,
+  &quot;utc&quot;: &quot;2026-11-23T08:37:33Z&quot;,
+  &quot;step&quot;: &quot;gates&quot;,
+  &quot;did&quot;: &quot;Followed run d4498fe0ae82-20261123T080527Z-dw to its end and fetched its record: daily 3/3 PASS; weekly 4/13: fork/matrix FAIL (jungfrau_0 not ready for transitions at up), 8 rows not run behind it (NOT-RUN), build/unit/webgui-e2e/flake-rule PASS. No rerun (flake rule: never after a FAIL). post-status printed NOT POSTED lines, so no --yes. sim-cheap-tier SUCCESS at H; audit-statuses AUDIT PASS; the only labelled PR is #73 (this window). 18 verdicts written; allocations released by the run itself.&quot;,
+  &quot;evidence&quot;: &quot;SUITE daily PASS rows 3/3; SUITE weekly FAIL rows 4/13 run=d4498fe0ae82-20261123T080527Z-dw head=d4498fe0ae82 tree=4114865ef762; fork/matrix: MATRIX FAIL (3 of 191 assertions failed); FAILED types/jungfrau/up: exit 1: daq_sim: up FAILED: jungfrau_0 not ready for transitions; POST-STATUS REFUSED (9 problems); CHECK sim-cheap-tier completed/success at d4498fe0ae82; AUDIT PASS prs=16 problems=0; released allocation 46611580, 46611587&quot;,
+  &quot;next&quot;: &quot;proof&quot;
+ }
+]</pre></details></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/asciinema-player/3.17.0/asciinema-player.min.js" integrity="sha512-nHgIa/mWYsRGMhsGRNPUr9FcvE+H85MU0ti4TxCXU1vFHYbzwLieLmIOf2keC+vdFRJcBPqcDoayryCfttp4Rw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="application/octet-stream" id="cast-gz">
+H4sIAGT7A2sC/61Y3W/bRgx/319BZA9zAMvW6cOSFeQha9IPrE2COn1pGgSydLbVyDrt7lTXGLa/feRJduTI3QRsD4kt3x3JI3/8kdQfJ9+4VJkoTiJwhnCy
+yVK9wu9sYuPTimfLlaZHD590tuZKx+uSfgimvufYYTA1Czrn+OOJ5GUeb0EsQFUll98yJeQoF0uIixRyni65HH1VqAwP8eIbHvnj5O7q4wc6+11zubYcf5KI
+XMiTP//86d4ekRGCdn+pbJvN79mZO1k7tjOxGLMc984OI5tFbPq5WbfXMLu7uoVS8kVOtgMaLPUX+aU4edgJXJPA3cnnrbTBnYz8Fypdt6vQ9z8314GfGdzv
+RTy0FCcrnjypCAKQPBEy5ekQbFjEGR7cW7szzLP76Z0+63XgvhCaPwD9h7nM8Ofz+kM9bjh/yrf39kNXk99DkxPZ3rMm9+CG86wY1+KtWlvt4gj0isMmK1Kx
++UVBvQPaO3hqYEDmHnHApFes0TD/x7HmRfo/yMtF8nQIm0bYHjd0ymyjRT/s5VAWPDvUOwjdRsgnLTk/V9siGVelwocYM2EvoeOsid1PZQstPtyTwRg+GRfJ
+Cn6kC0RhArlAoyDG9MnW1jrOCgzpiscpDGbu5eu9yacd08J+prkt0yY7097fvPoNXn+8ujozIDMmiJIXVmNzUukf292y1cCsrNQKEZfpM9hIcjP5Wo1Lac1F
+uh2t8Sqar5GucIlulhVLNUQsCSQv1EnPR27HeqLKs4+iqgXQ0Okrir0UteZyl1MvpLUQ6rF6n1l1ewXFc56DEsC9Of5QS0lh53MIYzech3EYzLkdAf+eaWBD
+YJCIAtMw0ehFB7SoEnI/xdDiaUbJv0DmU2dQxnoFd1cXH7re7ZdJXiuTwr2Ze8SY5wiWaFftKMsqhLVY7G8wXscKaw1kNdIPAH3Wugjdo2P/7mate8BAcQ3z
+7QsTTkfw4eLd9R3+vbt+Q4BTPNFYacED9ZSVJU9HHRdM7b6omB5HRQth/0EWlu0XlXNqdwA2NdtokdnTHpFzIzt8jtwU7un4Q8uPkghmIcW6KSOmVagdPWzD
+aw8uExBK9j04Z28v9uUWYgVJHmdrBF0hDCFQzM3dBqQwQqHrdaat2nVENcpA4vYj0Ql90yQU0VJ2uYCxfmTgRsw+6t9WqBhz+8pyXspqTGzFaidtHyw6ZvbV
+q36vYLFWB8Dsg4qlOE/PHVKKFMoLigkL7HA6wSxAku26yrH7qWxVBcYOVJL1j2kmz/8aj5IYwz/Ok1w5lqkHtKh2Tck/1E3mOr3scFnLDqdrh+KKWmZTsK2O
+Wov2dHQ7rE9r6R22lu6BbipT56nnTcMFt2MeOuFk7ifMZ7HnTuYp96YTzw68YB5yJzxiQNDPgEnLAOxU6DZNFWjyhchwoDeYUrGk6J+2C64W0LuPcZw+UPQP
+mlHmH/iklOfBEcGu20swa1U8Ntnd1ZARsU4EC66TlUV4h0Eb8NGej6JXby+u31y9vyGKHyL5fMv4JipVGv8+TmU5vpTlr7HioyQ5HWLi6KqsyQdmV3efbuHm
+N8wdf8x8XM3jCtucIWxirF2XN9dXQ6S4IkPaGuCQli224IwduL2YzYZN1tc4hKUo+ClRZIk9eYx9xgC/ZmgzTnTEaoBsgAy4yOOl2dYivV3UiOs2wqoj2kSb
+okrHcT2V8UITL/4cuCN4g27Y4JxHAqk3QPUIzhwnPiOczg1WDH2UQjNdqnHbTcjpW70ShQtWAqPRKKqLgKi0ytK6IVZlnPBTqr+NSw2H13ZJ/nuFgyh+fsWK
+SnMVLr29eH83OgKEoBexIhQmR4m1RdKOZ/eV1SmoS/SYOmTpnbg9S9O5emO93C83nHZuBP8nX/j9csht51B4WCcqbJweZVUcWGEYgTEjwPad4LOVbrraJ/2u
+77WvPz3QHufYc597E9Tlh/YRDUE/DS0+dOwfawi6GoJ+HvRbHnSw7BkM4DgkxBMm15xjEjS6Yo1jSfTcaCpMhAr9vBIbTpM1fBVzevtC6RwniagK7GKPDuy6
+UtjqNs8DUUms4UlcgndKiaZXqIeoPOULtAp1IXeJZ71mFKQ03//SAnhDJ2mc5dth8x4AMUAt1dszmOWVXMMSJzramJSVkbOkz+aGyBa0VxQJ77oUu4x/96k7
+OWg1HacbtUfJc468nP4DQOwp66UL+7tnXW4PXcGx4uz10BVErtvS5e2x8lqgIsIAOfrfko0Cm2lF3Gacb4qcmZVV0zxHdfTAHbum3pzt3ud4Y+ZGZirCKUrL
+7Du8vnj3HgZfq2K5kHH1aNO9TSe/NeStMdAq2we1KrEAhSDFRtUb0dw5R7SRdhhc39xZHz9d4555leXpuCoyjdidL6vM4g4fY8F54pascm7MGsG1QF0kZGCW
+gJYiKDiWHcCKRf+NhTiMlUJpq0F+KTMDP9QHtzfI0JeQZwVXBuWYRpa15WpkXiigZ+LS0hmKmn169epqNmuAHFc4FjYCEfoXny7f3TXOIviLAt2Vx3OeY7io
+cmaKiic2Tiv8Vg84aBUyJtqa0mADG0m9FU487UzYYYcGTJJLl8VA8XwxOoaisE+JIhwFx0tUu96x0OspzXO7L+XoRcphwdvJ21U8c7De2az7HX3O2rIMUC3r
+5XX/BvWLaFO7FgAA
+</script>
+<script>
+function plain(text) {  // the screencast's text, when the player script is not there (offline)
+  return text.split("\n").slice(1).filter(Boolean).map(function (l) {
+    var e = JSON.parse(l);
+    return e[1] === "o" ? e[2] : e[1] === "m" ? "\n-- chapter " + e[2] + "\n" : "";
+  }).join("").replace(/\x1b\[[0-9;?]*[ -\/]*[@-~]/g, "").replace(/\r/g, "");
+}
+(async function () {
+  var el = document.getElementById("player"), text = null;
+  try {
+    // the cast is stored in lines of 120 characters: join them, then base64-decode and gunzip
+    var b64 = document.getElementById("cast-gz").textContent.split(/\s+/).join("");
+    var bytes = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); });
+    var gz = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    text = await new Response(gz).text();
+    if (typeof AsciinemaPlayer === "undefined") {
+      throw new Error("the asciinema-player script did not load from cdnjs.cloudflare.com");
+    }
+    var player = AsciinemaPlayer.create({ data: text }, el, { fit: "width", idleTimeLimit: 2, poster: "npt:0:01" });
+    document.querySelectorAll("[data-marker]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        Promise.resolve(player.seek({ marker: Number(b.dataset.marker) })).then(function () { player.play(); });
+      });
+    });
+  } catch (e) {
+    el.className = "noplayer";
+    var msg = document.createElement("p");
+    msg.textContent = "The player could not load in this browser (" + (e && e.message || e) + ")" +
+      (text ? "; the screencast's text follows." : ".");
+    el.appendChild(msg);
+    if (text) {
+      var pre = document.createElement("pre");
+      pre.textContent = plain(text);
+      el.appendChild(pre);
+    }
+  }
+})();
+</script>
+</body></html>
