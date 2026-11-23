@@ -211,16 +211,23 @@ SIM_TYPES = {
 }
 
 
+# The drp's least pebble count without pebbleBufCount (MemPool::_initialize, psdaq/drp/DrpBase.cc):
+# more than MAX_TEBS x MAX_ENTRIES events (psdaq/psdaq/eb/src/eb.hh: 4 x 64), rounded up to a power of 2
+MIN_PEBBLES = 512
+
+
 def teb_pending_depth(kwargs):
     """The drp's tebPendingDepth for drp -k KWARGS: twice its pebble count, rounded up to a power of 2.
-    The pebble count is pebbleBufCount, or else the DMA count rounded up to a power of 2 (DrpBase.cc),
-    the DMA count being sim_dma_count or MemPoolSim's 1024.  TebContributor's queue of posted batches
-    holds as many entries as there are pebbles unless tebPendingDepth says more, and with one event per
-    batch it can fill and abort the drp ('_pending queue overflow', flake register F1)."""
+    The pebble count is pebbleBufCount, or else the larger of MIN_PEBBLES and the DMA count rounded up
+    to a power of 2 (DrpBase.cc), the DMA count being sim_dma_count or MemPoolSim's 1024.  TebContributor's
+    queue of posted batches holds as many entries as there are pebbles unless tebPendingDepth says more,
+    and with one event per batch it can fill and abort the drp ('_pending queue overflow', flake
+    register F1).  A depth below the pebble count aborts the drp at its start (TebContributor.cc)."""
     def pow2(n):
         return 1 << (int(n) - 1).bit_length()
     kw = dict(x.split('=', 1) for x in kwargs.split(',') if '=' in x)
-    pebbles = int(kw['pebbleBufCount']) if 'pebbleBufCount' in kw else pow2(int(kw.get('sim_dma_count', '1024'), 0))
+    pebbles = (int(kw['pebbleBufCount']) if 'pebbleBufCount' in kw
+               else max(MIN_PEBBLES, pow2(int(kw.get('sim_dma_count', '1024'), 0))))
     return 2 * pow2(pebbles)
 
 
