@@ -128,9 +128,11 @@ class JsonConfigStore(object):
         raise ConfigDbError('No configuration with key %d in hutch %s' % (key, hutch))
 
     def _find_config(self, r, cfg):
+        # A copy, as mongoconfigdb reads a fresh document each time: a caller may change
+        # what it gets (typed_json.cdict deletes ':enum:' from its argument's ':types:').
         for d in r['collections'].get(cfg['collection'], []):
             if d['_id'] == cfg['_id']:
-                return d['config']
+                return copy.deepcopy(d['config'])
         raise ConfigDbError('Dangling configuration %s' % cfg)
 
     def _save_device_config(self, r, collection, value):

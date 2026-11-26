@@ -167,6 +167,32 @@ def test_webconfigdb_history_string_body(server):
     assert h["value"][0]["persistValue"] == 0xdeadbeef
 
 
+def test_history_keeps_enum(server):
+    """get_history of a device with an enum works every time and leaves the store as it was
+    (carbonscott/lcls2#77: it handed the stored config to cdict, which deleted ':enum:')."""
+    import requests
+    url, store, _ = server
+    db = configdb(url, "tst", create=True, root="configDB")
+    db.add_alias("BEAM")
+    top = configdb_seed.fakecam_cdict("fakecam", 2, 0x2b2b)
+    top.define_enum("modeEnum", {"Normal": 0, "Burst": 1, "Off": 2})
+    top.set("user.mode", 1, "modeEnum")
+    configdb_seed._store(db, "BEAM", top)
+    enum = {"modeEnum": {"Normal": 0, "Burst": 1, "Off": 2}}
+    for _ in range(2):
+        r = requests.get(url + "configDB/get_history/tst/BEAM/fakecam_2/", json=["user.mode"])
+        assert r.status_code == 200, r.text
+        assert r.json()["value"][-1]["user.mode"] == 1
+    cfg = db.get_configuration("BEAM", "fakecam_2")
+    assert cfg[":types:"][":enum:"] == enum
+    assert cdict(cfg).get("user.mode") == 1
+    db.add_alias("NOBEAM")                  # any write saves the store file
+    with open(store) as f:
+        docs = json.load(f)["roots"]["configDB"]["collections"]["fakecam"]
+    assert [d["config"][":types:"][":enum:"] for d in docs
+            if d["config"].get("detName:RO") == "fakecam_2"] == [enum]
+
+
 def test_access_log_and_errors(server, tmp_path):
     url, _, _ = server
     db = configdb(url, "tst", create=True, root="configDB")
