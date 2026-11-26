@@ -47,6 +47,20 @@ bool MemPoolSim::isSimDevice(const std::string& device)
     return device.rfind(SimPrefix, 0) == 0;
 }
 
+unsigned MemPoolSim::dmaSizeFor(unsigned simDmaSize, unsigned simLength)
+{
+    if (simDmaSize)  return simDmaSize;
+    size_t need = size_t(simLength) * sizeof(uint32_t) + XtcHeadroom;
+    size_t size = DefDmaSize;
+    while (size < need && size < (size_t(1) << 31))  size <<= 1;
+    return unsigned(size);
+}
+
+unsigned MemPoolSim::maxLength(unsigned dmaSize)
+{
+    return dmaSize > XtcHeadroom ? (dmaSize - XtcHeadroom) / sizeof(uint32_t) : 0;
+}
+
 size_t MemPoolSim::fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
                         unsigned lane, unsigned length, uint32_t seed)
 {
@@ -907,7 +921,7 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
     }
 
     m_dmaCount = _kwarg(para, "sim_dma_count", DefDmaCount);
-    m_dmaSize  = _kwarg(para, "sim_dma_size",  DefDmaSize);
+    m_dmaSize  = dmaSizeFor(_kwarg(para, "sim_dma_size", 0), _kwarg(para, "sim_length", 0));
     if (m_nLanes == 0 || m_dmaCount < m_nLanes || m_dmaSize <= sizeof(Pds::TimingHeader)) {
         logging::critical("MemPoolSim: bad geometry: lanes 0x%x, sim_dma_count %u, sim_dma_size %u",
                           para.laneMask, m_dmaCount, m_dmaSize);
@@ -990,11 +1004,14 @@ unsigned MemPoolSim::paddr()
 
 void MemPoolSim::connect(unsigned readoutGroup, unsigned length)
 {
-    unsigned maxLength = (m_dmaSize - sizeof(Pds::TimingHeader) - sizeof(uint32_t)) / sizeof(uint32_t);
-    if (length > maxLength) {
+    // An event fills the pebble buffer, which is sized from the DMA size, with its XTC headers
+    // around the payload: clamp to what leaves room for them, or the DRP aborts at the first
+    // L1Accept (Xtc::alloc's 'Insufficient space').  Only an explicit sim_dma_size gets here.
+    unsigned maxLen = maxLength(m_dmaSize);
+    if (length > maxLen) {
         logging::error("MemPoolSim: sim_length %u does not fit sim_dma_size %u; using %u",
-                       length, m_dmaSize, maxLength);
-        length = maxLength;
+                       length, m_dmaSize, maxLen);
+        length = maxLen;
     }
     m_group .store(readoutGroup, std::memory_order_release);
     m_length.store(length,       std::memory_order_release);

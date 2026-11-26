@@ -102,6 +102,15 @@ public:
     static uint32_t mix(uint32_t index);        // the position-dependent part of pattern()
 public:
     static bool isSimDevice(const std::string& device);
+    // Room an event needs beyond its payload in the DRP's pebble buffer, which DrpBase sizes from
+    // the DMA size: the TimingHeader, the datagram and XTC headers, and the DMA buffer's sentinel
+    static constexpr unsigned XtcHeadroom = 0x1000;
+    // The DMA buffer size: 'simDmaSize' (the sim_dma_size kwarg) if it is non-zero; otherwise the
+    // 64 KiB default, doubled until 'simLength' payload words per lane and XtcHeadroom fit
+    static unsigned dmaSizeFor(unsigned simDmaSize, unsigned simLength);
+    // The most payload words per lane whose event still fits a pebble buffer of 'dmaSize' bytes
+    // (connect() clamps sim_length to it)
+    static unsigned maxLength(unsigned dmaSize);
     // Lay out one DMA buffer for frame 'f'; returns its size in bytes
     static size_t fill(uint8_t* buffer, const Frame& f, uint32_t evtCounter,
                        unsigned lane, unsigned length, uint32_t seed);
