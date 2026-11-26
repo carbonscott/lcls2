@@ -3,17 +3,29 @@
 // an EventBatcher buffer for a BEB type, the TimingHeader and message for 'ts' and 'hsd', or, given
 // <words>, the TimingHeader and that many TDetSemi words (fakecam's sim_length) for another
 // type.  With PSDAQ_SIM_CORRUPT_SEQ=<seq> set, the buffer has the byte MemPoolSim inverts.
+// drp_sim_frame --dma-size <sim_length> [<sim_dma_size>]: print the DMA buffer size MemPoolSim takes
+// for these kwargs (sim_dma_size 0 or absent: its default) and the sim_length connect() keeps.
 #include "MemPoolSim.hh"
 #include "xtcdata/xtc/TransitionId.hh"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+#include <string>
 #include <vector>
 
 int main(int argc, char** argv)
 {
+    if (argc >= 3 && std::string(argv[1]) == "--dma-size") {
+        unsigned length = strtoul(argv[2], nullptr, 0);
+        unsigned size   = Drp::MemPoolSim::dmaSizeFor(argc > 3 ? strtoul(argv[3], nullptr, 0) : 0, length);
+        unsigned keep   = std::min(length, Drp::MemPoolSim::maxLength(size));
+        printf("dma_size %u sim_length %u headroom %u\n", size, keep, Drp::MemPoolSim::XtcHeadroom);
+        return 0;
+    }
     if (argc < 3) {
-        fprintf(stderr, "usage: %s <detType> <seq> [<seed> [<words>]]\n", argv[0]);
+        fprintf(stderr, "usage: %s <detType> <seq> [<seed> [<words>]]\n"
+                        "       %s --dma-size <sim_length> [<sim_dma_size>]\n", argv[0], argv[0]);
         return 2;
     }
     const Drp::MemPoolSim::Batcher* b = Drp::MemPoolSim::batcher(argv[1]);

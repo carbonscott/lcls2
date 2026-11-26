@@ -252,8 +252,10 @@ GPU_READY = {'ready_s': 300,
 GPU_SIM_TYPES = {
     # Gpu::AreaDetector: the TDetSemi words as uint16 pixels, 2 per word, through the same
     # xpmdet_config as drp -D fakecam
-    'fakecam':    {'kwargs': 'reducer=NoOpReducer,sim_length={length},sim_dma_count=64,'
-                             'dmaBufSize=131072,dmaBufCount=64', **GPU_READY},
+    # sim_dma_size pinned: MemPoolSim's default grows with sim_length (issue #76) and would
+    # outgrow dmaBufSize; a longer payload is clamped to fit instead (MemPoolSim::connect)
+    'fakecam':    {'kwargs': 'reducer=NoOpReducer,sim_length={length},sim_dma_size=0x10000,'
+                             'sim_dma_count=64,dmaBufSize=131072,dmaBufCount=64', **GPU_READY},
     # The ePixUHR emulator firmware is a TDet block: its payload is the TDetSemi words of
     # MemPoolSim::fill, 96768 of them = the 336 x 576 uint16 pixels of a panel
     'epixuhremu': {'kwargs': 'reducer=NoOpReducer,sim_length=96768,sim_dma_size=0x60000,'
