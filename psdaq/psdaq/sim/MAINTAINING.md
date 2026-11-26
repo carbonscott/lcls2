@@ -506,10 +506,11 @@ nohup srun --jobid=$JOB --overlap -w $A --ntasks=1 --cpus-per-task=32 --mem=120G
   bash $ROOT/mx.sh c1 > $ROOT/work/mx-c1.log 2>&1 &
 ```
 
-`DAQ_SIM_EVIDENCE` is where each DAQ cycle writes its evidence record. `--evidence` reaches only
-coverage and the other hosts' `daq_sim matrix` (`matrix.py`), not the cycles, which fall back to
-`$WT/.daq_sim/evidence` (`coverage.evidence_dir`); without the export, A's records would land there
-and coverage over `$EV` would not see them. The full check of the 2026-11-11 sync (def58eaf8)
+`DAQ_SIM_EVIDENCE` is where each DAQ cycle writes its evidence record. `daq_sim matrix` passes its
+evidence dir (`--evidence`, else `$DAQ_SIM_EVIDENCE`, else `$WT/.daq_sim/evidence`) to the cycles and
+features it runs, so `--evidence $EV` alone would do; the export keeps the recipe the same for every
+step. A `daq_sim cycle` started by hand writes to `cycle --evidence`, else `$DAQ_SIM_EVIDENCE`, else
+its own `<workdir>/evidence`, never into the checkout. The full check of the 2026-11-11 sync (def58eaf8)
 exported it the same way. Steps 8 and 9 export it too.
 
 The step has 32 CPUs and 120 GB, as every full check at the campaign's final commits had (its

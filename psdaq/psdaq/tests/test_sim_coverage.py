@@ -315,14 +315,11 @@ def test_config_rows_of_the_daq_sim_cnf(tmp_path, det):
     assert coverage.stand_in_rows(['simxpm', 'configdb', 'lgbk'], repo=REPO) == ['prog:pyxpm', 'prog:pykcuxpm']
 
 
-@pytest.mark.parametrize('det', ['fakecam', 'epix100'])
-def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsys, det):
-    """daq_sim cycle's evidence hook, on a work dir laid out as 'up --det <type>' and a run
-    leave it (no DAQ runs here: the files are written as the DAQ writes them); then the check
-    accepts it for those rows, and the hook says coverage rejects none of them.  The tree may
-    have modified files while tests run, so the record is made as from a clean checkout."""
+def cycle_work_dir(tmp_path, monkeypatch, det):
+    """(daq_sim, work, state, files it must list, an older log it must not list, xtc2 path): a work dir
+    laid out as 'up --det <det>' and a run leave it (no DAQ runs: the files are written as the DAQ
+    writes them), the record made as from a clean checkout."""
     from psdaq.sim import daq_sim
-    monkeypatch.setenv('DAQ_SIM_EVIDENCE', str(tmp_path / 'evidence'))
     monkeypatch.setattr(coverage, 'dirty', lambda repo: False)
     monkeypatch.setattr(daq_sim, 'DETECTOR', daq_sim.DETECTOR)
     monkeypatch.setattr(daq_sim, 'PROCS', daq_sim.PROCS)
@@ -355,6 +352,17 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
     state = {'cnf': 'daq_sim.cnf', 'det': det, 'started': daq_sim.datetime.datetime.fromtimestamp(started)
              .astimezone().isoformat(timespec='milliseconds'),
              'services': {n: {'pid': 1, 'log': work.path('logs', n + '.log')} for n in services}}
+    return daq_sim, work, state, files, old, xtc
+
+
+@pytest.mark.parametrize('det', ['fakecam', 'epix100'])
+def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsys, det):
+    """daq_sim cycle's evidence hook, on a work dir laid out as 'up --det <type>' and a run
+    leave it (no DAQ runs here: the files are written as the DAQ writes them); then the check
+    accepts it for those rows, and the hook says coverage rejects none of them.  The tree may
+    have modified files while tests run, so the record is made as from a clean checkout."""
+    monkeypatch.setenv('DAQ_SIM_EVIDENCE', str(tmp_path / 'evidence'))
+    daq_sim, work, state, files, old, xtc = cycle_work_dir(tmp_path, monkeypatch, det)
     daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start')
     printed = capsys.readouterr().out
     print(printed)
@@ -380,6 +388,47 @@ def test_cycle_records_evidence_for_what_it_started(tmp_path, monkeypatch, capsy
         print(line)
         assert f'evidence {names[0][:-5]}' in line
     assert 'FAIL: 0 error(s), 0 RUN/STAND-IN row(s) without valid evidence,' in out
+
+
+def test_cycle_evidence_goes_to_the_workdir_not_the_checkout(tmp_path, monkeypatch, capsys):
+    """carbonscott/lcls2#78: a cycle run from someone else's build must not write into that checkout.
+    With no --evidence and no $DAQ_SIM_EVIDENCE the record goes to <workdir>/evidence, not to the
+    checkout's .daq_sim/evidence (coverage's own default, pointed at a tmp dir here), and the cycle
+    prints its full path.  --evidence wins over $DAQ_SIM_EVIDENCE, which wins over the work dir."""
+    monkeypatch.delenv('DAQ_SIM_EVIDENCE', raising=False)
+    checkout_ev = tmp_path / 'checkout' / '.daq_sim' / 'evidence'
+    monkeypatch.setattr(coverage, 'EVIDENCE_SUBDIR', str(checkout_ev))     # os.path.join(repo, abs) == abs
+    assert coverage.evidence_dir() == str(checkout_ev)
+    daq_sim, work, state, _, _, _ = cycle_work_dir(tmp_path, monkeypatch, 'fakecam')
+
+    def record(**kw):
+        daq_sim._record_cycle_evidence(work, state, 'tstx00001', 1, {'psana2 events': 1000}, 'start', **kw)
+        printed = capsys.readouterr().out
+        print(printed)
+        assert 'evidence NOT recorded' not in printed
+        return printed
+
+    printed = record()
+    assert not os.path.exists(tmp_path / 'checkout')
+    names = os.listdir(work.path('evidence'))
+    assert len(names) == 1
+    assert f'evidence {names[0][:-5]} written to {work.path("evidence", names[0])}' in printed
+    assert re.search(r' evidence \S+: det:drp:fakecam ', printed)     # the line daq_sim matrix reads is unchanged
+
+    monkeypatch.setenv('DAQ_SIM_EVIDENCE', str(tmp_path / 'env'))
+    record(evidence=str(tmp_path / 'option'))
+    assert len(os.listdir(tmp_path / 'option')) == 1 and not os.path.exists(tmp_path / 'env')
+    record()
+    assert len(os.listdir(tmp_path / 'env')) == 1
+    assert len(os.listdir(work.path('evidence'))) == 1 and not os.path.exists(tmp_path / 'checkout')
+
+
+def test_cycle_has_an_evidence_option(capsys):
+    from psdaq.sim import daq_sim
+    with pytest.raises(SystemExit):
+        daq_sim.main(['cycle', '--help'])
+    out = capsys.readouterr().out
+    assert '--evidence DIR' in out and '<workdir>/evidence' in out
 
 
 def test_service_logs_are_headed_with_their_command(tmp_path):

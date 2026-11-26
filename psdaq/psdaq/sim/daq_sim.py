@@ -2111,7 +2111,7 @@ def cmd_cycle(args):
     if errors:
         print(f'{now()} {len(errors)} error message(s) on the status stream', flush=True)
     if ok and not errors and args.record and run:
-        _record_cycle_evidence(work, state, status[6], run, counts, started)
+        _record_cycle_evidence(work, state, status[6], run, counts, started, evidence=args.evidence)
     print(f'{now()} cycle {"PASS" if ok and not errors else "FAIL"}', flush=True)
     return 0 if ok and not errors else 1
 
@@ -2143,7 +2143,15 @@ def _kill_drp(state, plat, alias=None):
         os.kill(pid, signal.SIGKILL)
 
 
-def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='cycle', log='cycle.jsonl'):
+def cycle_evidence_dir(work, evidence=None):
+    """Where a cycle (or feature b's scan) writes its evidence record: `evidence` (cycle --evidence),
+    else $DAQ_SIM_EVIDENCE, else <workdir>/evidence.  Never the checkout that holds the code
+    (coverage.evidence_dir's own default), so a run from someone else's build leaves that build alone."""
+    return os.path.abspath(evidence or os.environ.get('DAQ_SIM_EVIDENCE') or work.path('evidence'))
+
+
+def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='cycle', log='cycle.jsonl',
+                           evidence=None):
     """Evidence for 'daq_sim coverage' from a passing recorded cycle: the rows of the programs
     the generated .cnf started (and its drp's -D type), plus the rows whose stand-in (in
     coverage_status.json) is a service 'up' started, e.g. simxpm for pyxpm.  It lists the run's
@@ -2151,7 +2159,8 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
     process since 'up', each service's log and served-value log).  A failure to write it, or a
     row coverage would reject, is reported and leaves the cycle's verdict alone; coverage then
     finds no valid evidence.
-    'daq_sim feature b' records its scan the same way (kind 'scan', its log feature-b.jsonl)."""
+    'daq_sim feature b' records its scan the same way (kind 'scan', its log feature-b.jsonl).
+    The record goes to cycle_evidence_dir(work, evidence); its full path is printed."""
     import glob
     try:
         rows = coverage.config_rows(work.path(state['cnf']))
@@ -2171,9 +2180,10 @@ def _record_cycle_evidence(work, state, experiment, run, counts, started, kind='
         cache = {}
         path = coverage.record_evidence(rows, kind, files, run_id=f'{experiment}/r{run:04d}',
                                         counts=counts, started=started, cache=cache,
-                                        data_dir=work.path('data'))
+                                        data_dir=work.path('data'), evidence=cycle_evidence_dir(work, evidence))
         eid = os.path.basename(path)[:-5]
         print(f'{now()} evidence {eid}: {" ".join(sorted(rows))}', flush=True)
+        print(f'{now()} evidence {eid} written to {path}', flush=True)
         for row, why in sorted(coverage.record_verdicts(path, cache=cache).items()):
             if why:
                 print(f'{now()} evidence {eid}: coverage would reject it for {row}: {why}', flush=True)
@@ -2977,6 +2987,9 @@ def main(argv=None):
     cy = sub.add_parser('cycle', parents=[common], help='drive one run up to running and back')
     cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
     cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
+    cy.add_argument('--evidence', metavar='DIR', default=None,
+                    help='where a passing recorded cycle writes its evidence record for daq_sim coverage '
+                         '(default $DAQ_SIM_EVIDENCE, else <workdir>/evidence)')
     cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
     cy.add_argument('--kill-drp', nargs='?', const=True, default=False, metavar='ALIAS',
                     help=f'a deliberate break: SIGKILL the DRP of ALIAS (default <det>_0) once the run\'s first '

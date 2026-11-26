@@ -780,6 +780,7 @@ def cmd_matrix(args, argv=()):
         if twonode.short(socket.gethostname()) != twonode.short(hosts[0]):
             raise ds.Fail(f'run the matrix on --hosts\'s first host {hosts[0]}')
     env = dict(os.environ)
+    env['DAQ_SIM_EVIDENCE'] = coverage.evidence_dir(args.evidence, repo)  # the cycles' and features' records: where coverage reads
     for k in (ENV_FAULT, ENV_CORRUPT):          # only a deliberate break sets these
         if env.pop(k, None) is not None:
             say(f'{k} was set in the environment: removed (use --break)')
