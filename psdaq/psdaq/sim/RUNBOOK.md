@@ -376,7 +376,11 @@ A row with no entry is UNPROVEN. An entry for a row that the enumeration does no
 - **Fields:** `{sha, dirty, rows, kind, run_id, job_id, host, files, content, started, ended,
   counts, data_dir}`; `data_dir` is the run's data dir (the drp's `-o`); `dirty` is true when tracked files differed from HEAD during the run; `content`
   holds, per listed file, its size and sha256 when the record was written (`{bytes, sha256}`).
-- **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored).
+- **Where:** `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence` (gitignored), for coverage and
+  `daq_sim matrix`, which passes that dir to the cycles and features it runs. A `daq_sim cycle` (or
+  `feature b`'s scan) writes to `cycle --evidence DIR`, else `$DAQ_SIM_EVIDENCE`, else its own
+  `<workdir>/evidence`: never into the checkout that holds the code. It prints the record's full path
+  (`evidence <id> written to <path>`).
 - **From `daq_sim cycle`:** a passing recorded cycle writes one. It covers the programs in
   `daq_sim.cnf` (control, teb, drp), the drp's `-D` type (`fakecam`, or the `--det` type of
   §3e), and `prog:pyxpm` and `prog:pykcuxpm`, because the status file names simxpm as the stand-in
@@ -1549,7 +1553,7 @@ nodeB`), in `<WD>/matrix/hosts/nodeB`, under LOCK_B. nodeA runs its own types me
 LOCK_A. Their results join this run's, and each type line names its node. The programs run and
 features a, b, c and e run on nodeA. Feature d runs over both hosts and holds both locks. Coverage
 then reads the evidence of all of them; both hosts write to the same evidence dir
-(`$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence`; `--evidence` alone does not reach the cycles), which they must share. The three deliberate breaks stay
+(`--evidence`, else `$DAQ_SIM_EVIDENCE`, else `<checkout>/.daq_sim/evidence`; the matrix passes it to its cycles), which they must share. The three deliberate breaks stay
 separate commands (below).
 
 ```bash
