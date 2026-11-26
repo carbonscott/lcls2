@@ -1,0 +1,28 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:46Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main)
+# cmd: repro_history.sh asis /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/evidence (server: python -m psdaq.sim.configdb_server --store /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-asis/store.json --port 0 --seed-gui)
+# netns: private (unshare -rn), interfaces up: lo 
+
+CONFIGDB_URL=http://127.0.0.1:33279/ws/
+  control -d http://127.0.0.1:33279/ws/configDB    control_gui --uris http://127.0.0.1:33279/ws/
+configdb_server: seeded ['fakecam_0', 'fakecam_1', 'fakecam_2', 'tmoteb_0']
+configdb_server: ready, http://127.0.0.1:33279/ws/
+2026-11-25 23:27:48,221 ERROR request /ws/configDB/get_history/tst/BEAM/fakecam_2/ failed
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/sim/configdb_server.py", line 377, in do_GET
+    status, resp = dispatch(self.server.store, self.path, self._body())
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/sim/configdb_server.py", line 338, in dispatch
+    value = getattr(store, cmd)(r, *args)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/sim/configdb_server.py", line 217, in get_history
+    cl = cdict(self._find_config(r, entry['configs'][0]))
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/configdb/typed_json.py", line 382, in __init__
+    self.init_from_json(cp, jt)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/configdb/typed_json.py", line 431, in init_from_json
+    self.init_from_json(v, t, n)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/configdb/typed_json.py", line 440, in init_from_json
+    self.set(n, v, t)
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/configdb/typed_json.py", line 579, in set
+    raise TypeError('set: Invalid type: %s' % (type))
+TypeError: set: Invalid type: modeEnum
+server stopped

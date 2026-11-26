@@ -1,0 +1,11 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:49Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main) + local fix: get_history passes copy.deepcopy(stored config) to cdict
+# cmd: repro_history.sh fixed /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/evidence (server: python -m psdaq.sim.configdb_server --store /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-fixed/store.json --port 0 --seed-gui)
+# netns: private (unshare -rn), interfaces up: lo 
+
+CONFIGDB_URL=http://127.0.0.1:46199/ws/
+  control -d http://127.0.0.1:46199/ws/configDB    control_gui --uris http://127.0.0.1:46199/ws/
+configdb_server: seeded ['fakecam_0', 'fakecam_1', 'fakecam_2', 'tmoteb_0']
+configdb_server: ready, http://127.0.0.1:46199/ws/
+server stopped

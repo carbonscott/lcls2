@@ -1,0 +1,102 @@
+{
+ "content": {
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/daq_sim.cnf": {
+   "bytes": 1210,
+   "sha256": "3614cb226d919fd35aec9a6dfec6200bb82e7122c2e73c86a6f06bc91b7cebab"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2": {
+   "bytes": 1604088,
+   "sha256": "c9bbe02242b89317983e62f21f40e0cf56609085ff7414c83bf6f08cd474429b"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/configdb.log": {
+   "bytes": 607,
+   "sha256": "122f9a87971c29620fa09a7c32ccb4947a2069daf1a296c200d2e25c850a57c7"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/cycle.jsonl": {
+   "bytes": 2547,
+   "sha256": "b7fbce6293d8a92c2300421a8598d1ede05155f3063a36da2de4b93cddd31691"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/lgbk.log": {
+   "bytes": 1255,
+   "sha256": "a5d26f535bc6c930ceb8aa2859ab66b24ce806da740c0547514fa64ee9d9e195"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/simxpm.log": {
+   "bytes": 2978,
+   "sha256": "715bf484e79f35fa7ea96f50b251a8b8fdc4d41f1522aa91fff04ba2dcec817e"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/simxpm.served.jsonl": {
+   "bytes": 84777,
+   "sha256": "eb7dba7bbd9fd9d0c1700493629f7840eb7aeb06b6cb2b19e3116c8eed401a76"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:control.log": {
+   "bytes": 74680,
+   "sha256": "54b97d5ec47c2ab77c3f01debd67e1a63508d86522144016a0cb04f8bfc24d51"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:fakecam_0.log": {
+   "bytes": 13645,
+   "sha256": "fdcd2b4399eba00ba9b0d3e9ed1c5063a055e7e9b2b001044bde46dbe431ddf3"
+  },
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:teb0.log": {
+   "bytes": 8840,
+   "sha256": "852ecf5c14f5ffddb4ef2e9a04ef64247bc76e8be5cf136138406a53d9619e83"
+  }
+ },
+ "counts": {
+  "DRP_Damage": 0,
+  "DRP_RecordSize": 1604040,
+  "TEB_EvtCt": 1350,
+  "TEB_TrCt": 16,
+  "TEB_WrtCt": 1350,
+  "drp_num_dma_errors": 0,
+  "drp_num_missing_rogs": 0,
+  "drp_num_pgp_jump": 0,
+  "drp_num_th_error": 0,
+  "psana2 checks": "PASS",
+  "psana2 events": 1350,
+  "psana2 seeds": {
+   "0x1234": 1350
+  },
+  "psana2 seq": "1..1350",
+  "psana2 with data": 1350,
+  "simxpm NumL0Acc": 1350,
+  "simxpm NumL0Acc group 0": 1350,
+  "simxpm NumL0Inp": 1350,
+  "simxpm links": {
+   "fakecam_0": {
+    "group": 0,
+    "l1acc": 1350,
+    "link": 0
+   }
+  },
+  "xtc2 file": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1604088 B)"
+ },
+ "data_dir": "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data",
+ "dirty": false,
+ "ended": "2026-11-25T23:32:22-08:00",
+ "files": [
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/daq_sim.cnf",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/cycle.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/configdb.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/lgbk.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/simxpm.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/logs/simxpm.served.jsonl",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:control.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:teb0.log",
+  "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/pmlogs/2026/11/25_23:31:53_sdfrome044:fakecam_0.log"
+ ],
+ "host": "sdfrome044",
+ "job_id": "47203689",
+ "kind": "cycle",
+ "rows": [
+  "det:drp:fakecam",
+  "prog:control",
+  "prog:drp",
+  "prog:pykcuxpm",
+  "prog:pyxpm",
+  "prog:teb"
+ ],
+ "run_id": "tstx00001/r0001",
+ "sha": "6f0a24daebc2ef9da599b204886b43163f9e3d77",
+ "started": "2026-11-25T23:32:00.067-08:00"
+}

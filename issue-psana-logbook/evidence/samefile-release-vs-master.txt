@@ -1,0 +1,10 @@
+# host: sdfiana025
+# date: 2026-11-26T07:24:57Z
+# commit: run 8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97 verified fae94d3dcf69eaca5f373a37461d9ccc15f1af7e
+# cmd: samefile.sh lcls2-up 8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97 master psana/psana/psexp/ds_base.py
+remote: https://github.com/slac-lcls/lcls2
+run commit:      8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97 2026-11-17T19:30:50-08:00
+verified commit: fae94d3dcf69eaca5f373a37461d9ccc15f1af7e 2026-11-25T17:38:23-08:00
+blob psana/psana/psexp/ds_base.py: run c265feec5bae4005b07fc34f9bc98510bdab155a  verified c265feec5bae4005b07fc34f9bc98510bdab155a
+$ git diff 8b3244f2fcbd fae94d3dcf69 -- psana/psana/psexp/ds_base.py
+(diff exit status 0; 0 lines of diff)

@@ -1,0 +1,79 @@
+# host: sdfrome044
+# date: 2026-11-26T07:30:25Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (Merge pull request #73 from carbonscott/sync/upstream-2026-11-23) daqrun.sh 1d1263170add
+# cmd: LENGTH=16384 daqrun.sh dma /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384 /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2
+# slurm: job 47203689 step 12 cpus 8; user cwang31
+2026-11-26T07:30:25Z netns net:[4026534556]; links up: lo ; lo: 172.24.33.109/32 127.0.0.1/8 ; /tmp: xfs
+tmpfs
+2026-11-26T07:30:31Z conda env: daq_20250402_r9; drp: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2/install/bin/drp; daq_sim: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2/install/bin/daq_sim
+2026-11-26T07:30:31Z $ daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384/wd -p 0 --rate 120 --segments 1 --length 16384 --detach
+2026-11-26T07:31:00Z up exit 0; 2026-11-25T23:31:00.404-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+2026-11-26T07:31:00Z $ daq_sim status
+workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384/wd  host sdfrome044  platform 0  started 2026-11-25T23:30:32.068-08
+  configdb   pid 1159331  alive
+  lgbk       pid 1159422  alive
+  simxpm     pid 1159450  alive
+  control    pid 1159901  RUNNING
+  teb0       pid 1159902  RUNNING
+  fakecam_0  pid 1159904  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:0:NumL0Acc = Wed Nov 25 23:31:02 2026 0.0
+  simxpm     PART:0:NumL0Inp = Wed Nov 25 23:31:02 2026 0.0
+2026-11-26T07:31:02Z $ daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384/wd --events 1200
+2026-11-25T23:31:05.226-08:00 setState unallocated  -> unallocated  OK
+2026-11-25T23:31:05.654-08:00 setState allocated    -> allocated    OK
+2026-11-25T23:31:06.245-08:00 setState connected    -> connected    OK
+2026-11-25T23:31:07.570-08:00 setState configured   -> configured   OK
+2026-11-25T23:31:08.729-08:00 setState starting     -> starting     OK
+2026-11-25T23:31:08.734-08:00 setState paused       -> paused       OK
+2026-11-25T23:31:08.739-08:00 setState running      -> running      OK
+2026-11-25T23:32:09.731-08:00 DAQ:SIM:XPM:0:PART:0:NumL0Acc = 1010 (wanted >= 1200)
+2026-11-25T23:32:15.738-08:00 [error] teb0 did not respond to disable
+2026-11-25T23:32:15.738-08:00 [error] fakecam_0 did not respond to disable
+2026-11-25T23:32:15.738-08:00 [error] 2 client did not respond to disable
+2026-11-25T23:32:15.738-08:00 [error] disable failed to change state
+2026-11-25T23:32:15.738-08:00 setState paused       -> running      FAIL
+2026-11-25T23:32:36.428-08:00 counts after Disable: {'simxpm NumL0Acc': 1010, 'simxpm NumL0Inp': 7320, 'simxpm NumL0Acc group 0': 1010, 'simxpm links': {'fakecam_0': {'group': 0, 'l1acc': 1010, 'link'
+  simxpm NumL0Acc        1010
+  simxpm NumL0Inp        7320
+  simxpm NumL0Acc group 0 1010
+  xtc2 file              data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (0 B)
+  psana2 events          0
+  psana2 with data       0
+  psana2 checks          FAIL: the file is empty (0 B)
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1200: False
+2026-11-25T23:32:36.770-08:00 4 error message(s) on the status stream
+2026-11-25T23:32:36.770-08:00 cycle FAIL
+2026-11-26T07:32:36Z cycle exit 1
+2026-11-26T07:32:36Z DRP fakecam_0's log: buffer sizes, MemPoolSim, XTC space, abort:
+tst-drp[1159904]: <I> dmaCount 1024,  dmaSize 65536
+tst-drp[1159904]: <I> nL1Buffers 1024,  pebble buffer size 65536 B
+tst-drp[1159904]: <E> MemPoolSim: sim_length 16384 does not fit sim_dma_size 65536; using 16375
+tst-drp[1159904]: <I> MemPoolSim: readout group 0, 16375 payload words per lane
+*** ../xtcdata/xtcdata/xtc/Xtc.hh:111: Insufficient space for 65504 bytes (buffer 0x7f8abc04b082, end 0x7f8abc05b000, extent 110)
+@@@ Received a sigChild for process 1159904. The process was killed by signal 6
+2026-11-26T07:32:36Z control log, error lines:
+2026-11-25 23:32:15,738 tst-control[1159901]: <E> teb0 did not respond to disable
+2026-11-25 23:32:15,738 tst-control[1159901]: <E> fakecam_0 did not respond to disable
+2026-11-25 23:32:15,738 tst-control[1159901]: <E> 2 client did not respond to disable
+2026-11-25 23:32:15,738 tst-control[1159901]: <E> condition_disable(): disable phase1 failed
+2026-11-25 23:32:15,738 tst-control[1159901]: <E> disable failed to change state
+2026-11-26T07:32:36Z $ daq_sim down
+2026-11-26T07:32:44Z down exit 0: 2026-11-25T23:32:44.184-08:00 daq_sim: down: clean
+2026-11-26T07:32:44Z DRP log tail (procmgr log of fakecam_0):
+tst-drp[1159904]: <I> TebRcvr    saw    BeginStep @ 1164526268.730554677 (04749a1fb36652)
+tst-drp[1159904]: <I> received key = enable @ Wed Nov 25 23:31:08 2026
+tst-drp[1159904]: <I> PGPReader  saw       Enable @ 1164526268.735805713 (04749a1fb37c69)
+tst-drp[1159904]: <I> TebCtrb   sent       Enable @ 1164526268.735805713 (04749a1fb37c69) to TEB ID 0 @   0x556cdae86078 (00000000 + 3 * 00000028)
+tst-drp[1159904]: <I> TebRcvr    saw       Enable @ 1164526268.735805713 (04749a1fb37c69)
+*** ../xtcdata/xtcdata/xtc/Xtc.hh:111: Insufficient space for 65504 bytes (buffer 0x7f8abc04b082, end 0x7f8abc05b000, extent 110)
+@@@ Current time: Wed Nov 25 23:31:08 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1159904. The process was killed by signal 6
+2026-11-26T07:32:44Z processes with signal 6 / 9 in their procmgr logs:
+pmlogs/2026/11/25_23:30:55_sdfrome044:fakecam_0.log:@@@ Received a sigChild for process 1159904. The process was killed by signal 6
+pmlogs/2026/11/25_23:30:55_sdfrome044:teb0.log:@@@ Received a sigChild for process 1159902. The process was killed by signal 6
+2026-11-26T07:32:44Z done

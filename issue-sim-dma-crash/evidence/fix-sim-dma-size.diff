@@ -1,0 +1,28 @@
+diff --git a/psdaq/drp/MemPoolSim.cc b/psdaq/drp/MemPoolSim.cc
+index bd46b07be..f41fab694 100644
+--- a/psdaq/drp/MemPoolSim.cc
++++ b/psdaq/drp/MemPoolSim.cc
+@@ -35,6 +35,7 @@ static const uint32_t EvtCtrMask    = 0xffffff;        // As in DrpBase.cc
+ static const uint32_t Sentinel      = 0xabababab;      // As in MemPoolCpu
+ static const unsigned DefDmaCount   = 1024;
+ static const unsigned DefDmaSize    = 0x10000;
++static const unsigned XtcHeadroom   = 0x1000;          // Timing header + XTC headers of one event
+ 
+ static unsigned _kwarg(const Parameters& para, const char* key, unsigned dflt)
+ {
+@@ -907,7 +908,14 @@ MemPoolSim::MemPoolSim(const Parameters& para) :
+     }
+ 
+     m_dmaCount = _kwarg(para, "sim_dma_count", DefDmaCount);
+-    m_dmaSize  = _kwarg(para, "sim_dma_size",  DefDmaSize);
++    // By default a DMA buffer, and so the pebble buffer sized from it, holds sim_length words
++    // plus the timing header and the DRP's XTC headers (XtcHeadroom), as a hardware DMA
++    // buffer holds a frame of its detector; a payload that fills it is clamped in connect()
++    // and then no longer fits the pebble buffer (Xtc.hh: Insufficient space, signal 6)
++    size_t dmaNeed = size_t(_kwarg(para, "sim_length", 0)) * sizeof(uint32_t) + XtcHeadroom;
++    unsigned dmaDflt = DefDmaSize;
++    while (dmaDflt < dmaNeed)  dmaDflt <<= 1;
++    m_dmaSize  = _kwarg(para, "sim_dma_size",  dmaDflt);
+     if (m_nLanes == 0 || m_dmaCount < m_nLanes || m_dmaSize <= sizeof(Pds::TimingHeader)) {
+         logging::critical("MemPoolSim: bad geometry: lanes 0x%x, sim_dma_count %u, sim_dma_size %u",
+                           para.laneMask, m_dmaCount, m_dmaSize);

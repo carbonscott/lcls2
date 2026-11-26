@@ -1,0 +1,84 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:10Z
+# commit: lcls2 release lcls2_111826 = 8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97; upstream lcls2 master fae94d3dcf69eaca5f373a37461d9ccc15f1af7e
+# cmd: logbook.sh proxy /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/out  (srun on job 47203681, inside unshare -rn)
+# network: lo (namespace net:[4026534429])
+# scripts sha256: logbook.sh:3f120764f82a probe.py:9c2116d841d5 proxy.py:e0005c104671 fixshim/sitecustomize.py:f5a8a32bf65b 
+psana: /sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py
+[1795678035.237616] [sdfrome039:1547267:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+ds_base.py sha256: 70a74e2fd71e6bf5 (release)  70a74e2fd71e6bf5 (upstream master)
+xtc on disk (written by the release's xtcwriter/smdwriter, 2026-11-25 23:26:43): mfxsim0001-r0001-s000-c000.xtc2 mfxsim0001-r0001-s000-c000.smd.xtc2 
+proxy: ready on 127.0.0.1:3128
+---- python probe.py (case proxy) ----
+[1795678040.741573] [sdfrome039:1547324:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+probe: DataSource(exp='mfxsim0001', run=1, dir=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/xtc)
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 774, in urlopen
+    self._prepare_proxy(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 1055, in _prepare_proxy
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connection.py", line 776, in connect
+    self._tunnel()
+    ~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/http/client.py", line 1029, in _tunnel
+    raise OSError(f"Tunnel connection failed: {code} {message.strip()}")
+OSError: Tunnel connection failed: 403 Forbidden (recording proxy, nothing forwarded)
+
+The above exception was the direct cause of the following exception:
+
+urllib3.exceptions.ProxyError: ('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (recording proxy, nothing forwarded)'))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/util/retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (recording proxy, nothing forwarded)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/probe.py", line 6, in <module>
+    ds = DataSource(exp="mfxsim0001", run=1, dir=sys.argv[1])
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/datasource.py", line 212, in DataSource
+    return SerialDataSource(*args, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/serial_ds.py", line 27, in __init__
+    self._setup_run()
+    ~~~~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/serial_ds.py", line 53, in _setup_run
+    super()._setup_run_files(runnum)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py", line 515, in _setup_run_files
+    file_info = self._get_file_info_from_db(runnum)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py", line 400, in _get_file_info_from_db
+    resp = requests.get(url)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/adapters.py", line 723, in send
+    raise ProxyError(e, request=request)
+requests.exceptions.ProxyError: HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden (recording proxy, nothing forwarded)')))
+---- probe exit status: 1 ----
+recording proxy log:
+23:27:22 proxy got: CONNECT pswww.slac.stanford.edu:443 HTTP/1.1
+calibration stand-in requests: 0
+srun: error: sdfrome039: task 0: Exited with exit code 1

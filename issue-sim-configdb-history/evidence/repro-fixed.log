@@ -1,0 +1,36 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:51Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main) + local fix: get_history passes copy.deepcopy(stored config) to cdict
+# cmd: repro_history.sh fixed /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/evidence (client: python repro_client.py http://127.0.0.1:46199/ws/ /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-fixed/store.json)
+# netns: private (unshare -rn), interfaces up: lo 
+# python: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python
+# the local fix, diff against sim-main:
+#   --- /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/sim/configdb_server.py	2026-11-25 23:25:55.625895849 -0800
+#   +++ /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-fixed/src/psdaq/sim/configdb_server.py	2026-11-25 23:27:49.717236387 -0800
+#   @@ -214,7 +214,7 @@
+#            for c in self._alias_docs(self._docs(r, hutch), alias):
+#                for entry in c['devices']:
+#                    if entry['device'] == device:
+#   -                    cl = cdict(self._find_config(r, entry['configs'][0]))
+#   +                    cl = cdict(copy.deepcopy(self._find_config(r, entry["configs"][0])))
+#                        d = {'date': c['date'], 'key': c['key']}
+#                        for p in plist:
+#                            d[p] = _plain(cl.get(p))
+
+psdaq.sim.configdb_server from: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-fixed/src/psdaq/sim/configdb_server.py
+
+step 1 (before any history call): get_configuration fakecam_2 -> ':enum:' in ':types:': {"modeEnum": {"Normal": 0, "Burst": 1, "Off": 2}}
+step 1 (before any history call): cdict(config) OK, user.mode = 1
+
+get_history #1 fakecam_2 user.mode -> HTTP 200 success=True msg='' value=[{"date": "2026-11-26T07:27:50.781533+00:00", "key": 4, "user.mode": 1}]
+get_history #2 fakecam_2 user.mode -> HTTP 200 success=True msg='' value=[{"date": "2026-11-26T07:27:50.781533+00:00", "key": 4, "user.mode": 1}]
+
+step 3 (after get_history): get_configuration fakecam_2 -> ':enum:' in ':types:': {"modeEnum": {"Normal": 0, "Burst": 1, "Off": 2}}
+step 3 (after get_history): cdict(config) OK, user.mode = 1
+
+get_history #3 fakecam_0 user.sim_seed -> HTTP 200 success=True msg='' value=[{"date": "2026-11-26T07:27:50.724028+00:00", "key": 2, "user.sim_seed": 4660}, {"date": "2026-11-26T07:27:50.756605+00:00", "key": 3, "user.sim_seed": 4660}, {"date": "2026-11-26T07:27:50.781533+00:00", "key": 4, "user.sim_seed": 4660}]
+
+step 5: after one write (add_alias NOBEAM), fakecam_2 configs in store.json: ':enum:' = [{"modeEnum": {"Burst": 1, "Normal": 0, "Off": 2}}]
+
+RESULT: get_history of an enum device works (HTTP 200, 200); control fakecam_0 HTTP 200
+client exit: 0

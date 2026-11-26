@@ -1,0 +1,80 @@
+# host: sdfiana025
+# date: 2026-11-26T07:28:12Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main) and fae94d3dcf69eaca5f373a37461d9ccc15f1af7e (slac-lcls/lcls2 master)
+# cmd: code_capture.sh /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/evidence
+
+$ git ls-remote https://github.com/carbonscott/lcls2 HEAD refs/heads/sim-main
+6f0a24daebc2ef9da599b204886b43163f9e3d77	HEAD
+6f0a24daebc2ef9da599b204886b43163f9e3d77	refs/heads/sim-main
+
+$ git show 6f0a24daebc2ef9da599b204886b43163f9e3d77:psdaq/psdaq/sim/configdb_server.py | cat -n | sed -n '130,134p;211,222p'
+   130	    def _find_config(self, r, cfg):
+   131	        for d in r['collections'].get(cfg['collection'], []):
+   132	            if d['_id'] == cfg['_id']:
+   133	                return d['config']
+   134	        raise ConfigDbError('Dangling configuration %s' % cfg)
+   211	    def get_history(self, r, hutch, alias, device, plist):
+   212	        from psdaq.configdb.typed_json import cdict
+   213	        out = []
+   214	        for c in self._alias_docs(self._docs(r, hutch), alias):
+   215	            for entry in c['devices']:
+   216	                if entry['device'] == device:
+   217	                    cl = cdict(self._find_config(r, entry['configs'][0]))
+   218	                    d = {'date': c['date'], 'key': c['key']}
+   219	                    for p in plist:
+   220	                        d[p] = _plain(cl.get(p))
+   221	                    out.append(d)
+   222	        return out
+
+$ git show 6f0a24daebc2ef9da599b204886b43163f9e3d77:psdaq/psdaq/configdb/typed_json.py | cat -n | sed -n '365,382p'
+   365	#
+   366	class cdict(object):
+   367	    def __init__(self, old=None):
+   368	        self.dict = {}
+   369	        self.enumdef = {}
+   370	        if isinstance(old, cdict):
+   371	            self.dict.update(old.dict)
+   372	            self.enumdef.update(old.enumdef)
+   373	        elif isinstance(old, dict):
+   374	            if ":types:" in old.keys():
+   375	                cp = {}
+   376	                cp.update(old)
+   377	                jt = cp[':types:']
+   378	                if ":enum:" in jt.keys():
+   379	                    self.enumdef = jt[":enum:"]
+   380	                    del jt[":enum:"]
+   381	                del cp[':types:']
+   382	                self.init_from_json(cp, jt)
+
+$ git diff 6f0a24daebc2ef9da599b204886b43163f9e3d77 fae94d3dcf69eaca5f373a37461d9ccc15f1af7e -- psdaq/psdaq/configdb/typed_json.py psdaq/psdaq/configdb/mongoconfigdb.py | wc -l
+0
+
+$ git show fae94d3dcf69eaca5f373a37461d9ccc15f1af7e:psdaq/psdaq/configdb/mongoconfigdb.py | cat -n | sed -n '310,329p'    # the real service's get_history
+   310	    def get_history(self, alias, device, plist, hutch=None):
+   311	        if hutch is None:
+   312	            hc = self.hutch_coll
+   313	        else:
+   314	            hc = self.cdb[hutch]
+   315	        pipeline = [
+   316	            {"$unwind": "$devices"},
+   317	            {"$match": {'alias': alias, 'devices.device': device}},
+   318	            {"$sort":  {'key': ASCENDING}}
+   319	        ]
+   320	        l = []
+   321	        for c in list(hc.aggregate(pipeline)):
+   322	            d = {'date': c['date'], 'key': c['key']}
+   323	            cfg = c['devices']['configs'][0]
+   324	            r = self.cdb[cfg['collection']].find_one({"_id" : cfg["_id"]})
+   325	            cl = cdict(r['config'])
+   326	            for p in plist:
+   327	                d[p] = cl.get(p)
+   328	            l.append(d)
+   329	        return l
+
+$ curl -s 'https://api.github.com/search/issues?q=repo:carbonscott/lcls2+get_history'
+total_count: 0 
+$ curl -s 'https://api.github.com/search/issues?q=repo:carbonscott/lcls2+configdb_server'
+total_count: 1 
+  #40 closed PR webgui: web copies of hsdPs, configdb_GUI and xpmpva and of the pyqtgraph menus, a page-PV check; check_gui_pa
+$ curl -s 'https://api.github.com/search/issues?q=repo:carbonscott/lcls2+enum+configdb'
+total_count: 0 

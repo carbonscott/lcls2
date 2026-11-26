@@ -1,0 +1,79 @@
+# host: sdfiana025
+# date: 2026-11-26T07:24:14Z
+# commit: lcls2 fae94d3dcf69eaca5f373a37461d9ccc15f1af7e
+# cmd: excerpt.sh lcls2-up master psana/psana/psexp/ds_base.py 377-406 psana/psana/psexp/ds_base.py 506-545
+# remote: https://github.com/slac-lcls/lcls2  (master = fae94d3dcf69eaca5f373a37461d9ccc15f1af7e 2026-11-25T17:38:23-08:00)
+
+== psana/psana/psexp/ds_base.py (lines 377-406 at fae94d3dcf69) ==
+  377      def _file_info_url(self, runnum):
+  378          return f"https://pswww.slac.stanford.edu/ws/lgbk/lgbk/{self.exp}/ws/{runnum}/current_files_for_live_mode"
+  379  
+  380      def _get_file_info_from_db(self, runnum):
+  381          """Returns a list of xtc2 files as shown in the db.
+  382  
+  383          Note that the requested url below returns list of all files (all streams and
+  384          all chunks) from the database. For psana2, we only need the first chunk (-c)
+  385          of each stream so the original list is filtered down.
+  386  
+  387          Example of names returned by the requests:
+  388          /tmo/tmoc00118/xtc/tmoc00118-r0222-s000-c000.xtc2
+  389          /tmo/tmoc00118/xtc/tmoc00118-r0222-s000-c001.xtc2
+  390          /tmo/tmoc00118/xtc/tmoc00118-r0222-s002-c000.xtc2
+  391  
+  392          Returns
+  393          file_info['xtc_files']
+  394          tmoc00118-r0222-s000-c000.xtc2
+  395          tmoc00118-r0222-s002-c000.xtc2
+  396          file_info['dirname']
+  397          /tmo/tmoc00118/xtc/
+  398          """
+  399          url = self._file_info_url(runnum)
+  400          resp = requests.get(url)
+  401          try:
+  402              resp.raise_for_status()
+  403              all_xtc_files = resp.json()["value"]
+  404          except Exception:
+  405              self.logger.info(f"Warning: unable to connect to {url}")
+  406              all_xtc_files = []
+
+== psana/psana/psexp/ds_base.py (lines 506-545 at fae94d3dcf69) ==
+  506      def _setup_run_files(self, runnum):
+  507          """
+  508          Generate list of smd and xtc files given a run number.
+  509  
+  510          Allowed extentions include .xtc2 and .xtc2.inprogress.
+  511          """
+  512          if self.live:
+  513              file_info = self._get_file_info_from_db_with_retry(runnum)
+  514          else:
+  515              file_info = self._get_file_info_from_db(runnum)
+  516  
+  517          # If we get the list of stream ids from db, these streams take
+  518          # priority over what is found on disk. In live mode the DB stream
+  519          # list is required; non-live mode keeps the disk fallback for old
+  520          # test data that is not registered in the db.
+  521          if file_info:
+  522              # Builds a list of expected smd files
+  523              xtc_files_from_db = file_info["xtc_files"]
+  524              smd_files = [
+  525                  os.path.join(
+  526                      self.xtc_path,
+  527                      "smalldata",
+  528                      os.path.splitext(xtc_file_from_db)[0] + ".smd.xtc2",
+  529                  )
+  530                  for xtc_file_from_db in xtc_files_from_db
+  531              ]
+  532  
+  533              self.current_retry_no = 0
+  534              for i_smd, smd_file in enumerate(smd_files):
+  535                  flag_found, true_xtc_file = self._check_file_exist_with_retry(smd_file)
+  536                  if not flag_found:
+  537                      if self.dir and not self.live:
+  538                          self.logger.info(
+  539                              "Expected DB stream file %s not found under explicit dir=%s; "
+  540                              "falling back to on-disk stream discovery for this directory.",
+  541                              true_xtc_file,
+  542                              self.xtc_path,
+  543                          )
+  544                          smd_files = self._scan_run_files_on_disk(runnum)
+  545                          break

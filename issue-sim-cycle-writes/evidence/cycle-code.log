@@ -1,0 +1,51 @@
+# host: sdfiana025
+# date: 2026-11-26T07:28:42Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77
+# cmd: scripts/code-capture.sh /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 captures/cycle-code.log psdaq/psdaq/sim/daq_sim.py:2111-2112 psdaq/psdaq/sim/daq_sim.py:2170-2172 psdaq/psdaq/sim/coverage.py:146-146 psdaq/psdaq/sim/coverage.py:195-206 psdaq/psdaq/sim/coverage.py:537-538 psdaq/psdaq/sim/coverage.py:577-578 psdaq/psdaq/sim/daq_sim.py:2975-2978 psdaq/psdaq/sim/MAINTAINING.md:509-511
+$ git -C lcls2 log -1 --format='%H %cd %s' --date=iso-strict 6f0a24daebc2ef9da599b204886b43163f9e3d77
+6f0a24daebc2ef9da599b204886b43163f9e3d77 2026-11-23T11:47:37-08:00 Merge pull request #73 from carbonscott/sync/upstream-2026-11-23
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/daq_sim.py | sed -n '2111,2112p'   # with line numbers
+ 2111      if ok and not errors and args.record and run:
+ 2112          _record_cycle_evidence(work, state, status[6], run, counts, started)
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/daq_sim.py | sed -n '2170,2172p'   # with line numbers
+ 2170          path = coverage.record_evidence(rows, kind, files, run_id=f'{experiment}/r{run:04d}',
+ 2171                                          counts=counts, started=started, cache=cache,
+ 2172                                          data_dir=work.path('data'))
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/coverage.py | sed -n '146,146p'   # with line numbers
+  146  EVIDENCE_SUBDIR = os.path.join('.daq_sim', 'evidence')
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/coverage.py | sed -n '195,206p'   # with line numbers
+  195  def find_repo(path=None):
+  196      """The checkout to check: `path`, else the one holding this file (also when it runs from
+  197      <repo>/install), else the one holding the current directory."""
+  198      starts = [path] if path else [os.path.dirname(os.path.abspath(__file__)), os.getcwd()]
+  199      for start in starts:
+  200          try:
+  201              top = git(start, 'rev-parse', '--show-toplevel')
+  202          except (subprocess.SubprocessError, OSError):
+  203              continue
+  204          if os.path.exists(os.path.join(top, DET_SOURCES[0][1])):
+  205              return top
+  206      raise CoverageError(f'no lcls2 git checkout at {" or ".join(starts)}')
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/coverage.py | sed -n '537,538p'   # with line numbers
+  537  def evidence_dir(path=None, repo=None):
+  538      return path or os.environ.get('DAQ_SIM_EVIDENCE') or os.path.join(repo or find_repo(), EVIDENCE_SUBDIR)
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/coverage.py | sed -n '577,578p'   # with line numbers
+  577      d = evidence_dir(evidence, repo)
+  578      os.makedirs(d, exist_ok=True)
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/daq_sim.py | sed -n '2975,2978p'   # with line numbers
+ 2975      cy = sub.add_parser('cycle', parents=[common], help='drive one run up to running and back')
+ 2976      cy.add_argument('--events', type=int, default=1000, help='L1Accepts to wait for (default %(default)d)')
+ 2977      cy.add_argument('--no-record', dest='record', action='store_false', help='do not record')
+ 2978      cy.add_argument('--timeout', type=int, default=60, help='per-transition timeout, s (default %(default)d)')
+
+$ git show 6f0a24dae:psdaq/psdaq/sim/MAINTAINING.md | sed -n '509,511p'   # with line numbers
+  509  `DAQ_SIM_EVIDENCE` is where each DAQ cycle writes its evidence record. `--evidence` reaches only
+  510  coverage and the other hosts' `daq_sim matrix` (`matrix.py`), not the cycles, which fall back to
+  511  `$WT/.daq_sim/evidence` (`coverage.evidence_dir`); without the export, A's records would land there

@@ -1,0 +1,102 @@
+# host: sdfrome039
+# date: 2026-11-26T07:26:58Z
+# commit: lcls2 release lcls2_111826 = 8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97; upstream lcls2 master fae94d3dcf69eaca5f373a37461d9ccc15f1af7e
+# cmd: logbook.sh nonet /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/out  (srun on job 47203681, inside unshare -rn)
+# network: lo (namespace net:[4026534429])
+# scripts sha256: logbook.sh:3f120764f82a probe.py:9c2116d841d5 proxy.py:e0005c104671 fixshim/sitecustomize.py:f5a8a32bf65b 
+psana: /sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py
+[1795678023.062056] [sdfrome039:1546715:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+ds_base.py sha256: 70a74e2fd71e6bf5 (release)  70a74e2fd71e6bf5 (upstream master)
+xtc on disk (written by the release's xtcwriter/smdwriter, 2026-11-25 23:26:43): mfxsim0001-r0001-s000-c000.xtc2 mfxsim0001-r0001-s000-c000.smd.xtc2 
+---- python probe.py (case nonet) ----
+[1795678027.522435] [sdfrome039:1547147:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+probe: DataSource(exp='mfxsim0001', run=1, dir=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/xtc)
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/socket.py", line 983, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -2] Name or service not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 1106, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='pswww.slac.stanford.edu', port=443): Failed to resolve 'pswww.slac.stanford.edu' ([Errno -2] Name or service not known)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/urllib3/util/retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode (Caused by NameResolutionError("HTTPSConnection(host='pswww.slac.stanford.edu', port=443): Failed to resolve 'pswww.slac.stanford.edu' ([Errno -2] Name or service not known)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/probe.py", line 6, in <module>
+    ds = DataSource(exp="mfxsim0001", run=1, dir=sys.argv[1])
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/datasource.py", line 212, in DataSource
+    return SerialDataSource(*args, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/serial_ds.py", line 27, in __init__
+    self._setup_run()
+    ~~~~~~~~~~~~~~~^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/serial_ds.py", line 53, in _setup_run
+    super()._setup_run_files(runnum)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py", line 515, in _setup_run_files
+    file_info = self._get_file_info_from_db(runnum)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py", line 400, in _get_file_info_from_db
+    resp = requests.get(url)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+  File "/sdf/group/lcls/ds/ana/sw/conda2/inst/envs/psana_20260904/lib/python3.13/site-packages/requests/adapters.py", line 729, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode (Caused by NameResolutionError("HTTPSConnection(host='pswww.slac.stanford.edu', port=443): Failed to resolve 'pswww.slac.stanford.edu' ([Errno -2] Name or service not known)"))
+---- probe exit status: 1 ----
+calibration stand-in requests: 0
+srun: error: sdfrome039: task 0: Exited with exit code 1

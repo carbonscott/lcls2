@@ -1,0 +1,75 @@
+# host: sdfrome044
+# date: 2026-11-26T07:30:45Z
+# commit: lcls2 2b458606669c30b359cc37364254f0a36f3ed44e (MemPoolSim: size the default sim_dma_size from sim_length so a payload) daqrun.sh 1d1263170add
+# cmd: LENGTH=16384 daqrun.sh dma /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384-fix /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2-fix
+# slurm: job 47203689 step 13 cpus 8; user cwang31
+2026-11-26T07:30:45Z netns net:[4026534619]; links up: lo ; lo: 172.24.33.109/32 127.0.0.1/8 ; /tmp: xfs
+tmpfs
+2026-11-26T07:30:51Z conda env: daq_20250402_r9; drp: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2-fix/install/bin/drp; daq_sim: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/lcls2-fix/install/bin/daq_sim
+2026-11-26T07:30:51Z $ daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384-fix/wd -p 0 --rate 120 --segments 1 --length 16384 --detach
+2026-11-26T07:31:20Z up exit 0; 2026-11-25T23:31:20.824-08:00 daq_sim: UP. Endpoints (also in endpoints.json):
+2026-11-26T07:31:20Z $ daq_sim status
+workdir /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384-fix/wd  host sdfrome044  platform 0  started 2026-11-25T23:30:52.44
+  configdb   pid 1160398  alive
+  lgbk       pid 1160425  alive
+  simxpm     pid 1160427  alive
+  control    pid 1160482  RUNNING
+  teb0       pid 1160484  RUNNING
+  fakecam_0  pid 1160483  RUNNING
+  control    state reset  transition reset  config BEAM  recording False  experiment tstx00001  run 0  last run 0
+  simxpm     PART:0:NumL0Acc = Wed Nov 25 23:31:23 2026 0.0
+  simxpm     PART:0:NumL0Inp = Wed Nov 25 23:31:23 2026 0.0
+2026-11-26T07:31:23Z $ daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h3/runs/dma-16384-fix/wd --events 1200
+2026-11-25T23:31:25.792-08:00 setState unallocated  -> unallocated  OK
+2026-11-25T23:31:26.206-08:00 setState allocated    -> allocated    OK
+2026-11-25T23:31:26.788-08:00 setState connected    -> connected    OK
+2026-11-25T23:31:28.097-08:00 setState configured   -> configured   OK
+2026-11-25T23:31:29.224-08:00 setState starting     -> starting     OK
+2026-11-25T23:31:29.228-08:00 setState paused       -> paused       OK
+2026-11-25T23:31:29.232-08:00 setState running      -> running      OK
+2026-11-25T23:31:39.533-08:00 DAQ:SIM:XPM:0:PART:0:NumL0Acc = 1221 (wanted >= 1200)
+2026-11-25T23:31:39.537-08:00 setState paused       -> paused       OK
+2026-11-25T23:31:40.696-08:00 counts after Disable: {'simxpm NumL0Acc': 1237, 'simxpm NumL0Inp': 1237, 'simxpm NumL0Acc group 0': 1237, 'simxpm links': {'fakecam_0': {'group': 0, 'l1acc': 1237, 'link'
+2026-11-25T23:31:40.700-08:00 setState starting     -> starting     OK
+2026-11-25T23:31:40.725-08:00 setState configured   -> configured   OK
+2026-11-25T23:31:40.737-08:00 setState connected    -> connected    OK
+2026-11-25T23:31:40.868-08:00 setState allocated    -> allocated    OK
+2026-11-25T23:31:40.918-08:00 setState unallocated  -> unallocated  OK
+2026-11-25T23:31:40.919-08:00 setState reset        -> reset        OK
+  simxpm NumL0Acc        1237
+  simxpm NumL0Inp        1237
+  simxpm NumL0Acc group 0 1237
+  drp_num_dma_errors     0
+  drp_num_th_error       0
+  xtc2 file              data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (81271842 B)
+  psana2 events          1237
+  psana2 with data       1237
+  psana2 checks          PASS
+  psana2 seq             1..1237
+  psana2 seeds           {'0x1234': 1237}
+  equal (simxpm NumL0Acc == TEB_WrtCt == psana2 events) >= 1200: True
+2026-11-25T23:31:48.421-08:00 cycle PASS
+2026-11-26T07:31:48Z cycle exit 0
+2026-11-26T07:31:48Z DRP fakecam_0's log: buffer sizes, MemPoolSim, XTC space, abort:
+tst-drp[1160483]: <I> dmaCount 1024,  dmaSize 131072
+tst-drp[1160483]: <I> nL1Buffers 1024,  pebble buffer size 131072 B
+tst-drp[1160483]: <I> MemPoolSim: readout group 0, 16384 payload words per lane
+2026-11-26T07:31:48Z control log, error lines:
+2026-11-26T07:31:48Z $ daq_sim down
+2026-11-26T07:31:56Z down exit 0: 2026-11-25T23:31:56.176-08:00 daq_sim: down: clean
+2026-11-26T07:31:56Z DRP log tail (procmgr log of fakecam_0):
+tst-drp[1160483]: <I> PGPReader thread finished
+tst-drp[1160483]: <I> Collector thread finished
+tst-drp[1160483]: <I> received key = dealloc @ Wed Nov 25 23:31:40 2026
+tst-drp[1160483]: <I> received key = reset @ Wed Nov 25 23:31:40 2026
+^Ctst-drp[1160483]: <W> Shutting down on INT signal
+free(): double free detected in tcache 2
+@@@ Current time: Wed Nov 25 23:31:49 2026
+@@@ Child process is shutting down, auto restart is disabled
+@@@ ^R restarts the child, ^Q quits the server
+
+@@@ @@@ @@@ @@@ @@@
+@@@ Received a sigChild for process 1160483. The process was killed by signal 6
+2026-11-26T07:31:56Z processes with signal 6 / 9 in their procmgr logs:
+pmlogs/2026/11/25_23:31:15_sdfrome044:fakecam_0.log:@@@ Received a sigChild for process 1160483. The process was killed by signal 6
+2026-11-26T07:31:56Z done

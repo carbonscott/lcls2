@@ -1,0 +1,33 @@
+# host: sdfiana025
+# date: 2026-11-26T07:30:33Z
+# commit: carbonscott/lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (default-branch head checked against)
+# cmd: ghcheck.py carbonscott/lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77   sim_dma_size 'Insufficient space' MemPoolSim pebble
+
+== search 'repo:carbonscott/lcls2 sim_dma_size': 7 hit(s)
+  #74   closed PR    2026-11-23  daq_sim: tebPendingDepth after upstream's pebble minimum (PR #73's jungfrau/opal matrix failure)
+  #25   closed PR    2026-11-08  sim: simulated XPM, sim:// DRP DMA backend, daq_sim launcher and runbook
+  #39   closed PR    2026-11-09  sim: opal, piranha4, tb and epixquad configure through their own config code; tb_config and epixquad_config fi
+  #52   closed PR    2026-11-11  F1: opt-in TEB pending depth for the simulated DAQ (TebContributor _pending overflow at Enable)
+  #29   closed PR    2026-11-08  sim: simulated XPM, sim:// DRP DMA backend, daq_sim launcher and runbook
+  #41   closed PR    2026-11-09  sim: drp_gpu runs fakecam, epixuhremu and epixuhrsim without hardware; drpGpu builds with CUDA 12; AreaDetecto
+  #36   closed PR    2026-11-09  sim: XpmDetector types configure through xpmdet_config on an emulated device; cspad, epixhremu, jungfrauemu, t
+
+== search 'repo:carbonscott/lcls2 Insufficient space': 0 hit(s)
+
+== search 'repo:carbonscott/lcls2 MemPoolSim': 10 hit(s)
+  #49   closed PR    2026-11-11  Sim cheap tier: every sim unit test in CI on each pull request
+  #73   closed PR    2026-11-23  [window weekly-2026-11-23] merge upstream master into sim-main
+  #41   closed PR    2026-11-09  sim: drp_gpu runs fakecam, epixuhremu and epixuhrsim without hardware; drpGpu builds with CUDA 12; AreaDetecto
+  #36   closed PR    2026-11-09  sim: XpmDetector types configure through xpmdet_config on an emulated device; cspad, epixhremu, jungfrauemu, t
+  #25   closed PR    2026-11-08  sim: simulated XPM, sim:// DRP DMA backend, daq_sim launcher and runbook
+  #42   closed PR    2026-11-10  sim: every detector type, program and system feature of the DAQ without hardware; daq_sim matrix runs it all i
+  #39   closed PR    2026-11-09  sim: opal, piranha4, tb and epixquad configure through their own config code; tb_config and epixquad_config fi
+  #29   closed PR    2026-11-08  sim: simulated XPM, sim:// DRP DMA backend, daq_sim launcher and runbook
+  #34   closed PR    2026-11-09  sim: BEB detectors configure through their own config code on an emulated device; epix100, wave8, wave8he
+  #40   closed PR    2026-11-09  webgui: web copies of hsdPs, configdb_GUI and xpmpva and of the pyqtgraph menus, a page-PV check; check_gui_pa
+
+== search 'repo:carbonscott/lcls2 pebble': 4 hit(s)
+  #53   open   issue 2026-11-11  [DRAFT for upstream] drp aborts with '_pending queue overflow' when TEB results lag: TebContributor's _pending
+  #74   closed PR    2026-11-23  daq_sim: tebPendingDepth after upstream's pebble minimum (PR #73's jungfrau/opal matrix failure)
+  #73   closed PR    2026-11-23  [window weekly-2026-11-23] merge upstream master into sim-main
+  #52   closed PR    2026-11-11  F1: opt-in TEB pending depth for the simulated DAQ (TebContributor _pending overflow at Enable)

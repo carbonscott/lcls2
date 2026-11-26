@@ -1,0 +1,65 @@
+# host: sdfrome044
+# date: 2026-11-26T07:31:21Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main, built in this checkout) sim-hutch 74dfe60182ec3d1526960109295dcad02bbd7ace (netns helper)
+# cmd: scripts/cycle-writes-demo.sh (daq_sim up/cycle/down from a work dir outside the checkout, twice: default, then DAQ_SIM_EVIDENCE set)
+# slurm: job 47203689 step 14; checkout: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2
+07:31:21 netns net:[4026534368]; links up: lo 
+07:31:27 cwd /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z (the user's own folder); daq_sim = /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/install/bin/daq_sim
+
+===== 1. before the run: the checkout =====
+$ git -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 status --short
+[exit status 0]
+$ ls -la /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/.daq_sim/evidence
+ls: cannot access '/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/.daq_sim/evidence': No such file or directory
+[exit status 2]
+
+===== 2. the run, default settings (no DAQ_SIM_EVIDENCE) =====
+07:31:59 daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default: UP
+$ daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default --events 1200
+[exit status 0]
+2026-11-25T23:32:22.150-08:00 evidence 20261125T233222-cycle-6f0a24dae-1162933: det:drp:fakecam prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb
+2026-11-25T23:32:22.244-08:00 cycle PASS
+07:32:30 daq_sim down: 2026-11-25T23:32:30.360-08:00 daq_sim: down: clean
+
+===== 3. after the run: what changed in the checkout =====
+$ git -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 status --short
+[exit status 0]
+$ find /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 -newer /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/stamp1 -type f -not -path '*/.git/*'
+  /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/.daq_sim/evidence/20261125T233222-cycle-6f0a24dae-1162933.json
+  (1 files)
+$ git -C /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 status --short --ignored .daq_sim
+!! .daq_sim/
+[exit status 0]
+$ python3 -c <print fields sha dirty host job_id run_id rows data_dir files> /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/.daq_sim/evidence/20261125T233222-cycle-6f0a24dae-1162933.json
+  sha: "6f0a24daebc2ef9da599b204886b43163f9e3d77"
+  dirty: false
+  host: "sdfrome044"
+  job_id: "47203689"
+  run_id: "tstx00001/r0001"
+  rows: ["det:drp:fakecam", "prog:control", "prog:drp", "prog:pykcuxpm", "prog:pyxpm", "prog:teb"]
+  data_dir: "/sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data"
+  files: 10 listed, e.g. /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-default/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2
+
+===== 3b. the checkout's own coverage now counts the visitor's run =====
+$ (cd /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 && daq_sim coverage) | grep -E 'prog:(control|drp|teb) |det:drp:fakecam|rows,|evidence:'
+evidence: /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2/.daq_sim/evidence (1 records)
+det:drp:fakecam                RUN       evidence 20261125T233222-cycle-6f0a24dae-1162933
+prog:control                   RUN       evidence 20261125T233222-cycle-6f0a24dae-1162933
+prog:drp                       RUN       evidence 20261125T233222-cycle-6f0a24dae-1162933
+prog:teb                       RUN       evidence 20261125T233222-cycle-6f0a24dae-1162933
+78 rows, 4 run, 2 stand-in, 9 N/A, 0 unproven, 63 claimed without valid evidence
+
+===== 4. control: the same run with DAQ_SIM_EVIDENCE=$R/evidence =====
+07:33:04 daq_sim up -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-evidence-env: UP
+$ daq_sim cycle -w /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-evidence-env --events 1200
+[exit status 0]
+  xtc2 file              /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/wd-evidence-env/data/tst/tstx00001/xtc/tstx00001-r0001-s000-c000.xtc2 (1605270 B)
+2026-11-25T23:33:27.682-08:00 evidence 20261125T233327-cycle-6f0a24dae-1164717: det:drp:fakecam prog:control prog:drp prog:pykcuxpm prog:pyxpm prog:teb
+2026-11-25T23:33:27.771-08:00 cycle PASS
+07:33:35 daq_sim down: 2026-11-25T23:33:35.570-08:00 daq_sim: down: clean
+$ find /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/lcls2 -newer /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/stamp2 -type f -not -path '*/.git/*'
+  (0 files)
+$ ls /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h4/runs/cycle-20261126T073121Z/evidence
+20261125T233327-cycle-6f0a24dae-1164717.json
+[exit status 0]
+07:33:38 done

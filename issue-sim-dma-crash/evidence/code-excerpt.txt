@@ -1,0 +1,47 @@
+# host: sdfiana025
+# date: 2026-11-26T07:31:10Z
+# commit: carbonscott/lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77
+# cmd: excerpt.sh <lcls2 clone> 6f0a24daebc2ef9da599b204886b43163f9e3d77 <out> psdaq/drp/MemPoolSim.cc:35-37 psdaq/drp/MemPoolSim.cc:909-910 psdaq/drp/MemPoolSim.cc:991-1001 psdaq/drp/DrpBase.cc:150-156 xtcdata/xtcdata/xtc/Xtc.hh:104-113
+
+== psdaq/drp/MemPoolSim.cc lines 35-37 at 6f0a24daebc2
+   35  static const uint32_t Sentinel      = 0xabababab;      // As in MemPoolCpu
+   36  static const unsigned DefDmaCount   = 1024;
+   37  static const unsigned DefDmaSize    = 0x10000;
+
+== psdaq/drp/MemPoolSim.cc lines 909-910 at 6f0a24daebc2
+  909      m_dmaCount = _kwarg(para, "sim_dma_count", DefDmaCount);
+  910      m_dmaSize  = _kwarg(para, "sim_dma_size",  DefDmaSize);
+
+== psdaq/drp/MemPoolSim.cc lines 991-1001 at 6f0a24daebc2
+  991  void MemPoolSim::connect(unsigned readoutGroup, unsigned length)
+  992  {
+  993      unsigned maxLength = (m_dmaSize - sizeof(Pds::TimingHeader) - sizeof(uint32_t)) / sizeof(uint32_t);
+  994      if (length > maxLength) {
+  995          logging::error("MemPoolSim: sim_length %u does not fit sim_dma_size %u; using %u",
+  996                         length, m_dmaSize, maxLength);
+  997          length = maxLength;
+  998      }
+  999      m_group .store(readoutGroup, std::memory_order_release);
+ 1000      m_length.store(length,       std::memory_order_release);
+ 1001      m_connected.store(true,      std::memory_order_release);
+
+== psdaq/drp/DrpBase.cc lines 150-156 at 6f0a24daebc2
+  150      // to the dmaSize times the number of lanes
+  151      // Also include space in the pebble for a pool of transition buffers of
+  152      // worst case size so that they will be part of the memory region that can
+  153      // be RDMAed from to the MEB
+  154      size_t maxL1ASize = para.kwargs.find("pebbleBufSize") == para.kwargs.end() // Allow overriding the Pebble size
+  155                        ? __builtin_popcount(para.laneMask) * m_dmaSize
+  156                        : std::stoul(para.kwargs.at("pebbleBufSize"));
+
+== xtcdata/xtcdata/xtc/Xtc.hh lines 104-113 at 6f0a24daebc2
+  104          return (const Xtc*)((char*)this + extent);
+  105      }
+  106      void* alloc(size_t size, const void* end)
+  107      {
+  108          void* buffer = next();
+  109          if (end && UNLIKELY((char*)buffer + size > end)){
+  110              fprintf(stderr, "*** %s:%d: Insufficient space for %zu bytes (buffer %p, end %p, extent %u)\n",
+  111                      __FILE__,__LINE__,size,buffer,end,extent);
+  112              abort(); // Set gdb breakpoint to reported file:line to see how it got here
+  113          }

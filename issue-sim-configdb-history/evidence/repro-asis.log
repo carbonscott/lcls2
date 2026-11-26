@@ -1,0 +1,24 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:47Z
+# commit: lcls2 6f0a24daebc2ef9da599b204886b43163f9e3d77 (carbonscott/lcls2 sim-main)
+# cmd: repro_history.sh asis /sdf/scratch/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/evidence (client: python repro_client.py http://127.0.0.1:33279/ws/ /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/configdb-history/work-asis/store.json)
+# netns: private (unshare -rn), interfaces up: lo 
+# python: /sdf/group/lcls/ds/ana/sw/conda2/inst/envs/daq_20250402_r9/bin/python
+
+psdaq.sim.configdb_server from: /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h1/lcls2-sim/psdaq/psdaq/sim/configdb_server.py
+
+step 1 (before any history call): get_configuration fakecam_2 -> ':enum:' in ':types:': {"modeEnum": {"Normal": 0, "Burst": 1, "Off": 2}}
+step 1 (before any history call): cdict(config) OK, user.mode = 1
+
+get_history #1 fakecam_2 user.mode -> HTTP 200 success=True msg='' value=[{"date": "2026-11-26T07:27:47.439378+00:00", "key": 4, "user.mode": 1}]
+get_history #2 fakecam_2 user.mode -> HTTP 500 success=False msg='TypeError: set: Invalid type: modeEnum' value=null
+
+step 3 (after get_history): get_configuration fakecam_2 -> ':enum:' in ':types:': null
+step 3 (after get_history): cdict(config) FAILS: TypeError: set: Invalid type: modeEnum
+
+get_history #3 fakecam_0 user.sim_seed -> HTTP 200 success=True msg='' value=[{"date": "2026-11-26T07:27:47.383242+00:00", "key": 2, "user.sim_seed": 4660}, {"date": "2026-11-26T07:27:47.416763+00:00", "key": 3, "user.sim_seed": 4660}, {"date": "2026-11-26T07:27:47.439378+00:00", "key": 4, "user.sim_seed": 4660}]
+
+step 5: after one write (add_alias NOBEAM), fakecam_2 configs in store.json: ':enum:' = [null]
+
+RESULT: get_history of an enum device FAILS (HTTP 200, 500); control fakecam_0 HTTP 200
+client exit: 1

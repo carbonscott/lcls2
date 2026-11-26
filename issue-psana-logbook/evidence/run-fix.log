@@ -1,0 +1,18 @@
+# host: sdfrome039
+# date: 2026-11-26T07:27:24Z
+# commit: lcls2 release lcls2_111826 = 8b3244f2fcbd7f344e4d82e9d236f30ff3a42f97; upstream lcls2 master fae94d3dcf69eaca5f373a37461d9ccc15f1af7e
+# cmd: logbook.sh fix /sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/out  (srun on job 47203681, inside unshare -rn)
+# network: lo (namespace net:[4026534367])
+# scripts sha256: logbook.sh:3f120764f82a probe.py:9c2116d841d5 proxy.py:e0005c104671 fixshim/sitecustomize.py:f5a8a32bf65b 
+psana: /sdf/group/lcls/ds/ana/sw/conda2/rel/ana/lcls2_111826/install/lib/python3.13/site-packages/psana/psexp/ds_base.py
+[1795678048.549511] [sdfrome039:1547431:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+ds_base.py sha256: 70a74e2fd71e6bf5 (release)  70a74e2fd71e6bf5 (upstream master)
+xtc on disk (written by the release's xtcwriter/smdwriter, 2026-11-25 23:26:43): mfxsim0001-r0001-s000-c000.xtc2 mfxsim0001-r0001-s000-c000.smd.xtc2 
+---- python probe.py (case fix) ----
+[1795678053.053117] [sdfrome039:1547571:0]            sock.c:534  UCX  WARN  unable to read somaxconn value from /proc/sys/net/core/somaxconn file
+fixshim: DataSourceBase._get_file_info_from_db patched (request inside try)
+probe: DataSource(exp='mfxsim0001', run=1, dir=/sdf/data/lcls/ds/prj/prjcwang31/scratch/main/sim-issues/agents/h2/lgbk/xtc)
+[PSANA-INFO RANK:0 1795678055.188956160] SerialDataSource Warning: unable to connect to https://pswww.slac.stanford.edu/ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode: HTTPSConnectionPool(host='pswww.slac.stanford.edu', port=443): Max retries exceeded with url: /ws/lgbk/lgbk/mfxsim0001/ws/1/current_files_for_live_mode (Caused by NameResolutionError("HTTPSConnection(host='pswww.slac.stanford.edu', port=443): Failed to resolve 'pswww.slac.stanford.edu' ([Errno -2] Name or service not known)"))
+probe: read 20 events from disk in 4.2 s
+---- probe exit status: 0 ----
+calibration stand-in requests: 30
